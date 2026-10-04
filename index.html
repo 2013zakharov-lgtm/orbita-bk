@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Orbita AI — Математика</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/function-plot@1.24.4/dist/function-plot.js"></script>
@@ -51,13 +49,15 @@
   .msg.ai .name .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
   .msg.ai .text{font-size:15px;line-height:1.7;color:var(--ink-soft);word-wrap:break-word}
   .msg.ai .text strong{font-weight:700;color:var(--ink)}
+  .msg.ai .text em{font-style:italic;color:var(--ink-soft)}
   .msg.ai .text a{color:var(--accent);text-decoration:underline}
   .msg.ai .text code{background:var(--surface);padding:1px 6px;border-radius:4px;font-family:'SF Mono',Monaco,monospace;font-size:13.5px;color:var(--accent-deep)}
   .msg.ai .text .katex{font-size:1.05em}
   .msg.ai .text .frac{display:inline-block;vertical-align:middle;text-align:center;font-family:'SF Mono',Monaco,monospace;font-size:13px;line-height:1.1;margin:0 3px}
   .msg.ai .text .frac .num{display:block;border-bottom:1.5px solid var(--accent-deep);padding:0 3px}
   .msg.ai .text .frac .den{display:block;padding:0 3px}
-  .msg.ai .text .inl-ico{display:inline-block;vertical-align:-2px;width:14px;height:14px;margin-right:4px;color:var(--accent)}
+  .msg.ai .text .inl-ico{display:inline-block;vertical-align:-3px;width:16px;height:16px;margin-right:5px;color:var(--accent);flex-shrink:0}
+  .msg.ai .text .inl-ico svg{display:block;width:100%;height:100%}
   .msg.ai .text .inl-ok{color:var(--success)}
   .msg.ai .text .inl-warn{color:var(--warn)}
   .msg.ai .text .inl-err{color:var(--danger)}
@@ -241,7 +241,6 @@
   .plus-btn-ghost{width:100%;padding:13px;border:none;border-radius:14px;background:transparent;color:var(--muted);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
   .plus-active-badge{padding:10px 14px;background:var(--accent-soft);border-radius:12px;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:6px}
   .plus-active-badge .ico{width:16px;height:16px}
-  /* Voice */
   .voice-overlay{position:fixed;inset:0;z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#000;overflow:hidden}
   .voice-overlay.active{display:flex;animation:fadeIn .28s ease-out}
   .voice-box{position:relative;z-index:2;width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;text-align:center}
@@ -249,7 +248,6 @@
   .voice-status{font-size:22px;font-weight:700;color:#fff;margin-bottom:14px}
   .voice-text{font-size:15px;color:rgba(255,255,255,.75);line-height:1.5;max-width:340px;min-height:44px;font-weight:500;padding:12px 20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;display:flex;align-items:center;justify-content:center}
   .voice-cancel{margin-top:36px;padding:13px 36px;border-radius:100px;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
-  /* Trainer */
   .trainer-overlay,.cheat-overlay,.graph-overlay{position:fixed;inset:0;background:var(--overlay);z-index:210;display:none;align-items:center;justify-content:center;padding:16px}
   .trainer-overlay.active,.cheat-overlay.active,.graph-overlay.active{display:flex;animation:fadeIn .25s ease-out}
   .trainer-panel,.cheat-panel,.graph-panel{width:100%;max-width:520px;max-height:90vh;background:var(--bg);border-radius:20px;padding:20px 18px;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.3)}
@@ -279,7 +277,6 @@
   .trainer-feedback.ok{background:#dcfce7;color:#166534}
   .trainer-feedback.bad{background:#fee2e2;color:#991b1b}
   .trainer-feedback .ico{width:18px;height:18px;flex-shrink:0}
-  /* Cheat sheet */
   .cheat-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
   .cheat-tabs::-webkit-scrollbar{height:0}
   .cheat-tab{flex-shrink:0;padding:8px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg);font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
@@ -289,11 +286,9 @@
   .cheat-body .cheat-row:last-child{border-bottom:none}
   .cheat-body .cheat-name{font-size:13px;color:var(--muted);flex:1}
   .cheat-body .cheat-formula{font-family:'SF Mono',Monaco,monospace;font-weight:600;color:var(--accent-deep)}
-  /* Graph */
   .graph-panel{max-width:600px}
   .graph-container{width:100%;height:320px;background:var(--surface);border-radius:14px;overflow:hidden}
   .graph-input-row{display:flex;gap:8px;margin-bottom:12px}
-  /* Print */
   @media print{
     .bottom-bar,.header,.drawer,.overlay,.math-kb,.limit-banner{display:none!important}
     body,html{overflow:visible;height:auto;position:static}
@@ -409,9 +404,6 @@
   </symbol>
   <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-  </symbol>
-  <symbol id="i-lamp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/>
   </symbol>
   <symbol id="i-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
@@ -577,7 +569,6 @@
   </div>
 </div>
 
-<!-- Trainer modal -->
 <div class="trainer-overlay" id="trainerOverlay">
   <div class="trainer-panel">
     <div class="panel-head">
@@ -612,7 +603,6 @@
   </div>
 </div>
 
-<!-- Cheat sheet modal -->
 <div class="cheat-overlay" id="cheatOverlay">
   <div class="cheat-panel">
     <div class="panel-head">
@@ -630,7 +620,6 @@
   </div>
 </div>
 
-<!-- Graph modal -->
 <div class="graph-overlay" id="graphOverlay">
   <div class="graph-panel">
     <div class="panel-head">
@@ -694,7 +683,6 @@
     <div class="input-wrap" id="inputWrap">
       <input type="text" id="input" placeholder="Введите уравнение или вопрос..." autocomplete="off">
       <button class="icb" id="kbBtn" title="Символы"><span class="ico"><svg><use href="#i-keyboard"/></svg></span></button>
-      <button class="icb" id="attachBtn"><span class="ico"><svg><use href="#i-paperclip"/></svg></span></button>
       <button class="icb" id="voiceBtn"><span class="ico"><svg><use href="#i-mic"/></svg></span></button>
       <button class="send-btn" id="send" disabled><span class="ico" id="sendIcon"><svg><use href="#i-send"/></svg></span><span class="cooldown-text" id="cooldownText">5</span></button>
     </div>
@@ -702,20 +690,15 @@
 </div>
 
 <input type="file" id="avatarInput" accept="image/*" style="display:none">
-<input type="file" id="fileInput" accept="image/*,.pdf" style="display:none">
 <div class="toast" id="toast"></div>
 
 <script>
-if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
 const API_URL = 'https://shiny-flower-cc1aorbita-gate.2013zakharov.workers.dev';
 const ADMIN_TG_ID = 5268787813;
 const MSG_LIMIT_FREE = 20;
 
-/* SVG icon helper */
 function ico(id, cls){ return `<span class="ico ${cls||''}"><svg><use href="#i-${id}"/></svg></span>`; }
 
-/* answer cache */
 const answerCache = new Map();
 function cacheKey(q){ return q.trim().toLowerCase().replace(/\s+/g,' '); }
 
@@ -735,7 +718,7 @@ function hideBackButton(){ if(tg?.BackButton){ try{ tg.BackButton.offClick(); tg
 function showMainBtn(text, fn){ if(!tg?.MainButton) return; try{ tg.MainButton.setText(text); tg.MainButton.offClick(); tg.MainButton.onClick(fn); tg.MainButton.show(); document.body.classList.add('has-mainbtn'); }catch(e){} }
 function hideMainBtn(){ try{ tg?.MainButton?.hide(); document.body.classList.remove('has-mainbtn'); }catch(e){} }
 
-const state = { user:null, chats:[], activeId:null, busy:false, abortRequested:false, rateLimit:false, rateLimitTimer:null, searchQuery:'', plus:false, hintMode:false };
+const state = { user:null, chats:[], activeId:null, busy:false, abortRequested:false, rateLimit:false, rateLimitTimer:null, searchQuery:'', plus:false };
 const $ = id => document.getElementById(id);
 const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIconEl = $('sendIcon'), toast = $('toast');
 
@@ -765,7 +748,6 @@ function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <
 function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
 function lcm(a,b){ return Math.abs(a*b) / gcd(a,b); }
 
-/* --- Equations --- */
 function solveEquation(text){
   let t = text.toLowerCase().trim();
   t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение|решение)\s+/i,'');
@@ -858,18 +840,13 @@ function solveQuadratic(original, left, right){
   return { text: s.join('\n'), _isDialog:true };
 }
 
-/* --- Factoring --- */
 function factorPolynomial(query){
   const q = query.toLowerCase().replace(/\s+/g,'');
   const m = q.match(/(?:разложи|разложить|множител)\w*\s*(?:на\s+множители\s*)?[:]?(.+)/i);
   if(!m) return null;
   let expr = m[1].replace(/^\(/,'').replace(/\)$/,'').replace(/[?!.]+$/,'').replace(/[хХ]/g,'x');
   if(!/x/.test(expr)) return null;
-
-  // Normalize x^2
   expr = expr.replace(/x²/g,'x^2');
-
-  // Try quadratic ax^2 + bx + c
   const poly = parsePoly(expr);
   if(poly.a !== 0){
     const {a,b,c} = poly;
@@ -884,32 +861,25 @@ function factorPolynomial(query){
     s.push(`\n**Шаг 1.** Дискриминант: $D = ${fmtNum(D)}$, $\\sqrt{D} = ${fmtNum(sq)}$`);
     s.push(`**Шаг 2.** Корни: $x_1 = ${fmtNum(r1)}$, $x_2 = ${fmtNum(r2)}$`);
     s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
-    // Build factored form nicely
     const parts = [];
-    if(a !== 1) parts.push(fmtNum(a));
-    const sign1 = r1 >= 0 ? '-' : '+', sign2 = r2 >= 0 ? '-' : '+';
+    if(Math.abs(a - 1) > 1e-9) parts.push(fmtNum(a));
+    const sign1 = r1 >= 0 ? '-' : '+';
+    const sign2 = r2 >= 0 ? '-' : '+';
     parts.push(`(x ${sign1} ${fmtNum(Math.abs(r1))})`);
     if(Math.abs(r2 - r1) > 1e-9) parts.push(`(x ${sign2} ${fmtNum(Math.abs(r2))})`);
     else parts.push(`^2`);
     s.push(`$$${parts.join(' ')}$$`);
     return { text: s.join('\n'), _isDialog:true };
   }
-
-  // Try special: a^2 - b^2 (like x^2 - 9)
-  // handled by quadratic above
-
-  // Try common factor extraction for simple terms like 2x^3 + 4x^2
   return null;
 }
 
-/* --- Simplification --- */
 function simplifyExpression(query){
   const m = query.toLowerCase().match(/(?:упрости|упростить)[:]?\s*(.+)/i);
   if(!m) return null;
   let expr = m[1].replace(/[?!.]+$/,'').replace(/\s+/g,'').replace(/[хХ]/g,'x');
   expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3');
 
-  // Handle product of two binomials (x+a)(x+b)
   const bino = expr.match(/^\(x([+\-]\d+)\)\(x([+\-]\d+)\)$/);
   if(bino){
     const a = parseInt(bino[1]), b = parseInt(bino[2]);
@@ -919,16 +889,13 @@ function simplifyExpression(query){
     s.push(`\n${ico('bulb')} **Метод:** раскрываем скобки (фонтан).`);
     s.push(`\n**Шаг 1.** Перемножаю:`);
     s.push(`$$= x \\cdot x + x \\cdot (${b}) + (${a}) \\cdot x + (${a})(${b})$$`);
-    s.push(`$$= x^2 ${b >= 0 ? '+' : '-'} ${Math.abs(b)}x ${a >= 0 ? '+' : '-'} ${Math.abs(a)}x ${a*b >= 0 ? '+' : '-'} ${Math.abs(a*b)}$$`);
     s.push(`\n**Шаг 2.** Привожу подобные:`);
     s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x^2 ${a+b>=0?'+':'-'} ${Math.abs(a+b)}x ${a*b>=0?'+':'-'} ${Math.abs(a*b)}$`);
     return { text: s.join('\n'), _isDialog:true };
   }
-
   return null;
 }
 
-/* --- Column arithmetic --- */
 function columnArithmetic(query){
   const m = query.trim().match(/^(\d+)\s*([×*])\s*(\d+)$/);
   if(m){
@@ -942,14 +909,11 @@ function columnArithmetic(query){
     while(res.length > 1 && res[res.length-1] === 0) res.pop();
     const product = res.reverse().join('');
 
-    // Draw column
     const width = Math.max(a.length, b.length, product.length) + 2;
     let out = '';
     out += '  ' + ' '.repeat(width - a.length) + a + '\n';
     out += '× ' + ' '.repeat(width - b.length) + b + '\n';
     out += '  ' + '─'.repeat(width) + '\n';
-
-    // Partial products
     const partials = [];
     for(let j=0;j<B.length;j++){
       const partial = (parseInt(a) * B[j]).toString();
@@ -975,7 +939,6 @@ function columnArithmetic(query){
   return null;
 }
 
-/* --- Complex derivatives (sin, cos, ln, e^x + rules) --- */
 function parseGeneralPoly(expr){
   expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/X/g,'x');
   expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
@@ -984,14 +947,12 @@ function parseGeneralPoly(expr){
   if(s.startsWith('+')) s = s.slice(1);
   for(const part of s.split('+')){
     if(!part) continue;
-    // term like ax^n or ax or a
     let m = part.match(/^(-?\d*\.?\d*)\*?x\^(\d+)$/);
     if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, power:parseInt(m[2]), kind:'power'}); continue; }
     m = part.match(/^(-?\d*\.?\d*)\*?x$/);
     if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, power:1, kind:'power'}); continue; }
     m = part.match(/^(-?\d*\.?\d+)$/);
     if(m){ terms.push({coef:parseFloat(m[1]), power:0, kind:'const'}); continue; }
-    // sin(x), cos(x), ln(x), e^x
     m = part.match(/^(-?\d*\.?\d*)\*?(sin|cos|tan|ln)\(x\)$/);
     if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, fn:m[2], kind:'fn'}); continue; }
     m = part.match(/^(-?\d*\.?\d*)\*?e\^x$/);
@@ -1023,6 +984,16 @@ function termsToStrGen(terms){
   }
   return s;
 }
+function derivOfFn(t){
+  const c = t.coef;
+  switch(t.fn){
+    case 'sin': return {coef: c, fn:'cos', kind:'fn'};
+    case 'cos': return {coef: -c, fn:'sin', kind:'fn'};
+    case 'exp': return {coef: c, fn:'exp', kind:'fn'};
+    case 'ln': return {coef: c, kind:'power', power:-1};
+    default: return null;
+  }
+}
 function solveDerivative(query){
   const q = query.toLowerCase();
   if(!/производн|d\/dx|найди\s+производную/i.test(q)) return null;
@@ -1033,36 +1004,14 @@ function solveDerivative(query){
   if(!/[xXхХ]/.test(expr)) return null;
   expr = expr.replace(/[хХ]/g,'x');
 
-  // Try polynomial
   const terms = parseGeneralPoly(expr);
-  if(!terms || !terms.length){
-    // Try product rule: u * v
-    const prod = expr.match(/^(.+?)\*(.+)$/);
-    if(prod){
-      const u = prod[1], v = prod[2];
-      const uT = parseGeneralPoly(u), vT = parseGeneralPoly(v);
-      if(uT && vT){
-        const uStr = termsToStrGen(uT), vStr = termsToStrGen(vT);
-        const duT = uT.map(t => t.kind === 'power' ? {coef:t.coef*t.power, power:t.power-1, kind:'power'} : t.kind==='const'? null : derivOfFn(t)).filter(Boolean);
-        const dvT = vT.map(t => t.kind === 'power' ? {coef:t.coef*t.power, power:t.power-1, kind:'power'} : t.kind==='const'? null : derivOfFn(t)).filter(Boolean);
-        const s = [];
-        s.push(`**Производная произведения** $f = u \\cdot v$:`);
-        s.push(`$$f' = u'v + uv'$$`);
-        s.push(`\nПусть $u = ${uStr}$, $v = ${vStr}$`);
-        s.push(`Тогда $u' = ${termsToStrGen(duT)}$, $v' = ${termsToStrGen(dvT)}$`);
-        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
-        s.push(`$$f'(x) = (${termsToStrGen(duT)})(${vStr}) + (${uStr})(${termsToStrGen(dvT)})$$`);
-        return { text: s.join('\n'), _isDialog:true };
-      }
-    }
-    return null;
-  }
+  if(!terms || !terms.length) return null;
 
   const dTerms = [];
   for(const t of terms){
     if(t.kind === 'power'){ if(t.power > 0) dTerms.push({coef:t.coef*t.power, power:t.power-1, kind:'power'}); }
-    else if(t.kind === 'const'){ /* 0 */ }
-    else if(t.kind === 'fn'){ dTerms.push(derivOfFn(t)); }
+    else if(t.kind === 'const'){ }
+    else if(t.kind === 'fn'){ const d = derivOfFn(t); if(d) dTerms.push(d); }
   }
   const origStr = termsToStrGen(terms);
   const derivStr = termsToStrGen(dTerms);
@@ -1088,26 +1037,15 @@ function solveDerivative(query){
     } else if(t.kind === 'fn'){
       const d = derivOfFn(t);
       const name = t.fn === 'exp' ? 'e^x' : `\\${t.fn}(x)`;
-      s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}${name} )' = ${d.coef === 1 ? '' : fmtNum(d.coef)}${d.kind === 'fn' ? (d.fn === 'exp' ? 'e^x' : `\\${d.fn}(x)`) : '...'}$`);
+      const dName = d.kind === 'fn' ? (d.fn === 'exp' ? 'e^x' : `\\${d.fn}(x)`) : '1/x';
+      s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}${name} )' = ${d.coef === 1 ? '' : fmtNum(d.coef)}${dName}$`);
     }
   }
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
   s.push(`$$f'(x) = ${derivStr}$$`);
   return { text: s.join('\n'), _isDialog:true };
 }
-function derivOfFn(t){
-  const c = t.coef;
-  switch(t.fn){
-    case 'sin': return {coef: c, fn:'cos', kind:'fn'};
-    case 'cos': return {coef: -c, fn:'sin', kind:'fn'};
-    case 'exp': return {coef: c, fn:'exp', kind:'fn'};
-    case 'ln': return {coef: c, kind:'power', power:-1}; // 1/x → c*x^-1
-    case 'tan': return {coef: c, fn:'tan_sec2', kind:'fn'};
-    default: return null;
-  }
-}
 
-/* --- Knowledge base --- */
 function matchMathKnowledge(q){
   const x = q.trim().toLowerCase().replace(/[?!.]+$/,'').trim();
 
@@ -1172,7 +1110,6 @@ function matchMathKnowledge(q){
   return null;
 }
 
-/* --- Dialogues --- */
 function matchDialog(q){
   const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
@@ -1181,43 +1118,30 @@ function matchDialog(q){
   if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи! Удачи в учёбе!';
   if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Рад помочь.';
   if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `${ico('compass')} Я **Orbita AI** — твой репетитор по математике от компании **ORT**.\n\nРешаю уравнения, производные, строю графики и объясняю теорию.`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Что я умею:**\n\n${ico('equals')} Решаю уравнения пошагово\n${ico('chart')} Нахожу производные (включая sin, cos, ln, e^x)\n${ico('sigma')} Раскладываю на множители, упрощаю\n${ico('calc')} Умножаю/делю столбиком\n${ico('book-open')} Объясняю теорию с примерами\n${ico('grid')} Строю графики функций\n${ico('target')} Тренажёр по темам\n${ico('doc')} Читаю PDF и фото задач\n${ico('mic')} Распознаю голос\n${ico('speak')} Читаю ответы (Plus)`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Что я умею:**\n\n${ico('equals')} Решаю уравнения пошагово\n${ico('chart')} Нахожу производные (включая sin, cos, ln, e^x)\n${ico('sigma')} Раскладываю на множители, упрощаю\n${ico('calc')} Умножаю/делю столбиком\n${ico('book-open')} Объясняю теорию с примерами\n${ico('grid')} Строю графики функций\n${ico('target')} Тренажёр по темам\n${ico('mic')} Распознаю голос\n${ico('speak')} Читаю ответы (Plus)`;
   if(/^(кто\s+тебя\s+создал|кто\s+разработал)/i.test(x)) return `Меня создала компания **ORT**`;
   if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${ico('clock')}`;
   if(/какой\s+сегодня\s+день/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})} ${ico('calendar')}`;
   return null;
 }
 
-/* --- Main answer generator --- */
 async function generateAnswer(query, chat){
   if(hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
 
-  // 0. Cache hit
   const key = cacheKey(query);
   if(answerCache.has(key)){ await sleep(120); return answerCache.get(key); }
 
   let result = null;
 
-  // 1. Graph
   const gm = query.match(/(?:построй|построить|график)\s+(?:график\s+)?(?:функции\s+)?y\s*=\s*(.+)/i);
-  if(gm){ result = { text: `Открываю построение графика для $y = ${gm[1].trim()}$. Если окно не открылось — нажми ${ico('chart')} в меню.`, _graph: gm[1].trim(), _isDialog:true }; }
+  if(gm){ result = { text: `Открываю построение графика для $y = ${gm[1].trim()}$.`, _graph: gm[1].trim(), _isDialog:true }; }
 
-  // 2. Factoring
   if(!result) result = factorPolynomial(query);
-
-  // 3. Simplification
   if(!result) result = simplifyExpression(query);
-
-  // 4. Equation
   if(!result){ const eq = solveEquation(query); if(eq) result = eq; }
-
-  // 5. Derivative
   if(!result){ const d = solveDerivative(query); if(d) result = d; }
-
-  // 6. Column arithmetic
   if(!result) result = columnArithmetic(query);
 
-  // 7. Plain arithmetic
   if(!result){
     const m = query.trim().toLowerCase().match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
     if(m){
@@ -1235,7 +1159,6 @@ async function generateAnswer(query, chat){
     }
   }
 
-  // 8. GCD/LCM quick
   if(!result){
     const nm = query.toLowerCase().match(/(?:нод|нок)\s*\(?\s*(\d+)\s*[,;\s]+\s*(\d+)/i);
     if(nm){
@@ -1245,7 +1168,6 @@ async function generateAnswer(query, chat){
     }
   }
 
-  // 9. Factorial
   if(!result){
     const fm = query.toLowerCase().match(/(\d+)\s*!|факториал\s+(\d+)/);
     if(fm){
@@ -1254,13 +1176,9 @@ async function generateAnswer(query, chat){
     }
   }
 
-  // 10. Knowledge base
   if(!result) result = matchMathKnowledge(query);
-
-  // 11. Dialogues
   if(!result){ const d = matchDialog(query); if(d) result = { text: d, _isDialog: true }; }
 
-  // 12. Not understood
   if(!result){
     result = { text: `${ico('hint')} Не могу разобрать запрос «${query}».\n\n**Попробуй так:**\n• ${ico('equals')} _Реши 2x + 5 = 15_\n• ${ico('function')} _Реши x^2 - 5x + 6 = 0_\n• ${ico('chart')} _Производная x^3 + 2x_\n• ${ico('sigma')} _Разложи x^2 - 5x + 6 на множители_\n• ${ico('calc')} _1234 × 567_ столбиком\n• ${ico('book-open')} _Что такое дискриминант?_`, _isDialog: true };
   }
@@ -1271,56 +1189,46 @@ async function generateAnswer(query, chat){
 
 /* ============== RENDERING ============== */
 function renderText(raw){
-  // 1) Extract $...$ blocks (both $$ and $)
   const mathBlocks = [];
   let text = String(raw);
-  // $$...$$ first (display math)
   text = text.replace(/\$\$([^$]+?)\$\$/g, (m, expr) => {
     const i = mathBlocks.length;
     mathBlocks.push({expr: expr.trim(), display: true});
     return `\u0000M${i}\u0000`;
   });
-  // $...$
   text = text.replace(/\$([^$\n]+?)\$/g, (m, expr) => {
     const i = mathBlocks.length;
     mathBlocks.push({expr: expr.trim(), display: false});
     return `\u0000M${i}\u0000`;
   });
 
-  // 2) Escape HTML but allow our inline SVG icons (they are already HTML strings).
-  //    We keep the raw content but process emoji-free text.
-  let h = text;
-
-  // 3) Inline icons markers: they are already inline SVG strings — don't escape them.
-  //    Mark them first.
   const iconBlocks = [];
-  h = h.replace(/<span class="ico[^"]*"><svg><use href="#i-([a-z0-9-]+)"\/><\/svg><\/span>/gi, (m, id) => {
+  text = text.replace(/<span class="ico[^"]*"><svg><use href="#i-([a-z0-9-]+)"\/><\/svg><\/span>/gi, (m, id) => {
     const idx = iconBlocks.length;
-    iconBlocks.push({id, cls: /inl-ok/.test(m) ? 'inl-ok' : /inl-err/.test(m) ? 'inl-err' : /inl-warn/.test(m) ? 'inl-warn' : ''});
+    let cls = '';
+    if(/inl-ok/.test(m)) cls = 'inl-ok';
+    else if(/inl-err/.test(m)) cls = 'inl-err';
+    else if(/inl-warn/.test(m)) cls = 'inl-warn';
+    iconBlocks.push({id, cls});
     return `\u0000I${idx}\u0000`;
   });
 
-  // 4) Escape rest
-  h = esc(h);
+  let h = esc(text);
 
-  // 5) Code blocks (```...```)
   h = h.replace(/```([\s\S]*?)```/g, (m, code) => `<pre style="background:var(--surface);padding:12px;border-radius:10px;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:12.5px;line-height:1.4;margin:8px 0;color:var(--ink)">${code.trim()}</pre>`);
-
-  // 6) LaTeX remnants
   h = h.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, (m,n,d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`);
   h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
   h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
   h = h.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'<em>$1</em>');
+  h = h.replace(/(^|[^\w_])_([^_\n]+)_(?![_\w])/g, '$1<em>$2</em>');
   h = h.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
   h = h.replace(/\n/g,'<br>');
 
-  // 7) Restore icons
   h = h.replace(/\u0000I(\d+)\u0000/g, (m, i) => {
     const b = iconBlocks[+i];
-    return `<span class="inl-ico ${b.cls}"><svg><use href="#i-${b.id}"/></svg></span>`;
+    return `<span class="inl-ico ${b.cls}"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-${b.id}"/></svg></span>`;
   });
 
-  // 8) Restore math (KaTeX)
   h = h.replace(/\u0000M(\d+)\u0000/g, (m, i) => {
     const b = mathBlocks[+i];
     if(window.katex){
@@ -1488,13 +1396,11 @@ function showHint(msg){
 }
 
 function generateSimilar(msg, body, idx){
-  // Try to regenerate original with small tweaks
   const chat = getActiveChat(); if(!chat) return;
   const uIdx = [...chat.messages].reverse().findIndex(m => m.role === 'user' && chat.messages.indexOf(m) < idx);
   if(uIdx < 0){ showToast('Не могу построить'); return; }
   const userMsg = chat.messages[chat.messages.length - 1 - uIdx];
   let q = userMsg.text;
-  // Tweak numbers
   q = q.replace(/(\d+)/g, m => {
     const n = parseInt(m);
     if(n === 0) return '0';
@@ -1532,7 +1438,7 @@ function hideTyping(){ const el = document.querySelector('.typing'); if(el) el.c
 
 async function typeText(el, text){
   const cur = document.createElement('span'); cur.className = 'cursor'; el.after(cur);
-  const delay = Math.min(1400, Math.max(300, text.length*8))/text.length;
+  const delay = Math.min(3200, Math.max(900, text.length*22))/text.length;
   let buf = '';
   for(let i = 0; i < text.length; i++){
     if(state.abortRequested){ el.innerHTML = renderText(text); cur.remove(); return; }
@@ -1684,6 +1590,35 @@ async function sendAccessRequest(){
 let recognition = null, isRecording = false, voiceFinalText = '';
 let audioContext = null, analyser = null, mediaStream = null;
 let orbRaf = null, orbCtx = null, orbStartTime = 0, orbLevel = 0, orbDataArray = null;
+
+function normalizeVoiceText(t){
+  if(!t) return '';
+  let s = ' ' + String(t).toLowerCase() + ' ';
+  s = s
+    .replace(/\bикс\b/g, 'x')
+    .replace(/\bигрек\b/g, 'y')
+    .replace(/\bигрик\b/g, 'y')
+    .replace(/\bзет\b/g, 'z')
+    .replace(/\bравно\b/g, '=')
+    .replace(/\bплюс\b/g, '+')
+    .replace(/\bминус\b/g, '-')
+    .replace(/\bумножить на\b/g, '*')
+    .replace(/\bумножить\b/g, '*')
+    .replace(/\bразделить на\b/g, '/')
+    .replace(/\bделить на\b/g, '/')
+    .replace(/\bв квадрате\b/g, '^2')
+    .replace(/\bв кубе\b/g, '^3')
+    .replace(/\bв степени\b/g, '^')
+    .replace(/\bкорень из\b/g, 'sqrt')
+    .replace(/\bкорень\b/g, 'sqrt')
+    .replace(/\bпи\b/g, 'π')
+    .replace(/\s+/g, ' ')
+    .trim();
+  s = s.replace(/\s*([=+\-*/^])\s*/g, '$1');
+  s = s.replace(/(\d)\s+([a-zA-Zа-яёπ])/g, '$1$2');
+  return s;
+}
+
 function initOrbCanvas(){
   const orbCanvas = document.getElementById('voiceCanvas'); if(!orbCanvas) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2), size = 280;
@@ -1752,10 +1687,42 @@ function initVoice(){
   if(!SR){ $('voiceBtn').style.display='none'; return; }
   recognition = new SR();
   recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'ru-RU';
-  recognition.onstart = () => { isRecording = true; voiceFinalText = ''; $('voiceOverlay').classList.add('active'); $('voiceStatus').textContent = 'Слушаю…'; const vt=$('voiceText'); vt.textContent='Продиктуй пример'; vt.classList.add('empty'); haptic('medium'); startAudioVisualization(); };
-  recognition.onresult = (e) => { let interim='', final=''; for(let i=e.resultIndex;i<e.results.length;i++){ const t=e.results[i][0].transcript; if(e.results[i].isFinal) final+=t; else interim+=t; } if(final) voiceFinalText=final; const vt=$('voiceText'); const d=final||interim; if(d){ vt.textContent=d; vt.classList.remove('empty'); } $('voiceStatus').textContent = final?'Готово!':'Слушаю…'; };
-  recognition.onerror = (e) => { stopVoice(); if(e.error==='not-allowed') showToast('Микрофон запрещён'); else if(e.error==='no-speech') showToast('Ничего не услышал'); else showToast('Ошибка распознавания'); haptic('error'); };
-  recognition.onend = () => { if(isRecording){ isRecording=false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); if(voiceFinalText.trim()){ const t=voiceFinalText.trim(); voiceFinalText=''; setTimeout(()=>handleSend(t),200); } } };
+  recognition.onstart = () => {
+    isRecording = true; voiceFinalText = '';
+    $('voiceOverlay').classList.add('active');
+    $('voiceStatus').textContent = 'Слушаю…';
+    const vt=$('voiceText'); vt.textContent='Продиктуй пример'; vt.classList.add('empty');
+    haptic('medium'); startAudioVisualization();
+  };
+  recognition.onresult = (e) => {
+    let interim = '', final = '';
+    for(let i = e.resultIndex; i < e.results.length; i++){
+      const t = e.results[i][0].transcript;
+      if(e.results[i].isFinal) final += t; else interim += t;
+    }
+    const finalNorm = final ? normalizeVoiceText(final) : '';
+    const interimNorm = interim ? normalizeVoiceText(interim) : '';
+    if(finalNorm) voiceFinalText = finalNorm;
+    const vt = $('voiceText'); const d = finalNorm || interimNorm;
+    if(d){ vt.textContent = d; vt.classList.remove('empty'); }
+    else { vt.textContent = 'Продиктуй пример'; vt.classList.add('empty'); }
+    $('voiceStatus').textContent = final ? 'Готово!' : 'Слушаю…';
+  };
+  recognition.onerror = (e) => {
+    stopVoice();
+    if(e.error === 'not-allowed') showToast('Микрофон запрещён');
+    else if(e.error === 'no-speech') showToast('Ничего не услышал');
+    else showToast('Ошибка распознавания');
+    haptic('error');
+  };
+  recognition.onend = () => {
+    if(isRecording){
+      isRecording = false;
+      $('voiceOverlay').classList.remove('active');
+      stopAudioVisualization();
+      if(voiceFinalText.trim()){ const t = voiceFinalText.trim(); voiceFinalText = ''; setTimeout(() => handleSend(t), 200); }
+    }
+  };
 }
 function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
 function stopVoice(){ isRecording=false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition && recognition.stop(); }catch(e){} }
@@ -1800,57 +1767,6 @@ function hasProfanity(raw){
   const norm = normalizeAggressive(raw);
   if(norm) for(const re of BAD_PATTERNS) if(re.test(norm)) return true;
   return false;
-}
-
-/* ============== FILES ============== */
-async function handleFileUpload(file){
-  if(!file) return;
-  if(file.size > 10*1024*1024){ showToast('Файл больше 10 МБ'); return; }
-  const type = file.type || '', name = file.name || 'файл';
-  const btn = $('attachBtn'); btn.classList.add('loading'); haptic('light');
-  try{
-    let text = '', url = null, kind = 'file';
-    if(type === 'application/pdf' || name.toLowerCase().endsWith('.pdf')){ showToast('Обрабатываю PDF…'); text = await extractPdfText(file); kind = 'pdf'; }
-    else if(type.startsWith('image/')){ url = URL.createObjectURL(file); kind = 'image'; showToast('Распознаю текст…'); try{ text = await extractImageText(file); }catch(e){ text=''; } }
-    else { showToast('Только PDF и картинки'); btn.classList.remove('loading'); return; }
-    btn.classList.remove('loading');
-    ensureChat();
-    const chat = getActiveChat();
-    const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
-    const ts = Date.now();
-    const fm = { role:'user', text: kind==='image'?'Изображение':`Документ: ${name}`, attachment:{ kind, name, url, extractedText: text||'' }, ts };
-    chat.messages.push(fm); chat.updatedAt = ts;
-    if(chat.title === 'Новый чат') chat.title = name.slice(0,40);
-    store.saveChats(state.chats);
-    appendUserMessage(fm.text, true, chat.messages.length-1, fm.attachment);
-    renderChatsList();
-    if(text && text.trim().length > 10) setTimeout(() => handleSend(`Проверь это задание и объясни решение:\n\n${text.slice(0,2000)}`), 400);
-    else showToast('Не удалось распознать текст');
-  }catch(e){ btn.classList.remove('loading'); showToast('Ошибка обработки'); }
-}
-async function extractPdfText(file){
-  if(!window.pdfjsLib) throw new Error('pdf.js');
-  const buf = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-  let full = '';
-  const max = Math.min(pdf.numPages, 20);
-  for(let i = 1; i <= max; i++){
-    const p = await pdf.getPage(i); const c = await p.getTextContent();
-    full += c.items.map(it => it.str).join(' ').replace(/\s+/g,' ') + '\n\n';
-    if(full.length > 4000) break;
-  }
-  return full.trim().slice(0,4000);
-}
-async function extractImageText(file){
-  if(!window.Tesseract) throw new Error('tesseract');
-  let w = null;
-  try{
-    w = await Tesseract.createWorker('rus+eng', 1, { langPath: 'https://tessdata.projectnaptha.com/4.0.0', workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/worker.min.js', corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0' });
-    const r = await w.recognize(file);
-    const t = (r?.data?.text || '').trim();
-    await w.terminate();
-    return t.slice(0,3000);
-  }catch(e){ if(w){ try{ await w.terminate(); }catch(_){} } throw e; }
 }
 
 /* ============== SEND ============== */
@@ -1941,7 +1857,6 @@ async function handleSend(textOverride){
   const lastAi = chatEl.lastElementChild;
   if(lastAi?.classList.contains('ai')){ const body = lastAi.querySelector('.body'); if(body && !body.querySelector('.msg-actions')) appendActions(body, aiMsg, chat.messages.length-1); }
 
-  // Auto-open graph if requested
   if(result._graph){ setTimeout(() => { openGraph(result._graph); }, 300); }
 
   state.busy = false; state.abortRequested = false;
@@ -2021,10 +1936,8 @@ function genTrainerTask(){
   const {topic, diff} = trainer;
   const R = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
   if(topic === 'linear'){
-    const a = R(1, diff*3+2), b = R(-5*diff, 10*diff), c = R(-10*diff, 20*diff);
-    const x = (c - b)/a;
-    // Make integer solutions when possible
-    const xInt = Math.round(x);
+    const a = R(1, diff*3+2), b = R(-5*diff, 10*diff);
+    const xInt = R(-9, 9);
     const cAdj = a*xInt + b;
     return { text: `${a}x ${b>=0?'+':'-'} ${Math.abs(b)} = ${cAdj}`, answer: xInt };
   }
@@ -2072,7 +1985,6 @@ function checkTrainer(){
     const u = parseFloat(inp);
     correct = !isNaN(u) && Math.abs(u - ans) < 1e-6;
   } else {
-    // string compare for derivative
     correct = inp.replace(/\^/g,'').replace(/\*/g,'') === String(ans).replace(/\^/g,'').replace(/\*/g,'').toLowerCase();
   }
   if(correct){
@@ -2172,15 +2084,11 @@ function closeGraph(){ $('graphOverlay').classList.remove('active'); }
 function buildGraph(){
   const raw = $('graphInput').value.trim();
   if(!raw){ showToast('Введи функцию'); return; }
-  // Extract expression after y=
   let expr = raw.replace(/^y\s*=/i,'').replace(/^f\(x\)\s*=/i,'').trim();
-  // Convert ^ to JS **
   let js = expr.replace(/\^/g,'**').replace(/\bpi\b/gi,'Math.PI').replace(/\be\b/g,'Math.E');
-  // Insert * between number and x
   js = js.replace(/(\d)([x(])/g,'$1*$2').replace(/([x)])(\d)/g,'$1*$2').replace(/\)(\()/g,')*(').replace(/x(\()/g,'x*(').replace(/\)x/g,')*x');
-  // Functions
-  const fn = new Function('x', `with(Math){ return ${js}; }`);
   try{
+    const fn = new Function('x', `with(Math){ return ${js}; }`);
     const f = fn(1);
     if(typeof f !== 'number') throw new Error();
   }catch(e){ showToast('Не могу разобрать выражение'); return; }
@@ -2250,8 +2158,6 @@ $('accountOverlay').addEventListener('click', e => { if(e.target === $('accountO
 $('avatarPreview').addEventListener('click', () => $('avatarInput').click());
 $('avatarInput').addEventListener('change', e => { if(e.target.files[0]) handleAvatarUpload(e.target.files[0]); e.target.value = ''; });
 $('removeAvatarBtn').addEventListener('click', () => { if(state.user?.avatar){ state.user.avatar = null; store.saveUser(state.user); updateAvatarPreview(); } });
-$('attachBtn').addEventListener('click', () => $('fileInput').click());
-$('fileInput').addEventListener('change', e => { if(e.target.files[0]) handleFileUpload(e.target.files[0]); e.target.value = ''; });
 $('voiceBtn').addEventListener('click', startVoice);
 $('voiceCancel').addEventListener('click', stopVoice);
 $('onbSkip').addEventListener('click', finishOnboarding);
