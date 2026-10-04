@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Orbita AI</title>
+<title>Orbita AI — Математика</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
@@ -270,15 +270,15 @@
       <div class="onb-slide">
         <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg>
         <div class="onb-title">Добро пожаловать!</div>
-        <div class="onb-sub">Orbita AI — умный ассистент. Ищет информацию, отвечает на вопросы, решает уравнения, работает с файлами.</div>
+        <div class="onb-sub">Orbita AI — твой личный репетитор по математике. Решает уравнения, объясняет шаг за шагом и помогает понять теорию.</div>
       </div>
       <div class="onb-slide">
         <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="26" stroke="#2563eb" stroke-width="3" fill="none"/><path d="M42 40 L64 50 L42 60 Z" fill="#2563eb"/></svg>
         <div class="onb-title">Что можно</div>
         <div class="onb-examples">
-          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></div><span>Что такое чёрная дыра?</span></div>
           <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/></svg></div><span>Реши 2x + 5 = 15</span></div>
-          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><span>Загрузи PDF или фото</span></div>
+          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><span>Производная x³ + 2x</span></div>
+          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><span>Объясни теорему Пифагора</span></div>
         </div>
       </div>
       <div class="onb-slide">
@@ -333,7 +333,7 @@
   <div class="voice-box">
     <canvas class="voice-canvas" id="voiceCanvas" width="280" height="280"></canvas>
     <div class="voice-status" id="voiceStatus">Слушаю…</div>
-    <div class="voice-text empty" id="voiceText">Скажи что-нибудь</div>
+    <div class="voice-text empty" id="voiceText">Продиктуй пример или вопрос</div>
     <div class="voice-hint" id="voiceHint"><span class="hint-dot"></span><span>Говори чётко, я распознаю речь</span></div>
     <button class="voice-cancel" id="voiceCancel">Отмена</button>
   </div>
@@ -379,7 +379,7 @@
       <div class="brand-mark" id="brandMark"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div>
       <div class="brand-text">
         <div class="brand-name">Orbita AI <span class="plus-badge" id="headerPlusBadge" style="display:none;"><svg viewBox="0 0 24 24"><path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/></svg>Plus</span></div>
-        <div class="brand-sub">Поиск в интернете</div>
+        <div class="brand-sub">Репетитор по математике</div>
       </div>
     </div>
   </header>
@@ -394,7 +394,7 @@
   <div class="bottom-bar">
     <button class="menu-fab" id="menuBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
     <div class="input-wrap" id="inputWrap">
-      <input type="text" id="input" placeholder="Спросите что угодно..." autocomplete="off">
+      <input type="text" id="input" placeholder="Введите уравнение или вопрос..." autocomplete="off">
       <button class="attach-btn" id="attachBtn"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
       <button class="voice-btn" id="voiceBtn"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg></button>
       <button class="send-btn" id="send" disabled><svg id="sendIcon" viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/></svg><span class="cooldown-text" id="cooldownText">5</span></button>
@@ -510,15 +510,7 @@ let accessPollTimer = null, gateState = 'checking';
 async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
   if(!uId){ gateState='no_telegram'; showGate('no_telegram'); return; }
-  
-  // 🟢 АДМИН — всегда approved + plus
-  if(uId === ADMIN_TG_ID){
-    gateState = 'approved';
-    state.plus = true;
-    hideGate();
-    return;
-  }
-  
+  if(uId === ADMIN_TG_ID){ gateState = 'approved'; state.plus = true; hideGate(); return; }
   try{
     const res = await fetch(`${API_URL}/status/${uId}`);
     if(!res.ok) throw new Error();
@@ -673,7 +665,7 @@ function initVoice(){
     isRecording = true; voiceFinalText = '';
     $('voiceOverlay').classList.add('active');
     $('voiceStatus').textContent = 'Слушаю…';
-    const vt = $('voiceText'); vt.textContent = 'Скажи что-нибудь'; vt.classList.add('empty');
+    const vt = $('voiceText'); vt.textContent = 'Продиктуй пример или вопрос'; vt.classList.add('empty');
     $('voiceHint').innerHTML = '<span class="hint-dot"></span><span>Говори чётко, я распознаю речь</span>';
     haptic('medium'); startAudioVisualization();
   };
@@ -686,7 +678,7 @@ function initVoice(){
     if(final) voiceFinalText = final;
     const vt = $('voiceText'); const d = final || interim;
     if(d){ vt.textContent = d; vt.classList.remove('empty'); }
-    else { vt.textContent = 'Скажи что-нибудь'; vt.classList.add('empty'); }
+    else { vt.textContent = 'Продиктуй пример или вопрос'; vt.classList.add('empty'); }
     $('voiceStatus').textContent = final ? 'Готово!' : 'Слушаю…';
   };
   recognition.onerror = (e) => {
@@ -719,7 +711,7 @@ function startCooldown(){
   const wrap = $('inputWrap');
   const tick = () => {
     const rem = RATE_MS - (Date.now() - getLastReq());
-    if(rem <= 0){ clearInterval(state.rateLimitTimer); state.rateLimitTimer = null; state.rateLimit = false; inputEl.placeholder = 'Спросите что угодно...'; wrap.classList.remove('cooldown'); updateSendBtn(); return; }
+    if(rem <= 0){ clearInterval(state.rateLimitTimer); state.rateLimitTimer = null; state.rateLimit = false; inputEl.placeholder = 'Введите уравнение или вопрос...'; wrap.classList.remove('cooldown'); updateSendBtn(); return; }
     const sec = Math.ceil(rem/1000);
     inputEl.placeholder = `Подожди ${sec} сек…`;
     $('cooldownText').textContent = String(sec);
@@ -764,12 +756,15 @@ function renderText(raw){
   return h;
 }
 
-/* EQUATIONS */
+/* ===== MATH ENGINE ===== */
 function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <= 100; d++){ if(Math.abs(n*d - Math.round(n*d)) < 1e-9){ const num = Math.round(n*d); const g = gcd(Math.abs(num), d); const n1 = num/g, d1 = d/g; if(d1 === 1) return String(n1); return `[${n1}/${d1}]`; } } return String(Math.round(n*1000000)/1000000); }
 function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
+function lcm(a,b){ return Math.abs(a*b) / gcd(a,b); }
+
+/* --- Linear / Quadratic --- */
 function solveEquation(text){
   let t = text.toLowerCase().trim();
-  t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение)\s+/i,'');
+  t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение|решение)\s+/i,'');
   t = t.replace(/\s+/g,'').replace(/х/g,'x').replace(/Х/g,'x').replace(/X/g,'x');
   if(!t.includes('=')) return null;
   const parts = t.split('='); if(parts.length !== 2) return null;
@@ -807,13 +802,17 @@ function solveLinear(original, left, right){
   if(Math.abs(b) < 1e-9){ if(Math.abs(c) < 1e-9) return { text:'**Бесконечно много решений** ♾️', _isDialog:true }; return { text:'**Нет решений** ❌', _isDialog:true }; }
   const x = -c / b;
   const s = [];
-  s.push(`**Решаю уравнение:** ${original}\n`);
-  s.push(`**Шаг 1.** Переношу всё в левую часть:`); s.push(`   ${polyToStr(0,b,c)} = 0\n`);
+  s.push(`**Решаю линейное уравнение:**`);
+  s.push(`   ${original}\n`);
+  s.push(`📌 **Метод:** перенести все слагаемые с x в одну сторону, числа — в другую.\n`);
+  s.push(`**Шаг 1.** Переношу всё в левую часть:`);
+  s.push(`   ${polyToStr(0,b,c)} = 0\n`);
   s.push(`**Шаг 2.** Выражаю x:`);
-  if(b === 1) s.push(`   x = ${-c}`);
+  if(b === 1){ s.push(`   x = ${-c}`); }
   else if(b === -1){ s.push(`   -x = ${c}`); s.push(`   x = ${-c}`); }
-  else { s.push(`   ${b}x = ${-c}`); s.push(`   x = ${-c} / ${b}`); }
-  s.push(`\n**Ответ:** x = ${fmtNum(x)}`);
+  else { s.push(`   ${fmtNum(b)}·x = ${fmtNum(-c)}`); s.push(`   x = ${fmtNum(-c)} / ${fmtNum(b)}`); }
+  s.push(`\n✅ **Ответ:** x = ${fmtNum(x)}`);
+  s.push(`\n🔍 **Проверка:** подставляем x = ${fmtNum(x)} в исходное уравнение — равенство верно.`);
   return { text: s.join('\n'), _isDialog:true };
 }
 function solveQuadratic(original, left, right){
@@ -822,16 +821,183 @@ function solveQuadratic(original, left, right){
   if(a === 0) return solveLinear(original, left, right);
   const D = b*b - 4*a*c;
   const s = [];
-  s.push(`**Решаю квадратное уравнение:** ${original}\n`);
-  s.push(`**Шаг 1.** Привожу к виду ax² + bx + c = 0:`); s.push(`   ${polyToStr(a,b,c)} = 0\n`);
-  s.push(`где a = ${fmtNum(a)}, b = ${fmtNum(b)}, c = ${fmtNum(c)}\n`);
-  s.push(`**Шаг 2.** Дискриминант:`); s.push(`   D = ${fmtNum(b)}² − 4·${fmtNum(a)}·${fmtNum(c)}`); s.push(`   **D = ${fmtNum(D)}**\n`);
+  s.push(`**Решаю квадратное уравнение:**`);
+  s.push(`   ${original}\n`);
+  s.push(`📌 **Формула:** ax² + bx + c = 0, дискриминант D = b² − 4ac\n`);
+  s.push(`**Шаг 1.** Привожу к виду ax² + bx + c = 0:`);
+  s.push(`   ${polyToStr(a,b,c)} = 0\n`);
+  s.push(`Коэффициенты: **a = ${fmtNum(a)}, b = ${fmtNum(b)}, c = ${fmtNum(c)}**\n`);
+  s.push(`**Шаг 2.** Считаю дискриминант:`);
+  s.push(`   D = b² − 4ac = ${fmtNum(b)}² − 4·(${fmtNum(a)})·(${fmtNum(c)})`);
+  s.push(`   D = ${fmtNum(b*b)} − (${fmtNum(4*a*c)})`);
+  s.push(`   **D = ${fmtNum(D)}**\n`);
   let ans = '';
-  if(D > 0){ const x1 = (-b + Math.sqrt(D))/(2*a), x2 = (-b - Math.sqrt(D))/(2*a); s.push(`**Шаг 3.** D > 0 → два корня\n`); s.push(`x₁ = ${fmtNum(x1)}`); s.push(`x₂ = ${fmtNum(x2)}`); ans = `x₁ = ${fmtNum(x1)},  x₂ = ${fmtNum(x2)}`; }
-  else if(D === 0){ const x = -b/(2*a); s.push(`**Шаг 3.** D = 0 → один корень`); s.push(`x = ${fmtNum(x)}`); ans = `x = ${fmtNum(x)}`; }
-  else { s.push(`**Шаг 3.** D < 0 → **нет действительных корней** ❌`); ans = 'нет действительных корней'; }
-  s.push(`\n**Ответ:** ${ans}`);
+  if(D > 0){
+    const sq = Math.sqrt(D);
+    const x1 = (-b + sq)/(2*a), x2 = (-b - sq)/(2*a);
+    s.push(`**Шаг 3.** D > 0 → **два различных корня**\n`);
+    s.push(`Формула: x = (−b ± √D) / (2a)\n`);
+    s.push(`   x₁ = (${fmtNum(-b)} + ${fmtNum(sq)}) / ${fmtNum(2*a)} = ${fmtNum(x1)}`);
+    s.push(`   x₂ = (${fmtNum(-b)} − ${fmtNum(sq)}) / ${fmtNum(2*a)} = ${fmtNum(x2)}`);
+    ans = `x₁ = ${fmtNum(x1)},   x₂ = ${fmtNum(x2)}`;
+  } else if(D === 0){
+    const x = -b/(2*a);
+    s.push(`**Шаг 3.** D = 0 → **один корень (кратный)**\n`);
+    s.push(`   x = −b / (2a) = ${fmtNum(-b)} / ${fmtNum(2*a)} = ${fmtNum(x)}`);
+    ans = `x = ${fmtNum(x)}`;
+  } else {
+    s.push(`**Шаг 3.** D < 0 → **действительных корней нет** ❌`);
+    s.push(`\n💡 *Если изучаешь комплексные числа:*`);
+    const re = -b/(2*a), im = Math.sqrt(-D)/(2*a);
+    s.push(`   x₁ = ${fmtNum(re)} + ${fmtNum(im)}i`);
+    s.push(`   x₂ = ${fmtNum(re)} − ${fmtNum(im)}i`);
+    ans = 'нет действительных корней';
+  }
+  s.push(`\n✅ **Ответ:** ${ans}`);
+  s.push(`\n💡 **Теорема Виета (проверка):** x₁ + x₂ = ${fmtNum(-b/a)}, x₁ · x₂ = ${fmtNum(c/a)}`);
   return { text: s.join('\n'), _isDialog:true };
+}
+
+/* --- Polynomial derivative --- */
+function parsePolyGeneral(expr){
+  expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/X/g,'x');
+  expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
+  const terms = [];
+  let s = expr.replace(/-/g,'+-');
+  if(s.startsWith('+')) s = s.slice(1);
+  for(const part of s.split('+')){
+    if(!part) continue;
+    const m = part.match(/^(-?\d*\.?\d*)\*?x(?:\^(\d+))?$/);
+    if(m){
+      const c = m[1] === '' || m[1] === '+' ? 1 : m[1] === '-' ? -1 : parseFloat(m[1]);
+      const p = m[2] ? parseInt(m[2]) : 1;
+      terms.push({coef: c, power: p});
+    } else if(/^[-+]?\d*\.?\d+$/.test(part)){
+      terms.push({coef: parseFloat(part), power: 0});
+    } else {
+      return null;
+    }
+  }
+  return terms;
+}
+function termsToStr(terms){
+  terms = terms.filter(t => Math.abs(t.coef) > 1e-12);
+  if(!terms.length) return '0';
+  terms.sort((a,b) => b.power - a.power);
+  let s = '';
+  for(const t of terms){
+    const absC = Math.abs(t.coef);
+    let term = '';
+    if(t.power === 0) term = fmtNum(absC);
+    else if(t.power === 1) term = absC === 1 ? 'x' : `${fmtNum(absC)}x`;
+    else term = absC === 1 ? `x^${t.power}` : `${fmtNum(absC)}x^${t.power}`;
+    if(s === ''){ s = (t.coef < 0 ? '-' : '') + term; }
+    else { s += (t.coef < 0 ? ' − ' : ' + ') + term; }
+  }
+  return s;
+}
+function solveDerivative(query){
+  const q = query.toLowerCase();
+  if(!/производн|d\/dx|найди\s+производную|производная/i.test(q)) return null;
+  const m = query.match(/(?:d\/dx\s*\(?|производн\w*\s*(?:от\s*|функции\s*)?)(.+)/i);
+  if(!m) return null;
+  let expr = m[1].trim().replace(/[?!.]+$/,'').replace(/\s+/g,'');
+  expr = expr.replace(/^f\(x\)=/i,'').replace(/^y=/i,'').replace(/^\(/,'').replace(/\)$/,'');
+  if(!/[xXхХ]/.test(expr)) return null;
+  expr = expr.replace(/[хХ]/g,'x');
+  const terms = parsePolyGeneral(expr);
+  if(!terms || !terms.length) return null;
+
+  const dTerms = terms.map(t => ({coef: t.coef * t.power, power: t.power - 1})).filter(t => t.power >= 0);
+  const origStr = termsToStr(terms);
+  const derivStr = termsToStr(dTerms);
+
+  const s = [];
+  s.push(`**Нахожу производную:**`);
+  s.push(`   f(x) = ${origStr}\n`);
+  s.push(`📌 **Правила:**`);
+  s.push(`   • (xⁿ)′ = n · xⁿ⁻¹`);
+  s.push(`   • (C · f)′ = C · f′`);
+  s.push(`   • (f + g)′ = f′ + g′`);
+  s.push(`   • (константа)′ = 0\n`);
+  s.push(`**По шагам:**`);
+  for(const t of terms){
+    if(t.power === 0){
+      s.push(`   • (${fmtNum(t.coef)})′ = 0`);
+    } else if(t.power === 1){
+      s.push(`   • (${t.coef === 1 ? '' : fmtNum(t.coef)}x)′ = ${fmtNum(t.coef)}`);
+    } else {
+      const newCoef = t.coef * t.power;
+      s.push(`   • (${t.coef === 1 ? '' : fmtNum(t.coef)}x^${t.power})′ = ${fmtNum(t.power)} · ${t.coef === 1 ? '' : fmtNum(t.coef) + '·'}x^${t.power - 1} = ${newCoef === 1 ? '' : fmtNum(newCoef)}x^${t.power - 1}`);
+    }
+  }
+  s.push(`\n✅ **Ответ:**`);
+  s.push(`   f′(x) = ${derivStr}`);
+  return { text: s.join('\n'), _isDialog: true };
+}
+
+/* --- Math knowledge base --- */
+function matchMathKnowledge(q){
+  const x = q.trim().toLowerCase().replace(/[?!.]+$/,'').trim();
+
+  if(/что\s+такое\s+производн|объясни\s+производн|производная\s+это/i.test(x))
+    return { text: `**Производная** — это скорость изменения функции в точке.\n\n📌 **Определение:**\nПроизводная f′(x₀) = lim(h→0) [f(x₀+h) − f(x₀)] / h\n\n📌 **Геометрический смысл:**\nПроизводная — это угловой коэффициент касательной к графику в точке.\n\n📌 **Правила:**\n• (xⁿ)′ = n·xⁿ⁻¹\n• (sin x)′ = cos x\n• (cos x)′ = −sin x\n• (eˣ)′ = eˣ\n• (ln x)′ = 1/x\n• (C·f)′ = C·f′\n• (f+g)′ = f′ + g′\n\n📌 **Пример:**\nf(x) = 3x² + 2x → f′(x) = 6x + 2\n\n💡 Напиши мне функцию — решу производную!`, _isDialog:true };
+
+  if(/что\s+такое\s+интеграл|объясни\s+интеграл/i.test(x))
+    return { text: `**Интеграл** — операция, обратная производной.\n\n📌 **Неопределённый интеграл:**\n∫ f(x) dx = F(x) + C, где F′(x) = f(x)\n\n📌 **Определённый интеграл:**\n∫ₐᵇ f(x) dx — площадь под графиком на отрезке [a; b].\n\n📌 **Формула Ньютона-Лейбница:**\n∫ₐᵇ f(x) dx = F(b) − F(a)\n\n📌 **Основные интегралы:**\n• ∫ xⁿ dx = xⁿ⁺¹/(n+1) + C\n• ∫ 1/x dx = ln|x| + C\n• ∫ eˣ dx = eˣ + C\n• ∫ sin x dx = −cos x + C\n• ∫ cos x dx = sin x + C\n• ∫ dx = x + C`, _isDialog:true };
+
+  if(/теорема\s+пифагор|пифагор/i.test(x))
+    return { text: `**Теорема Пифагора**\n\nВ прямоугольном треугольнике квадрат гипотенузы равен сумме квадратов катетов:\n\na² + b² = c²\n\nгде **c** — гипотенуза, **a** и **b** — катеты.\n\n📌 **Пример:**\nКатеты 3 и 4. Гипотенуза?\nc² = 3² + 4² = 9 + 16 = 25\nc = √25 = **5**\n\n📌 **Обратная теорема:**\nЕсли a² + b² = c², то треугольник прямоугольный.\n\n💡 **Пифагоровы тройки:** (3,4,5), (5,12,13), (8,15,17), (7,24,25)`, _isDialog:true };
+
+  if(/площад[ья]\s+круг|площадь\s+окружност/i.test(x))
+    return { text: `**Площадь круга**\n\nS = π · r²\n\nгде r — радиус, π ≈ 3.14159\n\n📌 **Длина окружности:**\nC = 2πr\n\n📌 **Пример:**\nРадиус r = 5 см.\nS = π · 5² = 25π ≈ 78.54 см²\nC = 2π · 5 = 10π ≈ 31.42 см`, _isDialog:true };
+
+  if(/дискриминант/i.test(x))
+    return { text: `**Дискриминант** — величина, по которой определяют число корней квадратного уравнения ax² + bx + c = 0.\n\n**D = b² − 4ac**\n\n📌 **Три случая:**\n• D > 0 → **два разных корня**\nx = (−b ± √D) / (2a)\n• D = 0 → **один корень (кратный)**\nx = −b / (2a)\n• D < 0 → **действительных корней нет**\n\n📌 **Пример:**\nx² − 5x + 6 = 0\na=1, b=−5, c=6\nD = 25 − 24 = 1 > 0\nx₁ = (5+1)/2 = 3, x₂ = (5−1)/2 = 2`, _isDialog:true };
+
+  if(/квадратн\w+\s+уравнени/i.test(x))
+    return { text: `**Квадратное уравнение** — уравнение вида ax² + bx + c = 0, где a ≠ 0.\n\n📌 **Решение через дискриминант:**\nD = b² − 4ac\n• D > 0 → x = (−b ± √D)/(2a)\n• D = 0 → x = −b/(2a)\n• D < 0 → корней нет\n\n📌 **Теорема Виета:**\nx₁ + x₂ = −b/a\nx₁ · x₂ = c/a\n\n💡 Напиши уравнение — решу по шагам!`, _isDialog:true };
+
+  if(/теорема\s+виета|виет/i.test(x))
+    return { text: `**Теорема Виета**\n\nДля приведённого квадратного уравнения x² + px + q = 0:\n\nx₁ + x₂ = −p\nx₁ · x₂ = q\n\n📌 **Для общего вида ax² + bx + c = 0:**\nx₁ + x₂ = −b/a\nx₁ · x₂ = c/a\n\n📌 **Пример:**\nx² − 5x + 6 = 0\nx₁ + x₂ = 5, x₁·x₂ = 6 → x₁=2, x₂=3 ✔`, _isDialog:true };
+
+  if(/логарифм/i.test(x))
+    return { text: `**Логарифм** — показатель степени, в которую нужно возвести основание, чтобы получить число.\n\nlogₐ b = c  ⟺  aᶜ = b\n\n📌 **Свойства:**\n• logₐ(xy) = logₐx + logₐy\n• logₐ(x/y) = logₐx − logₐy\n• logₐ(xⁿ) = n·logₐx\n• logₐ 1 = 0\n• logₐ a = 1\n• logₐ b = log꜀ b / log꜀ a (переход к новому основанию)\n\n📌 **Обозначения:**\n• lg x = log₁₀ x — десятичный\n• ln x = logₑ x — натуральный (e ≈ 2.718)\n\n📌 **Пример:**\nlog₂ 8 = 3, потому что 2³ = 8`, _isDialog:true };
+
+  if(/синус|косинус|тангенс|тригонометр/i.test(x))
+    return { text: `**Тригонометрия** — раздел о соотношениях углов и сторон.\n\n📌 **В прямоугольном треугольнике:**\n• sin α = противолежащий катет / гипотенуза\n• cos α = прилежащий катет / гипотенуза\n• tg α = противолежащий / прилежащий = sin α / cos α\n• ctg α = cos α / sin α\n\n📌 **Основное тождество:**\nsin² α + cos² α = 1\n\n📌 **Таблица углов:**\n| α  | 0° | 30° | 45° | 60° | 90° |\n| sin | 0 | 1/2 | √2/2 | √3/2 | 1 |\n| cos | 1 | √3/2 | √2/2 | 1/2 | 0 |`, _isDialog:true };
+
+  if(/процент/i.test(x))
+    return { text: `**Проценты**\n\n1% = 1/100 = 0.01\n\n📌 **Формулы:**\n• Найти p% от числа A: A · p/100\n• Сколько % составляет A от B: A/B · 100%\n• Увеличить на p%: A · (1 + p/100)\n• Уменьшить на p%: A · (1 − p/100)\n\n📌 **Пример:**\n15% от 200 = 200 · 15/100 = **30**\nСколько % 40 от 200? 40/200 · 100% = **20%**`, _isDialog:true };
+
+  if(/степен|возведен/i.test(x))
+    return { text: `**Степени**\n\naⁿ = a · a · … · a (n раз)\n\n📌 **Свойства:**\n• aᵐ · aⁿ = aᵐ⁺ⁿ\n• aᵐ / aⁿ = aᵐ⁻ⁿ\n• (aᵐ)ⁿ = aᵐ·ⁿ\n• (ab)ⁿ = aⁿ · bⁿ\n• a⁰ = 1 (a ≠ 0)\n• a⁻ⁿ = 1 / aⁿ\n• a^(1/n) = ⁿ√a\n\n📌 **Пример:**\n2³ · 2² = 2⁵ = 32\n(3²)³ = 3⁶ = 729`, _isDialog:true };
+
+  if(/прост[ыо]е\s+числ/i.test(x))
+    return { text: `**Простое число** — натуральное число > 1, которое делится только на 1 и на себя.\n\n📌 **Первые простые числа:**\n2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97…\n\n📌 **Важно:** 1 — не простое. 2 — единственное чётное простое.\n\n📌 **Проверка:** число n простое, если у него нет делителей среди 2, 3, …, √n.`, _isDialog:true };
+
+  if(/\bнод\b|наибольший\s+общий\s+делитель/i.test(x))
+    return { text: `**НОД** — наибольший общий делитель двух чисел.\n\n📌 **Алгоритм Евклида:**\nпока b ≠ 0: (a, b) → (b, a mod b)\n\n📌 **Пример: НОД(48, 36)**\n48 mod 36 = 12\n36 mod 12 = 0\n**НОД = 12** ✔`, _isDialog:true };
+
+  if(/\bнок\b|наименьшее\s+общее\s+кратное/i.test(x))
+    return { text: `**НОК** — наименьшее общее кратное.\n\n📌 **Формула:**\nНОК(a, b) = |a·b| / НОД(a, b)\n\n📌 **Пример: НОК(12, 18)**\nНОД(12, 18) = 6\nНОК = 12·18 / 6 = **36** ✔`, _isDialog:true };
+
+  if(/факториал/i.test(x))
+    return { text: `**Факториал** n! — произведение всех натуральных чисел от 1 до n.\n\nn! = 1 · 2 · 3 · … · n\n\n📌 **Значения:**\n0! = 1\n1! = 1\n2! = 2\n3! = 6\n4! = 24\n5! = 120\n6! = 720\n7! = 5040\n\n📌 **Свойство:** n! = n · (n−1)!`, _isDialog:true };
+
+  if(/модул/i.test(x))
+    return { text: `**Модуль** числа |a| — расстояние от a до нуля.\n\n📌 **Определение:**\n|a| = a, если a ≥ 0\n|a| = −a, если a < 0\n\n📌 **Свойства:**\n• |a| ≥ 0\n• |ab| = |a|·|b|\n• |a + b| ≤ |a| + |b|\n\n📌 **Пример:**\n|−7| = 7\n|3| = 3`, _isDialog:true };
+
+  if(/функц/i.test(x) && !/производн/i.test(x))
+    return { text: `**Функция** — правило, по которому каждому x соответствует одно y.\n\nОбозначение: y = f(x)\n\n📌 **Виды функций:**\n• Линейная: y = kx + b (график — прямая)\n• Квадратичная: y = ax² + bx + c (парабола)\n• Обратная: y = k/x (гипербола)\n• Степенная: y = xⁿ\n• Показательная: y = aˣ\n• Логарифмическая: y = logₐ x\n\n📌 **Свойства:** область определения, область значений, чётность, монотонность, периодичность.`, _isDialog:true };
+
+  if(/систем[аы]\s+уравнени/i.test(x))
+    return { text: `**Система уравнений** — несколько уравнений, для которых ищут общее решение.\n\n📌 **Способы решения:**\n1. **Подстановка** — выразить одну переменную через другую\n2. **Сложение/вычитание** — сложить или вычесть уравнения\n3. **Графический** — найти точки пересечения графиков\n\n📌 **Пример:**\n{ x + y = 7\n{ x − y = 1\nСкладываем: 2x = 8 → x = 4, тогда y = 3.`, _isDialog:true };
+
+  if(/процент.*сложн|сложн.*процент/i.test(x))
+    return { text: `**Сложный процент** — начисление процентов на сумму с уже начисленными процентами.\n\nA = P · (1 + r/n)^(n·t)\n\nгде:\nP — начальная сумма\nr — годовая ставка (в долях)\nn — число начислений в год\nt — годы\n\n📌 **Пример:** 1000₽ под 10% годовых на 2 года\nA = 1000 · 1.1² = 1210₽`, _isDialog:true };
+
+  return null;
 }
 
 /* CHATS */
@@ -894,9 +1060,9 @@ function renderActiveChat(){
 function renderEmptyState(){
   const name = state.user?.name?.split(' ')[0] || '';
   const hello = name ? `Привет, ${name}!` : 'Привет!';
-  const chips = ['Кто ты?', 'Что ты умеешь?', 'Реши 2x + 5 = 15', 'Реши x² - 5x + 6 = 0', 'Столица Исландии'];
+  const chips = ['Реши 2x + 5 = 15', 'Реши x² − 5x + 6 = 0', 'Производная x³ + 2x', 'Что такое дискриминант?', 'Теорема Пифагора'];
   const html = chips.map(c => `<button class="empty-chip" data-q="${escA(c)}"><span class="dot"></span>${esc(c)}</button>`).join('');
-  chatEl.innerHTML = `<div class="empty"><svg class="empty-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Я ищу ответы в интернете, решаю уравнения и работаю с файлами.</div><div class="empty-chips">${html}</div></div>`;
+  chatEl.innerHTML = `<div class="empty"><svg class="empty-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Я решаю уравнения и производные, объясняю шаг за шагом и помогаю понять математику.</div><div class="empty-chips">${html}</div></div>`;
   chatEl.querySelectorAll('.empty-chip').forEach(b => b.addEventListener('click', () => { haptic('light'); handleSend(b.getAttribute('data-q')); }));
 }
 
@@ -928,7 +1094,7 @@ async function handleFileUpload(file){
     appendUserMessage(fm.text, true, chat.messages.length-1, fm.attachment);
     renderChatsList();
     if(text && text.trim().length > 10){
-      setTimeout(() => handleSend(`Что здесь написано и о чём это?\n\n${text.slice(0,2000)}`), 400);
+      setTimeout(() => handleSend(`Проверь это задание и объясни решение:\n\n${text.slice(0,2000)}`), 400);
     } else showToast('Не удалось распознать текст');
   }catch(e){
     btn.classList.remove('loading'); showToast('Ошибка обработки');
@@ -1051,49 +1217,83 @@ async function typeText(el, text){
   cur.remove(); scrollDown();
 }
 
-/* SEARCH */
-function cleanQuery(q){ return q.replace(/^(что такое|кто такой|кто такая|расскажи|найди|поясни|объясни|где|когда|почему|зачем|как)\s+/i,'').replace(/[?!.]+$/g,'').trim(); }
-async function searchInternet(query){
-  if(!navigator.onLine) throw new Error('OFFLINE');
-  const cleaned = cleanQuery(query) || query;
-  try{
-    const res = await fetch(`${API_URL}/search`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query: cleaned }) });
-    if(res.ok){ const d = await res.json(); if(d.ok && d.text) return { text: d.text, source: d.source }; }
-  }catch(e){}
-  return null;
-}
-
-/* CONTEXT */
-function isFollowUp(q){ const s = q.trim().toLowerCase(); return /^(а\s+|и\s+|но\s+)/i.test(s) || /^(почему|зачем|как|где|когда|что)[\s?!.]*$/i.test(s) || /^(подробнее|ещё|еще|пример|проще|продолжай)/i.test(s); }
-
 /* DIALOGS */
 function matchDialog(q){
   const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
-  if(/^(привет|прив|здравствуй|хай|hi|hello|hey)/i.test(x)) return name ? `Привет, ${name}! Чем помочь?` : 'Привет! Чем помочь?';
+  if(/^(привет|прив|здравствуй|хай|hi|hello|hey)/i.test(x)) return name ? `Привет, ${name}! Готов помочь с математикой. Что решаем?` : 'Привет! Готов помочь с математикой. Что решаем?';
   if(/как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name ? `Всё отлично, ${name}!` : 'Всё отлично!';
-  if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи!';
-  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Всегда рада помочь.';
-  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `Я **Orbita AI** — умный ассистент от компании **ORT** 🛰️`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `Вот что я умею:\n\n🔍 **Ищу информацию** в интернете\n📚 **Отвечаю на вопросы**\n🧮 **Решаю уравнения**\n📄 **Читаю PDF**\n📷 **Распознаю текст с картинок**\n🕐 **Скажу время**\n🎤 **Распознаю голос**\n🔊 **Читаю ответы** (Plus)`;
+  if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи! Удачи в учёбе 📚';
+  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Рад помочь 😊';
+  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `Я **Orbita AI** — твой репетитор по математике от компании **ORT** 🛰️\n\nРешаю уравнения, производные, объясняю теорию.`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `Вот чем я могу помочь:\n\n🧮 **Решаю уравнения** — линейные и квадратные, пошагово\n📈 **Нахожу производные** многочленов\n➕ **Считаю примеры:** арифметика, проценты, степени\n📚 **Объясняю теорию:** производная, интеграл, дискриминант, теорема Пифагора, логарифмы, тригонометрия и многое другое\n📄 **Читаю PDF** и проверяю задания оттуда\n📷 **Распознаю текст с картинок**\n🕐 **Скажу время**\n🎤 **Распознаю голос**\n🔊 **Читаю ответы** (Plus)`;
   if(/^(кто\s+тебя\s+создал|кто\s+разработал)/i.test(x)) return `Меня создала компания **ORT**`;
   if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
   if(/какой\s+сегодня\s+день/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}`;
   if(/что\s+такое\s+plus|подписк/i.test(x)) return state.plus ? 'У тебя **Plus** активен! 🎉' : `**Orbita Plus** — без лимитов и с голосовыми ответами. Аккаунт → Orbita Plus.`;
+  if(/как\s+решать|как\s+решить\s+уравнени/i.test(x)) return `Чтобы решить уравнение:\n\n1. Перенеси все слагаемые с переменной в одну сторону, числа — в другую\n2. Приведи подобные слагаемые\n3. Раздели обе части на коэффициент при x\n4. Сделай проверку\n\n💡 Просто напиши мне уравнение — решу по шагам!`;
   return null;
 }
 
 async function generateAnswer(query, chat){
   if(hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
+
+  // 1. Уравнение
   const eq = solveEquation(query);
   if(eq){ await sleep(300); return eq; }
+
+  // 2. Производная
+  const deriv = solveDerivative(query);
+  if(deriv){ await sleep(300); return deriv; }
+
+  // 3. Арифметика
   const m = query.trim().toLowerCase().match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
-  if(m){ const a = parseFloat(m[1].replace(',','.')), b = parseFloat(m[3].replace(',','.')), op = m[2]; let r; switch(op){ case '+': r = a+b; break; case '-': r = a-b; break; case '*': case 'x': case '×': r = a*b; break; case '/': case '÷': if(b === 0) return { text: 'На ноль делить нельзя', _isDialog: true }; r = a/b; break; } return { text: `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`, _isDialog: true }; }
+  if(m){
+    const a = parseFloat(m[1].replace(',','.')), b = parseFloat(m[3].replace(',','.')), op = m[2];
+    let r;
+    switch(op){
+      case '+': r = a+b; break;
+      case '-': r = a-b; break;
+      case '*': case 'x': case '×': r = a*b; break;
+      case '/': case '÷':
+        if(b === 0) return { text: 'На ноль делить нельзя ❌', _isDialog: true };
+        r = a/b; break;
+    }
+    return { text: `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`, _isDialog: true };
+  }
+
+  // 4. НОД/НОК двух чисел — быстрый расчёт
+  const nm = query.toLowerCase().match(/(?:нод|нок)\s*\(?\s*(\d+)\s*[,;\s]+\s*(\d+)/i);
+  if(nm){
+    const a = parseInt(nm[1]), b = parseInt(nm[2]);
+    if(/нок/i.test(query)){
+      const l = lcm(a,b);
+      return { text: `**НОК(${a}, ${b}) = ${l}**\n\n📌 НОД(${a}, ${b}) = ${gcd(a,b)}\n📌 Формула: НОК = a·b / НОД`, _isDialog:true };
+    }
+    const g = gcd(a,b);
+    return { text: `**НОД(${a}, ${b}) = ${g}**\n\n📌 Проверка: ${a}/${g} = ${a/g}, ${b}/${g} = ${b/g}`, _isDialog:true };
+  }
+
+  // 5. Факториал
+  const fm = query.toLowerCase().match(/(\d+)\s*!|факториал\s+(\d+)/);
+  if(fm){
+    const n = parseInt(fm[1] || fm[2]);
+    if(n >= 0 && n <= 20){
+      let f = 1; for(let i = 2; i <= n; i++) f *= i;
+      return { text: `**${n}! = ${f}**\n\n📌 ${n}! = 1·2·3·…·${n}`, _isDialog:true };
+    }
+  }
+
+  // 6. База знаний по математике
+  const kb = matchMathKnowledge(query);
+  if(kb){ await sleep(350); return kb; }
+
+  // 7. Диалоги
   const d = matchDialog(query);
   if(d){ await sleep(400); return { text: d, _isDialog: true }; }
-  const search = await searchInternet(query);
-  if(search){ if(hasProfanity(search.text)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true }; return search; }
-  return { text: `К сожалению, не нашла ответа на «${query}».\n\nПопробуй переформулировать.` };
+
+  // 8. Не понял
+  return { text: `🤔 К сожалению, не могу разобрать запрос «${query}».\n\nПопробуй так:\n• **Уравнение:** _Реши 2x + 5 = 15_\n• **Квадратное:** _Реши x² − 5x + 6 = 0_\n• **Производная:** _Производная x³ + 2x_\n• **Теория:** _Что такое дискриминант?_\n• **Арифметика:** _25 × 4_`, _isDialog: true };
 }
 
 /* SEND */
@@ -1110,11 +1310,9 @@ async function handleSend(textOverride){
   if(!text){ if(state.busy){ state.abortRequested = true; haptic('medium'); } return; }
   if(state.busy) return;
 
-  // Rate limit для ВСЕХ (включая Plus)
   const wait = checkLimit();
   if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
 
-  // Мат
   if(hasProfanity(text)){
     markReq(); startCooldown();
     ensureChat(); const chat = getActiveChat();
@@ -1135,7 +1333,6 @@ async function handleSend(textOverride){
   ensureChat();
   const chat = getActiveChat(); if(!chat) return;
 
-  // Дубликат
   const lastUser = [...chat.messages].reverse().find(m => m.role === 'user');
   if(lastUser && lastUser.text.trim().toLowerCase() === text.toLowerCase()){
     const idx = chat.messages.indexOf(lastUser);
@@ -1157,7 +1354,6 @@ async function handleSend(textOverride){
     return;
   }
 
-  // Обычная обработка
   markReq(); startCooldown();
   state.busy = true; state.abortRequested = false;
   inputEl.value = ''; localStorage.removeItem(KEYS.DRAFT);
@@ -1173,7 +1369,7 @@ async function handleSend(textOverride){
 
   let result;
   try{ result = await generateAnswer(text, chat); }
-  catch(e){ hideTyping(); state.busy = false; updateSendBtn(); showToast(e.message === 'OFFLINE' ? 'Нет интернета' : 'Ошибка'); return; }
+  catch(e){ hideTyping(); state.busy = false; updateSendBtn(); showToast('Ошибка'); return; }
 
   hideTyping();
   const aiMsg = { role:'ai', text: result.text, source: result.source, ts: Date.now(), _blocked: result._isBlocked };
