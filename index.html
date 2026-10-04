@@ -41,10 +41,15 @@
   .msg.ai .body{flex:1;min-width:0}
   .msg.ai .name{font-size:12.5px;font-weight:700;color:var(--accent);margin-bottom:4px;display:flex;align-items:center;gap:5px}
   .msg.ai .name::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
-  .msg.ai .text{font-size:15px;line-height:1.58;color:var(--ink-soft);word-wrap:break-word}
+  .msg.ai .text{font-size:15px;line-height:1.65;color:var(--ink-soft);word-wrap:break-word}
   .msg.ai .text strong{font-weight:700;color:var(--ink)}
   .msg.ai .text a{color:var(--accent);text-decoration:underline}
   .msg.ai .text code{background:var(--surface);padding:1px 6px;border-radius:4px;font-family:'SF Mono',Monaco,monospace;font-size:13.5px;color:var(--accent-deep)}
+  .msg.ai .text .math{display:inline-block;font-family:'SF Mono',Monaco,monospace;background:var(--accent-soft);color:var(--accent-deep);padding:2px 8px;border-radius:6px;font-size:14px;font-weight:600;letter-spacing:.2px}
+  .msg.ai .text .frac{display:inline-block;vertical-align:middle;text-align:center;font-family:'SF Mono',Monaco,monospace;font-size:13px;line-height:1.1;margin:0 3px}
+  .msg.ai .text .frac .num{display:block;border-bottom:1.5px solid var(--accent-deep);padding:0 3px}
+  .msg.ai .text .frac .den{display:block;padding:0 3px}
+  .msg.ai .text .step{margin:8px 0;padding:10px 12px;background:var(--surface);border-left:3px solid var(--accent);border-radius:0 8px 8px 0}
   .msg.ai .source{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 11px;background:var(--accent-soft);border:1px solid var(--accent-light);border-radius:8px;font-size:12px;font-weight:600;color:var(--accent-deep);text-decoration:none}
   .msg.user .bubble{max-width:82%;padding:10px 14px;background:var(--white);color:var(--accent-deep);border:1.5px solid var(--accent);border-radius:20px;border-bottom-right-radius:6px;font-size:15px;line-height:1.45;word-wrap:break-word;font-weight:500}
   .msg-edit-btn{font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:4px;margin-right:4px;font-family:inherit;padding:3px 8px;border-radius:6px}
@@ -67,7 +72,10 @@
   @keyframes dotWave{0%,60%,100%{transform:translateY(0) scale(.85);opacity:.4}30%{transform:translateY(-5px) scale(1);opacity:1}}
   .cursor{display:inline-block;width:2px;height:15px;background:var(--accent);vertical-align:text-bottom;margin-left:1px;animation:blink 1s steps(2,start) infinite}
   @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-  .bottom-bar{display:flex;align-items:center;gap:8px;padding:6px 10px calc(80px + env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0}
+
+  /* FIX #2: Панель ввода теперь внизу */
+  .bottom-bar{display:flex;align-items:center;gap:8px;padding:8px 10px calc(10px + env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0}
+
   .menu-fab{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 4px 14px rgba(37,99,235,.28)}
   .menu-fab:active{background:var(--accent-dark);transform:scale(.93)}
   .menu-fab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
@@ -90,27 +98,25 @@
   .send-btn.cooldown svg{display:none}
   .send-btn .cooldown-text{display:none;font-size:11px;font-weight:800;color:#fff}
   .send-btn.cooldown .cooldown-text{display:block}
-  .voice-overlay{position:fixed;inset:0;background:rgba(15,23,42,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+
+  /* FIX #3: Голосовой оверлей с реакцией на звук */
+  .voice-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
   .voice-overlay.active{display:flex;animation:fadeIn .2s}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   .voice-box{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;text-align:center}
-  .voice-rings{position:relative;width:160px;height:160px;margin-bottom:32px}
-  .voice-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(96,165,250,.5);animation:voiceWave 2s infinite}
-  .voice-ring:nth-child(1){animation-delay:0s}
-  .voice-ring:nth-child(2){animation-delay:.4s}
-  .voice-ring:nth-child(3){animation-delay:.8s}
-  @keyframes voiceWave{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.6);opacity:0}}
-  .voice-mic-circle{position:absolute;inset:32px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(59,130,246,.5);z-index:2}
-  .voice-mic-circle svg{width:38px;height:38px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .voice-status{font-size:22px;font-weight:800;color:#fff;margin-bottom:12px}
-  .voice-text{font-size:15px;color:rgba(255,255,255,.75);line-height:1.55;max-width:320px;min-height:24px;font-weight:500}
-  .voice-hint{font-size:12.5px;color:rgba(255,255,255,.5);margin-top:20px}
-  .voice-cancel{margin-top:32px;padding:12px 28px;border-radius:100px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+  .voice-rings{position:relative;width:200px;height:200px;margin-bottom:32px;transition:transform .08s linear}
+  .voice-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(96,165,250,.6);opacity:0;transition:transform .1s linear, opacity .1s linear}
+  .voice-mic-circle{position:absolute;inset:45px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(59,130,246,.6),inset 0 -4px 12px rgba(0,0,0,.15);z-index:2;transition:transform .08s linear}
+  .voice-mic-circle svg{width:42px;height:42px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .voice-status{font-size:22px;font-weight:800;color:#fff;margin-bottom:12px;letter-spacing:-.3px}
+  .voice-text{font-size:15px;color:rgba(255,255,255,.85);line-height:1.55;max-width:320px;min-height:24px;font-weight:500}
+  .voice-hint{font-size:12.5px;color:rgba(255,255,255,.5);margin-top:20px;font-weight:500}
+  .voice-cancel{margin-top:32px;padding:12px 28px;border-radius:100px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s}
   .voice-cancel:active{background:rgba(255,255,255,.18);transform:scale(.96)}
-  .voice-dots{display:flex;gap:5px;justify-content:center;margin-top:16px;height:20px;align-items:flex-end}
-  .voice-dots span{width:4px;height:8px;background:rgba(255,255,255,.7);border-radius:2px;animation:voiceDot 1s infinite ease-in-out}
-  .voice-dots span:nth-child(1){animation-delay:0s}.voice-dots span:nth-child(2){animation-delay:.15s}.voice-dots span:nth-child(3){animation-delay:.3s}.voice-dots span:nth-child(4){animation-delay:.45s}.voice-dots span:nth-child(5){animation-delay:.6s}
-  @keyframes voiceDot{0%,100%{height:8px;opacity:.5}50%{height:20px;opacity:1}}
+
+  /* FIX: bottom-bar сдвинут правильно при активном MainButton */
+  body.has-mainbtn .bottom-bar{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
+
   .gate{position:fixed;inset:0;background:var(--bg);z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
   .gate.hidden{display:none}
   .gate-icon{width:110px;height:110px;margin-bottom:24px;animation:floatY 5s ease-in-out infinite}
@@ -168,7 +174,7 @@
   .user-sub{font-size:11px;color:var(--muted);margin-top:1px}
   .modal-overlay{position:fixed;inset:0;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;display:flex;align-items:flex-end;justify-content:center}
   .modal-overlay.open{opacity:1;pointer-events:auto}
-  .modal{width:100%;max-width:480px;background:var(--bg);border-radius:20px 20px 0 0;padding:20px 18px calc(80px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s;max-height:88vh;overflow-y:auto}
+  .modal{width:100%;max-width:480px;background:var(--bg);border-radius:20px 20px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s;max-height:88vh;overflow-y:auto}
   .modal-overlay.open .modal{transform:translateY(0)}
   .modal-title{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px}
   .modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
@@ -210,7 +216,7 @@
   .onb-ex{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border-radius:12px;font-size:13.5px;color:var(--ink);text-align:left;font-weight:500}
   .onb-ex-ico{width:28px;height:28px;border-radius:8px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .onb-ex-ico svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .onb-foot{padding:16px 24px calc(80px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
+  .onb-foot{padding:16px 24px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
   .onb-dots{display:flex;gap:6px;justify-content:center;margin-bottom:4px}
   .onb-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .2s}
   .onb-dot.active{background:var(--accent);width:20px;border-radius:3px}
@@ -232,7 +238,7 @@
       <div class="onb-slide">
         <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg>
         <div class="onb-title">Добро пожаловать!</div>
-        <div class="onb-sub">Orbita AI — умный ассистент от компании ORT. Ищет информацию в интернете, отвечает на вопросы, решает уравнения.</div>
+        <div class="onb-sub">Orbita AI — умный ассистент от компании ORT. Ищет информацию, отвечает на вопросы, решает уравнения.</div>
       </div>
       <div class="onb-slide">
         <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="26" stroke="#2563eb" stroke-width="3" fill="none"/><path d="M42 40 L64 50 L42 60 Z" fill="#2563eb"/></svg>
@@ -257,11 +263,10 @@
   </div>
 </div>
 
-<!-- BIOMETRIC GATE -->
 <div class="bio-overlay" id="bioOverlay">
   <div class="bio-icon"><svg viewBox="0 0 24 24"><path d="M12 1C8 1 4.5 3 4.5 8v3M12 1c4 0 7.5 2 7.5 7v3M4.5 13c0 5 3.5 8 7.5 10M19.5 13c0 5-3.5 8-7.5 10M12 6a3 3 0 00-3 3v6a3 3 0 006 0V9a3 3 0 00-3-3z"/></svg></div>
   <div class="bio-title">Защита Orbita AI</div>
-  <div class="bio-sub">Подтверди личность, чтобы войти в приложение</div>
+  <div class="bio-sub">Подтверди личность, чтобы войти</div>
   <button class="gate-btn" id="bioBtn" style="max-width:280px"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg><span>Подтвердить</span></button>
 </div>
 
@@ -273,12 +278,17 @@
   <div class="gate-id" id="gateId"></div>
 </div>
 
+<!-- VOICE OVERLAY -->
 <div class="voice-overlay" id="voiceOverlay">
   <div class="voice-box">
-    <div class="voice-rings"><div class="voice-ring"></div><div class="voice-ring"></div><div class="voice-ring"></div><div class="voice-mic-circle"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg></div></div>
+    <div class="voice-rings" id="voiceRings">
+      <div class="voice-ring" id="ring1"></div>
+      <div class="voice-ring" id="ring2"></div>
+      <div class="voice-ring" id="ring3"></div>
+      <div class="voice-mic-circle" id="micCircle"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg></div>
+    </div>
     <div class="voice-status" id="voiceStatus">Слушаю…</div>
     <div class="voice-text" id="voiceText">Скажи что-нибудь</div>
-    <div class="voice-dots"><span></span><span></span><span></span><span></span><span></span></div>
     <div class="voice-hint" id="voiceHint">Говори чётко, я распознаю речь</div>
     <button class="voice-cancel" id="voiceCancel">Отмена</button>
   </div>
@@ -351,57 +361,33 @@ if (tg) {
   } catch(e) {}
 }
 
-/* =============== HAPTIC =============== */
 function haptic(t='light'){ if(!tg?.HapticFeedback) return; try{ if(['success','error','warning'].includes(t)) tg.HapticFeedback.notificationOccurred(t); else tg.HapticFeedback.impactOccurred(t); }catch(e){} }
 function hapticSel(){ try{ tg?.HapticFeedback?.selectionChanged(); }catch(e){} }
-
-/* =============== BACKBUTTON =============== */
 function showBackButton(fn){ if(!tg?.BackButton) return; tg.BackButton.offClick(); tg.BackButton.onClick(fn); tg.BackButton.show(); }
 function hideBackButton(){ if(tg?.BackButton){ try{ tg.BackButton.offClick(); tg.BackButton.hide(); }catch(e){} } }
-
-/* =============== MAINBUTTON =============== */
 function showMainBtn(text, fn){
   if(!tg?.MainButton) return;
-  try{
-    tg.MainButton.setText(text);
-    tg.MainButton.offClick();
-    tg.MainButton.onClick(fn);
-    tg.MainButton.show();
-  }catch(e){}
+  try{ tg.MainButton.setText(text); tg.MainButton.offClick(); tg.MainButton.onClick(fn); tg.MainButton.show(); document.body.classList.add('has-mainbtn'); }catch(e){}
 }
-function hideMainBtn(){ try{ tg?.MainButton?.hide(); }catch(e){} }
+function hideMainBtn(){ try{ tg?.MainButton?.hide(); document.body.classList.remove('has-mainbtn'); }catch(e){} }
 
-/* =============== STATE =============== */
-const state = {
-  user: null, chats: [], activeId: null, busy: false, abortRequested: false,
-  rateLimit: false, rateLimitTimer: null, searchQuery: ''
-};
-
-/* =============== DOM =============== */
+const state = { user: null, chats: [], activeId: null, busy: false, abortRequested: false, rateLimit: false, rateLimitTimer: null, searchQuery: '' };
 const $ = id => document.getElementById(id);
 const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIcon = $('sendIcon'), toast = $('toast');
 
-/* =============== STORAGE =============== */
 const KEYS = { USER:'o_u', CHATS:'o_c', ACTIVE:'o_a', LAST_REQ:'o_r', DRAFT:'o_d', ONBOARD:'o_onb' };
 const store = {
   getUser(){ try{ return JSON.parse(localStorage.getItem(KEYS.USER)||'null'); }catch{ return null; } },
   saveUser(u){
     localStorage.setItem(KEYS.USER, JSON.stringify(u));
-    if(tg?.CloudStorage){
-      try{ tg.CloudStorage.setItem('user', JSON.stringify({name:u.name, avatar:u.avatar||null, joinedAt:u.joinedAt, bio:u.bio||false})); }catch(e){}
-    }
+    if(tg?.CloudStorage){ try{ tg.CloudStorage.setItem('user', JSON.stringify({name:u.name, avatar:u.avatar||null, joinedAt:u.joinedAt, bio:u.bio||false})); }catch(e){} }
   },
   getChats(){ try{ return JSON.parse(localStorage.getItem(KEYS.CHATS)||'[]'); }catch{ return []; } },
   saveChats(c){
     localStorage.setItem(KEYS.CHATS, JSON.stringify(c));
     if(tg?.CloudStorage){
       try{
-        const slim = c.slice(0, 5).map(ch => ({
-          id: ch.id, title: ch.title, pinned: !!ch.pinned, createdAt: ch.createdAt, updatedAt: ch.updatedAt,
-          messages: ch.messages.slice(-20).map(m => ({
-            role: m.role, text: (m.text||'').slice(0, 500), ts: m.ts, source: m.source, reaction: m.reaction, _blocked: m._blocked
-          }))
-        }));
+        const slim = c.slice(0, 5).map(ch => ({ id: ch.id, title: ch.title, pinned: !!ch.pinned, createdAt: ch.createdAt, updatedAt: ch.updatedAt, messages: ch.messages.slice(-20).map(m => ({ role: m.role, text: (m.text||'').slice(0, 500), ts: m.ts, source: m.source, reaction: m.reaction, _blocked: m._blocked })) }));
         const payload = JSON.stringify(slim);
         if(payload.length < 4000){ tg.CloudStorage.setItem('chats', payload); }
       }catch(e){}
@@ -419,36 +405,17 @@ async function syncFromCloud(){
     const check = () => { done++; if(done>=2) resolve(); };
     try{
       tg.CloudStorage.getItem('user', (err, val) => {
-        if(!err && val){
-          try{
-            const cloud = JSON.parse(val);
-            const local = store.getUser();
-            if(cloud && (!local || (cloud.name && !local.name))){
-              const merged = { ...cloud, joinedAt: cloud.joinedAt||Date.now() };
-              localStorage.setItem(KEYS.USER, JSON.stringify(merged));
-            }
-          }catch(e){}
-        }
+        if(!err && val){ try{ const cloud = JSON.parse(val); const local = store.getUser(); if(cloud && (!local || (cloud.name && !local.name))){ const merged = { ...cloud, joinedAt: cloud.joinedAt||Date.now() }; localStorage.setItem(KEYS.USER, JSON.stringify(merged)); } }catch(e){} }
         check();
       });
       tg.CloudStorage.getItem('chats', (err, val) => {
-        if(!err && val){
-          try{
-            const cloud = JSON.parse(val);
-            const local = store.getChats();
-            const map = new Map();
-            [...local, ...cloud].forEach(c => { const ex = map.get(c.id); if(!ex || (c.updatedAt||0)>(ex.updatedAt||0)) map.set(c.id, c); });
-            const merged = [...map.values()].sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
-            localStorage.setItem(KEYS.CHATS, JSON.stringify(merged));
-          }catch(e){}
-        }
+        if(!err && val){ try{ const cloud = JSON.parse(val); const local = store.getChats(); const map = new Map(); [...local, ...cloud].forEach(c => { const ex = map.get(c.id); if(!ex || (c.updatedAt||0)>(ex.updatedAt||0)) map.set(c.id, c); }); const merged = [...map.values()].sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)); localStorage.setItem(KEYS.CHATS, JSON.stringify(merged)); }catch(e){} }
         check();
       });
     }catch(e){ resolve(); }
   });
 }
 
-/* =============== UTILS =============== */
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
 const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -459,9 +426,8 @@ function initials(name){ if(!name) return 'A'; const p=name.trim().split(/\s+/);
 function lockScroll(lock){ document.body.classList.toggle('locked',lock); }
 function scrollDown(){ chatEl.scrollTop = chatEl.scrollHeight; }
 
-/* =============== GATE =============== */
+/* GATE */
 let accessPollTimer=null, gateState='checking';
-
 async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
   if(!uId){ gateState='no_telegram'; showGate('no_telegram'); return; }
@@ -475,7 +441,6 @@ async function checkAccess(){
     gateState='need_request'; showGate('need_request');
   }catch(e){ gateState='error'; showGate('error'); }
 }
-
 function showGate(s){
   gateState = s;
   const gate = $('gate'); gate.classList.remove('hidden'); lockScroll(true);
@@ -484,15 +449,14 @@ function showGate(s){
   $('gateId').textContent = `Ваш ID: ${uId}`;
   const w = gate.querySelector('.gate-waiting'); if(w) w.remove();
   btn.onclick = sendAccessRequest; btn.style.display='none'; btn.disabled=false;
-  if(s==='need_request'){ title.textContent='Доступ ограничен'; sub.textContent='Отправь заявку — админ увидит её и откроет доступ к Orbita AI.'; btn.style.display='flex'; btnText.textContent='Отправить заявку'; }
-  else if(s==='pending'){ title.textContent='Заявка отправлена'; sub.textContent='Ожидай одобрения. Как только админ разрешит — приложение откроется.'; const wait = document.createElement('div'); wait.className='gate-waiting'; wait.innerHTML='<div class="spin"></div><span>Ожидание…</span>'; btn.parentNode.insertBefore(wait, btn); }
-  else if(s==='banned'){ title.textContent='Вы забанены'; sub.textContent='Администратор закрыл вам доступ.'; }
-  else if(s==='no_telegram'){ title.textContent='Открой через Telegram'; sub.textContent='Эта Mini App работает только внутри Telegram.'; }
+  if(s==='need_request'){ title.textContent='Доступ ограничен'; sub.textContent='Отправь заявку — админ увидит её и откроет доступ.'; btn.style.display='flex'; btnText.textContent='Отправить заявку'; }
+  else if(s==='pending'){ title.textContent='Заявка отправлена'; sub.textContent='Ожидай одобрения. Приложение откроется автоматически.'; const wait = document.createElement('div'); wait.className='gate-waiting'; wait.innerHTML='<div class="spin"></div><span>Ожидание…</span>'; btn.parentNode.insertBefore(wait, btn); }
+  else if(s==='banned'){ title.textContent='Вы забанены'; sub.textContent='Администратор закрыл доступ.'; }
+  else if(s==='no_telegram'){ title.textContent='Открой через Telegram'; sub.textContent='Mini App работает только внутри Telegram.'; }
   else if(s==='error'){ title.textContent='Сервер недоступен'; sub.textContent='Не удалось проверить доступ.'; btn.style.display='flex'; btnText.textContent='Повторить'; btn.onclick=()=>checkAccess(); }
   else { title.textContent='Проверка доступа…'; sub.textContent='Пожалуйста, подождите.'; }
 }
 function hideGate(){ $('gate').classList.add('hidden'); lockScroll(false); }
-
 function startAccessPoll(){
   stopAccessPoll();
   accessPollTimer = setInterval(async () => {
@@ -501,38 +465,28 @@ function startAccessPoll(){
     try{
       const res = await fetch(`${API_URL}/status/${uId}`);
       const data = await res.json();
-      if(data.approved){
-        stopAccessPoll(); gateState='approved'; hideGate();
-        showToast('Доступ открыт'); haptic('success');
-        state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name||'User', joinedAt:Date.now() };
-        store.saveUser(state.user);
-        initApp();
-      } else if(data.banned){ stopAccessPoll(); gateState='banned'; showGate('banned'); }
+      if(data.approved){ stopAccessPoll(); gateState='approved'; hideGate(); showToast('Доступ открыт'); haptic('success'); state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name||'User', joinedAt:Date.now() }; store.saveUser(state.user); initApp(); }
+      else if(data.banned){ stopAccessPoll(); gateState='banned'; showGate('banned'); }
     }catch(e){}
   }, 4000);
 }
 function stopAccessPoll(){ if(accessPollTimer){ clearInterval(accessPollTimer); accessPollTimer=null; } }
-
 async function sendAccessRequest(){
   const u = tg?.initDataUnsafe?.user; if(!u) return;
-  const btn = $('gateAction');
-  btn.disabled=true; $('gateActionText').textContent='Отправка…';
+  const btn = $('gateAction'); btn.disabled=true; $('gateActionText').textContent='Отправка…';
   try{
-    const res = await fetch(`${API_URL}/request`, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ userId: u.id, name: [u.first_name,u.last_name].filter(Boolean).join(' '), username: u.username||'' }) });
+    const res = await fetch(`${API_URL}/request`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId: u.id, name: [u.first_name,u.last_name].filter(Boolean).join(' '), username: u.username||'' }) });
     const data = await res.json();
     if(data.error==='banned'){ showGate('banned'); haptic('error'); return; }
     showGate('pending'); startAccessPoll(); haptic('success');
   }catch(e){ showToast('Не удалось отправить'); btn.disabled=false; $('gateActionText').textContent='Отправить заявку'; haptic('error'); }
 }
 
-/* =============== BIOMETRIC =============== */
+/* BIOMETRIC */
 async function initBiometric(){
   return new Promise(resolve => {
     if(!tg?.BiometricManager) return resolve(false);
-    try{
-      tg.BiometricManager.init(() => resolve(!!tg.BiometricManager.isBiometricAvailable));
-    }catch(e){ resolve(false); }
+    try{ tg.BiometricManager.init(() => resolve(!!tg.BiometricManager.isBiometricAvailable)); }catch(e){ resolve(false); }
   });
 }
 async function requireBiometric(reason){
@@ -554,8 +508,10 @@ async function showBioGate(){
   });
 }
 
-/* =============== VOICE =============== */
+/* ============ VOICE с реакцией на звук ============ */
 let recognition = null, isRecording = false, voiceFinalText = '';
+let audioContext = null, analyser = null, mediaStream = null, rafId = null;
+
 function initVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR){ $('voiceBtn').style.display='none'; return; }
@@ -569,6 +525,7 @@ function initVoice(){
     $('voiceText').textContent='Скажи что-нибудь';
     $('voiceHint').textContent='Говори чётко, я распознаю речь';
     haptic('medium');
+    startAudioVisualization();
   };
   recognition.onresult = (e) => {
     let interim='', final='';
@@ -593,6 +550,7 @@ function initVoice(){
       isRecording=false;
       $('voiceBtn').classList.remove('recording');
       $('voiceOverlay').classList.remove('active');
+      stopAudioVisualization();
       if(voiceFinalText.trim()){
         const text = voiceFinalText.trim(); voiceFinalText='';
         setTimeout(()=>handleSend(text), 200);
@@ -600,10 +558,69 @@ function initVoice(){
     }
   };
 }
-function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
-function stopVoice(){ isRecording=false; $('voiceBtn').classList.remove('recording'); $('voiceOverlay').classList.remove('active'); try{ recognition&&recognition.stop(); }catch(e){} }
 
-/* =============== RATE LIMIT =============== */
+function startAudioVisualization(){
+  if(!navigator.mediaDevices?.getUserMedia) return;
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    mediaStream = stream;
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(stream);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.7;
+    source.connect(analyser);
+
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    const micCircle = $('micCircle');
+    const rings = [$('ring1'), $('ring2'), $('ring3')];
+    let ringTimers = [0, 0, 0];
+    const ringStates = [0, 0, 0];
+
+    function animate(){
+      if(!isRecording) return;
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0;
+      for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+      const avg = sum / dataArray.length;
+      const level = Math.min(1, avg / 80); // нормализуем
+
+      // Круг пульсирует
+      const scale = 1 + level * 0.35;
+      micCircle.style.transform = `scale(${scale})`;
+
+      // Кольца расходятся по уровню звука
+      ringStates.forEach((stateVal, i) => {
+        ringStates[i] = Math.min(1, stateVal + 0.03);
+        const ringScale = 1 + ringStates[i] * 0.8;
+        const opacity = Math.max(0, 1 - ringStates[i]);
+        rings[i].style.transform = `scale(${ringScale})`;
+        rings[i].style.opacity = opacity * (0.4 + level * 0.6);
+        if(ringStates[i] >= 1) ringStates[i] = 0;
+      });
+
+      // Если звук громкий — кольца быстрее
+      if(level > 0.3){
+        ringStates[0] = Math.min(1, ringStates[0] + level * 0.1);
+      }
+
+      rafId = requestAnimationFrame(animate);
+    }
+    animate();
+  }).catch(() => { /* нет доступа — просто без визуализации */ });
+}
+
+function stopAudioVisualization(){
+  if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
+  if(mediaStream){ mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+  if(audioContext){ try{ audioContext.close(); }catch(e){} audioContext = null; analyser = null; }
+  const micCircle = $('micCircle'); if(micCircle) micCircle.style.transform = '';
+  [$('ring1'),$('ring2'),$('ring3')].forEach(r => { if(r){ r.style.transform = ''; r.style.opacity = '0'; } });
+}
+
+function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
+function stopVoice(){ isRecording=false; $('voiceBtn').classList.remove('recording'); $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition&&recognition.stop(); }catch(e){} }
+
+/* RATE LIMIT */
 const RATE_MS = 5000;
 function getLastReq(){ return parseInt(localStorage.getItem(KEYS.LAST_REQ)||'0',10); }
 function setLastReq(t){ localStorage.setItem(KEYS.LAST_REQ, String(t)); }
@@ -622,7 +639,7 @@ function startCooldown(){
   wrap.classList.add('cooldown'); tick(); state.rateLimitTimer=setInterval(tick,200);
 }
 
-/* =============== PROFANITY =============== */
+/* PROFANITY */
 function normalizeAggressive(raw){
   let s = String(raw).toLowerCase();
   try{ s = s.normalize('NFKD'); }catch(e){}
@@ -634,26 +651,9 @@ function normalizeAggressive(raw){
   s = s.replace(/[^а-яёіa-z]/g,'').replace(/(.)\1{2,}/g,'$1');
   return s;
 }
-const BAD_PATTERNS = [
-  /ху[йеяёюи]/, /пизд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ебля/, /ёб[аеиуолн]/,
-  /сука/, /сучк/, /мудак/, /мудил/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /шлюш/,
-  /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /перд/, /бзд/, /манда/,
-  /уеб/, /заеб/, /наеб/, /перееб/, /подъеб/, /приеб/, /доеб/, /въеб/, /отъеб/, /разъеб/, /выеб/, /долбоеб/,
-  /хер[аеуны]/, /хрен[аеуы]/, /хач/, /чурк/, /жид/, /хохол/, /москал/, /кацап/, /ниггер/, /nigga/, /nigger/,
-  /гей/, /лесби/, /fag/, /faggot/, /порн/, /порно/, /трах/, /минет/, /куни/, /анус/, /сперм/, /вагин/,
-  /пенис/, /клитор/, /сиськ/, /письк/, /голая/, /porn/, /pussy/, /dick/, /cock/, /cunt/, /tits/, /boobs/, /nude/, /naked/,
-  /убью/, /убей/, /убить/, /зареж/, /пристрел/, /взорв/, /теракт/, /сдохни/, /kill/, /murder/,
-  /игил/, /джихад/, /халифат/, /нацист/, /фашист/, /гитлер/, /hitler/, /свастик/,
-  /героин/, /кокаин/, /метамфет/, /мефедрон/, /марихуан/, /амфетамин/, /экстази/, /нарко/, /cocaine/, /heroin/, /weed/,
-  /f+u+c+k+/, /sh+i+t+/, /b+i+t+c+h+/, /d+i+c+k+/, /c+u+n+t+/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/, /a+s+s+h+o+l+e+/, /n+i+g+g+/, /r+e+t+a+r+d+/
-];
+const BAD_PATTERNS = [/ху[йеяёюи]/, /пизд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ебля/, /ёб[аеиуолн]/, /сука/, /сучк/, /мудак/, /мудил/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /перд/, /манда/, /уеб/, /заеб/, /наеб/, /хер[аеуны]/, /хрен[аеуы]/, /хач/, /чурк/, /жид/, /хохол/, /москал/, /кацап/, /ниггер/, /nigga/, /nigger/, /гей/, /лесби/, /fag/, /faggot/, /порн/, /порно/, /трах/, /минет/, /куни/, /анус/, /сперм/, /вагин/, /пенис/, /клитор/, /сиськ/, /письк/, /голая/, /porn/, /pussy/, /dick/, /cock/, /cunt/, /tits/, /boobs/, /nude/, /naked/, /убью/, /убей/, /убить/, /зареж/, /пристрел/, /взорв/, /теракт/, /сдохни/, /kill/, /murder/, /игил/, /джихад/, /халифат/, /нацист/, /фашист/, /гитлер/, /hitler/, /свастик/, /героин/, /кокаин/, /метамфет/, /мефедрон/, /марихуан/, /амфетамин/, /экстази/, /нарко/, /cocaine/, /heroin/, /weed/, /f+u+c+k+/, /sh+i+t+/, /b+i+t+c+h+/, /d+i+c+k+/, /c+u+n+t+/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/, /a+s+s+h+o+l+e+/, /n+i+g+g+/, /r+e+t+a+r+d+/];
 const BAD_EXACT = new Set(['еб','ёб','бля','хер','хрен','жопа','ass','damn','fag','cock','dick','sex','ss','lsd','die','kill']);
-const WHITELIST = new Set([
-  'мандарин','мандаринка','мандарины','хлеб','хлеба','тебя','себя','себе','тебе','потреб','потребность',
-  'лебедь','лебединый','учебник','учебный','учеба','учёба','мебель','веб','вебка','стебель','жеребец','гребень',
-  'треб','требование','хребет','теребить','секция','сектор','секрет','секретарь','порядок','порог','порода',
-  'class','pass','assistant','massive','asset','bass','grass','glass','cockpit','peacock','dickens','shirt','shield','shift','situation','mission','кока','кокос','метро','метка','металл','мари','мария','марина','маринад','аналог','аналогия','грудь','грудина','попал','попала','попытка','популяр','гололёд','голодный','член','члены','членство','раздел','разделение','диета','убить','убийство','сексолог','уравнение','уравнения'
-]);
+const WHITELIST = new Set(['мандарин','мандаринка','мандарины','хлеб','хлеба','тебя','себя','себе','тебе','потреб','потребность','лебедь','лебединый','учебник','учебный','учеба','учёба','мебель','веб','вебка','стебель','жеребец','гребень','треб','требование','хребет','теребить','секция','сектор','секрет','секретарь','порядок','порог','порода','class','pass','assistant','massive','asset','bass','grass','glass','cockpit','peacock','dickens','shirt','shield','shift','situation','mission','кока','кокос','метро','метка','металл','мари','мария','марина','маринад','аналог','аналогия','грудь','грудина','попал','попала','попытка','популяр','гололёд','голодный','член','члены','членство','раздел','разделение','диета','убить','убийство','сексолог','уравнение','уравнения','x','y','z']);
 function hasProfanity(raw){
   if(!raw || typeof raw !== 'string') return false;
   const lower = raw.toLowerCase();
@@ -669,195 +669,203 @@ function hasProfanity(raw){
   return false;
 }
 
-/* =============== MARKDOWN =============== */
+/* MARKDOWN с математикой */
 function renderText(raw){
   let h = esc(raw);
-  h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  // Дроби вида [a/b] — вертикальные
+  h = h.replace(/\[([^\/\]]+)\/([^\]]+)\]/g, (m, n, d) => {
+    return `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`;
+  });
+  // Формулы в бэктиках — моноширинный блок
   h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  // Жирный
+  h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  // Ссылки
   h = h.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+  // Переносы
   h = h.replace(/\n/g,'<br>');
   return h;
 }
 
-/* =============== EQUATION SOLVER =============== */
+/* ============ РЕШЕНИЕ УРАВНЕНИЙ (без LaTeX) ============ */
+function fmtNum(n){
+  if(Number.isInteger(n)) return String(n);
+  // Если дробь "красивая" (знаменатель до 100) — покажем как обыкновенную дробь
+  for(let d = 2; d <= 100; d++){
+    if(Math.abs(n*d - Math.round(n*d)) < 1e-9){
+      const num = Math.round(n*d);
+      const g = gcd(Math.abs(num), d);
+      const n1 = num/g, d1 = d/g;
+      if(d1 === 1) return String(n1);
+      return `[${n1}/${d1}]`; // будет отрисовано как красивая дробь
+    }
+  }
+  return String(Math.round(n*1000000)/1000000);
+}
+function gcd(a,b){ while(b){ [a,b] = [b, a%b]; } return a || 1; }
+function pow(n, p){ return Math.pow(n, p); }
+
 function solveEquation(text){
-  // Убираем лишние пробелы и слова
   let t = text.toLowerCase().trim();
-  t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve)\s+/i, '');
+  t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение)\s+/i, '');
   t = t.replace(/\s+/g, '');
-  // Заменяем ^ на **, убираем пробелы
-  t = t.replace(/\^/g, '^');
-  // Проверяем что есть знак = 
+  // Заменяем кириллицу х на латинскую x
+  t = t.replace(/х/g,'x').replace(/Х/g,'x').replace(/X/g,'x');
   if(!t.includes('=')) return null;
-  
-  // Разделяем на левую и правую части
   const parts = t.split('=');
   if(parts.length !== 2) return null;
-  let [left, right] = parts;
-  
-  // Проверяем что есть x
-  if(!/[xX]/.test(left) && !/[xX]/.test(right)) return null;
-  
-  // Переносим всё влево: left - right = 0
-  // Заменяем X на x
-  left = left.replace(/X/g,'x'); right = right.replace(/X/g,'x');
-  
-  // Проверяем на квадратное уравнение (x^2 или x²)
-  const hasSquare = /\^2|x²|х\^2|х²/.test(left) || /\^2|x²|х\^2|х²/.test(right);
-  
-  // Заменяем х (кириллица) на x (латиница) - часто путают
-  left = left.replace(/х/g,'x'); right = right.replace(/х/g,'x');
-  
-  if(hasSquare){
-    return solveQuadratic(text, left, right);
-  } else {
-    return solveLinear(text, left, right);
-  }
+  let left = parts[0], right = parts[1];
+  // Проверяем наличие x (в любой степени)
+  if(!/x/.test(left) && !/x/.test(right)) return null;
+
+  // Определяем степень: есть ли x^2 / x² / x2
+  const hasSquare = /x\^2|x2|x²/.test(left) || /x\^2|x2|x²/.test(right);
+  // Нормализуем степени
+  left = left.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
+  right = right.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
+
+  if(hasSquare) return solveQuadratic(text, left, right);
+  return solveLinear(text, left, right);
 }
 
-function parseLinear(expr){
-  // Возвращает {a, b} из ax+b
-  // Убираем начальный +
-  expr = expr.replace(/^\+/,'');
-  let a = 0, b = 0;
-  // Ищем все термы
-  // Термы с x: [+-]?[число]*x
-  const xRe = /([+\-]?)(\d*\.?\d*)x/g;
+function parsePoly(expr){
+  // Возвращает {a, b, c} для ax² + bx + c
+  expr = expr.replace(/^\+/, '');
+  let a=0, b=0, c=0;
+  // Сначала x^2-термы
+  const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g;
   let m;
-  while((m = xRe.exec(expr)) !== null){
+  while((m = aRe.exec(expr)) !== null){
     const sign = m[1]==='-' ? -1 : 1;
     const coef = m[2]==='' ? 1 : parseFloat(m[2]);
     a += sign * coef;
   }
-  // Убираем все x-термы из строки
-  const withoutX = expr.replace(/([+\-]?)(\d*\.?\d*)x/g, '');
-  // Ищем числа
-  const numRe = /([+\-]?)(\d+\.?\d*)/g;
-  while((m = numRe.exec(withoutX)) !== null){
+  expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x\^2/g, '');
+  // x-термы
+  const bRe = /([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g;
+  while((m = bRe.exec(expr)) !== null){
     const sign = m[1]==='-' ? -1 : 1;
-    b += sign * parseFloat(m[2]);
+    const coef = m[2]==='' ? 1 : parseFloat(m[2]);
+    b += sign * coef;
   }
-  return {a, b};
+  expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g, '');
+  // Свободные числа
+  const cRe = /([+\-]?)(\d+\.?\d*)/g;
+  while((m = cRe.exec(expr)) !== null){
+    const sign = m[1]==='-' ? -1 : 1;
+    c += sign * parseFloat(m[2]);
+  }
+  return {a, b, c};
+}
+
+function polyToStr(a, b, c){
+  const parts = [];
+  if(a !== 0){
+    if(a === 1) parts.push('x²');
+    else if(a === -1) parts.push('-x²');
+    else parts.push(`${fmtNum(a)}x²`);
+  }
+  if(b !== 0){
+    const sign = b > 0 ? (parts.length ? ' + ' : '') : (parts.length ? ' - ' : '-');
+    const coef = Math.abs(b);
+    if(coef === 1) parts.push(sign + 'x');
+    else parts.push(sign + fmtNum(coef) + 'x');
+  }
+  if(c !== 0 || parts.length === 0){
+    const sign = c > 0 ? (parts.length ? ' + ' : '') : (parts.length ? ' - ' : '-');
+    parts.push(sign + fmtNum(Math.abs(c)));
+  }
+  return parts.join('');
 }
 
 function solveLinear(original, left, right){
-  const L = parseLinear(left);
-  const R = parseLinear(right);
+  const L = parsePoly(left);
+  const R = parsePoly(right);
   const a = L.a - R.a;
   const b = L.b - R.b;
+  const c = L.c - R.c;
   
+  // ax + c = 0
   if(a === 0){
-    if(b === 0) return { text: `Уравнение имеет **бесконечно много решений** ♾️\n\nЛюбое значение x подходит.`, _isEquation:true };
-    return { text: `Уравнение **не имеет решений** ❌\n\nПолучается ${b} = 0, что неверно.`, _isEquation:true };
+    if(c === 0) return { text: `Уравнение имеет **бесконечно много решений** ♾️\n\nЛюбое значение x подходит.`, _isEquation:true, _isDialog:true };
+    return { text: `Уравнение **не имеет решений** ❌\n\nПолучается ${c} = 0, что неверно.`, _isEquation:true, _isDialog:true };
   }
   
-  const x = -b / a;
-  const xRounded = Math.round(x * 1000000) / 1000000;
-  
-  let steps = `**Решаю уравнение:** ${original}\n\n`;
-  steps += `**Шаг 1.** Переношу всё в левую часть:\n`;
-  steps += `$${left} - (${right}) = 0$\n\n`;
-  steps += `**Шаг 2.** Привожу подобные:\n`;
-  const aStr = a === 1 ? 'x' : (a === -1 ? '-x' : `${a}x`);
-  const bStr = b > 0 ? `+ ${b}` : (b < 0 ? `- ${Math.abs(b)}` : '');
-  steps += `$${aStr} ${bStr} = 0$\n\n`;
-  steps += `**Шаг 3.** Выражаю x:\n`;
-  steps += `$${aStr} = ${-b}$\n`;
-  steps += `$x = \\frac{${-b}}{${a}}$\n\n`;
-  steps += `**Ответ:** x = **${xRounded}**`;
-  
-  return { text: steps, _isEquation:true, _isDialog:true };
+  const x = -c / a;
+  const steps = [];
+  steps.push(`**Решаю уравнение:** ${original}\n`);
+  steps.push(`**Шаг 1.** Переношу всё в левую часть:`);
+  steps.push(`   ${polyToStr(a, b, c)} = 0\n`);
+  steps.push(`**Шаг 2.** Привожу подобные:`);
+  steps.push(`   ${polyToStr(a, 0, c)} = 0\n`);
+  steps.push(`**Шаг 3.** Выражаю x:`);
+  if(a === 1){
+    steps.push(`   x = ${-c}`);
+  } else if(a === -1){
+    steps.push(`   -x = ${c}`);
+    steps.push(`   x = ${-c}`);
+  } else {
+    steps.push(`   x = ${-c} / ${a}`);
+  }
+  steps.push(`\n**Ответ:** x = ${fmtNum(x)}`);
+  return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
 }
 
 function solveQuadratic(original, left, right){
-  // Приводим к ax²+bx+c=0
-  // Простой парсер: считаем коэф при x², x, и свободный член
-  const getCoeffs = (expr) => {
-    expr = expr.replace(/^\+/,'');
-    let a=0, b=0, c=0;
-    // Заменяем x² на x^2 и x2 на x^2 (могут писать по-разному)
-    expr = expr.replace(/x²/g,'x^2').replace(/x2/g,'x^2');
-    // Коэффициенты при x^2
-    const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g;
-    let m;
-    while((m = aRe.exec(expr)) !== null){
-      const sign = m[1]==='-' ? -1 : 1;
-      const coef = m[2]==='' ? 1 : parseFloat(m[2]);
-      a += sign * coef;
-    }
-    expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x\^2/g, '');
-    // Коэффициенты при x (не x^2)
-    const bRe = /([+\-]?)(\d*\.?\d*)x/g;
-    while((m = bRe.exec(expr)) !== null){
-      const sign = m[1]==='-' ? -1 : 1;
-      const coef = m[2]==='' ? 1 : parseFloat(m[2]);
-      b += sign * coef;
-    }
-    expr = expr.replace(/([+\-]?)(\d*\.?\d*)x/g, '');
-    // Свободные числа
-    const cRe = /([+\-]?)(\d+\.?\d*)/g;
-    while((m = cRe.exec(expr)) !== null){
-      const sign = m[1]==='-' ? -1 : 1;
-      c += sign * parseFloat(m[2]);
-    }
-    return {a,b,c};
-  };
-  
-  const L = getCoeffs(left);
-  const R = getCoeffs(right);
+  const L = parsePoly(left);
+  const R = parsePoly(right);
   const a = L.a - R.a;
   const b = L.b - R.b;
   const c = L.c - R.c;
   
   if(a === 0){
-    // На самом деле линейное
     return solveLinear(original, left, right);
   }
   
   const D = b*b - 4*a*c;
   const steps = [];
-  
   steps.push(`**Решаю квадратное уравнение:** ${original}\n`);
-  steps.push(`**Шаг 1.** Привожу к виду ax² + bx + c = 0`);
-  const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
-  const cStr = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
-  steps.push(`${a}x² ${bStr}x ${cStr} = 0\n`);
+  steps.push(`**Шаг 1.** Привожу к виду ax² + bx + c = 0:`);
+  steps.push(`   ${polyToStr(a, b, c)} = 0\n`);
+  steps.push(`где a = ${fmtNum(a)}, b = ${fmtNum(b)}, c = ${fmtNum(c)}\n`);
   steps.push(`**Шаг 2.** Нахожу дискриминант:`);
-  steps.push(`D = b² - 4ac = ${b}² - 4·${a}·${c} = ${b*b} - ${4*a*c} = **${D}**\n`);
+  steps.push(`   D = b² − 4ac`);
+  steps.push(`   D = ${fmtNum(b)}² − 4·${fmtNum(a)}·${fmtNum(c)}`);
+  steps.push(`   D = ${fmtNum(b*b)} − ${fmtNum(4*a*c)}`);
+  steps.push(`   **D = ${fmtNum(D)}**\n`);
   
   let answer = '';
   if(D > 0){
     const x1 = (-b + Math.sqrt(D)) / (2*a);
     const x2 = (-b - Math.sqrt(D)) / (2*a);
-    const x1r = Math.round(x1*1000000)/1000000;
-    const x2r = Math.round(x2*1000000)/1000000;
-    steps.push(`**Шаг 3.** D > 0, значит два корня:`);
-    steps.push(`x₁ = (-b + √D) / 2a = (${-b} + √${D}) / ${2*a} = **${x1r}**`);
-    steps.push(`x₂ = (-b - √D) / 2a = (${-b} - √${D}) / ${2*a} = **${x2r}**`);
-    answer = `x₁ = **${x1r}**, x₂ = **${x2r}**`;
+    steps.push(`**Шаг 3.** D > 0 → два корня\n`);
+    steps.push(`**Формула:** x = (−b ± √D) / 2a\n`);
+    steps.push(`x₁ = (${-b} + √${fmtNum(D)}) / ${2*a}`);
+    steps.push(`x₁ = ${fmtNum(x1)}\n`);
+    steps.push(`x₂ = (${-b} − √${fmtNum(D)}) / ${2*a}`);
+    steps.push(`x₂ = ${fmtNum(x2)}`);
+    answer = `x₁ = ${fmtNum(x1)},  x₂ = ${fmtNum(x2)}`;
   } else if(D === 0){
     const x = -b / (2*a);
-    const xr = Math.round(x*1000000)/1000000;
-    steps.push(`**Шаг 3.** D = 0, значит один корень:`);
-    steps.push(`x = -b / 2a = ${-b} / ${2*a} = **${xr}**`);
-    answer = `x = **${xr}**`;
+    steps.push(`**Шаг 3.** D = 0 → один корень\n`);
+    steps.push(`**Формула:** x = −b / 2a\n`);
+    steps.push(`x = ${-b} / ${2*a} = ${fmtNum(x)}`);
+    answer = `x = ${fmtNum(x)}`;
   } else {
-    steps.push(`**Шаг 3.** D < 0, значит **нет действительных корней** ❌`);
+    steps.push(`**Шаг 3.** D < 0 → **нет действительных корней** ❌\n`);
     const re = -b / (2*a);
     const im = Math.sqrt(-D) / (2*a);
-    const rer = Math.round(re*1000000)/1000000;
-    const imr = Math.round(Math.abs(im)*1000000)/1000000;
     steps.push(`Но есть комплексные корни:`);
-    steps.push(`x₁ = ${rer} + ${imr}i`);
-    steps.push(`x₂ = ${rer} - ${imr}i`);
-    answer = `x₁ = ${rer} + ${imr}i, x₂ = ${rer} - ${imr}i`;
+    steps.push(`x₁ = ${fmtNum(re)} + ${fmtNum(Math.abs(im))}i`);
+    steps.push(`x₂ = ${fmtNum(re)} − ${fmtNum(Math.abs(im))}i`);
+    answer = `x₁ = ${fmtNum(re)} + ${fmtNum(Math.abs(im))}i,  x₂ = ${fmtNum(re)} − ${fmtNum(Math.abs(im))}i`;
   }
   
   steps.push(`\n**Ответ:** ${answer}`);
   return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
 }
 
-/* =============== AUTO-TITLE =============== */
+/* AUTO-TITLE */
 const TOPIC_KEYWORDS = [
   { re:/чёрн\w+дыр|черн\w+дыр|black\s*hole/i, title:'Чёрная дыра' },
   { re:/эйнштейн|einstein/i, title:'Эйнштейн' },
@@ -878,37 +886,22 @@ const TOPIC_KEYWORDS = [
   { re:/молекул|molecule/i, title:'Молекулы' },
   { re:/гравитац|gravity/i, title:'Гравитация' },
   { re:/квант|quantum/i, title:'Квантовая физика' },
-  { re:/релятив|relativity/i, title:'Теория относительности' },
-  { re:/бактери|bacteria/i, title:'Бактерии' },
-  { re:/вирус|virus/i, title:'Вирусы' },
-  { re:/клетк|cell/i, title:'Клетки' },
-  { re:/эволюц|evolution/i, title:'Эволюция' }
+  { re:/релятив|relativity/i, title:'Теория относительности' }
 ];
-
 function smartTitle(text){
   const clean = text.trim().replace(/\s+/g,' ');
-  // Проверяем ключевые слова
   for(const topic of TOPIC_KEYWORDS){
     const m = clean.match(topic.re);
-    if(m){
-      if(typeof topic.title === 'function') return topic.title(m).slice(0,40);
-      return topic.title.slice(0,40);
-    }
+    if(m){ if(typeof topic.title === 'function') return topic.title(m).slice(0,40); return topic.title.slice(0,40); }
   }
-  // Если вопрос "что такое X" / "кто такой X" — берём X
   const m = clean.match(/^(?:что\s+такое|кто\s+такой|кто\s+такая|что\s+значит)\s+(.{3,30})/i);
-  if(m){
-    let t = m[1].replace(/[?!.]+$/,'').trim();
-    t = t.charAt(0).toUpperCase() + t.slice(1);
-    return t.slice(0,40);
-  }
-  // Иначе первые 40 символов
+  if(m){ let t = m[1].replace(/[?!.]+$/,'').trim(); return (t.charAt(0).toUpperCase()+t.slice(1)).slice(0,40); }
   let t = clean.replace(/^(расскажи|скажи|найди|поищи|поясни|объясни)\s+/i,'');
   t = t.charAt(0).toUpperCase() + t.slice(1);
   return t.slice(0,40) + (t.length>40?'…':'');
 }
 
-/* =============== CHATS =============== */
+/* CHATS */
 function createChat(){
   const chat = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() };
   state.chats.unshift(chat); state.activeId=chat.id;
@@ -930,16 +923,10 @@ async function deleteChat(id){
 }
 function togglePin(id){
   const c = state.chats.find(x=>x.id===id); if(!c) return;
-  c.pinned = !c.pinned;
-  store.saveChats(state.chats);
-  renderChatsList();
-  haptic('light');
+  c.pinned = !c.pinned; store.saveChats(state.chats); renderChatsList(); haptic('light');
 }
 function ensureChat(){ if(!state.activeId || !getActiveChat()){ if(state.chats.length>0){ state.activeId=state.chats[0].id; store.setActive(state.activeId); } else createChat(); } }
-function autoTitle(chat, text){
-  if(chat.title && chat.title !== 'Новый чат') return;
-  chat.title = smartTitle(text) || 'Новый чат';
-}
+function autoTitle(chat, text){ if(chat.title && chat.title !== 'Новый чат') return; chat.title = smartTitle(text) || 'Новый чат'; }
 
 function renderChatsList(){
   const list = $('chatsList'); list.innerHTML='';
@@ -952,20 +939,16 @@ function renderChatsList(){
   $('drawerCount').textContent = `Чатов: ${state.chats.length}`;
   if(filtered.length === 0){
     list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">${q ? 'Ничего не найдено' : 'Пока нет чатов'}</div>`;
-    $('clearAllChatsBtn').style.display='none';
-    return;
+    $('clearAllChatsBtn').style.display='none'; return;
   }
   $('clearAllChatsBtn').style.display = state.chats.length > 1 && !q ? 'block' : 'none';
-  const sorted = [...filtered].sort((a,b) => {
-    if(a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-    return b.updatedAt - a.updatedAt;
-  });
+  const sorted = [...filtered].sort((a,b) => { if(a.pinned !== b.pinned) return a.pinned ? -1 : 1; return b.updatedAt - a.updatedAt; });
   for(const c of sorted){
     const item = document.createElement('div');
     item.className = 'chat-item' + (c.id === state.activeId ? ' active' : '');
     const lastMsg = c.messages[c.messages.length-1];
     const sub = lastMsg ? (lastMsg.role==='user'?'Вы: ':'AI: ')+lastMsg.text.slice(0,45) : 'Пустой чат';
-    item.innerHTML = `<div class="chat-item-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>${c.pinned?'<div class="pin-indicator"></div>':''}</div><div class="chat-item-text"><div class="chat-item-title">${esc(c.title)}</div><div class="chat-item-sub">${esc(sub)}</div></div><button class="chat-item-pin ${c.pinned?'pinned':''}" data-pin="${escA(c.id)}"><svg viewBox="0 0 24 24"><path d="M12 17v5M9 10.76V4h6v6.76l2 3.24H7z"/></svg></button><button class="chat-item-del" data-del="${escA(c.id)}"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>`;
+    item.innerHTML = `<div class="chat-item-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>${c.pinned?'<div class="pin-indicator"></div>':''}</div><div class="chat-item-text"><div class="chat-item-title">${esc(c.title)}</div><div class="chat-item-sub">${esc(sub)}</div></div><button class="chat-item-pin ${c.pinned?'pinned':''}"><svg viewBox="0 0 24 24"><path d="M12 17v5M9 10.76V4h6v6.76l2 3.24H7z"/></svg></button><button class="chat-item-del"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>`;
     item.addEventListener('click', e => { if(e.target.closest('button')) return; switchChat(c.id); });
     item.querySelector('.chat-item-del').addEventListener('click', e => { e.stopPropagation(); deleteChat(c.id); });
     item.querySelector('.chat-item-pin').addEventListener('click', e => { e.stopPropagation(); togglePin(c.id); });
@@ -1082,7 +1065,7 @@ async function typeText(el, text){
   cursor.remove(); scrollDown();
 }
 
-/* =============== SEARCH =============== */
+/* SEARCH */
 function cleanQuery(q){ return q.replace(/^(что такое|что значит|кто такой|кто такая|кто такие|расскажи про|расскажи о|расскажи|поясни|объясни|найди|поищи|где находится|где|когда|почему|зачем|как|what is|who is)\s+/i,'').replace(/^про\s+/i,'').replace(/[?!.]+$/g,'').trim(); }
 async function wikiSearch(query, lang = 'ru'){
   const q = query.trim(); if(!q) return null;
@@ -1121,51 +1104,41 @@ async function searchInternet(query){
   return await wikiSearch(query,'ru');
 }
 
-/* =============== DIALOGS =============== */
+/* DIALOGS */
 function matchDialog(q){
   const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
-
-  if(/^(привет|прив|здравствуй|хай|hi|hello|hey|добрый день|добрый вечер|доброе утро|доброго)/i.test(x)) return name?`Привет, ${name}! Рада тебя видеть. Чем помочь?`:'Привет! Рада тебя видеть. Чем помочь?';
-  if(/как\s+(у\s+тебя\s+)?дела|как\s+ты|как\s+жизнь|how\s+are\s+you/i.test(x)) return name?`У меня всё отлично, ${name}! Работаю, помогаю. А у тебя как?`:'У меня всё отлично! Работаю, помогаю. А у тебя как?';
-  if(/^(пока|до свидания|до встречи|бай|bye|увидимся|прощай)/i.test(x)) return name?`До встречи, ${name}! 💙`:'До встречи! 💙';
-  if(/спасибо|благодарю|thanks|thank you|спс/i.test(x)) return 'Пожалуйста! Всегда рада помочь 💙';
-
-  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое|кто\s+вы|расскажи\s+о\s+себе|расскажи\s+про\s+себя)/i.test(x)) return `Я **Orbita AI** — умный ассистент от компании **ORT** 🛰️\n\nИщу информацию в интернете, отвечаю на вопросы, решаю уравнения. Могу помочь с наукой, историей, географией и математикой.`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь|твои\s+возможности|чем\s+можешь\s+помочь)/i.test(x)) return `Вот что я умею:\n\n🔍 **Ищу информацию** в интернете\n📚 **Отвечаю на вопросы** — наука, история, география\n🧮 **Решаю уравнения** — линейные и квадратные с пошаговым объяснением\n🧮 **Считаю примеры** — просто напиши 2+2\n🕐 **Скажу время и дату**\n🎤 **Распознаю голос**\n💬 **Поддерживаю беседу**\n\nПросто напиши, что тебя интересует!`;
-  if(/^(кто\s+тебя\s+создал|кто\s+тебя\s+сделал|кто\s+разработал|кто\s+твой\s+создатель|чья\s+ты|кто\s+автор|кем\s+ты\s+создана|who\s+created\s+you)/i.test(x)) return `Меня создала компания **ORT** 💙\n\nКоманда ORT разработала Orbita AI — умного ассистента, который помогает людям находить ответы и учиться новому.`;
-  if(/^(расскажи\s+о\s+компании|что\s+такое\s+ort|расскажи\s+про\s+ort|кто\s+такие\s+ort)/i.test(x)) return `**ORT** — компания, которая создала меня, Orbita AI 🛰️\n\nИх цель — делать технологии доступными и полезными для людей. Orbita AI — один из их проектов в сфере искусственного интеллекта.`;
-  if(/^(ты\s+человек|ты\s+живой|ты\s+робот|ты\s+бот)/i.test(x)) return `Я **искусственный интеллект** — программа, а не человек 🤖\n\nНо стараюсь отвечать так, будто мы общаемся по-настоящему.`;
-  if(/^(как\s+тебя\s+зовут|твоё\s+имя|твое\s+имя)/i.test(x)) return 'Меня зовут **Orbita AI** 🛰️';
-  if(/^(что\s+такое\s+orbita|что\s+такое\s+орбита)/i.test(x)) return `**Orbita AI** — это я! Умный ассистент от компании ORT.\n\nНазвание Orbita — как орбита планеты вокруг Солнца, я вращаюсь вокруг твоих вопросов и готова помочь 🛰️`;
-
-  if(/который\s+час|сколько\s+времени|what\s+time/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} 🕐`;
-  if(/какой\s+сегодня\s+день|какое\s+сегодня\s+число|какая\s+дата/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
-
+  if(/^(привет|прив|здравствуй|хай|hi|hello|hey|добрый день|добрый вечер|доброе утро)/i.test(x)) return name?`Привет, ${name}! Чем помочь?`:'Привет! Чем помочь?';
+  if(/как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name?`Всё отлично, ${name}! А у тебя как?`:'Всё отлично! А у тебя как?';
+  if(/^(пока|до свидания|до встречи|бай|bye)/i.test(x)) return name?`До встречи, ${name}! 💙`:'До встречи! 💙';
+  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Всегда рада помочь 💙';
+  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое|расскажи\s+о\s+себе|расскажи\s+про\s+себя)/i.test(x)) return `Я **Orbita AI** — умный ассистент от компании **ORT** 🛰️\n\nИщу информацию в интернете, отвечаю на вопросы, решаю уравнения.`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь|твои\s+возможности)/i.test(x)) return `Вот что я умею:\n\n🔍 **Ищу информацию** в интернете\n📚 **Отвечаю на вопросы** — наука, история, география\n🧮 **Решаю уравнения** — линейные и квадратные с пошаговым объяснением\n🧮 **Считаю примеры** — просто напиши 2+2\n🕐 **Скажу время и дату**\n🎤 **Распознаю голос**\n\nПросто напиши, что тебя интересует!`;
+  if(/^(кто\s+тебя\s+создал|кто\s+тебя\s+сделал|кто\s+разработал|кто\s+твой\s+создатель|чья\s+ты|кто\s+автор)/i.test(x)) return `Меня создала компания **ORT** 💙\n\nКоманда ORT разработала Orbita AI — умного ассистента, который помогает людям находить ответы и учиться новому.`;
+  if(/^(расскажи\s+о\s+компании|что\s+такое\s+ort|расскажи\s+про\s+ort)/i.test(x)) return `**ORT** — компания, которая создала меня, Orbita AI 🛰️\n\nИх цель — делать технологии доступными и полезными.`;
+  if(/^(ты\s+человек|ты\s+живой|ты\s+робот|ты\s+бот)/i.test(x)) return `Я **искусственный интеллект** — программа, а не человек 🤖`;
+  if(/^(как\s+тебя\s+зовут|твоё\s+имя)/i.test(x)) return 'Меня зовут **Orbita AI** 🛰️';
+  if(/^(что\s+такое\s+orbita|что\s+такое\s+орбита)/i.test(x)) return `**Orbita AI** — это я! Умный ассистент от компании ORT.\n\nНазвание Orbita — как орбита планеты вокруг Солнца, я вращаюсь вокруг твоих вопросов 🛰️`;
+  if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} 🕐`;
+  if(/какой\s+сегодня\s+день|какое\s+сегодня\s+число/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
   return null;
 }
 
 async function generateAnswer(query){
   if(hasProfanity(query)) return { text:'Извини, на такие вопросы я не отвечаю 💙', _isBlocked:true };
-  
-  // Проверка уравнений
   const eq = solveEquation(query);
   if(eq) { await sleep(300); return eq; }
-  
-  // Простая математика
   const x = query.trim().toLowerCase();
   const mm = x.match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
   if(mm){ const a=parseFloat(mm[1].replace(',','.')),b=parseFloat(mm[3].replace(',','.')),op=mm[2]; let r; switch(op){ case '+':r=a+b;break;case '-':r=a-b;break;case '*':case 'x':case '×':r=a*b;break;case '/':case '÷':if(b===0)return { text:'На ноль делить нельзя 🤔', _isDialog:true };r=a/b;break; } return { text: `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`, _isDialog:true }; }
-  
   const dialog = matchDialog(query);
   if(dialog){ await sleep(400); return { text: dialog, _isDialog:true }; }
-  
   const search = await searchInternet(query);
   if(search){ if(hasProfanity(search.text)) return { text:'Извини, на такие вопросы я не отвечаю.', _isBlocked:true }; return search; }
-  return { text: `К сожалению, не нашла ответа на «${query}» 🤔\n\nПопробуй переформулировать или спроси о науке, истории, географии.` };
+  return { text: `К сожалению, не нашла ответа на «${query}» 🤔\n\nПопробуй переформулировать.` };
 }
 
-/* =============== SEND =============== */
+/* SEND */
 function updateSendBtn(){
   if(state.busy){ sendBtn.disabled=false; sendBtn.classList.add('stop'); sendBtn.classList.remove('cooldown'); sendIcon.innerHTML='<rect x="6" y="6" width="12" height="12" rx="2"/>'; return; }
   if(state.rateLimit){ sendBtn.disabled=true; sendBtn.classList.remove('stop'); sendBtn.classList.add('cooldown'); return; }
@@ -1178,7 +1151,6 @@ async function handleSend(textOverride){
   const text = (textOverride ?? inputEl.value).trim();
   if(!text){ if(state.busy){ state.abortRequested=true; haptic('medium'); } return; }
   if(state.busy) return;
-
   const wait = checkLimit();
   if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
 
@@ -1235,27 +1207,18 @@ async function handleSend(textOverride){
   state.busy=false; state.abortRequested=false; updateSendBtn(); haptic('success');
 }
 
-/* =============== DRAWER =============== */
+/* DRAWER */
 function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); lockScroll(true); showBackButton(closeDrawer); haptic('light'); }
 function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); }
 
-/* =============== ACCOUNT =============== */
+/* ACCOUNT */
 function updateAvatarPreview(){
   const preview = $('avatarPreview');
   const letter = $('avatarLetter');
   const avatar = state.user?.avatar;
-  if(avatar){
-    preview.style.backgroundImage = `url(${avatar})`;
-    preview.style.backgroundColor = 'var(--accent)';
-    letter.style.display = 'none';
-  } else {
-    preview.style.backgroundImage = 'none';
-    preview.style.backgroundColor = 'var(--accent)';
-    letter.style.display = 'block';
-    letter.textContent = initials(state.user?.name);
-  }
+  if(avatar){ preview.style.backgroundImage = `url(${avatar})`; letter.style.display = 'none'; }
+  else { preview.style.backgroundImage = 'none'; letter.style.display = 'block'; letter.textContent = initials(state.user?.name); }
 }
-
 function openAccount(){
   closeDrawer(); if(!state.user) return;
   $('accountNameInput').value = state.user.name || '';
@@ -1274,8 +1237,7 @@ function closeAccount(){
 function saveProfile(){
   const name = $('accountNameInput').value.replace(/[<>"'`]/g,'').trim().slice(0,24);
   if(!name){ showToast('Введи имя'); haptic('error'); return; }
-  state.user.name = name;
-  store.saveUser(state.user);
+  state.user.name = name; store.saveUser(state.user);
   updateAvatarUI();
   if(getActiveChat()?.messages.length === 0) renderEmptyState();
   showToast('Сохранено'); haptic('success'); closeAccount();
@@ -1287,13 +1249,11 @@ function updateAvatarUI(){
   else { drawerAv.style.backgroundImage = 'none'; drawerAv.textContent = initials(state.user?.name); }
   $('drawerName').textContent = state.user?.name || '—';
 }
-
 function handleAvatarUpload(file){
   if(!file) return;
-  if(file.size > 500 * 1024){ showToast('Файл слишком большой (макс 500KB)'); haptic('error'); return; }
+  if(file.size > 2 * 1024 * 1024){ showToast('Файл слишком большой (макс 2MB)'); haptic('error'); return; }
   const reader = new FileReader();
   reader.onload = e => {
-    // Сжимаем изображение
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
@@ -1313,29 +1273,24 @@ function handleAvatarUpload(file){
   };
   reader.readAsDataURL(file);
 }
-
 async function clearAllData(){
   const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm('Очистить все данные?', res => r(res))) : confirm('Очистить?');
   if(!ok) return;
   store.clear(); state.user=null; state.chats=[]; state.activeId=null;
-  closeAccount();
-  haptic('success');
-  location.reload();
+  closeAccount(); haptic('success'); location.reload();
 }
-
 function exportChats(){
-  const data = { version:1, exportedAt:Date.now(), user:{ name: state.user?.name, joinedAt: state.user?.joinedAt }, chats: state.chats };
+  const data = { version:1, exportedAt:Date.now(), user:{ name: state.user?.name }, chats: state.chats };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `orbita-${new Date().toISOString().slice(0,10)}.json`;
+  a.href = url; a.download = `orbita-${new Date().toISOString().slice(0,10)}.json`;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast('Файл сохранён'); haptic('success');
 }
 
-/* =============== ONBOARDING =============== */
+/* ONBOARDING */
 let onbSlide = 0;
 function onbGoTo(i){
   onbSlide = Math.max(0, Math.min(2, i));
@@ -1354,7 +1309,7 @@ function finishOnboarding(){
   initApp();
 }
 
-/* =============== INIT =============== */
+/* INIT */
 function initApp(){
   state.chats = store.getChats();
   state.activeId = store.getActive();
@@ -1367,11 +1322,10 @@ function initApp(){
   initVoice();
 }
 
-/* =============== EVENTS =============== */
+/* EVENTS */
 inputEl.addEventListener('input', () => { updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value); });
 inputEl.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
 sendBtn.addEventListener('click', () => { if(state.busy){ state.abortRequested = true; return; } handleSend(); });
-
 $('menuBtn').addEventListener('click', openDrawer);
 $('newChatBtn').addEventListener('click', () => { if(!state.busy){ createChat(); closeDrawer(); haptic('light'); } });
 $('clearAllChatsBtn').addEventListener('click', async () => {
@@ -1386,46 +1340,26 @@ $('saveProfileBtn').addEventListener('click', saveProfile);
 $('clearDataBtn').addEventListener('click', clearAllData);
 $('exportBtn').addEventListener('click', exportChats);
 $('accountOverlay').addEventListener('click', e => { if(e.target === $('accountOverlay')) closeAccount(); });
-
-/* Avatar */
 $('avatarPreview').addEventListener('click', () => $('avatarInput').click());
 $('avatarInput').addEventListener('change', e => { if(e.target.files[0]) handleAvatarUpload(e.target.files[0]); e.target.value=''; });
 $('removeAvatarBtn').addEventListener('click', () => { if(state.user?.avatar){ state.user.avatar = null; store.saveUser(state.user); updateAvatarPreview(); haptic('light'); } });
-
-/* Voice */
 $('voiceBtn').addEventListener('click', startVoice);
 $('voiceCancel').addEventListener('click', () => { stopVoice(); haptic('light'); });
-
-/* Onboarding */
 $('onbSkip').addEventListener('click', () => finishOnboarding());
-document.querySelectorAll('.onb-slide').forEach((slide, i) => {
-  slide.addEventListener('click', () => { if(i < 2) onbGoTo(i + 1); });
-});
+document.querySelectorAll('.onb-slide').forEach((slide, i) => { slide.addEventListener('click', () => { if(i < 2) onbGoTo(i + 1); }); });
 $('onbName').addEventListener('keydown', e => { if(e.key === 'Enter') finishOnboarding(); });
 
-/* =============== BOOT =============== */
+/* BOOT */
 window.addEventListener('load', async () => {
   const draft = localStorage.getItem(KEYS.DRAFT);
   if(draft){ inputEl.value = draft; updateSendBtn(); }
-
-  // Синк с облаком
   await syncFromCloud();
-
-  // Биометрия — инициализация
   const bioAvail = await initBiometric();
-  if(bioAvail && store.getUser()?.bio){
-    const ok = await showBioGate();
-    if(!ok) return;
-  }
-
-  // Проверка доступа
+  if(bioAvail && store.getUser()?.bio){ const ok = await showBioGate(); if(!ok) return; }
   await checkAccess();
-
   if(gateState === 'approved'){
     state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() };
     store.saveUser(state.user);
-    
-    // Онбординг для новых
     if(!localStorage.getItem(KEYS.ONBOARD) && !state.chats.length){
       $('onboarding').classList.add('active');
       lockScroll(true);
@@ -1434,7 +1368,6 @@ window.addEventListener('load', async () => {
       onbGoTo(0);
       return;
     }
-    
     initApp();
   }
 });
