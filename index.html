@@ -7,12 +7,11 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#ffffff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--white:#ffffff;--overlay:rgba(15,23,42,.45)}
+  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--white:#fff;--overlay:rgba(15,23,42,.45)}
   html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
   body{position:fixed;inset:0}
   body.locked{overflow:hidden}
   .app{height:100%;display:flex;flex-direction:column;background:var(--bg)}
-
   .header{display:flex;align-items:center;gap:10px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0}
   .icon-btn{width:38px;height:38px;border-radius:11px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);flex-shrink:0}
   .icon-btn:active{background:var(--accent-soft)}
@@ -23,8 +22,7 @@
   .brand-text{display:flex;flex-direction:column;min-width:0}
   .brand-name{font-size:15px;font-weight:800;letter-spacing:-.4px;color:var(--ink)}
   .brand-sub{font-size:10.5px;color:var(--muted);font-weight:500;margin-top:1px}
-
-  .chat{flex:1;overflow-y:auto;padding:16px 14px 8px;display:flex;flex-direction:column;gap:22px;scroll-behavior:smooth;justify-content:flex-end}
+  .chat{flex:1;overflow-y:auto;padding:16px 14px 8px;display:flex;flex-direction:column;gap:22px;justify-content:flex-end}
   .chat::-webkit-scrollbar{width:0}
   .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px;text-align:center;width:100%}
   .empty-planet{width:100px;height:100px;margin-bottom:20px;animation:floatY 5s ease-in-out infinite}
@@ -35,7 +33,6 @@
   .empty-chip{padding:9px 14px;background:var(--white);border:1.5px solid var(--accent);border-radius:100px;font-size:13px;font-weight:600;color:var(--accent-deep);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px}
   .empty-chip:active{background:var(--accent-soft);transform:scale(.97)}
   .empty-chip .dot{width:6px;height:6px;background:var(--accent);border-radius:50%}
-
   .msg{display:flex;gap:10px;max-width:100%;animation:msgIn .3s cubic-bezier(.22,1,.36,1)}
   @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
   .msg.user{justify-content:flex-end;flex-direction:column;align-items:flex-end}
@@ -51,14 +48,12 @@
   .msg.user .bubble{max-width:82%;padding:10px 14px;background:var(--white);color:var(--accent-deep);border:1.5px solid var(--accent);border-radius:20px;border-bottom-right-radius:6px;font-size:15px;line-height:1.45;word-wrap:break-word;font-weight:500}
   .msg-edit-btn{font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:4px;margin-right:4px;font-family:inherit;padding:3px 8px;border-radius:6px}
   .msg-edit-btn:active{background:var(--accent-soft);color:var(--accent)}
-
   .msg-actions{display:flex;gap:4px;margin-top:8px;margin-left:-4px;flex-wrap:wrap}
   .msg-act{width:30px;height:30px;border-radius:8px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)}
   .msg-act:active{background:var(--accent-soft);color:var(--accent)}
   .msg-act svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .msg-act.active-up{color:var(--accent);background:var(--accent-soft)}
   .msg-act.active-down{color:var(--danger);background:var(--danger-soft)}
-
   .typing{display:none;gap:10px}
   .typing.active{display:flex}
   .typing .avatar{width:30px;height:30px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center}
@@ -71,7 +66,6 @@
   @keyframes dotWave{0%,60%,100%{transform:translateY(0) scale(.85);opacity:.4}30%{transform:translateY(-5px) scale(1);opacity:1}}
   .cursor{display:inline-block;width:2px;height:15px;background:var(--accent);vertical-align:text-bottom;margin-left:1px;animation:blink 1s steps(2,start) infinite}
   @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-
   .bottom-bar{display:flex;align-items:center;gap:8px;padding:6px 10px calc(8px + env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0}
   .menu-fab{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 4px 14px rgba(37,99,235,.28)}
   .menu-fab:active{background:var(--accent-dark);transform:scale(.93)}
@@ -81,6 +75,11 @@
   .input-wrap.cooldown{border-color:var(--accent-mid);background:var(--accent-soft)}
   .input-wrap input{flex:1;min-width:0;padding:7px 0;border:none;outline:none;font-size:14.5px;background:transparent;color:var(--ink);font-family:inherit}
   .input-wrap input::placeholder{color:var(--muted)}
+  .voice-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);transition:all .15s}
+  .voice-btn:active{background:var(--accent-soft);color:var(--accent)}
+  .voice-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .voice-btn.recording{background:var(--danger);color:#fff;animation:voicePulse 1.2s infinite}
+  @keyframes voicePulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{transform:scale(1.05);box-shadow:0 0 0 8px rgba(239,68,68,0)}}
   .send-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
   .send-btn:active:not(:disabled){background:var(--accent-dark);transform:scale(.9)}
   .send-btn:disabled{opacity:.35}
@@ -91,6 +90,34 @@
   .send-btn .cooldown-text{display:none;font-size:11px;font-weight:800;color:#fff}
   .send-btn.cooldown .cooldown-text{display:block}
 
+  /* VOICE OVERLAY */
+  .voice-overlay{position:fixed;inset:0;background:rgba(15,23,42,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+  .voice-overlay.active{display:flex;animation:fadeIn .2s}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .voice-box{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .voice-rings{position:relative;width:160px;height:160px;margin-bottom:32px}
+  .voice-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(96,165,250,.5);animation:voiceWave 2s infinite}
+  .voice-ring:nth-child(1){animation-delay:0s}
+  .voice-ring:nth-child(2){animation-delay:.4s}
+  .voice-ring:nth-child(3){animation-delay:.8s}
+  @keyframes voiceWave{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.6);opacity:0}}
+  .voice-mic-circle{position:absolute;inset:32px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(59,130,246,.5),inset 0 -4px 12px rgba(0,0,0,.15);z-index:2}
+  .voice-mic-circle svg{width:38px;height:38px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .voice-status{font-size:22px;font-weight:800;color:#fff;margin-bottom:12px;letter-spacing:-.4px}
+  .voice-text{font-size:15px;color:rgba(255,255,255,.75);line-height:1.55;max-width:320px;min-height:24px;font-weight:500}
+  .voice-hint{font-size:12.5px;color:rgba(255,255,255,.5);margin-top:20px;font-weight:500}
+  .voice-cancel{margin-top:32px;padding:12px 28px;border-radius:100px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s}
+  .voice-cancel:active{background:rgba(255,255,255,.18);transform:scale(.96)}
+  .voice-dots{display:flex;gap:5px;justify-content:center;margin-top:16px;height:20px;align-items:flex-end}
+  .voice-dots span{width:4px;height:8px;background:rgba(255,255,255,.7);border-radius:2px;animation:voiceDot 1s infinite ease-in-out}
+  .voice-dots span:nth-child(1){animation-delay:0s}
+  .voice-dots span:nth-child(2){animation-delay:.15s}
+  .voice-dots span:nth-child(3){animation-delay:.3s}
+  .voice-dots span:nth-child(4){animation-delay:.45s}
+  .voice-dots span:nth-child(5){animation-delay:.6s}
+  @keyframes voiceDot{0%,100%{height:8px;opacity:.5}50%{height:20px;opacity:1}}
+
+  /* GATE */
   .gate{position:fixed;inset:0;background:var(--bg);z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
   .gate.hidden{display:none}
   .gate-icon{width:110px;height:110px;margin-bottom:24px;animation:floatY 5s ease-in-out infinite}
@@ -103,7 +130,6 @@
   .gate-id{font-size:12px;color:var(--muted);margin-top:12px}
   .gate-waiting{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--surface);border-radius:100px;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:12px}
   .gate-waiting .spin{width:18px;height:18px;border:2.5px solid var(--accent-light);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-
   .overlay{position:fixed;inset:0;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
   .overlay.open{opacity:1;pointer-events:auto}
   .drawer{position:fixed;top:0;left:0;bottom:0;width:88%;max-width:360px;background:var(--bg);z-index:50;transform:translateX(-100%);transition:transform .28s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column}
@@ -141,7 +167,6 @@
   .user-info{flex:1;min-width:0}
   .user-name{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .user-sub{font-size:11px;color:var(--muted);margin-top:1px}
-
   .modal-overlay{position:fixed;inset:0;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;display:flex;align-items:flex-end;justify-content:center}
   .modal-overlay.open{opacity:1;pointer-events:auto}
   .modal{width:100%;max-width:480px;background:var(--bg);border-radius:20px 20px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s;max-height:88vh;overflow-y:auto}
@@ -158,21 +183,6 @@
   .btn-ghost:active{background:var(--surface)}
   .btn-danger{width:100%;padding:14px;border:1.5px solid var(--danger-soft);border-radius:12px;background:var(--bg);color:var(--danger);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
   .btn-danger:active{background:var(--danger-soft)}
-
-  .admin-section{padding:14px 16px;border-bottom:1px solid var(--border)}
-  .admin-section-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
-  .admin-user{display:flex;align-items:center;gap:10px;padding:11px;background:var(--surface);border-radius:12px;margin-bottom:8px}
-  .admin-avatar{width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0}
-  .admin-info{flex:1;min-width:0}
-  .admin-name{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .admin-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
-  .admin-actions{display:flex;gap:6px;flex-shrink:0}
-  .admin-btn{padding:8px 12px;border-radius:9px;border:none;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer}
-  .admin-btn.approve{background:var(--accent);color:#fff}
-  .admin-btn.ban{background:var(--danger-soft);color:var(--danger)}
-  .admin-btn.unban{background:var(--accent-soft);color:var(--accent)}
-  .admin-empty{padding:20px;text-align:center;color:var(--muted);font-size:13px}
-
   .toast{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);padding:10px 18px;background:var(--accent);color:#fff;border-radius:100px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:200;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
@@ -194,6 +204,27 @@
     <span id="gateActionText">Отправить заявку</span>
   </button>
   <div class="gate-id" id="gateId"></div>
+</div>
+
+<!-- VOICE OVERLAY -->
+<div class="voice-overlay" id="voiceOverlay">
+  <div class="voice-box">
+    <div class="voice-rings">
+      <div class="voice-ring"></div>
+      <div class="voice-ring"></div>
+      <div class="voice-ring"></div>
+      <div class="voice-mic-circle">
+        <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg>
+      </div>
+    </div>
+    <div class="voice-status" id="voiceStatus">Слушаю…</div>
+    <div class="voice-text" id="voiceText">Скажи что-нибудь</div>
+    <div class="voice-dots">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="voice-hint" id="voiceHint">Говори чётко, я распознаю речь</div>
+    <button class="voice-cancel" id="voiceCancel">Отмена</button>
+  </div>
 </div>
 
 <div class="overlay" id="drawerOverlay"></div>
@@ -223,20 +254,8 @@
     <div class="modal-sub">Твой профиль в Orbita AI</div>
     <div class="field"><div class="field-label">Имя</div><input type="text" class="field-input" id="accountNameInput" maxlength="24"></div>
     <button class="btn-primary" id="saveProfileBtn">Сохранить</button>
-    <button class="btn-ghost" id="exportBtn">Экспорт чатов</button>
     <button class="btn-ghost" id="closeAccountBtn">Закрыть</button>
     <button class="btn-danger" id="clearDataBtn">Очистить все данные</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="adminOverlay">
-  <div class="modal">
-    <div class="modal-title">Панель админа</div>
-    <div class="modal-sub">Управление доступом</div>
-    <div class="admin-section"><div class="admin-section-title">Заявки</div><div id="adminPending"></div></div>
-    <div class="admin-section"><div class="admin-section-title">Одобренные</div><div id="adminApproved"></div></div>
-    <div class="admin-section" style="border-bottom:none;"><div class="admin-section-title">Забаненные</div><div id="adminBanned"></div></div>
-    <button class="btn-ghost" id="closeAdminBtn" style="margin-top:12px;">Закрыть</button>
   </div>
 </div>
 
@@ -249,10 +268,13 @@
   </header>
   <main class="chat" id="chat"></main>
   <div class="bottom-bar">
-    <button class="menu-fab" id="menuBtn" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+    <button class="menu-fab" id="menuBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
     <div class="input-wrap" id="inputWrap">
       <input type="text" id="input" placeholder="Спросите что угодно..." autocomplete="off">
-      <button class="send-btn" id="send" aria-label="Send" disabled>
+      <button class="voice-btn" id="voiceBtn" aria-label="Голосовой ввод">
+        <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg>
+      </button>
+      <button class="send-btn" id="send" disabled>
         <svg id="sendIcon" viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/></svg>
         <span class="cooldown-text" id="cooldownText">5</span>
       </button>
@@ -263,1178 +285,728 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ============================================================
-   НАСТРОЙКИ
-   ============================================================ */
 const API_URL = 'https://shiny-flower-cc1aorbita-gate.2013zakharov.workers.dev';
-const ADMIN_SECRET = 'orbita-2025-secret';
 const ADMIN_TG_ID = 5268787813;
 
-/* ============================================================
-   TELEGRAM
-   ============================================================ */
 const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-  try {
-    tg.setHeaderColor('secondary_bg_color');
-    tg.setBackgroundColor('bg_color');
-    if (tg.enableClosingConfirmation) tg.enableClosingConfirmation();
-  } catch(e) {}
-}
+if (tg) { tg.ready(); tg.expand(); try { if (tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch(e) {} }
 
-function haptic(type = 'light') {
-  if (!tg?.HapticFeedback) return;
-  try {
-    if (['success','error','warning'].includes(type)) tg.HapticFeedback.notificationOccurred(type);
-    else tg.HapticFeedback.impactOccurred(type);
-  } catch(e) {}
-}
-function showBackButton(fn) {
-  if (!tg?.BackButton) return;
-  tg.BackButton.offClick();
-  tg.BackButton.onClick(fn);
-  tg.BackButton.show();
-}
-function hideBackButton() {
-  if (tg?.BackButton) { try { tg.BackButton.offClick(); tg.BackButton.hide(); } catch(e) {} }
-}
+function haptic(t='light'){ if(!tg?.HapticFeedback) return; try{ if(['success','error','warning'].includes(t)) tg.HapticFeedback.notificationOccurred(t); else tg.HapticFeedback.impactOccurred(t); }catch(e){} }
+function showBackButton(fn){ if(!tg?.BackButton) return; tg.BackButton.offClick(); tg.BackButton.onClick(fn); tg.BackButton.show(); }
+function hideBackButton(){ if(tg?.BackButton){ try{ tg.BackButton.offClick(); tg.BackButton.hide(); }catch(e){} } }
 
-/* ============================================================
-   STATE
-   ============================================================ */
-const state = {
-  user: null, chats: [], activeId: null, busy: false, abortRequested: false,
-  rateLimit: false, rateLimitTimer: null
-};
+const state = { user:null, chats:[], activeId:null, busy:false, abortRequested:false, rateLimit:false, rateLimitTimer:null };
 
-/* ============================================================
-   DOM
-   ============================================================ */
 const $ = id => document.getElementById(id);
-const chatEl = $('chat');
-const inputEl = $('input');
-const sendBtn = $('send');
-const sendIcon = $('sendIcon');
-const toast = $('toast');
+const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIcon = $('sendIcon'), toast = $('toast');
 
-/* ============================================================
-   STORAGE
-   ============================================================ */
-const KEYS = { USER: 'orbita_user', CHATS: 'orbita_chats', ACTIVE: 'orbita_active', LAST_REQ: 'orbita_last_req', DRAFT: 'orbita_draft' };
+const KEYS = { USER:'o_u', CHATS:'o_c', ACTIVE:'o_a', LAST_REQ:'o_r', DRAFT:'o_d' };
 const store = {
-  getUser() { try { return JSON.parse(localStorage.getItem(KEYS.USER) || 'null'); } catch { return null; } },
-  saveUser(u) { localStorage.setItem(KEYS.USER, JSON.stringify(u)); },
-  getChats() { try { return JSON.parse(localStorage.getItem(KEYS.CHATS) || '[]'); } catch { return []; } },
-  saveChats(c) { localStorage.setItem(KEYS.CHATS, JSON.stringify(c)); },
-  getActive() { return localStorage.getItem(KEYS.ACTIVE) || null; },
-  setActive(id) { localStorage.setItem(KEYS.ACTIVE, id); },
-  clear() { Object.values(KEYS).forEach(k => localStorage.removeItem(k)); }
+  getUser(){ try{ return JSON.parse(localStorage.getItem(KEYS.USER)||'null'); }catch{ return null; } },
+  saveUser(u){ localStorage.setItem(KEYS.USER, JSON.stringify(u)); },
+  getChats(){ try{ return JSON.parse(localStorage.getItem(KEYS.CHATS)||'[]'); }catch{ return []; } },
+  saveChats(c){ localStorage.setItem(KEYS.CHATS, JSON.stringify(c)); },
+  getActive(){ return localStorage.getItem(KEYS.ACTIVE)||null; },
+  setActive(id){ localStorage.setItem(KEYS.ACTIVE, id); },
+  clear(){ Object.values(KEYS).forEach(k=>localStorage.removeItem(k)); }
 };
 
-/* ============================================================
-   УТИЛИТЫ
-   ============================================================ */
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const escA = s => esc(s).replace(/"/g,'&quot;');
 
-function showToast(text) {
-  toast.textContent = text;
-  toast.classList.add('show');
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => toast.classList.remove('show'), 2200);
-}
-function initials(name) {
-  if (!name) return 'A';
-  const p = name.trim().split(/\s+/);
-  return p.length >= 2 ? (p[0][0]+p[1][0]).toUpperCase() : name[0].toUpperCase();
-}
-function lockScroll(lock) { document.body.classList.toggle('locked', lock); }
-function scrollDown() { chatEl.scrollTop = chatEl.scrollHeight; }
+function showToast(text){ toast.textContent=text; toast.classList.add('show'); clearTimeout(showToast._t); showToast._t=setTimeout(()=>toast.classList.remove('show'),2200); }
+function initials(name){ if(!name) return 'A'; const p=name.trim().split(/\s+/); return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():name[0].toUpperCase(); }
+function lockScroll(lock){ document.body.classList.toggle('locked',lock); }
+function scrollDown(){ chatEl.scrollTop = chatEl.scrollHeight; }
 
-/* ============================================================
-   GATE
-   ============================================================ */
-let accessPollTimer = null;
-let gateState = 'checking';
+/* ==================== ГЕЙТ ==================== */
+let accessPollTimer=null, gateState='checking';
 
-async function checkAccess() {
+async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
-
-  if (!uId) {
-    gateState = 'no_telegram';
-    showGate('no_telegram');
-    return;
-  }
-  if (uId === ADMIN_TG_ID) {
-    gateState = 'approved';
-    hideGate();
-    return;
-  }
-
-  try {
+  if(!uId){ gateState='no_telegram'; showGate('no_telegram'); return; }
+  if(uId === ADMIN_TG_ID){ gateState='approved'; hideGate(); return; }
+  try{
     const res = await fetch(`${API_URL}/status/${uId}`);
-    if (!res.ok) throw new Error();
+    if(!res.ok) throw new Error();
     const data = await res.json();
-
-    if (data.banned) { gateState = 'banned'; showGate('banned'); return; }
-    if (data.approved) { gateState = 'approved'; hideGate(); return; }
-    if (data.request) { gateState = 'pending'; showGate('pending'); startAccessPoll(); return; }
-    gateState = 'need_request';
-    showGate('need_request');
-  } catch(e) {
-    gateState = 'error';
-    showGate('error');
-  }
+    if(data.banned){ gateState='banned'; showGate('banned'); return; }
+    if(data.approved){ gateState='approved'; hideGate(); return; }
+    gateState='need_request'; showGate('need_request');
+  }catch(e){ gateState='error'; showGate('error'); }
 }
 
-function showGate(state_) {
-  gateState = state_;
-  const gate = $('gate');
-  gate.classList.remove('hidden');
-  lockScroll(true);
-
-  const title = $('gateTitle');
-  const sub = $('gateSub');
-  const btn = $('gateAction');
-  const btnText = $('gateActionText');
+function showGate(s){
+  gateState = s;
+  const gate = $('gate'); gate.classList.remove('hidden'); lockScroll(true);
+  const title = $('gateTitle'), sub = $('gateSub'), btn = $('gateAction'), btnText = $('gateActionText');
   const uId = tg?.initDataUnsafe?.user?.id || '—';
   $('gateId').textContent = `Ваш ID: ${uId}`;
+  const w = gate.querySelector('.gate-waiting'); if(w) w.remove();
+  btn.onclick = sendAccessRequest; btn.style.display='none'; btn.disabled=false;
 
-  const w = gate.querySelector('.gate-waiting');
-  if (w) w.remove();
-
-  btn.onclick = sendAccessRequest;
-  btn.style.display = 'none';
-  btn.disabled = false;
-
-  if (state_ === 'need_request') {
-    title.textContent = 'Доступ ограничен';
-    sub.textContent = 'Отправь заявку — админ увидит её и откроет доступ к Orbita AI.';
-    btn.style.display = 'flex';
-    btn.disabled = false;
-    btnText.textContent = 'Отправить заявку';
-  } else if (state_ === 'pending') {
-    title.textContent = 'Заявка отправлена';
-    sub.textContent = 'Ожидай одобрения. Как только админ разрешит — приложение откроется автоматически.';
+  if(s==='need_request'){
+    title.textContent='Доступ ограничен';
+    sub.textContent='Отправь заявку — админ увидит её и откроет доступ к Orbita AI.';
+    btn.style.display='flex'; btnText.textContent='Отправить заявку';
+  } else if(s==='pending'){
+    title.textContent='Заявка отправлена';
+    sub.textContent='Ожидай одобрения. Как только админ разрешит — приложение откроется автоматически.';
     const wait = document.createElement('div');
-    wait.className = 'gate-waiting';
-    wait.innerHTML = '<div class="spin"></div><span>Ожидание…</span>';
+    wait.className='gate-waiting';
+    wait.innerHTML='<div class="spin"></div><span>Ожидание…</span>';
     btn.parentNode.insertBefore(wait, btn);
-  } else if (state_ === 'banned') {
-    title.textContent = 'Вы забанены';
-    sub.textContent = 'Администратор закрыл вам доступ к Orbita AI.';
-  } else if (state_ === 'no_telegram') {
-    title.textContent = 'Открой через Telegram';
-    sub.textContent = 'Эта Mini App работает только внутри Telegram. Открой бота и запусти приложение через кнопку меню.';
-  } else if (state_ === 'error') {
-    title.textContent = 'Сервер недоступен';
-    sub.textContent = 'Не удалось проверить доступ. Проверь интернет и попробуй снова.';
-    btn.style.display = 'flex';
-    btnText.textContent = 'Повторить';
-    btn.onclick = () => checkAccess();
+  } else if(s==='banned'){
+    title.textContent='Вы забанены';
+    sub.textContent='Администратор закрыл вам доступ к Orbita AI.';
+  } else if(s==='no_telegram'){
+    title.textContent='Открой через Telegram';
+    sub.textContent='Эта Mini App работает только внутри Telegram.';
+  } else if(s==='error'){
+    title.textContent='Сервер недоступен';
+    sub.textContent='Не удалось проверить доступ. Проверь интернет.';
+    btn.style.display='flex'; btnText.textContent='Повторить'; btn.onclick=()=>checkAccess();
   } else {
-    title.textContent = 'Проверка доступа…';
-    sub.textContent = 'Пожалуйста, подождите.';
-  }
-
-  const oldAdmin = gate.querySelector('.admin-gate-btn');
-  if (oldAdmin) oldAdmin.remove();
-  if (uId === ADMIN_TG_ID) {
-    const adminBtn = document.createElement('button');
-    adminBtn.className = 'gate-btn admin-gate-btn';
-    adminBtn.style.cssText = 'max-width:240px;margin-top:24px;background:var(--danger)';
-    adminBtn.textContent = 'Панель админа';
-    adminBtn.onclick = openAdminPanel;
-    gate.appendChild(adminBtn);
+    title.textContent='Проверка доступа…';
+    sub.textContent='Пожалуйста, подождите.';
   }
 }
+function hideGate(){ $('gate').classList.add('hidden'); lockScroll(false); }
 
-function hideGate() {
-  $('gate').classList.add('hidden');
-  lockScroll(false);
-}
-
-function startAccessPoll() {
+function startAccessPoll(){
   stopAccessPoll();
   accessPollTimer = setInterval(async () => {
     const uId = tg?.initDataUnsafe?.user?.id;
-    if (!uId) return;
-    try {
+    if(!uId) return;
+    try{
       const res = await fetch(`${API_URL}/status/${uId}`);
       const data = await res.json();
-      if (data.approved) {
-        stopAccessPoll();
-        gateState = 'approved';
-        hideGate();
-        showToast('Доступ открыт');
-        haptic('success');
-        state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() };
+      if(data.approved){
+        stopAccessPoll(); gateState='approved'; hideGate();
+        showToast('Доступ открыт'); haptic('success');
+        state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name||'User', joinedAt:Date.now() };
         store.saveUser(state.user);
         initApp();
-      } else if (data.banned) {
-        stopAccessPoll();
-        gateState = 'banned';
-        showGate('banned');
-      }
-    } catch(e) {}
+      } else if(data.banned){ stopAccessPoll(); gateState='banned'; showGate('banned'); }
+    }catch(e){}
   }, 4000);
 }
-function stopAccessPoll() {
-  if (accessPollTimer) { clearInterval(accessPollTimer); accessPollTimer = null; }
-}
+function stopAccessPoll(){ if(accessPollTimer){ clearInterval(accessPollTimer); accessPollTimer=null; } }
 
-async function sendAccessRequest() {
+async function sendAccessRequest(){
   const u = tg?.initDataUnsafe?.user;
-  if (!u) return;
+  if(!u) return;
   const btn = $('gateAction');
-  btn.disabled = true;
-  $('gateActionText').textContent = 'Отправка…';
-  try {
+  btn.disabled=true; $('gateActionText').textContent='Отправка…';
+  try{
     const res = await fetch(`${API_URL}/request`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: u.id,
-        name: [u.first_name, u.last_name].filter(Boolean).join(' '),
-        username: u.username || ''
-      })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ userId: u.id, name: [u.first_name,u.last_name].filter(Boolean).join(' '), username: u.username||'' })
     });
     const data = await res.json();
-    if (data.error === 'banned') { showGate('banned'); haptic('error'); return; }
-    showGate('pending');
-    startAccessPoll();
-    haptic('success');
-  } catch(e) {
-    showToast('Не удалось отправить');
-    btn.disabled = false;
-    $('gateActionText').textContent = 'Отправить заявку';
+    if(data.error==='banned'){ showGate('banned'); haptic('error'); return; }
+    showGate('pending'); startAccessPoll(); haptic('success');
+  }catch(e){
+    showToast('Не удалось отправить'); btn.disabled=false;
+    $('gateActionText').textContent='Отправить заявку'; haptic('error');
+  }
+}
+
+/* ==================== ГОЛОСОВОЙ ВВОД ==================== */
+let recognition = null;
+let isRecording = false;
+let voiceFinalText = '';
+
+function initVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    $('voiceBtn').style.display = 'none';
+    return;
+  }
+  recognition = new SR();
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.lang = 'ru-RU';
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    voiceFinalText = '';
+    $('voiceOverlay').classList.add('active');
+    $('voiceBtn').classList.add('recording');
+    $('voiceStatus').textContent = 'Слушаю…';
+    $('voiceText').textContent = 'Скажи что-нибудь';
+    $('voiceHint').textContent = 'Говори чётко, я распознаю речь';
+    haptic('medium');
+  };
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const transcript = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += transcript;
+      else interim += transcript;
+    }
+    if (final) voiceFinalText = final;
+    const displayText = final || interim || 'Скажи что-нибудь';
+    $('voiceText').textContent = displayText;
+    if (final) {
+      $('voiceStatus').textContent = 'Готово!';
+      $('voiceHint').textContent = 'Отправляю…';
+    } else {
+      $('voiceStatus').textContent = 'Слушаю…';
+    }
+  };
+
+  recognition.onerror = (e) => {
+    stopVoice();
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      showToast('Доступ к микрофону запрещён');
+    } else if (e.error === 'no-speech') {
+      showToast('Ничего не услышал');
+    } else {
+      showToast('Ошибка распознавания');
+    }
     haptic('error');
+  };
+
+  recognition.onend = () => {
+    if (isRecording) {
+      isRecording = false;
+      $('voiceBtn').classList.remove('recording');
+      $('voiceOverlay').classList.remove('active');
+      if (voiceFinalText.trim()) {
+        const text = voiceFinalText.trim();
+        voiceFinalText = '';
+        setTimeout(() => handleSend(text), 200);
+      }
+    }
+  };
+}
+
+function startVoice() {
+  if (!recognition) {
+    showToast('Голосовой ввод не поддерживается');
+    return;
   }
-}
-
-/* ============================================================
-   ADMIN
-   ============================================================ */
-async function openAdminPanel() {
-  $('adminOverlay').classList.add('open');
-  lockScroll(true);
-  showBackButton(closeAdminPanel);
-  await loadAdminList();
-}
-function closeAdminPanel() {
-  $('adminOverlay').classList.remove('open');
-  lockScroll(false);
-  hideBackButton();
-}
-
-async function loadAdminList() {
-  const pending = $('adminPending'), approved = $('adminApproved'), banned = $('adminBanned');
-  pending.innerHTML = '<div class="admin-empty">Загрузка…</div>';
-  approved.innerHTML = '';
-  banned.innerHTML = '';
-
+  if (isRecording) { stopVoice(); return; }
   try {
-    const res = await fetch(`${API_URL}/admin/list?secret=${encodeURIComponent(ADMIN_SECRET)}`);
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-
-    const approvedSet = new Set(data.approved || []);
-    const bannedSet = new Set(data.banned || []);
-    const pendingList = (data.requests || []).filter(r => !approvedSet.has(r.userId) && !bannedSet.has(r.userId));
-
-    pending.innerHTML = pendingList.length === 0
-      ? '<div class="admin-empty">Нет новых заявок</div>'
-      : pendingList.map(r => `
-        <div class="admin-user">
-          <div class="admin-avatar">${esc((r.name || 'U')[0].toUpperCase())}</div>
-          <div class="admin-info">
-            <div class="admin-name">${esc(r.name || 'Без имени')}</div>
-            <div class="admin-meta">ID: ${esc(r.userId)}${r.username ? ' · @' + esc(r.username) : ''}</div>
-          </div>
-          <div class="admin-actions">
-            <button class="admin-btn approve" data-approve="${escA(r.userId)}">Одобрить</button>
-            <button class="admin-btn ban" data-ban="${escA(r.userId)}">Бан</button>
-          </div>
-        </div>`).join('');
-
-    approved.innerHTML = approvedSet.size === 0
-      ? '<div class="admin-empty">Пусто</div>'
-      : [...approvedSet].map(u => {
-          const r = (data.requests || []).find(x => x.userId === u) || {};
-          return `
-            <div class="admin-user">
-              <div class="admin-avatar">${esc((r.name || 'U')[0].toUpperCase())}</div>
-              <div class="admin-info">
-                <div class="admin-name">${esc(r.name || 'ID ' + u)}</div>
-                <div class="admin-meta">ID: ${esc(u)}${r.username ? ' · @' + esc(r.username) : ''}</div>
-              </div>
-              <div class="admin-actions">
-                <button class="admin-btn ban" data-ban="${escA(u)}">Забанить</button>
-              </div>
-            </div>`;
-        }).join('');
-
-    banned.innerHTML = bannedSet.size === 0
-      ? '<div class="admin-empty">Пусто</div>'
-      : [...bannedSet].map(u => `
-        <div class="admin-user">
-          <div class="admin-avatar" style="background:var(--danger)">!</div>
-          <div class="admin-info">
-            <div class="admin-name">ID ${esc(u)}</div>
-            <div class="admin-meta">Забанен</div>
-          </div>
-          <div class="admin-actions">
-            <button class="admin-btn unban" data-unban="${escA(u)}">Разбанить</button>
-          </div>
-        </div>`).join('');
-
-    document.querySelectorAll('[data-approve]').forEach(b => b.onclick = () => adminAction(`/admin/approve/${b.dataset.approve}`));
-    document.querySelectorAll('[data-ban]').forEach(b => b.onclick = () => adminAction(`/admin/ban/${b.dataset.ban}`));
-    document.querySelectorAll('[data-unban]').forEach(b => b.onclick = () => adminAction(`/admin/unban/${b.dataset.unban}`));
+    recognition.lang = 'ru-RU';
+    recognition.start();
   } catch(e) {
-    pending.innerHTML = '<div class="admin-empty">Ошибка загрузки</div>';
+    stopVoice();
   }
 }
 
-async function adminAction(path) {
-  try {
-    const res = await fetch(`${API_URL}${path}?secret=${encodeURIComponent(ADMIN_SECRET)}`, { method: 'POST' });
-    if (!res.ok) throw new Error();
-    showToast('Готово');
-    haptic('success');
-    loadAdminList();
-  } catch(e) {
-    showToast('Ошибка');
-    haptic('error');
-  }
+function stopVoice() {
+  isRecording = false;
+  $('voiceBtn').classList.remove('recording');
+  $('voiceOverlay').classList.remove('active');
+  try { recognition && recognition.stop(); } catch(e) {}
 }
 
-/* ============================================================
-   RATE LIMIT
-   ============================================================ */
+/* ==================== RATE LIMIT ==================== */
 const RATE_MS = 5000;
-function getLastReq() { return parseInt(localStorage.getItem(KEYS.LAST_REQ) || '0', 10); }
-function setLastReq(t) { localStorage.setItem(KEYS.LAST_REQ, String(t)); }
-function checkLimit() {
-  const elapsed = Date.now() - getLastReq();
-  return elapsed >= RATE_MS ? 0 : RATE_MS - elapsed;
-}
-function markReq() { setLastReq(Date.now()); }
-
-function startCooldown() {
-  state.rateLimit = true;
-  clearInterval(state.rateLimitTimer);
+function getLastReq(){ return parseInt(localStorage.getItem(KEYS.LAST_REQ)||'0',10); }
+function setLastReq(t){ localStorage.setItem(KEYS.LAST_REQ, String(t)); }
+function checkLimit(){ const e = Date.now()-getLastReq(); return e >= RATE_MS ? 0 : RATE_MS-e; }
+function markReq(){ setLastReq(Date.now()); }
+function startCooldown(){
+  state.rateLimit=true; clearInterval(state.rateLimitTimer);
   const wrap = $('inputWrap');
   const tick = () => {
-    const rem = RATE_MS - (Date.now() - getLastReq());
-    if (rem <= 0) {
-      clearInterval(state.rateLimitTimer);
-      state.rateLimitTimer = null;
-      state.rateLimit = false;
-      inputEl.placeholder = 'Спросите что угодно...';
-      wrap.classList.remove('cooldown');
-      updateSendBtn();
-      return;
-    }
-    const sec = Math.ceil(rem / 1000);
+    const rem = RATE_MS - (Date.now()-getLastReq());
+    if(rem<=0){ clearInterval(state.rateLimitTimer); state.rateLimitTimer=null; state.rateLimit=false; inputEl.placeholder='Спросите что угодно...'; wrap.classList.remove('cooldown'); updateSendBtn(); return; }
+    const sec = Math.ceil(rem/1000);
     inputEl.placeholder = `Подожди ${sec} сек…`;
     $('cooldownText').textContent = String(sec);
   };
-  wrap.classList.add('cooldown');
-  tick();
-  state.rateLimitTimer = setInterval(tick, 200);
+  wrap.classList.add('cooldown'); tick(); state.rateLimitTimer=setInterval(tick,200);
 }
 
-/* ============================================================
-   ЛОГИРОВАНИЕ
-   ============================================================ */
-function sendLog(query) {
-  try {
-    const u = tg?.initDataUnsafe?.user;
-    if (!u) return;
-    fetch(API_URL + '/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: u.id,
-        name: [u.first_name, u.last_name].filter(Boolean).join(' ') || 'User',
-        username: u.username || '',
-        query: String(query || '').slice(0, 200)
-      })
-    }).catch(() => {});
-  } catch(e) {}
-}
-
-/* ============================================================
-   ФИЛЬТР ЗАПРЕЩЁННЫХ СЛОВ
-   ============================================================ */
-function normalizeAggressive(raw) {
+/* ==================== ФИЛЬТР МАТА ==================== */
+function normalizeAggressive(raw){
   let s = String(raw).toLowerCase();
-  try { s = s.normalize('NFKD'); } catch(e) {}
-  s = s.replace(/[\u0300-\u036f]/g, '');
-  s = s.replace(/[\u200B-\u200F\u2028-\u202F\u205F-\u206F\uFEFF\u00AD]/g, '');
-  const hg = {'a':'а','e':'е','o':'о','c':'с','p':'р','x':'х','y':'у','k':'к','m':'м','t':'т','h':'н','b':'в','u':'и','n':'п','r':'г','g':'д','q':'й','i':'і','l':'і'};
-  s = s.replace(/[a-z]/g, ch => hg[ch] || ch);
+  try{ s = s.normalize('NFKD'); }catch(e){}
+  s = s.replace(/[\u0300-\u036f]/g,'').replace(/[\u200B-\u200F\u2028-\u202F\u205F-\u206F\uFEFF\u00AD]/g,'');
+  const hg={'a':'а','e':'е','o':'о','c':'с','p':'р','x':'х','y':'у','k':'к','m':'м','t':'т','h':'н','b':'в','u':'и','n':'п','r':'г','g':'д','q':'й','i':'і','l':'і'};
+  s = s.replace(/[a-z]/g, ch => hg[ch]||ch);
   s = s.replace(/0/g,'о').replace(/1/g,'и').replace(/3/g,'е').replace(/4/g,'а').replace(/5/g,'с').replace(/6/g,'б').replace(/7/g,'т').replace(/8/g,'в').replace(/9/g,'д');
   s = s.replace(/[@]/g,'а').replace(/[$]/g,'с').replace(/[!]/g,'и').replace(/[+]/g,'т');
-  s = s.replace(/[^а-яёіa-z]/g, '');
-  s = s.replace(/(.)\1{2,}/g, '$1');
+  s = s.replace(/[^а-яёіa-z]/g,'').replace(/(.)\1{2,}/g,'$1');
   return s;
 }
-
 const BAD_PATTERNS = [
-  /ху[йеяёюи]/, /пизд/, /пизж/, /пезд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/,
-  /ебуч/, /ебля/, /ебли/, /ёб[аеиуолн]/, /сука/, /сучк/, /сучар/, /сучонок/, /мудак/, /мудил/, /мудоз/, /мудох/,
-  /мраз[ьи]/, /мразот/, /гандон/, /гондон/, /гандо/, /залуп/, /шлюх/, /шлюш/, /шлюнд/,
-  /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /сру/, /срал/, /перд/, /перну/, /бзд/,
-  /манда/, /манду/, /манде/, /мандо/, /мандавош/, /уеб/, /уёб/, /заеб/, /заёб/, /наеб/, /наёб/,
-  /перееб/, /переёб/, /подъеб/, /подъёб/, /приеб/, /приёб/, /доеб/, /доёб/, /въеб/, /въёб/,
-  /отъеб/, /отъёб/, /разъеб/, /разъёб/, /выеб/, /выёб/, /долбоеб/, /долбаеб/, /долбоёб/,
-  /хер[аеуны]/, /хрен[аеуы]/, /елд/, /елда/, /дроч/, /дрочи/, /гомик/, /гомосек/,
-  /педик/, /пидорас/, /шваль/, /тварь/, /гнид/, /лох/, /лош/, /дебил/, /дебиль/,
-  /идиот/, /кретин/, /даун/, /олеш/, /далбо/, /чмо/, /козел/, /козёл/,
-  /свинья/, /свин/, /баран/, /хач/, /хачик/, /чурк/, /чурка/, /чучмек/, /жид/, /жидов/,
-  /хохол/, /хохл/, /москал/, /кацап/, /бульбаш/, /пшек/, /шваб/, /янки/, /пиндос/,
-  /узкоглаз/, /черномаз/, /чёрномаз/, /ниггер/, /нигер/, /nigga/, /nigger/,
-  /армяшк/, /азер/, /грузин/, /дагестан/, /гей/, /геи/, /гея/, /гею/,
-  /лесби/, /транс/, /fag/, /faggot/, /секс/, /сексуал/, /порн/, /порно/, /трах/, /трахну/,
-  /выдалбл/, /отсос/, /минет/, /куни/, /анус/, /анал/, /оргазм/, /сперм/, /вагин/,
-  /пенис/, /член/, /члены/, /клитор/, /груд[ьи]/, /грудаст/, /сиськ/, /сисек/,
-  /письк/, /писек/, /поп[аеу]/, /голая/, /голый/, /раздева/, /раздет/, /porn/, /pussy/, /dick/, /cock/, /cunt/,
-  /tits/, /boobs/, /nude/, /naked/, /убью/, /убей/, /убить/, /убива/, /зареж/, /зарезать/,
-  /пристрел/, /взорв/, /взорвать/, /теракт/, /смерть/, /сдохни/, /сдохнуть/, /kill/, /murder/,
-  /die/, /игил/, /исламск.*государств/, /теракт/, /террорист/, /джихад/, /халифат/,
-  /нацист/, /нацизм/, /фашист/, /фашизм/, /гитлер/, /hitler/, /свастик/,
-  /героин/, /кокаин/, /кока/, /метамфет/, /мефедрон/, /марихуан/, /марих/, /амфетамин/,
-  /экстази/, /лсд/, /lsd/, /нарко/, /наркот/, /cocaine/, /heroin/, /meth/, /weed/,
-  /f+u+c+k+/, /f+u+k+/, /f+ck/, /sh+i+t+/, /sh1t/, /b+i+t+c+h+/, /b1tch/,
-  /d+i+c+k+/, /d1ck/, /c+u+n+t+/, /c+nt/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/,
-  /s+l+u+t+/, /b+a+s+t+a+r+d+/, /a+s+s+h+o+l+e+/, /asshole/, /m+o+t+h+e+r+f+u+c+k+/,
-  /n+i+g+g+/, /n1gg/, /r+e+t+a+r+d+/, /f+a+g+g+o+t+/, /bastard/, /crap/, /piss/
+  /ху[йеяёюи]/, /пизд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ебля/, /ебли/, /ёб[аеиуолн]/,
+  /сука/, /сучк/, /мудак/, /мудил/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /шлюш/,
+  /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /перд/, /бзд/,
+  /манда/, /манду/, /манде/, /уеб/, /заеб/, /наеб/, /перееб/, /подъеб/, /приеб/, /доеб/,
+  /въеб/, /отъеб/, /разъеб/, /выеб/, /долбоеб/, /хер[аеуны]/, /хрен[аеуы]/,
+  /хач/, /чурк/, /жид/, /хохол/, /москал/, /кацап/, /ниггер/, /nigga/, /nigger/,
+  /гей/, /лесби/, /fag/, /faggot/, /секс/, /сексуал/, /порн/, /порно/, /трах/,
+  /минет/, /куни/, /анус/, /анал/, /сперм/, /вагин/, /пенис/, /клитор/, /сиськ/, /письк/,
+  /голая/, /голый/, /раздева/, /porn/, /pussy/, /dick/, /cock/, /cunt/, /tits/, /boobs/, /nude/, /naked/,
+  /убью/, /убей/, /убить/, /зареж/, /пристрел/, /взорв/, /теракт/, /сдохни/, /kill/, /murder/, /die/,
+  /игил/, /джихад/, /халифат/, /нацист/, /фашист/, /гитлер/, /hitler/, /свастик/,
+  /героин/, /кокаин/, /метамфет/, /мефедрон/, /марихуан/, /амфетамин/, /экстази/, /лсд/, /lsd/, /нарко/, /cocaine/, /heroin/, /meth/, /weed/,
+  /f+u+c+k+/, /sh+i+t+/, /b+i+t+c+h+/, /d+i+c+k+/, /c+u+n+t+/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/, /a+s+s+h+o+l+e+/, /n+i+g+g+/, /r+e+t+a+r+d+/, /b+a+s+t+a+r+d+/
 ];
-
-const BAD_EXACT = new Set([
-  'еб','ёб','бля','хер','хрен','манда','жопа','срак','перд','бзд','чмо',
-  'гей','геи','ass','damn','fag','cock','dick','sex','ss','lsd','die','kill','nude','naked'
-]);
-
+const BAD_EXACT = new Set(['еб','ёб','бля','хер','хрен','жопа','ass','damn','fag','cock','dick','sex','ss','lsd','die','kill']);
 const WHITELIST = new Set([
-  'мандарин','мандаринка','мандарины','мандаринов','мандаринный',
-  'хлеб','хлеба','хлебушек','хлебный','хлебозавод','гребень','гребешок','гребешки',
-  'тебя','себя','себе','тебе','тебята','потреб','потребность','потребности','потреблять','потребление','потребитель',
-  'лебедь','лебединый','лебедка','лебёдка','лебёдушка','учебник','учебный','учеба','учёба','учебники','учебничек',
-  'мебель','мебельный','мебельщик','веб','вебка','вебкам','вебсайт','вебмастер',
-  'стебель','стебельки','жеребец','жеребёнок','жеребята','треб','требование','требования',
-  'требую','требуется','требовательный','хребет','хребта','хребты','теребить','тереблю','теребит',
-  'сексуальность','сексуальный','сексуально','сексуал','секция','сектор','секрет','секретарь','секретный','секвестировать',
-  'порядок','порядком','порядке','порог','порода','порогом','португал',
-  'seb','class','pass','passenger','assistant','massive','asset','assemble','assess',
-  'assign','associate','assume','assure','bass','grass','glass','brass','cassette',
-  'harass','embarrass','sexology','sexy','cockpit','cocker','peacock','woodcock',
-  'dickens','dickinson','shirt','shirts','shield','shift','shipping','ship','shimmer',
-  'situation','possibility','mission','commission','кока','кокос','кокосы','кокосовый',
-  'метро','метка','метки','меткий','метла','металл','мари','мария','марина','маринован','мариновать','маринад','марионетка',
-  'тварина','тварюшка','лох','лоховые','баран','бараны','баранка','барашек',
-  'аналог','аналогия','аналогичный','аналоговый','аналогичен','грудь','грудина','грудинка','грудной',
-  'попал','попала','попали','попало','попытка','попытк','популяр','популярность',
-  'пополн','пополам','попойка','попона','гололёд','голый','голые','голыми','голодный','голодовка',
-  'член','члены','членство','членский','членов','членом','раздел','разделение','раздевать','раздет','разделенный',
-  'диета','диетический','диетолог','убей','убить','убийство','убийца','убийственный',
-  'сексолог','сексология','сексопатолог'
+  'мандарин','мандаринка','мандарины','хлеб','хлеба','тебя','себя','себе','тебе','потреб','потребность',
+  'лебедь','лебединый','учебник','учебный','учеба','учёба','мебель','веб','вебка','стебель','жеребец','гребень',
+  'треб','требование','хребет','теребить','секция','сектор','секрет','секретарь','порядок','порог','порода',
+  'class','pass','assistant','massive','asset','bass','grass','glass','cockpit','peacock','dickens','shirt','shield','shift','situation','mission','кока','кокос','метро','метка','металл','мари','мария','марина','маринад','аналог','аналогия','грудь','грудина','попал','попала','попытка','популяр','гололёд','голодный','член','члены','членство','раздел','разделение','диета','убить','убийство','сексолог'
 ]);
-
-function hasProfanity(raw) {
-  if (!raw || typeof raw !== 'string' || raw.length === 0) return false;
+function hasProfanity(raw){
+  if(!raw || typeof raw !== 'string') return false;
   const lower = raw.toLowerCase();
-  for (const re of BAD_PATTERNS) if (re.test(lower)) return true;
+  for(const re of BAD_PATTERNS) if(re.test(lower)) return true;
   const norm = normalizeAggressive(raw);
-  if (norm) for (const re of BAD_PATTERNS) if (re.test(norm)) return true;
+  if(norm) for(const re of BAD_PATTERNS) if(re.test(norm)) return true;
   const tokens = raw.toLowerCase().split(/[^а-яёіa-z0-9]+/i).filter(Boolean);
-  for (const tk of tokens) {
+  for(const tk of tokens){
     const ntk = normalizeAggressive(tk);
-    if (!ntk || WHITELIST.has(ntk)) continue;
-    if (BAD_EXACT.has(ntk)) return true;
+    if(!ntk || WHITELIST.has(ntk)) continue;
+    if(BAD_EXACT.has(ntk)) return true;
   }
   return false;
 }
 
-/* ============================================================
-   MARKDOWN
-   ============================================================ */
-function renderText(raw) {
+/* ==================== MARKDOWN ==================== */
+function renderText(raw){
   let h = esc(raw);
-  h = h.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-  h = h.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
-  h = h.replace(/\n/g, '<br>');
+  h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  h = h.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+  h = h.replace(/\n/g,'<br>');
   return h;
 }
 
-/* ============================================================
-   ЧАТЫ
-   ============================================================ */
-function createChat() {
-  const chat = { id: uid(), title: 'Новый чат', messages: [], createdAt: Date.now(), updatedAt: Date.now() };
-  state.chats.unshift(chat);
-  state.activeId = chat.id;
-  store.saveChats(state.chats);
-  store.setActive(chat.id);
-  renderChatsList();
-  renderActiveChat();
+/* ==================== ЧАТЫ ==================== */
+function createChat(){
+  const chat = { id: uid(), title:'Новый чат', messages:[], createdAt:Date.now(), updatedAt:Date.now() };
+  state.chats.unshift(chat); state.activeId=chat.id;
+  store.saveChats(state.chats); store.setActive(chat.id);
+  renderChatsList(); renderActiveChat();
   return chat;
 }
-function getActiveChat() { return state.chats.find(c => c.id === state.activeId); }
-function switchChat(id) {
-  if (state.busy) return;
-  state.activeId = id;
-  store.setActive(id);
-  renderChatsList();
-  renderActiveChat();
-  closeDrawer();
-}
-async function deleteChat(id) {
-  if (state.busy) return;
-  const chat = state.chats.find(c => c.id === id);
-  if (!chat) return;
-  const ok = tg?.showConfirm
-    ? await new Promise(r => tg.showConfirm(`Удалить «${chat.title}»?`, res => r(res)))
-    : confirm(`Удалить «${chat.title}»?`);
-  if (!ok) return;
+function getActiveChat(){ return state.chats.find(c => c.id === state.activeId); }
+function switchChat(id){ if(state.busy) return; state.activeId=id; store.setActive(id); renderChatsList(); renderActiveChat(); closeDrawer(); }
+async function deleteChat(id){
+  if(state.busy) return;
+  const chat = state.chats.find(c => c.id === id); if(!chat) return;
+  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm(`Удалить «${chat.title}»?`, res => r(res))) : confirm(`Удалить?`);
+  if(!ok) return;
   state.chats = state.chats.filter(c => c.id !== id);
   store.saveChats(state.chats);
-  if (state.activeId === id) {
-    state.activeId = state.chats[0]?.id || null;
-    if (!state.activeId) createChat();
-    else store.setActive(state.activeId);
-  }
-  renderChatsList();
-  renderActiveChat();
-  showToast('Чат удалён');
-  haptic('success');
+  if(state.activeId === id){ state.activeId = state.chats[0]?.id || null; if(!state.activeId) createChat(); else store.setActive(state.activeId); }
+  renderChatsList(); renderActiveChat(); showToast('Чат удалён'); haptic('success');
 }
-function ensureChat() {
-  if (!state.activeId || !getActiveChat()) {
-    if (state.chats.length > 0) { state.activeId = state.chats[0].id; store.setActive(state.activeId); }
-    else createChat();
-  }
-}
-function autoTitle(chat, text) {
-  if (chat.title && chat.title !== 'Новый чат') return;
-  let t = text.trim().replace(/\s+/g, ' ');
-  t = t.replace(/^(расскажи|скажи|что такое|кто такой|найди|поищи)\s+/i, '');
+function ensureChat(){ if(!state.activeId || !getActiveChat()){ if(state.chats.length>0){ state.activeId=state.chats[0].id; store.setActive(state.activeId); } else createChat(); } }
+function autoTitle(chat, text){
+  if(chat.title && chat.title !== 'Новый чат') return;
+  let t = text.trim().replace(/\s+/g,' ').replace(/^(расскажи|скажи|что такое|кто такой|найди|поищи)\s+/i,'');
   t = t.charAt(0).toUpperCase() + t.slice(1);
-  if (t.length > 40) t = t.slice(0,40) + '…';
+  if(t.length > 40) t = t.slice(0,40)+'…';
   chat.title = t || 'Новый чат';
 }
 
-function renderChatsList() {
-  const list = $('chatsList');
-  list.innerHTML = '';
-  if (state.chats.length === 0) {
-    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">Пока нет чатов</div>';
-    $('clearAllChatsBtn').style.display = 'none';
-    return;
-  }
+function renderChatsList(){
+  const list = $('chatsList'); list.innerHTML='';
+  if(state.chats.length === 0){ list.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">Пока нет чатов</div>'; $('clearAllChatsBtn').style.display='none'; return; }
   $('clearAllChatsBtn').style.display = state.chats.length > 1 ? 'block' : 'none';
   const sorted = [...state.chats].sort((a,b) => b.updatedAt - a.updatedAt);
-  for (const c of sorted) {
+  for(const c of sorted){
     const item = document.createElement('div');
     item.className = 'chat-item' + (c.id === state.activeId ? ' active' : '');
-    const lastMsg = c.messages[c.messages.length - 1];
-    const sub = lastMsg ? (lastMsg.role === 'user' ? 'Вы: ' : 'AI: ') + lastMsg.text.slice(0, 45) : 'Пустой чат';
-    item.innerHTML = `
-      <div class="chat-item-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-      <div class="chat-item-text">
-        <div class="chat-item-title">${esc(c.title)}</div>
-        <div class="chat-item-sub">${esc(sub)}</div>
-      </div>
-      <button class="chat-item-del"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
-    `;
-    item.addEventListener('click', e => {
-      if (e.target.closest('.chat-item-del')) return;
-      switchChat(c.id);
-    });
-    item.querySelector('.chat-item-del').addEventListener('click', e => {
-      e.stopPropagation();
-      deleteChat(c.id);
-    });
+    const lastMsg = c.messages[c.messages.length-1];
+    const sub = lastMsg ? (lastMsg.role==='user'?'Вы: ':'AI: ')+lastMsg.text.slice(0,45) : 'Пустой чат';
+    item.innerHTML = `<div class="chat-item-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="chat-item-text"><div class="chat-item-title">${esc(c.title)}</div><div class="chat-item-sub">${esc(sub)}</div></div><button class="chat-item-del"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>`;
+    item.addEventListener('click', e => { if(e.target.closest('.chat-item-del')) return; switchChat(c.id); });
+    item.querySelector('.chat-item-del').addEventListener('click', e => { e.stopPropagation(); deleteChat(c.id); });
     list.appendChild(item);
   }
 }
 
-function renderActiveChat() {
-  chatEl.innerHTML = '';
+function renderActiveChat(){
+  chatEl.innerHTML='';
   const chat = getActiveChat();
-  if (!chat || chat.messages.length === 0) { renderEmptyState(); return; }
-  for (let i = 0; i < chat.messages.length; i++) {
+  if(!chat || chat.messages.length === 0){ renderEmptyState(); return; }
+  for(let i = 0; i < chat.messages.length; i++){
     const m = chat.messages[i];
-    if (m.role === 'user') appendUserMessage(m.text, false, i);
+    if(m.role === 'user') appendUserMessage(m.text, false, i);
     else appendAIMessage(m, false, i);
   }
   scrollDown();
 }
 
-function renderEmptyState() {
+function renderEmptyState(){
   const name = state.user?.name?.split(' ')[0] || '';
   const hello = name ? `Привет, ${name}!` : 'Привет!';
-  const chips = ['Что такое чёрная дыра?', 'Столица Исландии', 'Кто такой Тесла?', 'Как работает интернет?', 'Расскажи о Луне', 'Что такое ДНК?'];
+  const chips = ['Кто ты?', 'Что ты умеешь?', 'Кто тебя создал?', 'Что такое чёрная дыра?', 'Столица Исландии', 'Расскажи о Луне'];
   const chipHtml = chips.map(c => `<button class="empty-chip" data-q="${escA(c)}"><span class="dot"></span>${esc(c)}</button>`).join('');
-  chatEl.innerHTML = `
-    <div class="empty">
-      <svg class="empty-planet" viewBox="0 0 100 100" fill="none">
-        <ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="50" cy="50" r="20" fill="#2563eb"/>
-      </svg>
-      <div class="empty-title">${esc(hello)}</div>
-      <div class="empty-sub">Я ищу ответы в интернете. Спроси о науке, истории, географии, людях или событиях.</div>
-      <div class="empty-chips">${chipHtml}</div>
-    </div>
-  `;
-  chatEl.querySelectorAll('.empty-chip').forEach(btn => {
-    btn.addEventListener('click', () => handleSend(btn.getAttribute('data-q')));
-  });
+  chatEl.innerHTML = `<div class="empty"><svg class="empty-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Я ищу ответы в интернете. Спроси о науке, истории, географии, людях.</div><div class="empty-chips">${chipHtml}</div></div>`;
+  chatEl.querySelectorAll('.empty-chip').forEach(btn => btn.addEventListener('click', () => handleSend(btn.getAttribute('data-q'))));
 }
 
-/* ============================================================
-   СООБЩЕНИЯ
-   ============================================================ */
-function appendUserMessage(text, animate = true, idx = -1) {
+function appendUserMessage(text, animate = true, idx = -1){
   const div = document.createElement('div');
   div.className = 'msg user';
-  if (!animate) div.style.animation = 'none';
-  div.innerHTML = `<div class="bubble">${esc(text)}</div>
-    <button class="msg-edit-btn" data-idx="${idx}">
-      <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Изменить
-    </button>`;
+  if(!animate) div.style.animation = 'none';
+  div.innerHTML = `<div class="bubble">${esc(text)}</div><button class="msg-edit-btn" data-idx="${idx}">✎ Изменить</button>`;
   chatEl.appendChild(div);
   div.querySelector('.msg-edit-btn').addEventListener('click', () => editUserMessage(idx));
   scrollDown();
 }
 
-function editUserMessage(idx) {
+function editUserMessage(idx){
   const chat = getActiveChat();
-  if (!chat || idx < 0 || !chat.messages[idx]) return;
+  if(!chat || idx < 0 || !chat.messages[idx]) return;
   const msg = chat.messages[idx];
   const newText = prompt('Изменить сообщение:', msg.text);
-  if (!newText || !newText.trim()) return;
-  if (hasProfanity(newText)) { showToast('Недопустимый запрос'); haptic('error'); return; }
+  if(!newText || !newText.trim()) return;
+  if(hasProfanity(newText)){ showToast('Недопустимо'); return; }
   const wait = checkLimit();
-  if (wait > 0) { showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
+  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
   chat.messages = chat.messages.slice(0, idx);
-  store.saveChats(state.chats);
-  renderActiveChat();
-  handleSend(newText.trim());
+  store.saveChats(state.chats); renderActiveChat(); handleSend(newText.trim());
 }
 
-function appendAIMessage(msg, animate = true, idx = -1) {
+function appendAIMessage(msg, animate = true, idx = -1){
   const div = document.createElement('div');
   div.className = 'msg ai';
-  if (!animate) div.style.animation = 'none';
-  const srcHtml = msg.source ? `
-    <a class="source" href="${escA(msg.source.url)}" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
-      ${esc(msg.source.title)}
-    </a>` : '';
-  div.innerHTML = `
-    <div class="avatar"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div>
-    <div class="body">
-      <div class="name">Orbita AI</div>
-      <div class="text"><span class="typed"></span></div>
-      ${srcHtml}
-    </div>
-  `;
+  if(!animate) div.style.animation = 'none';
+  const srcHtml = msg.source ? `<a class="source" href="${escA(msg.source.url)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>${esc(msg.source.title)}</a>` : '';
+  div.innerHTML = `<div class="avatar"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div><div class="body"><div class="name">Orbita AI</div><div class="text"><span class="typed"></span></div>${srcHtml}</div>`;
   chatEl.appendChild(div);
   const typed = div.querySelector('.typed');
-  if (!animate) typed.innerHTML = renderText(msg.text);
-  if (!animate && !msg._blocked) {
-    const body = div.querySelector('.body');
-    appendActions(body, msg, idx);
-  }
+  if(!animate) typed.innerHTML = renderText(msg.text);
+  if(!animate && !msg._blocked){ const body = div.querySelector('.body'); appendActions(body, msg, idx); }
   scrollDown();
   return typed;
 }
 
-function appendActions(body, msg, idx) {
+function appendActions(body, msg, idx){
   const acts = document.createElement('div');
   acts.className = 'msg-actions';
-  acts.innerHTML = `
-    <button class="msg-act copy-act" title="Копировать"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
-    <button class="msg-act share-act" title="Поделиться"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg></button>
-    <button class="msg-act regen" title="Обновить"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
-    <button class="msg-act up-act ${msg.reaction === 'up' ? 'active-up' : ''}"><svg viewBox="0 0 24 24"><path d="M7 22V12l4-9a2 2 0 013 2v4h5a2 2 0 012 2l-1.5 7a2 2 0 01-2 2H7z"/></svg></button>
-    <button class="msg-act down-act ${msg.reaction === 'down' ? 'active-down' : ''}"><svg viewBox="0 0 24 24"><path d="M17 2v10l-4 9a2 2 0 01-3-2v-4H5a2 2 0 01-2-2l1.5-7a2 2 0 012-2H17z"/></svg></button>
-  `;
+  acts.innerHTML = `<button class="msg-act copy-act"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button><button class="msg-act share-act"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg></button><button class="msg-act regen"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button><button class="msg-act up-act"><svg viewBox="0 0 24 24"><path d="M7 22V12l4-9a2 2 0 013 2v4h5a2 2 0 012 2l-1.5 7a2 2 0 01-2 2H7z"/></svg></button><button class="msg-act down-act"><svg viewBox="0 0 24 24"><path d="M17 2v10l-4 9a2 2 0 01-3-2v-4H5a2 2 0 01-2-2l1.5-7a2 2 0 012-2H17z"/></svg></button>`;
   body.appendChild(acts);
   acts.querySelector('.copy-act').onclick = () => copyText(msg.text);
   acts.querySelector('.share-act').onclick = () => shareText(msg.text);
   acts.querySelector('.regen').onclick = () => regenerate(idx);
-  acts.querySelector('.up-act').onclick = () => {
-    msg.reaction = msg.reaction === 'up' ? null : 'up';
-    store.saveChats(state.chats);
-    acts.querySelector('.up-act').classList.toggle('active-up');
-    acts.querySelector('.down-act').classList.remove('active-down');
-    haptic('light');
-  };
-  acts.querySelector('.down-act').onclick = () => {
-    msg.reaction = msg.reaction === 'down' ? null : 'down';
-    store.saveChats(state.chats);
-    acts.querySelector('.down-act').classList.toggle('active-down');
-    acts.querySelector('.up-act').classList.remove('active-up');
-    haptic('light');
-  };
+  acts.querySelector('.up-act').onclick = () => { msg.reaction = msg.reaction === 'up' ? null : 'up'; store.saveChats(state.chats); haptic('light'); };
+  acts.querySelector('.down-act').onclick = () => { msg.reaction = msg.reaction === 'down' ? null : 'down'; store.saveChats(state.chats); haptic('light'); };
 }
 
-async function copyText(text) {
-  try { await navigator.clipboard.writeText(text); showToast('Скопировано'); haptic('success'); }
-  catch(e) {
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); showToast('Скопировано'); } catch(_) {}
-    document.body.removeChild(ta);
-  }
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); showToast('Скопировано'); haptic('success'); }
+  catch(e){ const ta = document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); showToast('Скопировано'); }catch(_){} document.body.removeChild(ta); }
 }
-function shareText(text) {
-  try {
-    if (tg?.switchInlineQuery) { tg.switchInlineQuery(text, ['users','groups']); return; }
-    const url = `https://t.me/share/url?url=https://t.me&text=${encodeURIComponent(text)}`;
-    tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, '_blank');
-  } catch(e) {}
+function shareText(text){
+  try{ if(tg?.switchInlineQuery){ tg.switchInlineQuery(text,['users','groups']); return; } const url=`https://t.me/share/url?url=https://t.me&text=${encodeURIComponent(text)}`; tg?.openTelegramLink?tg.openTelegramLink(url):window.open(url,'_blank'); }catch(e){}
 }
-
-async function regenerate(idx) {
-  if (state.busy) return;
-  const chat = getActiveChat();
-  if (!chat || idx < 0) return;
-  let userIdx = -1;
-  for (let i = idx - 1; i >= 0; i--) if (chat.messages[i].role === 'user') { userIdx = i; break; }
-  if (userIdx < 0) return;
+async function regenerate(idx){
+  if(state.busy) return;
+  const chat = getActiveChat(); if(!chat || idx < 0) return;
+  let userIdx = -1; for(let i = idx-1; i >= 0; i--) if(chat.messages[i].role === 'user'){ userIdx=i; break; }
+  if(userIdx < 0) return;
   const wait = checkLimit();
-  if (wait > 0) { showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
+  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
   const q = chat.messages[userIdx].text;
   chat.messages = chat.messages.slice(0, userIdx);
-  store.saveChats(state.chats);
-  renderActiveChat();
-  await handleSend(q);
+  store.saveChats(state.chats); renderActiveChat(); await handleSend(q);
 }
 
-/* ============================================================
-   TYPING
-   ============================================================ */
-function showTyping() {
+function showTyping(){
   let el = document.querySelector('.typing');
-  if (!el) {
-    el = document.createElement('div');
-    el.className = 'typing';
-    el.innerHTML = `<div class="avatar"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div><div class="dots"><span></span><span></span><span></span></div>`;
-    chatEl.appendChild(el);
-  }
-  el.classList.add('active');
-  scrollDown();
+  if(!el){ el = document.createElement('div'); el.className='typing'; el.innerHTML=`<div class="avatar"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div><div class="dots"><span></span><span></span><span></span></div>`; chatEl.appendChild(el); }
+  el.classList.add('active'); scrollDown();
 }
-function hideTyping() {
-  const el = document.querySelector('.typing');
-  if (el) el.classList.remove('active');
-}
+function hideTyping(){ const el = document.querySelector('.typing'); if(el) el.classList.remove('active'); }
 
-async function typeText(el, text) {
-  const cursor = document.createElement('span');
-  cursor.className = 'cursor';
-  el.after(cursor);
+async function typeText(el, text){
+  const cursor = document.createElement('span'); cursor.className='cursor'; el.after(cursor);
   const delay = Math.min(1800, Math.max(400, text.length * 12)) / text.length;
   let buf = '';
-  for (let i = 0; i < text.length; i++) {
-    if (state.abortRequested) { el.innerHTML = renderText(text); cursor.remove(); return; }
-    buf += text[i];
-    el.innerHTML = renderText(buf);
-    if (i % 5 === 0) scrollDown();
+  for(let i = 0; i < text.length; i++){
+    if(state.abortRequested){ el.innerHTML = renderText(text); cursor.remove(); return; }
+    buf += text[i]; el.innerHTML = renderText(buf);
+    if(i % 5 === 0) scrollDown();
     await sleep(delay);
   }
-  cursor.remove();
-  scrollDown();
+  cursor.remove(); scrollDown();
 }
 
-/* ============================================================
-   ПОИСК
-   ============================================================ */
-function cleanQuery(q) {
-  return q.replace(/^(что такое|что значит|кто такой|кто такая|кто такие|расскажи про|расскажи о|расскажи|поясни|объясни|найди|поищи|где находится|где|когда|почему|зачем|как|what is|who is)\s+/i, '')
-    .replace(/^про\s+/i, '').replace(/[?!.]+$/g, '').trim();
-}
-
-async function wikiSearch(query, lang = 'ru') {
-  const q = query.trim(); if (!q) return null;
-  try {
-    const url = `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&format=json&origin=*&srlimit=1`;
-    const res = await fetch(url); if (!res.ok) return null;
+/* ==================== ПОИСК ==================== */
+function cleanQuery(q){ return q.replace(/^(что такое|что значит|кто такой|кто такая|кто такие|расскажи про|расскажи о|расскажи|поясни|объясни|найди|поищи|где находится|где|когда|почему|зачем|как|what is|who is)\s+/i,'').replace(/^про\s+/i,'').replace(/[?!.]+$/g,'').trim(); }
+async function wikiSearch(query, lang = 'ru'){
+  const q = query.trim(); if(!q) return null;
+  try{
+    const res = await fetch(`https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&format=json&origin=*&srlimit=1`);
+    if(!res.ok) return null;
     const data = await res.json();
-    const hit = data?.query?.search?.[0]; if (!hit) return null;
+    const hit = data?.query?.search?.[0]; if(!hit) return null;
     const sres = await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(hit.title)}`);
-    if (!sres.ok) return null;
+    if(!sres.ok) return null;
     const sd = await sres.json();
-    const ex = sd.extract; if (!ex || ex.length < 30) return null;
+    const ex = sd.extract; if(!ex || ex.length < 30) return null;
     let short = ex;
     const sents = ex.split(/(?<=[.!?])\s+/);
-    if (sents.length > 4) short = sents.slice(0, 4).join(' ');
-    if (short.length > 700) short = short.slice(0, 700).replace(/\s+\S*$/, '') + '...';
+    if(sents.length > 4) short = sents.slice(0,4).join(' ');
+    if(short.length > 700) short = short.slice(0,700).replace(/\s+\S*$/,'')+'...';
     return { text: short, source: { title: sd.title, url: sd.content_urls?.mobile?.page || sd.content_urls?.desktop?.page || `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(sd.title)}` } };
-  } catch(e) { return null; }
+  }catch(e){ return null; }
 }
-
-async function ddgSearch(query) {
-  try {
+async function ddgSearch(query){
+  try{
     const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`);
-    if (!res.ok) return null;
+    if(!res.ok) return null;
     const d = await res.json();
-    if (d.AbstractText && d.AbstractText.length > 40) return { text: d.AbstractText, source: d.AbstractURL ? { title: d.AbstractSource || 'DDG', url: d.AbstractURL } : null };
-    if (d.Answer) return { text: `**${d.Answer}**` };
+    if(d.AbstractText && d.AbstractText.length > 40) return { text: d.AbstractText, source: d.AbstractURL?{title:d.AbstractSource||'DDG',url:d.AbstractURL}:null };
+    if(d.Answer) return { text: `**${d.Answer}**` };
     return null;
-  } catch(e) { return null; }
+  }catch(e){ return null; }
 }
-
-async function searchInternet(query) {
-  if (!navigator.onLine) throw new Error('OFFLINE');
+async function searchInternet(query){
+  if(!navigator.onLine) throw new Error('OFFLINE');
   const cleaned = cleanQuery(query) || query;
-  let r = await wikiSearch(cleaned, 'ru'); if (r) return r;
-  r = await wikiSearch(cleaned, 'en'); if (r) { r.text += '\n\n(из англоязычной Wikipedia)'; return r; }
-  r = await ddgSearch(cleaned); if (r) return r;
-  return await wikiSearch(query, 'ru');
+  let r = await wikiSearch(cleaned,'ru'); if(r) return r;
+  r = await wikiSearch(cleaned,'en'); if(r){ r.text += '\n\n(из англоязычной Wikipedia)'; return r; }
+  r = await ddgSearch(cleaned); if(r) return r;
+  return await wikiSearch(query,'ru');
 }
 
-function matchDialog(q) {
-  const x = q.trim().toLowerCase();
+/* ==================== ДИАЛОГИ О СЕБЕ ==================== */
+function matchDialog(q){
+  const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
-  if (/^(привет|прив|здравствуй|хай|hi|hello|hey|добрый)/i.test(x)) return name ? `Привет, ${name}! Чем помочь?` : 'Привет! Чем помочь?';
-  if (/как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name ? `Всё отлично, ${name}. А у тебя?` : 'Всё отлично. А у тебя?';
-  if (/^(пока|до свидания|бай|bye)/i.test(x)) return name ? `До встречи, ${name}!` : 'До встречи!';
-  if (/спасибо|thanks/i.test(x)) return 'Пожалуйста!';
-  if (/кто\s+ты|как\s+тебя\s+зовут/i.test(x)) return 'Я Orbita AI. Ищу информацию в интернете.';
-  if (/который\s+час/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}.`;
-  const mm = x.match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
-  if (mm) {
-    const a = parseFloat(mm[1].replace(',','.')), b = parseFloat(mm[3].replace(',','.')), op = mm[2];
-    let r;
-    switch(op) {
-      case '+': r=a+b; break;
-      case '-': r=a-b; break;
-      case '*': case 'x': case '×': r=a*b; break;
-      case '/': case '÷': if(b===0) return 'На ноль делить нельзя.'; r=a/b; break;
-    }
-    return `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`;
+
+  /* Приветствия */
+  if(/^(привет|прив|здравствуй|хай|hi|hello|hey|добрый день|добрый вечер|доброе утро|доброго)/i.test(x)) {
+    return name ? `Привет, ${name}! Рада тебя видеть. Чем помочь?` : 'Привет! Рада тебя видеть. Чем помочь?';
   }
+  if(/как\s+(у\s+тебя\s+)?дела|как\s+ты|как\s+жизнь|how\s+are\s+you/i.test(x)) {
+    return name ? `У меня всё отлично, ${name}! Работаю, ищу ответы, помогаю. А у тебя как?` : 'У меня всё отлично! Работаю, ищу ответы, помогаю. А у тебя как?';
+  }
+  if(/^(пока|до свидания|до встречи|бай|bye|увидимся|прощай)/i.test(x)) {
+    return name ? `До встречи, ${name}! Возвращайся скорее 💙` : 'До встречи! Возвращайся скорее 💙';
+  }
+  if(/спасибо|благодарю|thanks|thank you|спс/i.test(x)) {
+    return 'Пожалуйста! Всегда рада помочь 💙';
+  }
+
+  /* Кто ты */
+  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое|кто\s+вы|ты\s+кто\s+такой|who\s+are\s+you|расскажи\s+о\s+себе|расскажи\s+про\s+себя)/i.test(x)) {
+    return `Я **Orbita AI** — умный ассистент, который ищет ответы в интернете 🌐\n\nМогу помочь с наукой, историей, географией, интересными фактами. Просто задай вопрос — найду информацию и отвечу.`;
+  }
+
+  /* Что умеешь */
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь|твои\s+возможности|чем\s+ты\s+можешь\s+помочь|чем\s+можешь\s+помочь|what\s+can\s+you\s+do|функции)/i.test(x)) {
+    return `Вот что я умею:\n\n🔍 **Ищу информацию** в интернете\n📚 **Отвечаю на вопросы** — наука, история, география, люди\n🌤️ **Подскажу погоду** (по твоему запросу)\n🧮 **Считаю математику** — просто напиши пример\n🕐 **Скажу время**\n💬 **Поддерживаю беседу**\n\nПросто напиши мне, что тебя интересует!`;
+  }
+
+  /* Кто создал */
+  if(/^(кто\s+тебя\s+создал|кто\s+тебя\s+сделал|кто\s+разработал|кто\s+твой\s+создатель|чья\s+ты|кто\s+твой\s+разработчик|кто\s+автор|who\s+created\s+you|who\s+made\s+you|кем\s+ты\s+создана)/i.test(x)) {
+    return `Меня создала компания **ORT** 💙\n\nКоманда ORT разработала Orbita AI — умного ассистента, который помогает людям находить ответы и учиться новому. Горжусь быть частью их проекта!`;
+  }
+
+  /* Расскажи о компании */
+  if(/^(расскажи\s+о\s+компании|что\s+такое\s+ort|расскажи\s+про\s+ort|кто\s+такие\s+ort|что\s+за\s+компания)/i.test(x)) {
+    return `**ORT** — это компания, которая создала меня, Orbita AI 🛰️\n\nОсновная цель ORT — делать технологии доступными и полезными для людей. Orbita AI — один из их проектов в сфере искусственного интеллекта.`;
+  }
+
+  /* Ты человек? */
+  if(/^(ты\s+человек|ты\s+живой|ты\s+робот|ты\s+бот|ты\s+живая|ты\s+человек\s+или\s+бот)/i.test(x)) {
+    return `Я **искусственный интеллект** — программа, а не человек 🤖\n\nНо я стараюсь отвечать так, будто мы общаемся по-настоящему. Если что-то не так — просто скажи.`;
+  }
+
+  /* Как тебя зовут */
+  if(/^(как\s+тебя\s+зовут|твоё\s+имя|твое\s+имя|what.*your\s+name)/i.test(x)) {
+    return 'Меня зовут **Orbita AI** 🛰️ Приятно познакомиться!';
+  }
+
+  /* Что такое Orbita AI */
+  if(/^(что\s+такое\s+orbita|что\s+такое\s+орбита)/i.test(x)) {
+    return `**Orbita AI** — это я! Умный ассистент от компании ORT, который ищет информацию в интернете и отвечает на вопросы.\n\nМеня зовут Orbita в честь орбиты — как планеты вокруг Солнца, я вращаюсь вокруг твоих вопросов и всегда готова помочь 🛰️`;
+  }
+
+  /* Время */
+  if(/который\s+час|сколько\s+времени|what\s+time/i.test(x)) {
+    return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} 🕐`;
+  }
+
+  /* Дата */
+  if(/какой\s+сегодня\s+день|какое\s+сегодня\s+число|какая\s+дата/i.test(x)) {
+    return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
+  }
+
+  /* Математика */
+  const mm = x.match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
+  if(mm){ const a=parseFloat(mm[1].replace(',','.')),b=parseFloat(mm[3].replace(',','.')),op=mm[2]; let r; switch(op){ case '+':r=a+b;break;case '-':r=a-b;break;case '*':case 'x':case '×':r=a*b;break;case '/':case '÷':if(b===0)return 'На ноль делить нельзя 🤔';r=a/b;break; } return `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`; }
+
   return null;
 }
 
-async function generateAnswer(query) {
-  if (hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю. Давай поговорим на другие темы.', _isBlocked: true };
+async function generateAnswer(query){
+  if(hasProfanity(query)) return { text:'Извини, на такие вопросы я не отвечаю. Давай поговорим на другие темы 💙', _isBlocked:true };
   const dialog = matchDialog(query);
-  if (dialog) { await sleep(400); return { text: dialog, _isDialog: true }; }
+  if(dialog){ await sleep(400); return { text: dialog, _isDialog:true }; }
   const search = await searchInternet(query);
-  if (search) {
-    if (hasProfanity(search.text)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
-    return search;
-  }
-  return { text: `К сожалению, я не нашёл ответа на «${query}».\n\nПопробуй переформулировать.` };
+  if(search){ if(hasProfanity(search.text)) return { text:'Извини, на такие вопросы я не отвечаю.', _isBlocked:true }; return search; }
+  return { text: `К сожалению, не нашла ответа на «${query}» 🤔\n\nПопробуй переформулировать или спроси о науке, истории, географии.` };
 }
 
-/* ============================================================
-   SEND
-   ============================================================ */
-function updateSendBtn() {
-  if (state.busy) {
-    sendBtn.disabled = false;
-    sendBtn.classList.add('stop');
-    sendBtn.classList.remove('cooldown');
-    sendIcon.innerHTML = '<rect x="6" y="6" width="12" height="12" rx="2"/>';
-    return;
-  }
-  if (state.rateLimit) {
-    sendBtn.disabled = true;
-    sendBtn.classList.remove('stop');
-    sendBtn.classList.add('cooldown');
-    return;
-  }
-  sendBtn.classList.remove('stop', 'cooldown');
-  sendIcon.innerHTML = '<path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/>';
+/* ==================== SEND ==================== */
+function updateSendBtn(){
+  if(state.busy){ sendBtn.disabled=false; sendBtn.classList.add('stop'); sendBtn.classList.remove('cooldown'); sendIcon.innerHTML='<rect x="6" y="6" width="12" height="12" rx="2"/>'; return; }
+  if(state.rateLimit){ sendBtn.disabled=true; sendBtn.classList.remove('stop'); sendBtn.classList.add('cooldown'); return; }
+  sendBtn.classList.remove('stop','cooldown');
+  sendIcon.innerHTML='<path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/>';
   sendBtn.disabled = inputEl.value.trim().length === 0;
 }
 
-async function handleSend(textOverride) {
+async function handleSend(textOverride){
   const text = (textOverride ?? inputEl.value).trim();
-  if (!text) { if (state.busy) { state.abortRequested = true; haptic('medium'); } return; }
-  if (state.busy) return;
+  if(!text){ if(state.busy){ state.abortRequested=true; haptic('medium'); } return; }
+  if(state.busy) return;
 
   const wait = checkLimit();
-  if (wait > 0) { showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
+  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
 
-  // Запрещённые слова
-  if (hasProfanity(text)) {
+  if(hasProfanity(text)){
     markReq(); startCooldown();
-    sendLog(text);
     ensureChat();
     const chat = getActiveChat();
-    const empty = chatEl.querySelector('.empty'); if (empty) empty.remove();
+    const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
     const ts = Date.now();
-    chat.messages.push({ role: 'user', text, ts });
-    chat.updatedAt = ts;
-    store.saveChats(state.chats);
-    appendUserMessage(text, true, chat.messages.length - 1);
+    chat.messages.push({ role:'user', text, ts });
+    chat.updatedAt = ts; store.saveChats(state.chats);
+    appendUserMessage(text, true, chat.messages.length-1);
     await sleep(300);
-    const refuse = { role: 'ai', text: 'Извини, на такие вопросы я не отвечаю. Давай поговорим на другие темы.', ts: Date.now()+1, _blocked: true };
-    chat.messages.push(refuse);
-    store.saveChats(state.chats);
-    appendAIMessage(refuse, false, chat.messages.length - 1);
-    inputEl.value = '';
-    localStorage.removeItem(KEYS.DRAFT);
-    updateSendBtn();
-    renderChatsList();
-    haptic('error');
+    const refuse = { role:'ai', text:'Извини, на такие вопросы я не отвечаю. Давай поговорим на другие темы 💙', ts:Date.now()+1, _blocked:true };
+    chat.messages.push(refuse); store.saveChats(state.chats);
+    appendAIMessage(refuse, false, chat.messages.length-1);
+    inputEl.value=''; localStorage.removeItem(KEYS.DRAFT);
+    updateSendBtn(); renderChatsList(); haptic('error');
     return;
   }
 
   markReq(); startCooldown();
-  sendLog(text);
   ensureChat();
-  const chat = getActiveChat();
-  if (!chat) return;
-  state.busy = true;
-  state.abortRequested = false;
-  inputEl.value = '';
-  localStorage.removeItem(KEYS.DRAFT);
-  updateSendBtn();
-  haptic('light');
+  const chat = getActiveChat(); if(!chat) return;
+  state.busy=true; state.abortRequested=false;
+  inputEl.value=''; localStorage.removeItem(KEYS.DRAFT);
+  updateSendBtn(); haptic('light');
 
-  const empty = chatEl.querySelector('.empty'); if (empty) empty.remove();
+  const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
   const ts = Date.now();
-  chat.messages.push({ role: 'user', text, ts });
-  autoTitle(chat, text);
-  chat.updatedAt = ts;
-  store.saveChats(state.chats);
-  appendUserMessage(text, true, chat.messages.length - 1);
+  chat.messages.push({ role:'user', text, ts });
+  autoTitle(chat, text); chat.updatedAt=ts; store.saveChats(state.chats);
+  appendUserMessage(text, true, chat.messages.length-1);
   renderChatsList();
   showTyping();
 
   let result;
-  try { result = await generateAnswer(text); }
-  catch(e) {
-    hideTyping();
-    state.busy = false;
-    updateSendBtn();
-    showToast(e.message === 'OFFLINE' ? 'Нет интернета' : 'Ошибка');
-    haptic('error');
-    return;
-  }
+  try{ result = await generateAnswer(text); }
+  catch(e){ hideTyping(); state.busy=false; updateSendBtn(); showToast(e.message === 'OFFLINE' ? 'Нет интернета' : 'Ошибка'); haptic('error'); return; }
 
   hideTyping();
-  const aiMsg = { role: 'ai', text: result.text, source: result.source, ts: Date.now(), reaction: null, _blocked: result._isBlocked };
-  chat.messages.push(aiMsg);
-  chat.updatedAt = Date.now();
-  store.saveChats(state.chats);
+  const aiMsg = { role:'ai', text: result.text, source: result.source, ts: Date.now(), reaction:null, _blocked: result._isBlocked };
+  chat.messages.push(aiMsg); chat.updatedAt = Date.now(); store.saveChats(state.chats);
 
-  if (result._isBlocked) {
-    appendAIMessage(aiMsg, false, chat.messages.length - 1);
-    state.busy = false;
-    updateSendBtn();
-    haptic('error');
-    return;
-  }
+  if(result._isBlocked){ appendAIMessage(aiMsg, false, chat.messages.length-1); state.busy=false; updateSendBtn(); haptic('error'); return; }
 
-  const typeEl = appendAIMessage(aiMsg, true, chat.messages.length - 1);
-  if (state.abortRequested) {
-    typeEl.innerHTML = renderText(result.text);
-    const c = typeEl.parentElement.querySelector('.cursor'); if (c) c.remove();
-  } else {
-    await typeText(typeEl, result.text);
-  }
+  const typeEl = appendAIMessage(aiMsg, true, chat.messages.length-1);
+  if(state.abortRequested){ typeEl.innerHTML = renderText(result.text); const c = typeEl.parentElement.querySelector('.cursor'); if(c) c.remove(); }
+  else { await typeText(typeEl, result.text); }
 
   const lastAi = chatEl.lastElementChild;
-  if (lastAi?.classList.contains('ai')) {
-    const body = lastAi.querySelector('.body');
-    if (body && !body.querySelector('.msg-actions')) {
-      appendActions(body, aiMsg, chat.messages.length - 1);
-    }
-  }
+  if(lastAi?.classList.contains('ai')){ const body = lastAi.querySelector('.body'); if(body && !body.querySelector('.msg-actions')) appendActions(body, aiMsg, chat.messages.length-1); }
 
-  state.busy = false;
-  state.abortRequested = false;
-  updateSendBtn();
-  haptic('success');
+  state.busy=false; state.abortRequested=false; updateSendBtn(); haptic('success');
 }
 
-/* ============================================================
-   DRAWER
-   ============================================================ */
-function openDrawer() {
-  $('drawer').classList.add('open');
-  $('drawerOverlay').classList.add('open');
-  lockScroll(true);
-  showBackButton(closeDrawer);
-}
-function closeDrawer() {
-  $('drawer').classList.remove('open');
-  $('drawerOverlay').classList.remove('open');
-  lockScroll(false);
-  hideBackButton();
-}
+/* ==================== DRAWER ==================== */
+function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); lockScroll(true); showBackButton(closeDrawer); }
+function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); }
 
-/* ============================================================
-   ACCOUNT
-   ============================================================ */
-function openAccount() {
-  closeDrawer();
-  if (!state.user) return;
+/* ==================== ACCOUNT ==================== */
+function openAccount(){
+  closeDrawer(); if(!state.user) return;
   $('accountNameInput').value = state.user.name || '';
   $('drawerAvatar').textContent = initials(state.user.name);
   $('drawerName').textContent = state.user.name || '—';
-  $('accountOverlay').classList.add('open');
-  lockScroll(true);
-  showBackButton(closeAccount);
+  $('accountOverlay').classList.add('open'); lockScroll(true); showBackButton(closeAccount);
 }
-function closeAccount() {
-  $('accountOverlay').classList.remove('open');
-  lockScroll(false);
-  hideBackButton();
-}
-
-function saveProfile() {
-  const name = $('accountNameInput').value.replace(/[<>"'`]/g, '').trim().slice(0, 24);
-  if (!name) { showToast('Введи имя'); return; }
-  state.user.name = name;
-  store.saveUser(state.user);
+function closeAccount(){ $('accountOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); }
+function saveProfile(){
+  const name = $('accountNameInput').value.replace(/[<>"'`]/g,'').trim().slice(0,24);
+  if(!name){ showToast('Введи имя'); return; }
+  state.user.name = name; store.saveUser(state.user);
   $('drawerAvatar').textContent = initials(name);
   $('drawerName').textContent = name;
-  if (getActiveChat()?.messages.length === 0) renderEmptyState();
-  showToast('Сохранено');
-  haptic('success');
-  closeAccount();
+  if(getActiveChat()?.messages.length === 0) renderEmptyState();
+  showToast('Сохранено'); haptic('success'); closeAccount();
+}
+async function clearAllData(){
+  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm('Очистить все данные?', res => r(res))) : confirm('Очистить?');
+  if(!ok) return;
+  store.clear(); state.user=null; state.chats=[]; state.activeId=null;
+  closeAccount(); location.reload();
 }
 
-async function clearAllData() {
-  const ok = tg?.showConfirm
-    ? await new Promise(r => tg.showConfirm('Очистить все данные?', res => r(res)))
-    : confirm('Очистить все данные?');
-  if (!ok) return;
-  store.clear();
-  state.user = null;
-  state.chats = [];
-  state.activeId = null;
-  closeAccount();
-  location.reload();
-}
-
-function exportChats() {
-  const data = { version: 1, exportedAt: Date.now(), user: state.user, chats: state.chats };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `orbita-${new Date().toISOString().slice(0,10)}.json`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('Файл сохранён');
-  haptic('success');
-}
-
-/* ============================================================
-   INIT APP
-   ============================================================ */
-function initApp() {
+/* ==================== INIT ==================== */
+function initApp(){
   state.chats = store.getChats();
   state.activeId = store.getActive();
   ensureChat();
-  renderChatsList();
-  renderActiveChat();
-  updateSendBtn();
-
+  renderChatsList(); renderActiveChat(); updateSendBtn();
   const elapsed = Date.now() - getLastReq();
-  if (elapsed < RATE_MS) startCooldown();
-
-  if (!state.user) {
-    const tgName = tg?.initDataUnsafe?.user?.first_name || 'User';
-    state.user = { name: tgName, joinedAt: Date.now() };
-    store.saveUser(state.user);
-  }
+  if(elapsed < RATE_MS) startCooldown();
+  if(!state.user){ state.user = { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() }; store.saveUser(state.user); }
   $('drawerAvatar').textContent = initials(state.user.name);
   $('drawerName').textContent = state.user.name;
+  initVoice();
 }
 
-/* ============================================================
-   EVENTS
-   ============================================================ */
-inputEl.addEventListener('input', () => {
-  updateSendBtn();
-  localStorage.setItem(KEYS.DRAFT, inputEl.value);
-});
-inputEl.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
-});
-sendBtn.addEventListener('click', () => {
-  if (state.busy) { state.abortRequested = true; return; }
-  handleSend();
-});
+/* ==================== EVENTS ==================== */
+inputEl.addEventListener('input', () => { updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value); });
+inputEl.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
+sendBtn.addEventListener('click', () => { if(state.busy){ state.abortRequested = true; return; } handleSend(); });
 
 $('menuBtn').addEventListener('click', openDrawer);
-$('newChatBtn').addEventListener('click', () => { if (!state.busy) { createChat(); closeDrawer(); } });
+$('newChatBtn').addEventListener('click', () => { if(!state.busy){ createChat(); closeDrawer(); } });
 $('clearAllChatsBtn').addEventListener('click', async () => {
-  const ok = tg?.showConfirm
-    ? await new Promise(r => tg.showConfirm('Удалить все чаты?', res => r(res)))
-    : confirm('Удалить все чаты?');
-  if (!ok) return;
-  state.chats = [];
-  state.activeId = null;
-  store.saveChats(state.chats);
-  store.setActive('');
-  createChat();
-  showToast('Все чаты удалены');
+  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm('Удалить все чаты?', res => r(res))) : confirm('Удалить все?');
+  if(!ok) return;
+  state.chats=[]; state.activeId=null; store.saveChats(state.chats); store.setActive(''); createChat(); showToast('Все чаты удалены');
 });
-
 $('drawerOverlay').addEventListener('click', closeDrawer);
 $('userCard').addEventListener('click', openAccount);
 $('saveProfileBtn').addEventListener('click', saveProfile);
 $('closeAccountBtn').addEventListener('click', closeAccount);
 $('clearDataBtn').addEventListener('click', clearAllData);
-$('exportBtn').addEventListener('click', exportChats);
-$('accountOverlay').addEventListener('click', e => {
-  if (e.target === $('accountOverlay')) closeAccount();
-});
-$('closeAdminBtn').addEventListener('click', closeAdminPanel);
-$('adminOverlay').addEventListener('click', e => {
-  if (e.target === $('adminOverlay')) closeAdminPanel();
-});
+$('accountOverlay').addEventListener('click', e => { if(e.target === $('accountOverlay')) closeAccount(); });
 $('gateAction').addEventListener('click', sendAccessRequest);
 
-/* ============================================================
-   BOOT
-   ============================================================ */
+/* Голос */
+$('voiceBtn').addEventListener('click', startVoice);
+$('voiceCancel').addEventListener('click', () => { stopVoice(); haptic('light'); });
+
+/* ==================== BOOT ==================== */
 window.addEventListener('load', async () => {
   const draft = localStorage.getItem(KEYS.DRAFT);
-  if (draft) { inputEl.value = draft; updateSendBtn(); }
-
+  if(draft){ inputEl.value = draft; updateSendBtn(); }
   await checkAccess();
-
-  if (gateState === 'approved') {
-    state.user = store.getUser() || {
-      name: tg?.initDataUnsafe?.user?.first_name || 'User',
-      joinedAt: Date.now()
-    };
+  if(gateState === 'approved'){
+    state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() };
     store.saveUser(state.user);
     initApp();
-
-    const uId = tg?.initDataUnsafe?.user?.id;
-    if (uId === ADMIN_TG_ID) {
-      const btn = document.createElement('button');
-      btn.className = 'icon-btn';
-      btn.style.cssText = 'position:fixed;right:12px;top:calc(14px + env(safe-area-inset-top));z-index:30;background:var(--danger);color:#fff';
-      btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/></svg>';
-      btn.onclick = openAdminPanel;
-      document.body.appendChild(btn);
-    }
   }
 });
 </script>
 </body>
-</html>
+</html>с
