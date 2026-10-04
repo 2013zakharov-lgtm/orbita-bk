@@ -11,22 +11,6 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--success:#16a34a;--warn:#f59e0b;--white:#fff;--overlay:rgba(15,23,42,.45)}
-  @media (prefers-color-scheme: dark){
-    :root{--accent:#3b82f6;--accent-dark:#2563eb;--accent-deep:#93c5fd;--accent-light:#1e3a8a;--accent-soft:#1e293b;--accent-mid:#60a5fa;--ink:#f1f5f9;--ink-soft:#cbd5e1;--bg:#0f172a;--surface:#1e293b;--border:#334155;--muted:#94a3b8;--danger:#f87171;--danger-soft:#7f1d1d;--success:#4ade80;--warn:#fbbf24;--white:#1e293b;--overlay:rgba(0,0,0,.6)}
-    .msg.user .bubble{background:var(--accent-soft);color:var(--ink)}
-    .msg.ai .text code{background:var(--bg)}
-    .msg.ai .text pre{background:var(--bg)!important;color:var(--ink)!important}
-    .empty-chip{background:var(--bg)}
-    .drawer-tool{background:var(--bg)}
-    .quick-menu button:active{background:var(--accent-light);color:var(--ink)}
-    .trainer-feedback.ok{background:#14532d;color:#bbf7d0}
-    .trainer-feedback.bad{background:#7f1d1d;color:#fecaca}
-    .plus-modal{background:var(--surface)}
-    .modal{background:var(--bg)}
-    .trainer-panel,.cheat-panel,.graph-panel{background:var(--surface)}
-    .trainer-input,.field-input{background:var(--bg);color:var(--ink)}
-    .math-kb button{background:var(--bg);color:var(--ink)}
-  }
   html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
   body{position:fixed;inset:0}
   body.locked{overflow:hidden}
@@ -126,11 +110,11 @@
   .icb .ico{width:18px;height:18px}
   .icb.loading{color:var(--accent);animation:spin 1s linear infinite}
   /* 4 squares button */
-  .fsquares{width:34px;height:34px;border-radius:50%;border:none;background:var(--accent);cursor:pointer;flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:8px;transition:all .15s}
-  .fsquares:active{background:var(--accent-dark);transform:scale(.9)}
+  .fsquares{width:34px;height:34px;border-radius:50%;border:0;outline:none;-webkit-appearance:none;appearance:none;background:var(--accent);cursor:pointer;flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:9px;transition:background .15s,transform .12s}
+  .fsquares:active{background:var(--accent-dark);transform:scale(.92)}
   .fsquares.open{background:var(--accent-dark)}
-  .fsquares.open span{transform:scale(.85)}
-  .fsquares span{background:#fff;border-radius:1.5px;transition:transform .15s}
+  .fsquares.open span{transform:scale(.9)}
+  .fsquares span{background:#fff;border-radius:1.5px;display:block;width:100%;height:100%;transition:transform .15s}
   .send-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;color:#fff}
   .send-btn .ico{width:15px;height:15px}
   .send-btn:active:not(:disabled){background:var(--accent-dark);transform:scale(.9)}
@@ -146,7 +130,6 @@
   .quick-menu button{display:flex;align-items:center;gap:12px;padding:11px 14px;background:transparent;border:none;border-radius:12px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit;white-space:nowrap;text-align:left;transition:background .12s}
   .quick-menu button:active{background:var(--accent-soft);color:var(--accent)}
   .quick-menu button .ico{width:18px;height:18px;color:var(--accent)}
-  .quick-menu .qm-divider{height:1px;background:var(--border);margin:4px 8px}
   .quick-menu-backdrop{position:fixed;inset:0;z-index:44;display:none}
   .quick-menu-backdrop.show{display:block}
   .math-kb{display:none;padding:6px 10px;background:var(--surface);border-top:1px solid var(--border);overflow-x:auto;white-space:nowrap;flex-shrink:0}
@@ -326,7 +309,6 @@
   .graph-panel{max-width:600px}
   .graph-container{width:100%;height:320px;background:var(--surface);border-radius:14px;overflow:hidden}
   .graph-input-row{display:flex;gap:8px;margin-bottom:12px}
-  /* Exam mode */
   .exam-timer{font-size:24px;font-weight:800;color:var(--accent);font-family:'SF Mono',Monaco,monospace;text-align:center;padding:12px;background:var(--surface);border-radius:12px;margin-bottom:12px}
   .exam-timer.danger{color:var(--danger);animation:speakPulse 1s infinite}
   .exam-question{padding:16px;background:var(--accent-soft);border-radius:14px;margin-bottom:12px;text-align:center;font-size:16px;font-weight:700;color:var(--accent-deep);font-family:'SF Mono',Monaco,monospace;min-height:60px;display:flex;align-items:center;justify-content:center;white-space:pre-line}
@@ -396,7 +378,6 @@
   <symbol id="i-laTeX" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6M4 4v16h6M20 4h-4l-4 8 4 8h4"/></symbol>
   <symbol id="i-exam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></symbol>
   <symbol id="i-notebook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 2v20M12 8h4M12 12h4M12 16h4"/></symbol>
-  <symbol id="i-scan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M3 12h18"/></symbol>
 </svg>
 
 <!-- ONBOARDING -->
@@ -629,7 +610,7 @@
     <button class="menu-fab" id="menuBtn"><span class="ico"><svg><use href="#i-menu"/></svg></span></button>
     <div class="input-wrap" id="inputWrap">
       <input type="text" id="input" placeholder="Введите уравнение или вопрос..." autocomplete="off">
-      <button class="fsquares" id="fsquaresBtn" title="Ещё"><span></span><span></span><span></span><span></span></button>
+      <button class="fsquares" id="fsquaresBtn" title="Ещё" aria-label="Ещё"><span></span><span></span><span></span><span></span></button>
       <button class="send-btn" id="send" disabled><span class="ico" id="sendIcon"><svg><use href="#i-send"/></svg></span><span class="cooldown-text" id="cooldownText">5</span></button>
     </div>
   </div>
@@ -703,7 +684,6 @@ function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <
 function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
 function lcm(a,b){ return Math.abs(a*b) / gcd(a,b); }
 
-/* --- Polynomial helpers --- */
 function parsePoly(expr){
   expr = expr.replace(/^\+/,''); let a=0,b=0,c=0,m;
   const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g;
@@ -724,7 +704,6 @@ function polyToStr(a,b,c){
   return p.join('');
 }
 
-/* --- Linear / Quadratic equations --- */
 function solveEquation(text){
   let t = text.toLowerCase().trim();
   t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение|решение)\s+/i,'');
@@ -793,49 +772,34 @@ function solveQuadratic(original, left, right){
 
 /* --- Systems of equations --- */
 function solveSystem(query){
-  // Detect patterns: {eq1, eq2}, {eq1; eq2}, "система: eq1; eq2", multiline
   let raw = query.trim();
-  // Strip prefix
   raw = raw.replace(/^(реши|решить|система|систему|system)\s*:?\s*/i,'');
-  // Strip outer braces
   let inner = null;
   const braceMatch = raw.match(/^\{([\s\S]+)\}$/);
-  if(braceMatch){
-    inner = braceMatch[1];
-  } else if(/систем/i.test(query)){
-    inner = raw;
-  } else {
-    // Try detecting two equations separated by ; or newline
-    if(/[;]/.test(raw) || /\n/.test(raw)){
-      const parts = raw.split(/[;\n]+/).map(s=>s.trim()).filter(Boolean);
-      if(parts.length === 2 && parts.every(p => p.includes('='))) inner = parts.join('; ');
-    }
+  if(braceMatch){ inner = braceMatch[1]; }
+  else if(/систем/i.test(query)){ inner = raw; }
+  else if(/[;]/.test(raw) || /\n/.test(raw)){
+    const parts = raw.split(/[;\n]+/).map(s=>s.trim()).filter(Boolean);
+    if(parts.length === 2 && parts.every(p => p.includes('='))) inner = parts.join('; ');
   }
   if(!inner) return null;
-  // Split by ; , or } {
-  const eqs = inner.split(/[;]|\},\s*\{|, (?=[a-zA-Z])/).map(s => s.replace(/^[{\s]+|[}\s]+$/g,'').trim()).filter(Boolean);
+  const eqs = inner.split(/[;]|\},\s*\{|,\s*(?=[a-zA-Zxуy])/).map(s => s.replace(/^[{\s]+|[}\s]+$/g,'').trim()).filter(Boolean);
   if(eqs.length !== 2) return null;
-  // Parse each: must contain = with x and y
   const sys = eqs.map(eq => parseLinearTwoVar(eq));
   if(!sys[0] || !sys[1]) return null;
   return solveTwoVarSystem(eqs, sys[0], sys[1]);
 }
 function parseLinearTwoVar(eq){
-  // Format: ax + by = c  where a,b,c are numbers (may be absent)
   let e = eq.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/[уУ]/g,'y').replace(/[×]/g,'*');
   if(!e.includes('=')) return null;
   const [lhs, rhs] = e.split('=');
   if(!lhs || rhs === undefined) return null;
-  // Move rhs to lhs: lhs - rhs = 0
   const parts = lhs + '-' + rhs;
-  // Parse into ax + by + c = 0
   let a = 0, b = 0, c = 0;
-  // Replace - with +-
   let str = parts.replace(/-/g,'+-');
   if(str.startsWith('+')) str = str.slice(1);
   for(const term of str.split('+')){
     if(!term) continue;
-    // x*y? no, terms are single variable
     if(/x$/.test(term)){
       const cf = term.slice(0,-1);
       if(cf === '' || cf === '+') a += 1;
@@ -862,62 +826,48 @@ function solveTwoVarSystem(eqs, s1, s2){
   s.push(`**Решаю систему уравнений:**`);
   s.push(`$$\\begin{cases}${eqs[0].replace(/\*/g,'')} \\\\ ${eqs[1].replace(/\*/g,'')} \\end{cases}$$`);
   if(Math.abs(det) < 1e-12){
-    // Parallel or same lines
-    // Check if consistent
     if(Math.abs(a1*c2 - a2*c1) < 1e-9 && Math.abs(b1*c2 - b2*c1) < 1e-9){
       return { text: `${ico('infinity')} **Бесконечно много решений** — прямые совпадают.`, _isDialog:true };
     }
     return { text: `${ico('x-circle','inl-err')} **Нет решений** — прямые параллельны.`, _isDialog:true };
   }
-  s.push(`\n${ico('bulb')} **Метод Крамера** (или через определитель):`);
-  s.push(`\n**Шаг 1.** Приведём к виду $a_1x+b_1y=c_1$, $a_2x+b_2y=c_2$:`);
+  s.push(`\n${ico('bulb')} **Метод Крамера:**`);
   s.push(`$a_1=${fmtNum(a1)}, b_1=${fmtNum(b1)}, c_1=${fmtNum(c1)}$`);
   s.push(`$a_2=${fmtNum(a2)}, b_2=${fmtNum(b2)}, c_2=${fmtNum(c2)}$`);
-  s.push(`\n**Шаг 2.** Главный определитель $\\Delta = a_1 b_2 - a_2 b_1$:`);
+  s.push(`\n**Шаг 1.** Главный определитель $\\Delta = a_1 b_2 - a_2 b_1$:`);
   s.push(`$$\\Delta = ${fmtNum(a1)} \\cdot ${fmtNum(b2)} - ${fmtNum(a2)} \\cdot ${fmtNum(b1)} = ${fmtNum(det)}$$`);
   const dx = c1*b2 - c2*b1;
   const dy = a1*c2 - a2*c1;
-  s.push(`\n**Шаг 3.** Вспомогательные определители:`);
-  s.push(`$$\\Delta_x = c_1 b_2 - c_2 b_1 = ${fmtNum(dx)}$$`);
-  s.push(`$$\\Delta_y = a_1 c_2 - a_2 c_1 = ${fmtNum(dy)}$$`);
+  s.push(`\n**Шаг 2.** $\\Delta_x = ${fmtNum(dx)}$, $\\Delta_y = ${fmtNum(dy)}$`);
   const x = dx / det, y = dy / det;
-  s.push(`\n**Шаг 4.** Находим корни:`);
-  s.push(`$$x = \\dfrac{\\Delta_x}{\\Delta} = ${fmtNum(x)}$$`);
-  s.push(`$$y = \\dfrac{\\Delta_y}{\\Delta} = ${fmtNum(y)}$$`);
+  s.push(`\n**Шаг 3.** Находим корни:`);
+  s.push(`$$x = \\dfrac{${fmtNum(dx)}}{${fmtNum(det)}} = ${fmtNum(x)}$$`);
+  s.push(`$$y = \\dfrac{${fmtNum(dy)}}{${fmtNum(det)}} = ${fmtNum(y)}$$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x = ${fmtNum(x)}$, $y = ${fmtNum(y)}$`);
-  s.push(`\n${ico('hint')} **Проверка:** подставь найденные значения в оба уравнения — равенства верны.`);
   return { text: s.join('\n'), _isDialog:true };
 }
 
 /* --- Inequalities --- */
 function solveInequality(query){
   const q = query.trim();
-  // Detect inequality symbol
   const m = q.match(/^(.+?)(<=|>=|≤|≥|<|>)(.+)$/);
   if(!m) return null;
   let [_, left, op, right] = m;
-  // Normalize operator
   const ops = { '<=':'\\le', '>=':'\\ge', '≤':'\\le', '≥':'\\ge', '<':'<', '>':'>' };
-  const katexOp = ops[op];
-  const jsOp = op === '<=' || op === '≤' ? '<=' : op === '>=' || op === '≥' ? '>=' : op;
-  // Remove prefix "реши"
+  const kOp = ops[op];
   left = left.replace(/^(реши|решить|неравенство)\s+/i,'').replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
   right = right.replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
   if(!/x/.test(left) && !/x/.test(right)) return null;
-  // Move everything to left: left - right <op> 0
   left = left.replace(/x²/g,'x^2');
   right = right.replace(/x²/g,'x^2');
-  // Check if quadratic
   const hasSq = /x\^2|x2/.test(left) || /x\^2|x2/.test(right);
-  if(hasSq) return solveQuadInequality(query, left, right, katexOp, jsOp);
-  return solveLinearInequality(query, left, right, katexOp, jsOp);
+  if(hasSq) return solveQuadInequality(query, left, right, kOp);
+  return solveLinearInequality(query, left, right, kOp);
 }
-function solveLinearInequality(original, left, right, kOp, jsOp){
+function solveLinearInequality(original, left, right, kOp){
   const L = parsePoly(left), R = parsePoly(right);
   let b = L.b - R.b, c = L.c - R.c;
-  // b*x + c <op> 0
   if(Math.abs(b) < 1e-12) return { text: `Неравенство вырождается (нет x).`, _isDialog:true };
-  // x <op'> -c/b — if b < 0, flip op
   let finalOp = kOp;
   let threshold = -c/b;
   if(b < 0){
@@ -929,10 +879,8 @@ function solveLinearInequality(original, left, right, kOp, jsOp){
   s.push(`$$${original}$$`);
   s.push(`\n**Шаг 1.** Переношу всё в левую часть:`);
   s.push(`$$${polyToStr(0,b,c)} ${kOp} 0$$`);
-  s.push(`\n**Шаг 2.** ${b < 0 ? `Коэффициент при x отрицательный — знак меняю на противоположный:` : 'Выражаю x:'}`);
+  s.push(`\n**Шаг 2.** ${b < 0 ? 'Коэффициент при x отрицательный — знак меняю:' : 'Выражаю x:'}`);
   s.push(`$$x ${finalOp} ${fmtNum(threshold)}$$`);
-  // Interval notation
-  const isStrict = finalOp === '<' || finalOp === '>';
   let interval;
   if(finalOp === '<') interval = `(-\\infty; ${fmtNum(threshold)})`;
   else if(finalOp === '>') interval = `(${fmtNum(threshold)}; +\\infty)`;
@@ -941,28 +889,23 @@ function solveLinearInequality(original, left, right, kOp, jsOp){
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in ${interval}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
-function solveQuadInequality(original, left, right, kOp, jsOp){
+function solveQuadInequality(original, left, right, kOp){
   const L = parsePoly(left), R = parsePoly(right);
   const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
-  // ax^2 + bx + c <op> 0
-  if(Math.abs(a) < 1e-12) return solveLinearInequality(original, left, right, kOp, jsOp);
+  if(Math.abs(a) < 1e-12) return solveLinearInequality(original, left, right, kOp);
   const D = b*b - 4*a*c;
   const s = [];
   s.push(`**Решаю квадратное неравенство:**`);
   s.push(`$$${original}$$`);
   s.push(`\n**Шаг 1.** Переношу в левую часть:`);
   s.push(`$$${polyToStr(a,b,c)} ${kOp} 0$$`);
-  s.push(`\n**Шаг 2.** Находим корни $ax^2+bx+c = 0$:`);
-  s.push(`$$D = ${fmtNum(D)}$$`);
+  s.push(`\n**Шаг 2.** $D = ${fmtNum(D)}$`);
   if(D < 0){
-    // No real roots — sign is constant = sign(a)
     const positive = a > 0;
-    const holds = (kOp === '>' || kOp === '\\ge') === positive ? true : false;
-    // If a>0, expr is always positive → holds for > and >=; fails for < and <=
     if(positive && (kOp === '>' || kOp === '\\ge')){
-      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$ — верно для всех x (ветви вверх, корней нет)`);
+      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$`);
     } else if(!positive && (kOp === '<' || kOp === '\\le')){
-      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$ — верно для всех x (ветви вниз, корней нет)`);
+      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$`);
     } else {
       s.push(`\n${ico('x-circle','inl-err')} **Ответ:** нет решений`);
     }
@@ -970,7 +913,7 @@ function solveQuadInequality(original, left, right, kOp, jsOp){
   }
   if(D === 0){
     const x0 = -b/(2*a);
-    s.push(`\n**Шаг 3.** $D=0$ — корень $x_0 = ${fmtNum(x0)}$ (двойной)`);
+    s.push(`\n**Шаг 3.** $D=0$, корень $x_0 = ${fmtNum(x0)}$`);
     if(kOp === '>' || kOp === '<'){
       s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; ${fmtNum(x0)}) \\cup (${fmtNum(x0)}; +\\infty)$`);
     } else {
@@ -982,20 +925,11 @@ function solveQuadInequality(original, left, right, kOp, jsOp){
   const r1 = (-b - sq)/(2*a), r2 = (-b + sq)/(2*a);
   const lo = Math.min(r1, r2), hi = Math.max(r1, r2);
   s.push(`\n**Шаг 3.** Корни: $x_1 = ${fmtNum(lo)}$, $x_2 = ${fmtNum(hi)}$`);
-  s.push(`\n**Шаг 4.** Метод интервалов. Ветви ${a > 0 ? 'вверх' : 'вниз'}:`);
-  const betweenPositive = a > 0; // positive between roots if a>0
-  let interval = '';
-  const wantPositive = (kOp === '>' || kOp === '\\ge');
-  if(wantPositive === betweenPositive){
-    // Answer between roots (or outside) — determine
-    // If a>0 and want >0: outside intervals
-    // If a<0 and want <0: outside intervals
-  }
-  // Determine which interval satisfies
-  // sign: a>0 → + outside, - inside; a<0 → - outside, + inside
+  s.push(`\n**Шаг 4.** Метод интервалов (ветви ${a > 0 ? 'вверх' : 'вниз'}):`);
   const testX = (lo + hi) / 2;
   const valAtMid = a*testX*testX + b*testX + c;
   const midSatisfies = (kOp === '>' || kOp === '\\ge') ? valAtMid > 0 : valAtMid < 0;
+  let interval;
   if(midSatisfies){
     interval = kOp === '<' || kOp === '>' ? `(${fmtNum(lo)}; ${fmtNum(hi)})` : `[${fmtNum(lo)}; ${fmtNum(hi)}]`;
   } else {
@@ -1008,85 +942,6 @@ function solveQuadInequality(original, left, right, kOp, jsOp){
 }
 
 /* --- Factor advanced --- */
-function factorAdvanced(query){
-  const q = query.toLowerCase().replace(/\s+/g,'');
-  const m = q.match(/(?:разложи|разложить|множител)\w*\s*(?:на\s+множители\s*)?[:]?(.+)/i);
-  if(!m) return null;
-  let expr = m[1].replace(/^\(/,'').replace(/\)$/,'').replace(/[?!.]+$/,'').replace(/[хХ]/g,'x');
-  expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3');
-  if(!/x/.test(expr)) return null;
-
-  // Grouping: e.g. x^3 + x^2 + x + 1
-  // Try to parse as polynomial with general powers
-  const poly = parseAnyPoly(expr);
-  if(poly && poly.terms.length >= 2){
-    // Try common factor (integer GCD)
-    const intCoefs = poly.terms.map(t => Math.round(t.coef));
-    const isInts = intCoefs.every(c => Math.abs(c - Math.round(c)) < 1e-9);
-    if(isInts){
-      let g = Math.abs(intCoefs[0]);
-      for(let i = 1; i < intCoefs.length; i++) g = gcd(g, Math.abs(intCoefs[i]));
-      const minPower = Math.min(...poly.terms.map(t => t.power));
-      if((g > 1 || minPower > 0) && poly.terms.length > 1){
-        const gCoef = g;
-        const gPow = minPower;
-        const inner = poly.terms.map(t => ({ coef: t.coef / gCoef, power: t.power - gPow }));
-        const gStr = (gCoef === 1 ? '' : fmtNum(gCoef)) + (gPow === 0 ? '' : gPow === 1 ? 'x' : `x^${gPow}`);
-        const innerStr = polyTermsToStr(inner);
-        const s = [];
-        s.push(`**Разложение на множители (вынесение общего):**`);
-        s.push(`$$${polyTermsToStr(poly.terms)}$$`);
-        s.push(`\n${ico('bulb')} **Находим общий множитель:** $${gStr}$`);
-        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${gStr}(${innerStr})$`);
-        // If inner is factorable further, mention
-        if(inner.length === 3){
-          const a2 = inner.find(t => t.power === 2)?.coef || 0;
-          const b2 = inner.find(t => t.power === 1)?.coef || 0;
-          const c2 = inner.find(t => t.power === 0)?.coef || 0;
-          if(a2 !== 0){
-            const D = b2*b2 - 4*a2*c2;
-            if(D >= 0){
-              const sq = Math.sqrt(D);
-              const r1 = (-b2 + sq)/(2*a2), r2 = (-b2 - sq)/(2*a2);
-              const p1 = r1 >= 0 ? `(x - ${fmtNum(r1)})` : `(x + ${fmtNum(-r1)})`;
-              const p2 = r2 >= 0 ? `(x - ${fmtNum(r2)})` : `(x + ${fmtNum(-r2)})`;
-              s.push(`\n${ico('hint')} Дополнительно можно разложить: $${gStr}${p1}${p2}$`);
-            }
-          }
-        }
-        return { text: s.join('\n'), _isDialog:true };
-      }
-    }
-    // Grouping: split terms into 2+2 and factor
-    if(poly.terms.length === 4){
-      // Try x^3 + a*x^2 + b*x + c → group (t1+t2) + (t3+t4)
-      const t = [...poly.terms].sort((a,b) => b.power - a.power);
-      const g1 = gcd(Math.abs(t[0].coef), Math.abs(t[1].coef));
-      const g2 = gcd(Math.abs(t[2].coef), Math.abs(t[3].coef));
-      const i1 = [{coef: t[0].coef/g1, power: t[0].power - Math.min(t[0].power, t[1].power)}, {coef: t[1].coef/g1, power: t[1].power - Math.min(t[0].power, t[1].power)}];
-      const i2 = [{coef: t[2].coef/g2, power: t[2].power - Math.min(t[2].power, t[3].power)}, {coef: t[3].coef/g2, power: t[3].power - Math.min(t[2].power, t[3].power)}];
-      const s1 = polyTermsToStr(i1), s2 = polyTermsToStr(i2);
-      // Check if s1 === s2 (grouping works)
-      if(s1.replace(/\s/g,'') === s2.replace(/\s/g,'')){
-        const g1Str = (g1 === 1 ? '' : fmtNum(g1)) + (Math.min(t[0].power, t[1].power) === 0 ? '' : `x^${Math.min(t[0].power, t[1].power)}`);
-        const g2Str = (g2 === 1 ? '' : fmtNum(g2)) + (Math.min(t[2].power, t[3].power) === 0 ? '' : `x^${Math.min(t[2].power, t[3].power)}`);
-        const s = [];
-        s.push(`**Разложение группировкой:**`);
-        s.push(`$$${polyTermsToStr(poly.terms)}$$`);
-        s.push(`\n**Шаг 1.** Группирую попарно:`);
-        s.push(`$$(${polyTermsToStr([t[0],t[1]])}) + (${polyTermsToStr([t[2],t[3]])})$$`);
-        s.push(`\n**Шаг 2.** Выношу общий множитель из каждой группы:`);
-        s.push(`$$${g1Str}(${s1}) + ${g2Str}(${s2})$$`);
-        s.push(`\n**Шаг 3.** Общая скобка $( ${s1} )$:`);
-        s.push(`$$(${s1})(${g1Str} + ${g2Str})$$`);
-        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $(${s1})(${g1Str} + ${g2Str})$`);
-        return { text: s.join('\n'), _isDialog:true };
-      }
-    }
-  }
-  // Fallback to quadratic
-  return factorPolynomial(query);
-}
 function parseAnyPoly(expr){
   expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x');
   expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
@@ -1118,6 +973,73 @@ function polyTermsToStr(terms){
   }
   return s;
 }
+function factorAdvanced(query){
+  const q = query.toLowerCase().replace(/\s+/g,'');
+  const m = q.match(/(?:разложи|разложить|множител)\w*\s*(?:на\s+множители\s*)?[:]?(.+)/i);
+  if(!m) return null;
+  let expr = m[1].replace(/^\(/,'').replace(/\)$/,'').replace(/[?!.]+$/,'').replace(/[хХ]/g,'x');
+  expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3');
+  if(!/x/.test(expr)) return null;
+  const poly = parseAnyPoly(expr);
+  if(poly && poly.terms.length >= 2){
+    const intCoefs = poly.terms.map(t => Math.round(t.coef));
+    const isInts = intCoefs.every(c => Math.abs(c - Math.round(c)) < 1e-9);
+    if(isInts && poly.terms.length > 1){
+      let g = Math.abs(intCoefs[0]);
+      for(let i = 1; i < intCoefs.length; i++) g = gcd(g, Math.abs(intCoefs[i]));
+      const minPower = Math.min(...poly.terms.map(t => t.power));
+      if(g > 1 || minPower > 0){
+        const gCoef = g, gPow = minPower;
+        const inner = poly.terms.map(t => ({ coef: t.coef / gCoef, power: t.power - gPow }));
+        const gStr = (gCoef === 1 ? '' : fmtNum(gCoef)) + (gPow === 0 ? '' : gPow === 1 ? 'x' : `x^${gPow}`);
+        const innerStr = polyTermsToStr(inner);
+        const s = [];
+        s.push(`**Разложение на множители (общий множитель):**`);
+        s.push(`$$${polyTermsToStr(poly.terms)}$$`);
+        s.push(`\n${ico('bulb')} **Общий множитель:** $${gStr}$`);
+        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${gStr}(${innerStr})$`);
+        if(inner.length === 3){
+          const a2 = inner.find(t => t.power === 2)?.coef || 0;
+          const b2 = inner.find(t => t.power === 1)?.coef || 0;
+          const c2 = inner.find(t => t.power === 0)?.coef || 0;
+          if(a2 !== 0){
+            const D = b2*b2 - 4*a2*c2;
+            if(D >= 0){
+              const sq = Math.sqrt(D);
+              const r1 = (-b2 + sq)/(2*a2), r2 = (-b2 - sq)/(2*a2);
+              const p1 = r1 >= 0 ? `(x - ${fmtNum(r1)})` : `(x + ${fmtNum(-r1)})`;
+              const p2 = r2 >= 0 ? `(x - ${fmtNum(r2)})` : `(x + ${fmtNum(-r2)})`;
+              s.push(`\n${ico('hint')} Дополнительно: $${gStr}${p1}${p2}$`);
+            }
+          }
+        }
+        return { text: s.join('\n'), _isDialog:true };
+      }
+    }
+    if(poly.terms.length === 4){
+      const t = [...poly.terms].sort((a,b) => b.power - a.power);
+      const g1 = gcd(Math.abs(Math.round(t[0].coef)), Math.abs(Math.round(t[1].coef)));
+      const g2 = gcd(Math.abs(Math.round(t[2].coef)), Math.abs(Math.round(t[3].coef)));
+      const i1 = [{coef: t[0].coef/g1, power: t[0].power - Math.min(t[0].power, t[1].power)}, {coef: t[1].coef/g1, power: t[1].power - Math.min(t[0].power, t[1].power)}];
+      const i2 = [{coef: t[2].coef/g2, power: t[2].power - Math.min(t[2].power, t[3].power)}, {coef: t[3].coef/g2, power: t[3].power - Math.min(t[2].power, t[3].power)}];
+      const s1 = polyTermsToStr(i1), s2 = polyTermsToStr(i2);
+      if(s1.replace(/\s/g,'') === s2.replace(/\s/g,'')){
+        const g1Str = (g1 === 1 ? '' : fmtNum(g1)) + (Math.min(t[0].power, t[1].power) === 0 ? '' : `x^${Math.min(t[0].power, t[1].power)}`);
+        const g2Str = (g2 === 1 ? '' : fmtNum(g2)) + (Math.min(t[2].power, t[3].power) === 0 ? '' : `x^${Math.min(t[2].power, t[3].power)}`);
+        const s = [];
+        s.push(`**Разложение группировкой:**`);
+        s.push(`$$${polyTermsToStr(poly.terms)}$$`);
+        s.push(`\n**Шаг 1.** Группирую попарно:`);
+        s.push(`$$(${polyTermsToStr([t[0],t[1]])}) + (${polyTermsToStr([t[2],t[3]])})$$`);
+        s.push(`\n**Шаг 2.** Общий множитель из каждой группы:`);
+        s.push(`$$${g1Str}(${s1}) + ${g2Str}(${s2})$$`);
+        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $(${s1})(${g1Str} + ${g2Str})$`);
+        return { text: s.join('\n'), _isDialog:true };
+      }
+    }
+  }
+  return factorPolynomial(query);
+}
 function factorPolynomial(query){
   const q = query.toLowerCase().replace(/\s+/g,'');
   const m = q.match(/(?:разложи|разложить|множител)\w*\s*(?:на\s+множители\s*)?[:]?(.+)/i);
@@ -1128,13 +1050,13 @@ function factorPolynomial(query){
   if(poly.a !== 0){
     const {a,b,c} = poly;
     const D = b*b - 4*a*c;
-    if(D < 0) return { text:`${ico('x-circle','inl-err')} **Дискриминант $D = ${fmtNum(D)} < 0$** — не разлагается.`, _isDialog:true };
+    if(D < 0) return { text:`${ico('x-circle','inl-err')} **$D = ${fmtNum(D)} < 0$** — не разлагается.`, _isDialog:true };
     const sq = Math.sqrt(D);
     const r1 = (-b + sq)/(2*a), r2 = (-b - sq)/(2*a);
     const s = [];
     s.push(`**Разложение на множители:**`);
     s.push(`$$${polyToStr(a,b,c)}$$`);
-    s.push(`\n**Шаг 1.** Дискриминант: $D = ${fmtNum(D)}$, $\\sqrt{D} = ${fmtNum(sq)}$`);
+    s.push(`\n**Шаг 1.** $D = ${fmtNum(D)}$, $\\sqrt{D} = ${fmtNum(sq)}$`);
     s.push(`**Шаг 2.** Корни: $x_1 = ${fmtNum(r1)}$, $x_2 = ${fmtNum(r2)}$`);
     const parts = [];
     if(Math.abs(a-1) > 1e-9) parts.push(fmtNum(a));
@@ -1142,13 +1064,12 @@ function factorPolynomial(query){
     if(Math.abs(r2-r1) > 1e-9){
       parts.push(r2 >= 0 ? `(x - ${fmtNum(r2)})` : `(x + ${fmtNum(-r2)})`);
     } else parts.push(`^2`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${parts.join(' ').replace(/\(x \^2\)/g,'^2')}$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${parts.join(' ')}$`);
     return { text: s.join('\n'), _isDialog:true };
   }
   return null;
 }
 
-/* --- Simplify --- */
 function simplifyExpression(query){
   const m = query.toLowerCase().match(/(?:упрости|упростить)[:]?\s*(.+)/i);
   if(!m) return null;
@@ -1158,10 +1079,9 @@ function simplifyExpression(query){
   if(bino){
     const a = parseInt(bino[1]), b = parseInt(bino[2]);
     const s = [];
-    s.push(`**Упрощение:** $${(expr)}$`);
+    s.push(`**Упрощение:** $${expr}$`);
     s.push(`\n**Шаг 1.** Раскрываю скобки:`);
-    s.push(`$$= x \\cdot x + ${b}x + ${a}x + ${a*b}$$`);
-    s.push(`\n**Шаг 2.** Привожу подобные:`);
+    s.push(`$$= x^2 + ${b}x + ${a}x + ${a*b}$$`);
     s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x^2 ${a+b>=0?'+':'-'} ${Math.abs(a+b)}x ${a*b>=0?'+':'-'} ${Math.abs(a*b)}$`);
     return { text: s.join('\n'), _isDialog:true };
   }
@@ -1171,63 +1091,49 @@ function simplifyExpression(query){
 /* --- Integrals --- */
 function solveIntegral(query){
   const q = query.trim();
-  // Detect: ∫ expr dx, интеграл от expr dx, определённый: ∫_a^b expr dx
   let m = q.match(/∫\s*_?\{?(-?\d+\.?\d*)\}?\^?\{?(-?\d+\.?\d*)\}?\s*(.+?)\s*dx/i);
   if(!m) m = q.match(/(?:определ[ёе]нный\s+)?интеграл\s+от\s+(-?\d+\.?\d*)\s+до\s+(-?\d+\.?\d*)\s+(.+?)\s*dx/i);
   if(m) return definiteIntegral(parseFloat(m[1]), parseFloat(m[2]), m[3], q);
   m = q.match(/∫\s*(.+?)\s*dx/i);
   if(!m) m = q.match(/(?:неопредел[ёе]нный\s+)?интеграл\s+(?:от\s+)?(.+?)\s*dx/i);
-  if(!m) m = q.match(/^∫\s*(.+)/i);
   if(!m) return null;
   return indefiniteIntegral(m[1], q);
 }
 function indefiniteIntegral(expr, original){
   expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
-  // Simple rules
-  const terms = [];
-  // Parse terms: each is either a*sin(x), a*cos(x), a*e^x, a/x, a*x^n, a
   const parts = expr.replace(/-/g,'+-').split('+').filter(Boolean);
   const integrated = [];
   let ok = true;
   for(let part of parts){
     if(part.startsWith('+')) part = part.slice(1);
     let m;
-    // sin(x)
     if((m = part.match(/^(-?\d*\.?\d*)\*?sin\(x\)$/))){
       const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
-      integrated.push({ coef: -c, fn: 'cos' });
-      continue;
+      integrated.push({ coef: -c, fn: 'cos' }); continue;
     }
     if((m = part.match(/^(-?\d*\.?\d*)\*?cos\(x\)$/))){
       const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
-      integrated.push({ coef: c, fn: 'sin' });
-      continue;
+      integrated.push({ coef: c, fn: 'sin' }); continue;
     }
     if((m = part.match(/^(-?\d*\.?\d*)\*?e\^x$/))){
       const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
-      integrated.push({ coef: c, fn: 'exp' });
-      continue;
+      integrated.push({ coef: c, fn: 'exp' }); continue;
     }
     if((m = part.match(/^(-?\d*\.?\d*)\*?1\/x$/)) || (m = part.match(/^(-?\d*\.?\d*)\*?x\^-1$/))){
       const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
-      integrated.push({ coef: c, fn: 'ln', abs: true });
-      continue;
+      integrated.push({ coef: c, fn: 'ln' }); continue;
     }
     if((m = part.match(/^(-?\d*\.?\d*)\*?x\^(\d+)$/))){
       const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
       const n = parseInt(m[2]);
-      integrated.push({ coef: c / (n + 1), power: n + 1 });
-      continue;
+      integrated.push({ coef: c / (n + 1), power: n + 1 }); continue;
     }
     if((m = part.match(/^(-?\d*\.?\d*)\*?x$/))){
       const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
-      integrated.push({ coef: c / 2, power: 2 });
-      continue;
+      integrated.push({ coef: c / 2, power: 2 }); continue;
     }
     if((m = part.match(/^(-?\d*\.?\d+)$/))){
-      const c = parseFloat(m[1]);
-      integrated.push({ coef: c, power: 1 });
-      continue;
+      integrated.push({ coef: parseFloat(m[1]), power: 1 }); continue;
     }
     ok = false; break;
   }
@@ -1243,21 +1149,15 @@ function indefiniteIntegral(expr, original){
   const s = [];
   s.push(`**Нахожу интеграл:**`);
   s.push(`$$\\int ${expr.replace(/\*/g,'')}\\,dx$$`);
-  s.push(`\n${ico('bulb')} **Правила:**`);
-  s.push(`• $\\int x^n dx = \\dfrac{x^{n+1}}{n+1} + C$`);
-  s.push(`• $\\int \\sin x\\,dx = -\\cos x + C$, $\\int \\cos x\\,dx = \\sin x + C$`);
-  s.push(`• $\\int e^x dx = e^x + C$, $\\int \\dfrac{dx}{x} = \\ln|x| + C$`);
+  s.push(`\n${ico('bulb')} **Правила:** $\\int x^n dx = \\dfrac{x^{n+1}}{n+1} + C$, $\\int \\sin x\\,dx = -\\cos x + C$, $\\int e^x dx = e^x + C$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
   s.push(`$$\\int ${expr.replace(/\*/g,'')}\\,dx = ${pieces.join(' + ').replace(/\+ -/g,'- ')} + C$$`);
   return { text: s.join('\n'), _isDialog:true };
 }
-function definiteIntegral(a, b, expr, original){
-  // Use Simpson's numeric integration + show antiderivative
+function definiteIntegral(a, b, expr){
   expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
-  // Simple: only polynomial
   const poly = parseAnyPoly(expr);
   if(!poly) return null;
-  // Numeric via Simpson
   const f = (x) => poly.terms.reduce((s,t) => s + t.coef * Math.pow(x, t.power), 0);
   const n = 1000;
   const h = (b - a) / n;
@@ -1267,7 +1167,7 @@ function definiteIntegral(a, b, expr, original){
   const s = [];
   s.push(`**Определённый интеграл:**`);
   s.push(`$$\\int_{${fmtNum(a)}}^{${fmtNum(b)}} ${expr} \\,dx$$`);
-  s.push(`\n${ico('bulb')} **Формула Ньютона-Лейбница:** $\\int_a^b f(x)\\,dx = F(b) - F(a)$`);
+  s.push(`\n${ico('bulb')} **Ньютон-Лейбниц:** $\\int_a^b f\\,dx = F(b) - F(a)$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Значение:** $${fmtNum(Math.round(result * 1e6) / 1e6)}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
@@ -1278,24 +1178,22 @@ function solveLimit(query){
   if(!m) return null;
   const to = m[1] === '∞' ? Infinity : m[1] === '-∞' ? -Infinity : parseFloat(m[1]);
   const expr = m[2].trim().replace(/\s+/g,'').replace(/[хХ]/g,'x');
-  // Special cases
   const s = [];
   s.push(`**Предел:**`);
   s.push(`$$\\lim_{x \\to ${m[1]}} ${expr}$$`);
-  // Handle sin(x)/x → 1 as x→0
   if(/sin\(x\)\/x/i.test(expr) && to === 0){
     s.push(`\n${ico('bulb')} **Первый замечательный предел:** $\\lim_{x\\to 0} \\dfrac{\\sin x}{x} = 1$`);
     s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $1$`);
     return { text: s.join('\n'), _isDialog:true };
   }
-  // Try numeric
   const poly = parseAnyPoly(expr);
   if(poly){
     if(to === Infinity || to === -Infinity){
       const maxPow = Math.max(...poly.terms.map(t => t.power));
       const lead = poly.terms.find(t => t.power === maxPow).coef;
-      s.push(`\n${ico('bulb')} Старшая степень $x^{${maxPow}}$ с коэффициентом $${fmtNum(lead)}$.`);
-      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${to > 0 ? (lead > 0 ? '+\\infty' : '-\\infty') : (lead > 0 ? (maxPow % 2 === 0 ? '+\\infty' : '-\\infty') : (maxPow % 2 === 0 ? '-\\infty' : '+\\infty'))}$`);
+      s.push(`\n${ico('bulb')} Старшая степень $x^{${maxPow}}$, коэффициент $${fmtNum(lead)}$`);
+      const sign = to > 0 ? (lead > 0 ? '+\\infty' : '-\\infty') : (maxPow % 2 === 0 ? (lead > 0 ? '+\\infty' : '-\\infty') : (lead > 0 ? '-\\infty' : '+\\infty'));
+      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${sign}$`);
       return { text: s.join('\n'), _isDialog:true };
     }
     const val = poly.terms.reduce((s,t) => s + t.coef * Math.pow(to, t.power), 0);
@@ -1305,17 +1203,7 @@ function solveLimit(query){
   return null;
 }
 
-/* --- Complex numbers --- */
-function solveComplex(query){
-  const q = query.trim().replace(/[хХ]/g,'x');
-  // Format: (a+bi) OP (c+di)
-  const m = q.match(/^\(?\s*(-?\d+\.?\d*)?\s*([+-])?\s*(\d+\.?\d*)?i?\s*\)?\s*([+\-*/×])\s*\(?\s*(-?\d+\.?\d*)?\s*([+-])?\s*(\d+\.?\d*)?i?\s*\)?$/);
-  if(!m) return null;
-  // Simple parse attempt
-  return null;
-}
-
-/* --- Arithmetic column --- */
+/* --- Column arithmetic --- */
 function columnArithmetic(query){
   const m = query.trim().match(/^(\d+)\s*([×*])\s*(\d+)$/);
   if(m){
@@ -1456,14 +1344,11 @@ function findError(query){
   const m = query.toLowerCase().match(/(?:найди|найти)\s+ошибк\w*\s*:?\s*(.+)/i);
   if(!m) return null;
   const raw = m[1].trim();
-  // Split by → or => or "получилось"
   const parts = raw.split(/\s*(?:→|=>|->|,|;)\s*/);
   if(parts.length < 2) return null;
   const [eq, claimed] = parts;
-  // Solve correctly
   const correct = solveEquation(eq);
   if(!correct) return null;
-  // Extract claimed answer — try x = number
   const claimedMatch = claimed.match(/x\s*=\s*(-?\d+\.?\d*)/i);
   const claimedVal = claimedMatch ? parseFloat(claimedMatch[1]) : null;
   const correctMatch = correct.text.match(/\$x = (-?\d+\.?\d*)\$/);
@@ -1477,7 +1362,7 @@ function findError(query){
     s.push(`\n${ico('check-circle','inl-ok')} **Верно!** Ошибок нет.`);
   } else {
     s.push(`\n${ico('x-circle','inl-err')} **Нашёл ошибку.** Правильный ответ: $x = ${correctVal}$`);
-    s.push(`\n${ico('bulb')} **Типичная причина:** неверный перенос через знак равенства.`);
+    s.push(`\n${ico('bulb')} **Причина:** скорее всего, неверный перенос через знак равенства.`);
   }
   return { text: s.join('\n'), _isDialog:true };
 }
@@ -1485,14 +1370,13 @@ function findError(query){
 /* --- Knowledge base --- */
 function matchMathKnowledge(q){
   const x = q.trim().toLowerCase().replace(/[?!.]+$/,'').trim();
-
   if(/объясни\s+проще|простыми\s+словами|для\s+чайников/i.test(x)){
     return { text: `${ico('bulb')} **Объясняю просто**\n\nНапиши тему — объясню без формул, на бытовом примере.`, _isDialog:true };
   }
   if(/что\s+такое\s+производн|объясни\s+производн/i.test(x))
     return { text: `**Производная** — скорость изменения функции в точке.\n\n${ico('bulb')} $f'(x_0) = \\lim_{h\\to 0} \\dfrac{f(x_0+h) - f(x_0)}{h}$\n\n${ico('chart')} **Смысл:** угловой коэффициент касательной.`, _isDialog:true };
   if(/что\s+такое\s+интеграл/i.test(x))
-    return { text: `**Интеграл** — операция, обратная производной.\n\n${ico('bulb')} $\\int f(x)\\,dx = F(x) + C$, где $F'(x)=f(x)$\n\n**Основные:**\n• $\\int x^n\\,dx = \\dfrac{x^{n+1}}{n+1} + C$\n• $\\int \\dfrac{dx}{x} = \\ln|x| + C$\n• $\\int e^x\\,dx = e^x + C$\n• $\\int \\sin x\\,dx = -\\cos x + C$\n• $\\int \\cos x\\,dx = \\sin x + C$`, _isDialog:true };
+    return { text: `**Интеграл** — операция, обратная производной.\n\n${ico('bulb')} $\\int f(x)\\,dx = F(x) + C$, где $F'(x)=f(x)$\n\n• $\\int x^n\\,dx = \\dfrac{x^{n+1}}{n+1} + C$\n• $\\int \\dfrac{dx}{x} = \\ln|x| + C$\n• $\\int e^x\\,dx = e^x + C$\n• $\\int \\sin x\\,dx = -\\cos x + C$\n• $\\int \\cos x\\,dx = \\sin x + C$`, _isDialog:true };
   if(/теорема\s+пифагор|пифагор/i.test(x))
     return { text: `**Теорема Пифагора**\n\n$$a^2 + b^2 = c^2$$\n\nгде $c$ — гипотенуза.`, _isDialog:true };
   if(/дискриминант/i.test(x) && !/реши/i.test(x))
@@ -1504,9 +1388,9 @@ function matchMathKnowledge(q){
   if(/логарифм/i.test(x))
     return { text: `**Логарифм** $\\log_a b = c \\iff a^c = b$\n\n• $\\log_a(xy) = \\log_a x + \\log_a y$\n• $\\log_a(x/y) = \\log_a x - \\log_a y$\n• $\\log_a(x^n) = n\\log_a x$`, _isDialog:true };
   if(/систем[аы]\s+уравнени/i.test(x) && /что|как|объясн/i.test(x))
-    return { text: `**Система уравнений** — ищем значения, при которых все уравнения верны.\n\n**Методы:** подстановка, сложение, Крамера, графический.\n\n${ico('hint')} Напиши например: \`{x+y=7, x-y=1}\` — решу!`, _isDialog:true };
+    return { text: `**Система уравнений** — ищем значения, при которых все уравнения верны.\n\n**Методы:** подстановка, сложение, Крамера.\n\n${ico('hint')} Напиши например: \`{x+y=7, x-y=1}\` — решу!`, _isDialog:true };
   if(/неравенств/i.test(x) && /что|как|объясн/i.test(x))
-    return { text: `**Неравенство** — выражение со знаками $<, >, \\le, \\ge$.\n\n**Метод интервалов:**\n1. Переносим в левую часть\n2. Находим корни = 0\n3. Ставим точки на прямой\n4. Определяем знаки на интервалах\n\n${ico('hint')} Напиши например \`x^2-5x+6 < 0\` — решу!`, _isDialog:true };
+    return { text: `**Неравенство** — выражение со знаками $<, >, \\le, \\ge$.\n\n**Метод интервалов:**\n1. Переносим в левую часть\n2. Находим корни\n3. Ставим точки на прямой\n4. Определяем знаки\n\n${ico('hint')} Напиши \`x^2-5x+6 < 0\` — решу!`, _isDialog:true };
   if(/процент/i.test(x))
     return { text: `**Проценты:** $p\\%$ от $A$: $A \\cdot p/100$`, _isDialog:true };
   if(/степен|возведен/i.test(x))
@@ -1531,46 +1415,33 @@ function matchDialog(q){
   if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи!';
   if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста!';
   if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `${ico('compass')} Я **Orbita AI** — твой репетитор по математике от компании **ORT**.`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Умею:**\n\n${ico('equals')} Уравнения и системы\n${ico('sigma')} Неравенства (метод интервалов)\n${ico('chart')} Производные (sin, cos, ln, e^x)\n${ico('sigma')} Интегралы\n${ico('function')} Пределы\n${ico('calc')} Столбик\n${ico('sigma')} Разложение на множители\n${ico('book-open')} Теория\n${ico('target')} Тренажёр и экзамен\n${ico('image')} Распознавание фото`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Умею:**\n\n${ico('equals')} Уравнения и системы\n${ico('sigma')} Неравенства\n${ico('chart')} Производные\n${ico('sigma')} Интегралы\n${ico('function')} Пределы\n${ico('calc')} Столбик\n${ico('sigma')} Разложение на множители\n${ico('book-open')} Теория\n${ico('target')} Тренажёр и экзамен\n${ico('image')} Распознавание фото`;
   if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${ico('clock')}`;
   if(/какой\s+сегодня\s+день/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})} ${ico('calendar')}`;
   return null;
 }
 
-/* --- Generate answer --- */
 async function generateAnswer(query){
   if(hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
   const key = cacheKey(query);
   if(answerCache.has(key)){ await sleep(120); return answerCache.get(key); }
   let result = null;
 
-  // 0. Graph
   const gm = query.match(/(?:построй|построить|график)[\s:]*(?:график\s+)?(?:функции\s+)?(?:y\s*=\s*)?(.+)/i);
   if(gm){
     const expr = gm[1].trim();
-    result = { text: `**Строю график:**\n$${expr.replace(/;/g,' \\quad ')}$$\n\n${ico('chart')} График — ниже.`, _graph: expr, _isDialog: true };
+    result = { text: `**Строю график:**\n$${expr.replace(/;/g,' \\quad ')}$\n\n${ico('chart')} График — ниже.`, _graph: expr, _isDialog: true };
   }
-  // 1. Find error
   if(!result) result = findError(query);
-  // 2. System
   if(!result) result = solveSystem(query);
-  // 3. Inequality
   if(!result) result = solveInequality(query);
-  // 4. Integral
   if(!result) result = solveIntegral(query);
-  // 5. Limit
   if(!result) result = solveLimit(query);
-  // 6. Factor advanced
   if(!result) result = factorAdvanced(query);
-  // 7. Simplify
   if(!result) result = simplifyExpression(query);
-  // 8. Equation
   if(!result){ const eq = solveEquation(query); if(eq) result = eq; }
-  // 9. Derivative
   if(!result){ const d = solveDerivative(query); if(d) result = d; }
-  // 10. Column
   if(!result) result = columnArithmetic(query);
-  // 11. Simple arithmetic
   if(!result){
     const m = query.trim().toLowerCase().match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
     if(m){
@@ -1584,7 +1455,6 @@ async function generateAnswer(query){
       if(!result) result = { text: `$${a} ${op} ${b} = ${Math.round(r*1000000)/1000000}$$`, _isDialog:true };
     }
   }
-  // 12. GCD/LCM
   if(!result){
     const nm = query.toLowerCase().match(/(?:нод|нок)\s*\(?\s*(\d+)\s*[,;\s]+\s*(\d+)/i);
     if(nm){
@@ -1593,7 +1463,6 @@ async function generateAnswer(query){
       else result = { text: `**НОД(${a}, ${b}) = ${gcd(a,b)}**`, _isDialog:true };
     }
   }
-  // 13. Factorial
   if(!result){
     const fm = query.toLowerCase().match(/(\d+)\s*!|факториал\s+(\d+)/);
     if(fm){
@@ -1601,13 +1470,10 @@ async function generateAnswer(query){
       if(n >= 0 && n <= 20){ let f = 1; for(let i = 2; i <= n; i++) f *= i; result = { text: `**$${n}! = ${f}$**`, _isDialog:true }; }
     }
   }
-  // 14. KB
   if(!result) result = matchMathKnowledge(query);
-  // 15. Dialog
   if(!result){ const d = matchDialog(query); if(d) result = { text: d, _isDialog: true }; }
-  // 16. Not understood
   if(!result){
-    result = { text: `${ico('hint')} Не могу разобрать «${query}».\n\n**Попробуй:**\n• _Реши 2x + 5 = 15_\n• _Реши x^2 - 5x + 6 = 0_\n• _Система: {x+y=7, x-y=1}_\n• _2x + 5 > 15_\n• _Производная x^3 + 2x_\n• _∫ x^3 dx_\n• _Разложи x^3 + x^2 + x + 1_\n• _Построй y = x^2 - 4_\n• _Найди ошибку: 2x+5=15 → x=7.5_`, _isDialog: true };
+    result = { text: `${ico('hint')} Не могу разобрать «${query}».\n\n**Попробуй:**\n• _Реши 2x + 5 = 15_\n• _Реши x^2 - 5x + 6 = 0_\n• _Система: {x+y=7, x-y=1}_\n• _2x + 5 > 15_\n• _Производная x^3 + 2x_\n• _∫ x^3 dx_\n• _Разложи x^3 + x^2 + x + 1_\n• _Построй y = x^2 - 4_`, _isDialog: true };
   }
   if(result && !result._isBlocked) answerCache.set(key, result);
   return result;
@@ -1679,22 +1545,18 @@ function drawInlineGraph(container, funcs){
   canvas.style.width = '100%';
   canvas.style.height = 'auto';
   canvas.style.display = 'block';
-  canvas.style.background = 'var(--surface)';
+  canvas.style.background = '#f8fafc';
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
-  const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const bg = isDark ? '#0f172a' : '#f8fafc';
-  const grid = isDark ? '#1e293b' : '#e2e8f0';
-  const axis = isDark ? '#475569' : '#94a3b8';
-  const textColor = isDark ? '#94a3b8' : '#64748b';
+  const bg = '#f8fafc';
+  const grid = '#e2e8f0';
+  const axis = '#94a3b8';
+  const textColor = '#64748b';
   ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
-
   const xMin = -10, xMax = 10, yMin = -10, yMax = 10;
   const sx = x => (x - xMin) / (xMax - xMin) * W;
   const sy = y => H - (y - yMin) / (yMax - yMin) * H;
-
-  // Grid
   ctx.strokeStyle = grid;
   ctx.lineWidth = 1;
   for(let x = Math.ceil(xMin); x <= xMax; x++){
@@ -1703,12 +1565,10 @@ function drawInlineGraph(container, funcs){
   for(let y = Math.ceil(yMin); y <= yMax; y++){
     ctx.beginPath(); ctx.moveTo(0, sy(y)); ctx.lineTo(W, sy(y)); ctx.stroke();
   }
-  // Axes
   ctx.strokeStyle = axis;
   ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(0, sy(0)); ctx.lineTo(W, sy(0)); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(sx(0), 0); ctx.lineTo(sx(0), H); ctx.stroke();
-  // Labels
   ctx.fillStyle = textColor;
   ctx.font = '10px -apple-system,sans-serif';
   ctx.textAlign = 'center';
@@ -1721,17 +1581,14 @@ function drawInlineGraph(container, funcs){
     if(y === 0) continue;
     ctx.fillText(String(y), sx(0) - 4, sy(y) + 3);
   }
-
-  // Colors
   const colors = ['#2563eb','#dc2626','#16a34a','#f59e0b','#9333ea'];
-  // Draw each function
   funcs.forEach((fn, idx) => {
     let js;
     try { js = parseFnExpr(fn); } catch(e){ return; }
     let f;
     try {
       f = new Function('x', `with(Math){ return ${js}; }`);
-      f(1); // test
+      f(1);
     } catch(e){ return; }
     ctx.strokeStyle = colors[idx % colors.length];
     ctx.lineWidth = 2;
@@ -1749,7 +1606,6 @@ function drawInlineGraph(container, funcs){
       else ctx.lineTo(px, py);
     }
     ctx.stroke();
-    // Auto: mark vertex for parabolas (a*x^2 + b*x + c)
     const quad = fn.match(/^(-?\d*\.?\d*)\*?x\^2\s*([+\-]\s*\d*\.?\d*)?\*?x?\s*([+\-]\s*\d+\.?\d*)?$/i);
     if(quad && !fn.toLowerCase().includes('sin') && !fn.toLowerCase().includes('cos')){
       const L = parsePoly(fn.replace(/\s+/g,''));
@@ -1767,7 +1623,6 @@ function drawInlineGraph(container, funcs){
       }
     }
   });
-  // Legend
   ctx.font = 'bold 11px -apple-system,sans-serif';
   ctx.textAlign = 'left';
   funcs.forEach((fn, idx) => {
@@ -1900,7 +1755,6 @@ function appendAIMessage(msg, animate = true, idx = -1){
   if(!animate){
     typed.innerHTML = renderText(msg.text);
     if(!msg._blocked) appendActions(div.querySelector('.body'), msg, idx);
-    // Draw inline graph if needed
     if(msg._graph){
       const gDiv = document.createElement('div');
       gDiv.className = 'graph-inline';
@@ -1933,7 +1787,6 @@ function appendActions(body, msg, idx){
 }
 
 async function copyLaTeX(text){
-  // Extract math blocks $...$
   const blocks = [];
   text.replace(/\$\$([^$]+?)\$\$/g, (m, expr) => { blocks.push(expr.trim()); return m; });
   text.replace(/\$([^$\n]+?)\$/g, (m, expr) => { blocks.push(expr.trim()); return m; });
@@ -1957,7 +1810,7 @@ function showHint(msg){
   if(!key){
     if(/[<>≤≥]/.test(msg.text)) key = 'неравенств';
     else if(/∫/.test(msg.text)) key = 'интеграл';
-    else if(/систем|\\begin\{cases\}/.test(msg.text)) key = 'систем';
+    else if(/систем|begin\{cases\}/.test(msg.text)) key = 'систем';
     else key = 'линейн';
   }
   showToast('Подсказка');
@@ -2277,7 +2130,7 @@ function initVoice(){
 function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
 function stopVoice(){ isRecording=false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition && recognition.stop(); }catch(e){} }
 
-/* ============== OCR (image files) ============== */
+/* ============== OCR ============== */
 async function handleFileUpload(file){
   if(!file) return;
   if(file.size > 10*1024*1024){ showToast('Файл больше 10 МБ'); return; }
@@ -2297,7 +2150,6 @@ async function handleFileUpload(file){
   store.saveChats(state.chats);
   appendUserMessage(fm.text, true, chat.messages.length-1, fm.attachment);
   renderChatsList();
-  // Auto-analyze
   setTimeout(() => {
     const q = `Распознай и реши задачу с картинки:\n\n${text.slice(0,2000)}`;
     handleSend(q);
@@ -2435,7 +2287,6 @@ async function handleSend(textOverride){
   const el = appendAIMessage(aiMsg, true, chat.messages.length-1);
   if(state.abortRequested){ el.innerHTML = renderText(result.text); const c = el.parentElement.querySelector('.cursor'); if(c) c.remove(); }
   else await typeText(el, result.text);
-  // Graph after typing
   if(result._graph){
     const gDiv = document.createElement('div');
     gDiv.className = 'graph-inline';
@@ -2843,7 +2694,6 @@ $('plusModalBg').addEventListener('click', e => { if(e.target === $('plusModalBg
 $('limitBannerBtn').addEventListener('click', openPlusModal);
 $('printBtn').addEventListener('click', () => { closeAccount(); setTimeout(() => window.print(), 300); });
 $('notebookBtn').addEventListener('click', () => { closeAccount(); setTimeout(printNotebook, 300); });
-/* Quick menu */
 $('fsquaresBtn').addEventListener('click', () => {
   if($('quickMenu').classList.contains('open')) closeQuickMenu();
   else openQuickMenu();
@@ -2901,7 +2751,6 @@ $('examStart').addEventListener('click', startExam);
 $('examCheck').addEventListener('click', checkExamAnswer);
 $('examInput').addEventListener('keydown', e => { if(e.key === 'Enter') checkExamAnswer(); });
 
-/* Notebook print */
 function printNotebook(){
   const chat = getActiveChat(); if(!chat || !chat.messages.length){ showToast('Чат пустой'); return; }
   const userQs = chat.messages.filter(m => m.role === 'user').map(m => m.text);
