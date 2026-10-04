@@ -120,163 +120,88 @@
   .send-btn .cooldown-text{display:none;font-size:11px;font-weight:800;color:#fff}
   .send-btn.cooldown .cooldown-text{display:block}
 
-  /* ============ VOICE — красивый оверлей ============ */
+  /* ============ VOICE — ChatGPT style orb ============ */
   .voice-overlay{
     position:fixed;inset:0;z-index:180;display:none;
     flex-direction:column;align-items:center;justify-content:center;
-    padding:32px 24px;
-    background:linear-gradient(160deg,#0f172a 0%,#1e3a8a 55%,#1d4ed8 100%);
+    padding:24px;
+    background:#000;
     overflow:hidden;
   }
-  .voice-overlay.active{display:flex;animation:voiceFadeIn .25s ease-out}
-  @keyframes voiceFadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+  .voice-overlay.active{display:flex;animation:voiceFadeIn .28s ease-out}
+  @keyframes voiceFadeIn{from{opacity:0}to{opacity:1}}
 
-  .voice-overlay::before,
-  .voice-overlay::after{
-    content:'';position:absolute;border-radius:50%;
-    filter:blur(80px);opacity:.35;pointer-events:none;
-  }
   .voice-overlay::before{
-    width:340px;height:340px;
-    background:#60a5fa;top:-80px;left:-80px;
-    animation:blob1 12s ease-in-out infinite;
-  }
-  .voice-overlay::after{
-    width:280px;height:280px;
-    background:#a3e635;bottom:-100px;right:-60px;
-    animation:blob2 14s ease-in-out infinite;
-  }
-  @keyframes blob1{
-    0%,100%{transform:translate(0,0) scale(1)}
-    50%{transform:translate(60px,40px) scale(1.15)}
-  }
-  @keyframes blob2{
-    0%,100%{transform:translate(0,0) scale(1)}
-    50%{transform:translate(-50px,-30px) scale(1.2)}
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 45%, rgba(37,99,235,.18) 0%, transparent 55%);
+    pointer-events:none;
   }
 
   .voice-box{
     position:relative;z-index:2;
-    width:100%;max-width:420px;
+    width:100%;max-width:480px;
     display:flex;flex-direction:column;align-items:center;text-align:center;
   }
 
-  .voice-rings{
-    position:relative;width:220px;height:220px;margin-bottom:36px;
-    display:flex;align-items:center;justify-content:center;
-  }
-
-  .voice-glow{
-    position:absolute;inset:-30px;border-radius:50%;
-    background:radial-gradient(circle,rgba(96,165,250,.45) 0%,transparent 70%);
-    animation:glowPulse 2.4s ease-in-out infinite;
-    pointer-events:none;
-  }
-  @keyframes glowPulse{
-    0%,100%{transform:scale(1);opacity:.7}
-    50%{transform:scale(1.15);opacity:1}
-  }
-
-  .voice-ring{
-    position:absolute;
-    width:100%;height:100%;
-    border-radius:50%;
-    border:2px solid rgba(147,197,253,.7);
-    opacity:0;
-    will-change:transform,opacity;
-  }
-
-  .voice-mic-circle{
-    position:relative;
-    width:120px;height:120px;
-    border-radius:50%;
-    background:linear-gradient(145deg,#3b82f6 0%,#1d4ed8 100%);
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:
-      0 20px 60px rgba(29,78,216,.55),
-      0 0 0 1px rgba(255,255,255,.15) inset,
-      0 -8px 20px rgba(0,0,0,.15) inset;
-    z-index:5;
-    will-change:transform;
-  }
-  .voice-mic-circle::before{
-    content:'';position:absolute;inset:6px;
-    border-radius:50%;
-    border:1.5px solid rgba(255,255,255,.25);
-    pointer-events:none;
-  }
-  .voice-mic-circle svg{
-    width:46px;height:46px;
-    stroke:#fff;fill:none;stroke-width:2.2;
-    stroke-linecap:round;stroke-linejoin:round;
-    filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));
+  .voice-canvas{
+    width:280px;height:280px;
+    display:block;
+    margin-bottom:24px;
+    filter:drop-shadow(0 0 60px rgba(59,130,246,.35));
   }
 
   .voice-status{
-    font-size:24px;font-weight:800;color:#fff;
-    margin-bottom:14px;letter-spacing:-.4px;
-    text-shadow:0 2px 8px rgba(0,0,0,.25);
+    font-size:22px;font-weight:700;color:#fff;
+    margin-bottom:14px;letter-spacing:-.3px;
   }
+
   .voice-text{
-    font-size:16px;color:rgba(255,255,255,.92);
-    line-height:1.55;max-width:340px;min-height:52px;
+    font-size:15px;color:rgba(255,255,255,.75);
+    line-height:1.5;max-width:340px;min-height:44px;
     font-weight:500;
-    padding:14px 18px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.14);
+    padding:12px 20px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.1);
     border-radius:16px;
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
-    transition:min-height .2s;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    display:flex;align-items:center;justify-content:center;
+    transition:min-height .2s, color .2s;
   }
   .voice-text.empty{
-    color:rgba(255,255,255,.45);
+    color:rgba(255,255,255,.35);
     font-style:italic;
   }
 
   .voice-hint{
-    font-size:12.5px;color:rgba(255,255,255,.55);
-    margin-top:14px;font-weight:500;
+    font-size:12.5px;color:rgba(255,255,255,.45);
+    margin-top:16px;font-weight:500;
     display:flex;align-items:center;gap:6px;
   }
   .voice-hint .hint-dot{
     width:6px;height:6px;border-radius:50%;
     background:#a3e635;
-    box-shadow:0 0 8px #a3e635;
+    box-shadow:0 0 10px #a3e635;
     animation:hintPulse 1.4s ease-in-out infinite;
   }
-  @keyframes hintPulse{
-    0%,100%{opacity:.4}
-    50%{opacity:1}
-  }
-
-  .voice-eq{
-    display:flex;gap:4px;align-items:flex-end;
-    height:32px;margin-top:20px;
-  }
-  .voice-eq span{
-    width:4px;height:8px;
-    border-radius:2px;
-    background:linear-gradient(180deg,#a3e635,#65a30d);
-    transition:height .1s ease-out;
-  }
+  @keyframes hintPulse{0%,100%{opacity:.4}50%{opacity:1}}
 
   .voice-cancel{
-    margin-top:32px;
-    padding:13px 32px;
+    margin-top:36px;
+    padding:13px 36px;
     border-radius:100px;
-    border:1.5px solid rgba(255,255,255,.25);
-    background:rgba(255,255,255,.08);
+    border:1.5px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.06);
     color:#fff;
     font-size:14px;font-weight:700;
     font-family:inherit;
     cursor:pointer;
     transition:all .15s;
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
   }
   .voice-cancel:active{
-    background:rgba(255,255,255,.18);
+    background:rgba(255,255,255,.16);
     transform:scale(.96);
   }
 
@@ -486,27 +411,12 @@
 
 <div class="voice-overlay" id="voiceOverlay">
   <div class="voice-box">
-    <div class="voice-rings" id="voiceRings">
-      <div class="voice-glow"></div>
-      <div class="voice-ring" id="ring1"></div>
-      <div class="voice-ring" id="ring2"></div>
-      <div class="voice-ring" id="ring3"></div>
-      <div class="voice-ring" id="ring4"></div>
-      <div class="voice-ring" id="ring5"></div>
-      <div class="voice-mic-circle" id="micCircle">
-        <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg>
-      </div>
-    </div>
+    <canvas class="voice-canvas" id="voiceCanvas" width="280" height="280"></canvas>
     <div class="voice-status" id="voiceStatus">Слушаю…</div>
     <div class="voice-text empty" id="voiceText">Скажи что-нибудь</div>
     <div class="voice-hint" id="voiceHint">
       <span class="hint-dot"></span>
       <span>Говори чётко, я распознаю речь</span>
-    </div>
-    <div class="voice-eq" id="voiceEq">
-      <span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span>
     </div>
     <button class="voice-cancel" id="voiceCancel">Отмена</button>
   </div>
@@ -834,7 +744,144 @@ async function showBioGate(){
 
 /* ============ VOICE ============ */
 let recognition = null, isRecording = false, voiceFinalText = '';
-let audioContext = null, analyser = null, mediaStream = null, rafId = null;
+let audioContext = null, analyser = null, mediaStream = null;
+
+/* ============ VOICE ORB — ChatGPT style ============ */
+let orbRaf = null, orbCanvas = null, orbCtx = null, orbStartTime = 0, orbLevel = 0, orbDataArray = null;
+
+function initOrbCanvas(){
+  orbCanvas = document.getElementById('voiceCanvas');
+  if(!orbCanvas) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const size = 280;
+  orbCanvas.width  = size * dpr;
+  orbCanvas.height = size * dpr;
+  orbCanvas.style.width  = size + 'px';
+  orbCanvas.style.height = size + 'px';
+  orbCtx = orbCanvas.getContext('2d');
+  orbCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function drawBlob(ctx, cx, cy, radius, t, level, seed, fill){
+  const points = 80;
+  ctx.beginPath();
+  for(let i = 0; i <= points; i++){
+    const a = (i / points) * Math.PI * 2;
+    const w1 = Math.sin(a * 3 + t * 0.9 + seed)        * (2   + level * 14);
+    const w2 = Math.sin(a * 5 - t * 1.3 + seed * 1.7)  * (1.5 + level * 9);
+    const w3 = Math.sin(a * 7 + t * 0.7 + seed * 2.3)  * (1   + level * 5);
+    const rr = radius + w1 + w2 + w3;
+    const x = cx + Math.cos(a) * rr;
+    const y = cy + Math.sin(a) * rr;
+    if(i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+}
+
+function drawOrbFrame(){
+  if(!orbCtx) return;
+  const w = 280, h = 280, cx = w/2, cy = h/2;
+  const t = (performance.now() - orbStartTime) / 1000;
+
+  let target = 0;
+  if(analyser && orbDataArray){
+    analyser.getByteFrequencyData(orbDataArray);
+    let sum = 0;
+    for(let i = 0; i < orbDataArray.length; i++) sum += orbDataArray[i];
+    target = Math.min(1, (sum / orbDataArray.length) / 70);
+  }
+  orbLevel += (target - orbLevel) * 0.18;
+
+  orbCtx.clearRect(0, 0, w, h);
+
+  const baseR = 88;
+  const r = baseR * (1 + orbLevel * 0.12);
+
+  // 1. Внешнее свечение
+  const glow = orbCtx.createRadialGradient(cx, cy, r * 0.6, cx, cy, r * 1.9);
+  glow.addColorStop(0,   `rgba(96,165,250,${0.28 + orbLevel * 0.25})`);
+  glow.addColorStop(0.5, `rgba(59,130,246,${0.12 + orbLevel * 0.1})`);
+  glow.addColorStop(1,   'rgba(37,99,235,0)');
+  orbCtx.fillStyle = glow;
+  orbCtx.beginPath();
+  orbCtx.arc(cx, cy, r * 1.9, 0, Math.PI * 2);
+  orbCtx.fill();
+
+  // 2. Полупрозрачные слои
+  for(let i = 0; i < 3; i++){
+    const layerR = r * (0.95 + i * 0.06);
+    const alpha  = 0.32 - i * 0.09;
+    const grad = orbCtx.createRadialGradient(cx, cy, 0, cx, cy, layerR * 1.15);
+    grad.addColorStop(0, `rgba(191,219,254,${alpha})`);
+    grad.addColorStop(1, `rgba(37,99,235,${alpha * 0.3})`);
+    drawBlob(orbCtx, cx, cy, layerR, t, orbLevel, i * 2.1, grad);
+  }
+
+  // 3. Основная сфера
+  const mainGrad = orbCtx.createRadialGradient(
+    cx - r * 0.35, cy - r * 0.4, r * 0.1,
+    cx, cy, r * 1.05
+  );
+  mainGrad.addColorStop(0,    '#ffffff');
+  mainGrad.addColorStop(0.3,  '#e0eaff');
+  mainGrad.addColorStop(0.6,  '#93c5fd');
+  mainGrad.addColorStop(0.85, '#3b82f6');
+  mainGrad.addColorStop(1,    '#1d4ed8');
+  drawBlob(orbCtx, cx, cy, r, t * 1.15, orbLevel, 0.5, mainGrad);
+
+  // 4. Блик
+  const shine = orbCtx.createRadialGradient(
+    cx - r * 0.3, cy - r * 0.45, 0,
+    cx - r * 0.2, cy - r * 0.3, r * 0.7
+  );
+  shine.addColorStop(0, 'rgba(255,255,255,0.55)');
+  shine.addColorStop(1, 'rgba(255,255,255,0)');
+  orbCtx.fillStyle = shine;
+  orbCtx.beginPath();
+  orbCtx.ellipse(cx - r * 0.25, cy - r * 0.35, r * 0.5, r * 0.35, -0.6, 0, Math.PI * 2);
+  orbCtx.fill();
+
+  orbRaf = requestAnimationFrame(drawOrbFrame);
+}
+
+function startOrb(){
+  initOrbCanvas();
+  orbStartTime = performance.now();
+  orbLevel = 0;
+  if(orbRaf) cancelAnimationFrame(orbRaf);
+  drawOrbFrame();
+}
+
+function stopOrb(){
+  if(orbRaf){ cancelAnimationFrame(orbRaf); orbRaf = null; }
+  orbLevel = 0;
+  orbDataArray = null;
+  if(orbCtx){ orbCtx.clearRect(0, 0, 280, 280); }
+}
+
+function startAudioVisualization(){
+  startOrb();
+  if(!navigator.mediaDevices?.getUserMedia) return;
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    mediaStream = stream;
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(stream);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.75;
+    source.connect(analyser);
+    orbDataArray = new Uint8Array(analyser.frequencyBinCount);
+  }).catch(err => console.warn('Audio viz failed:', err));
+}
+
+function stopAudioVisualization(){
+  stopOrb();
+  if(mediaStream){ mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+  if(audioContext){ try{ audioContext.close(); }catch(e){} audioContext = null; analyser = null; }
+}
 
 function initVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -891,69 +938,6 @@ function initVoice(){
       }
     }
   };
-}
-
-function startAudioVisualization(){
-  if(!navigator.mediaDevices?.getUserMedia) return;
-  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-    mediaStream = stream;
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const source = audioContext.createMediaStreamSource(stream);
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 512;
-    analyser.smoothingTimeConstant = 0.75;
-    source.connect(analyser);
-
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    const micCircle = $('micCircle');
-    const rings = [$('ring1'), $('ring2'), $('ring3'), $('ring4'), $('ring5')];
-    const eqBars = $('voiceEq')?.querySelectorAll('span') || [];
-    const ringDelays = [0, 0.15, 0.3, 0.45, 0.6];
-    let ringTime = 0;
-    let smoothLevel = 0;
-
-    function animate(){
-      if(!isRecording) return;
-      analyser.getByteFrequencyData(dataArray);
-      let sum = 0;
-      for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-      const rawLevel = Math.min(1, (sum / dataArray.length) / 70);
-      smoothLevel += (rawLevel - smoothLevel) * 0.2;
-      const level = smoothLevel;
-
-      const micScale = 1 + level * 0.18;
-      micCircle.style.transform = `scale(${micScale})`;
-
-      ringTime += 0.016;
-      rings.forEach((ring, i) => {
-        const t = (ringTime - ringDelays[i]) % 1.5;
-        const progress = t < 0 ? 0 : Math.min(1, t / 1.5);
-        const scale = 1 + progress * 1.1;
-        const opacity = Math.sin(progress * Math.PI) * (0.3 + level * 0.7);
-        ring.style.transform = `scale(${scale})`;
-        ring.style.opacity = opacity;
-      });
-
-      eqBars.forEach((bar, i) => {
-        const idx = Math.floor((i / eqBars.length) * dataArray.length * 0.7);
-        const val = dataArray[idx] || 0;
-        bar.style.height = (6 + (val / 255) * 26) + 'px';
-      });
-
-      rafId = requestAnimationFrame(animate);
-    }
-    animate();
-  }).catch(err => console.warn('Audio viz failed:', err));
-}
-
-function stopAudioVisualization(){
-  if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
-  if(mediaStream){ mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
-  if(audioContext){ try{ audioContext.close(); }catch(e){} audioContext = null; analyser = null; }
-  const micCircle = $('micCircle'); if(micCircle) micCircle.style.transform = '';
-  [$('ring1'),$('ring2'),$('ring3'),$('ring4'),$('ring5')].forEach(r => { if(r){ r.style.transform = ''; r.style.opacity = '0'; } });
-  const eq = $('voiceEq');
-  if(eq) eq.querySelectorAll('span').forEach(b => { b.style.height = '8px'; });
 }
 
 function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
