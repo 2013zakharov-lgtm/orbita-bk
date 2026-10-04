@@ -1475,9 +1475,12 @@ async function handleSend(textOverride){
   const text = (textOverride ?? inputEl.value).trim();
   if(!text){ if(state.busy){ state.abortRequested=true; haptic('medium'); } return; }
   if(state.busy) return;
+
+  // ── Rate limit: 1 запрос в 5 секунд ──
   const wait = checkLimit();
   if(wait > 0 && !state.plus){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
 
+  // ── Проверка на мат ──
   if(hasProfanity(text)){
     markReq(); startCooldown();
     ensureChat();
@@ -1496,9 +1499,38 @@ async function handleSend(textOverride){
     return;
   }
 
-  markReq(); startCooldown();
   ensureChat();
   const chat = getActiveChat(); if(!chat) return;
+
+  // ── Проверка на повтор: если последний вопрос пользователя = текущему ──
+  const lastUserMsg = [...chat.messages].reverse().find(m => m.role === 'user');
+  if(lastUserMsg && lastUserMsg.text.trim().toLowerCase() === text.toLowerCase()){
+    const lastIdx = chat.messages.indexOf(lastUserMsg);
+    const prevAi = chat.messages.slice(lastIdx + 1).find(m => m.role === 'ai' && !m._blocked);
+
+    markReq(); startCooldown();
+    const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
+    const ts = Date.now();
+    chat.messages.push({ role:'user', text, ts });
+    chat.updatedAt = ts; store.saveChats(state.chats);
+    appendUserMessage(text, true, chat.messages.length-1);
+    renderChatsList();
+
+    await sleep(350);
+    const dupText = prevAi
+      ? `🔄 **Ты уже задавал этот вопрос**\n\nВот мой прошлый ответ:\n\n${prevAi.text}`
+      : `🔄 **Ты уже задавал этот вопрос** — смотри ответ выше 👆`;
+    const dupMsg = { role:'ai', text: dupText, ts: Date.now()+1 };
+    chat.messages.push(dupMsg); chat.updatedAt = Date.now(); store.saveChats(state.chats);
+    appendAIMessage(dupMsg, false, chat.messages.length-1);
+
+    inputEl.value=''; localStorage.removeItem(KEYS.DRAFT);
+    updateSendBtn(); renderChatsList(); updateLimitUI(); haptic('warning');
+    return;
+  }
+
+  // ── Обычная обработка ──
+  markReq(); startCooldown();
   state.busy=true; state.abortRequested=false;
   inputEl.value=''; localStorage.removeItem(KEYS.DRAFT);
   updateSendBtn(); haptic('light');
