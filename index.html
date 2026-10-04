@@ -7,7 +7,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--white:#fff;--overlay:rgba(15,23,42,.45);--plus-1:#f59e0b;--plus-2:#fbbf24;--plus-dark:#b45309;--plus-soft:#fffbeb;--plus-text:#78350f}
+  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--white:#fff;--overlay:rgba(15,23,42,.45)}
   html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
   body{position:fixed;inset:0}
   body.locked{overflow:hidden}
@@ -19,11 +19,11 @@
   .header-brand{flex:1;display:flex;align-items:center;gap:8px;min-width:0;justify-content:center}
   .brand-mark{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
   .brand-mark svg{width:24px;height:24px}
-  .brand-mark.plus{background:linear-gradient(135deg,var(--plus-1),var(--plus-2));box-shadow:0 4px 14px rgba(245,158,11,.35)}
+  .brand-mark.plus{background:var(--accent)}
   .brand-text{display:flex;flex-direction:column;min-width:0}
   .brand-name{font-size:15px;font-weight:800;letter-spacing:-.4px;color:var(--ink);display:flex;align-items:center;gap:6px}
   .brand-sub{font-size:10.5px;color:var(--muted);font-weight:500;margin-top:1px}
-  .plus-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:100px;background:linear-gradient(135deg,var(--plus-1),var(--plus-2));color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;box-shadow:0 2px 6px rgba(245,158,11,.35)}
+  .plus-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:100px;background:var(--accent);color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase}
   .plus-badge svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:3}
   .chat{flex:1;overflow-y:auto;padding:16px 14px 8px;display:flex;flex-direction:column;gap:22px;justify-content:flex-end}
   .chat::-webkit-scrollbar{width:0}
@@ -61,9 +61,7 @@
   .msg-act svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .msg-act.active-up{color:var(--accent);background:var(--accent-soft)}
   .msg-act.active-down{color:var(--danger);background:var(--danger-soft)}
-  .msg-act.speak-act{color:var(--plus-dark)}
-  .msg-act.speak-act:active{background:var(--plus-soft);color:var(--plus-1)}
-  .msg-act.speaking{color:var(--plus-1);background:var(--plus-soft);animation:speakPulse 1s infinite}
+  .msg-act.speaking{color:var(--accent);background:var(--accent-soft);animation:speakPulse 1s infinite}
   @keyframes speakPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
   .typing{display:none;gap:10px}
   .typing.active{display:flex}
@@ -77,13 +75,13 @@
   @keyframes dotWave{0%,60%,100%{transform:translateY(0) scale(.85);opacity:.4}30%{transform:translateY(-5px) scale(1);opacity:1}}
   .cursor{display:inline-block;width:2px;height:15px;background:var(--accent);vertical-align:text-bottom;margin-left:1px;animation:blink 1s steps(2,start) infinite}
   @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-  .limit-banner{padding:12px 14px;background:linear-gradient(135deg,var(--plus-soft),#fef3c7);border:1.5px solid var(--plus-2);border-radius:14px;margin:0 0 8px;display:none;align-items:center;gap:12px;animation:msgIn .3s}
+  .limit-banner{padding:12px 14px;background:var(--accent-soft);border-radius:14px;margin:0 14px 8px;display:none;align-items:center;gap:10px;animation:msgIn .3s}
   .limit-banner.show{display:flex}
-  .limit-banner-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--plus-1),var(--plus-2));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(245,158,11,.4)}
-  .limit-banner-icon svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
   .limit-banner-text{flex:1;min-width:0}
-  .limit-banner-title{font-size:14px;font-weight:800;color:var(--plus-text);margin-bottom:3px;letter-spacing:-.2px}
-  .limit-banner-sub{font-size:11.5px;color:var(--plus-dark);line-height:1.4;font-weight:500}
+  .limit-banner-title{font-size:13px;font-weight:700;color:var(--accent-deep);margin-bottom:2px}
+  .limit-banner-sub{font-size:11.5px;color:var(--muted);line-height:1.35}
+  .limit-banner-btn{padding:8px 14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;flex-shrink:0}
+  .limit-banner-btn:active{background:var(--accent-dark);transform:scale(.97)}
   .bottom-bar{display:flex;align-items:center;gap:8px;padding:8px 10px calc(10px + env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0}
   .menu-fab{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 4px 14px rgba(37,99,235,.28)}
   .menu-fab:active{background:var(--accent-dark);transform:scale(.93)}
@@ -91,10 +89,8 @@
   .input-wrap{flex:1;min-width:0;display:flex;align-items:center;gap:2px;background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:3px 3px 3px 14px}
   .input-wrap:focus-within{border-color:var(--accent)}
   .input-wrap.cooldown{border-color:var(--accent-mid);background:var(--accent-soft)}
-  .input-wrap.locked{border-color:var(--plus-2);background:var(--plus-soft)}
   .input-wrap input{flex:1;min-width:0;padding:7px 0;border:none;outline:none;font-size:14.5px;background:transparent;color:var(--ink);font-family:inherit}
   .input-wrap input::placeholder{color:var(--muted)}
-  .input-wrap.locked input::placeholder{color:var(--plus-dark);font-weight:600}
   .voice-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);transition:all .15s}
   .voice-btn:active{background:var(--accent-soft);color:var(--accent)}
   .voice-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -109,9 +105,6 @@
   .send-btn.cooldown svg{display:none}
   .send-btn .cooldown-text{display:none;font-size:11px;font-weight:800;color:#fff}
   .send-btn.cooldown .cooldown-text{display:block}
-  .send-btn.locked{background:linear-gradient(135deg,var(--plus-1),var(--plus-2));opacity:1}
-  .send-btn.locked svg{display:none}
-  .send-btn.locked .cooldown-text{display:block;font-size:14px}
   .voice-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
   .voice-overlay.active{display:flex;animation:fadeIn .2s}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -178,9 +171,7 @@
   .user-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;cursor:pointer;position:relative}
   .user-card:active{background:var(--surface)}
   .user-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center;position:relative}
-  .user-avatar.plus{background:linear-gradient(135deg,var(--plus-1),var(--plus-2))}
-  .user-avatar .plus-ring{position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--plus-1);animation:plusPulse 2s infinite}
-  @keyframes plusPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.05)}}
+  .user-avatar.plus{box-shadow:0 0 0 2px var(--accent-mid)}
   .user-info{flex:1;min-width:0}
   .user-name{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px}
   .user-sub{font-size:11px;color:var(--muted);margin-top:1px}
@@ -192,7 +183,7 @@
   .modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
   .avatar-section{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
   .avatar-preview{width:88px;height:88px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;overflow:hidden;background-size:cover;background-position:center;position:relative;cursor:pointer;border:3px solid var(--bg);box-shadow:0 4px 14px rgba(37,99,235,.25)}
-  .avatar-preview.plus{background:linear-gradient(135deg,var(--plus-1),var(--plus-2));box-shadow:0 4px 14px rgba(245,158,11,.4)}
+  .avatar-preview.plus{box-shadow:0 0 0 3px var(--accent-mid)}
   .avatar-preview:active{transform:scale(.97)}
   .avatar-overlay{position:absolute;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
   .avatar-preview:active .avatar-overlay{opacity:1}
@@ -240,40 +231,27 @@
   .bio-icon svg{width:52px;height:52px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .bio-title{font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px}
   .bio-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:280px;line-height:1.5}
-
-  /* PLUS UPGRADE MODAL */
+  /* PLUS MODAL */
   .plus-modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:230;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .3s}
   .plus-modal-bg.active{display:flex;opacity:1}
-  .plus-modal{width:100%;max-width:400px;background:linear-gradient(165deg,#fff 0%,#fffbeb 100%);border-radius:26px;padding:0;overflow:hidden;box-shadow:0 24px 60px rgba(180,83,9,.35);transform:scale(.9) translateY(20px);transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+  .plus-modal{width:100%;max-width:380px;background:var(--bg);border-radius:24px;padding:28px 22px 20px;box-shadow:0 20px 60px rgba(15,23,42,.25);transform:scale(.9) translateY(20px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);text-align:center}
   .plus-modal-bg.active .plus-modal{transform:scale(1) translateY(0)}
-  .plus-hero{position:relative;padding:32px 24px 24px;text-align:center;background:linear-gradient(135deg,#f59e0b 0%,#fbbf24 50%,#fcd34d 100%);overflow:hidden}
-  .plus-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.4) 0%,transparent 60%);animation:plusShine 3s infinite}
-  @keyframes plusShine{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-  .plus-crown{position:relative;width:72px;height:72px;margin:0 auto 16px;border-radius:50%;background:linear-gradient(135deg,#fff,#fef3c7);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.15),inset 0 -4px 12px rgba(245,158,11,.2);z-index:1}
-  .plus-crown svg{width:38px;height:38px;stroke:var(--plus-1);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 4px rgba(245,158,11,.3))}
-  .plus-title{position:relative;font-size:26px;font-weight:800;letter-spacing:-.6px;color:#78350f;margin-bottom:6px;z-index:1}
-  .plus-title span{color:#fff;text-shadow:0 2px 8px rgba(180,83,9,.3)}
-  .plus-sub{position:relative;font-size:13.5px;color:#92400e;font-weight:600;z-index:1;opacity:.85}
-  .plus-benefits{padding:20px 22px 8px}
-  .plus-benefit{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #fef3c7}
-  .plus-benefit:last-child{border-bottom:none}
-  .plus-benefit-ico{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(245,158,11,.2)}
-  .plus-benefit-ico svg{width:20px;height:20px;stroke:var(--plus-dark);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-  .plus-benefit-text{flex:1;min-width:0;padding-top:2px}
-  .plus-benefit-title{font-size:14.5px;font-weight:800;color:#78350f;margin-bottom:3px;letter-spacing:-.2px}
-  .plus-benefit-sub{font-size:12px;color:#92400e;line-height:1.45;opacity:.8}
-  .plus-price-tag{margin:6px 22px 18px;padding:14px 18px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:16px;display:flex;align-items:center;justify-content:space-between;box-shadow:inset 0 2px 8px rgba(245,158,11,.15)}
-  .plus-price-label{font-size:12px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.6px;opacity:.75}
-  .plus-price-value{font-size:16px;font-weight:800;color:#78350f;letter-spacing:-.3px}
-  .plus-actions{padding:0 22px 24px;display:flex;flex-direction:column;gap:8px}
-  .plus-btn{width:100%;padding:16px;border:none;border-radius:14px;font-size:15.5px;font-weight:800;font-family:inherit;cursor:pointer;transition:transform .1s,filter .15s;letter-spacing:-.2px}
-  .plus-btn:active{transform:scale(.98)}
-  .plus-btn-primary{background:linear-gradient(135deg,var(--plus-1),var(--plus-2));color:#fff;box-shadow:0 8px 20px rgba(245,158,11,.45)}
-  .plus-btn-primary:active{filter:brightness(.95)}
-  .plus-btn-ghost{background:transparent;color:#92400e;font-size:14px;font-weight:600;padding:10px}
-  .plus-active-banner{margin:0 22px 16px;padding:12px 16px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:14px;display:flex;align-items:center;gap:10px;border:1.5px solid #86efac}
-  .plus-active-banner svg{width:22px;height:22px;stroke:#059669;fill:none;stroke-width:2.4;stroke-linecap:round;flex-shrink:0}
-  .plus-active-text{font-size:13.5px;font-weight:700;color:#065f46;line-height:1.4}
+  .plus-icon{width:64px;height:64px;margin:0 auto 16px;border-radius:18px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center}
+  .plus-icon svg{width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .plus-modal-title{font-size:22px;font-weight:800;letter-spacing:-.4px;color:var(--ink);margin-bottom:6px}
+  .plus-modal-title span{color:var(--accent)}
+  .plus-modal-desc{font-size:13.5px;color:var(--muted);line-height:1.5;margin-bottom:22px}
+  .plus-list{text-align:left;margin-bottom:20px;display:flex;flex-direction:column;gap:12px}
+  .plus-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-soft);font-weight:500;line-height:1.35}
+  .plus-item svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .plus-actions{display:flex;flex-direction:column;gap:6px}
+  .plus-btn-primary{width:100%;padding:15px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s,transform .1s}
+  .plus-btn-primary:active{background:var(--accent-dark);transform:scale(.98)}
+  .plus-btn-primary:disabled{opacity:.5;cursor:default}
+  .plus-btn-ghost{width:100%;padding:13px;border:none;border-radius:14px;background:transparent;color:var(--muted);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+  .plus-btn-ghost:active{background:var(--surface)}
+  .plus-active-badge{padding:10px 14px;background:var(--accent-soft);border-radius:12px;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .plus-active-badge svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
 </style>
 </head>
 <body>
@@ -324,60 +302,38 @@
   <div class="gate-id" id="gateId"></div>
 </div>
 
-<!-- PLUS UPGRADE MODAL -->
 <div class="plus-modal-bg" id="plusModalBg">
   <div class="plus-modal">
-    <div class="plus-hero">
-      <div class="plus-crown">
-        <svg viewBox="0 0 24 24"><path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/></svg>
-      </div>
-      <div class="plus-title">Orbita <span>Plus</span></div>
-      <div class="plus-sub">Полный доступ без ограничений</div>
+    <div class="plus-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
     </div>
-    <div class="plus-active-banner" id="plusActiveBanner" style="display:none;">
+    <div class="plus-modal-title">Orbita <span>Plus</span></div>
+    <div class="plus-modal-desc">Полный доступ без ограничений</div>
+    <div class="plus-active-badge" id="plusActiveBanner" style="display:none;">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-      <div class="plus-active-text" id="plusActiveText">Подписка активна</div>
+      <span id="plusActiveText">Подписка активна</span>
     </div>
-    <div class="plus-benefits">
-      <div class="plus-benefit">
-        <div class="plus-benefit-ico"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
-        <div class="plus-benefit-text">
-          <div class="plus-benefit-title">Без лимита запросов</div>
-          <div class="plus-benefit-sub">Забудь про задержку 5 секунд между вопросами</div>
-        </div>
+    <div class="plus-list">
+      <div class="plus-item">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
+        <span>Без лимита запросов</span>
       </div>
-      <div class="plus-benefit">
-        <div class="plus-benefit-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-        <div class="plus-benefit-text">
-          <div class="plus-benefit-title">Без лимита сообщений</div>
-          <div class="plus-benefit-sub">Бесконечные диалоги в одном чате</div>
-        </div>
+      <div class="plus-item">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span>Без лимита сообщений</span>
       </div>
-      <div class="plus-benefit">
-        <div class="plus-benefit-ico"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/></svg></div>
-        <div class="plus-benefit-text">
-          <div class="plus-benefit-title">Голосовые ответы</div>
-          <div class="plus-benefit-sub">AI читает ответы вслух — слушай где угодно</div>
-        </div>
+      <div class="plus-item">
+        <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/></svg>
+        <span>Голосовые ответы AI</span>
       </div>
-      <div class="plus-benefit">
-        <div class="plus-benefit-ico"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></div>
-        <div class="plus-benefit-text">
-          <div class="plus-benefit-title">Золотой статус</div>
-          <div class="plus-benefit-sub">Особый бейдж и стиль профиля</div>
-        </div>
+      <div class="plus-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <span>Особый статус</span>
       </div>
-    </div>
-    <div class="plus-price-tag">
-      <div>
-        <div class="plus-price-label">Стоимость</div>
-        <div class="plus-price-value">⭐️ Навсегда</div>
-      </div>
-      <svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:#b45309;fill:none;stroke-width:2;stroke-linecap:round"><path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/></svg>
     </div>
     <div class="plus-actions">
-      <button class="plus-btn plus-btn-primary" id="plusRequestBtn">⭐️ Запросить Plus</button>
-      <button class="plus-btn plus-btn-ghost" id="plusCloseBtn">Позже</button>
+      <button class="plus-btn-primary" id="plusRequestBtn">Запросить Plus</button>
+      <button class="plus-btn-ghost" id="plusCloseBtn">Позже</button>
     </div>
   </div>
 </div>
@@ -425,7 +381,7 @@
       <div class="stat-card"><div class="stat-value" id="statMsgs">0</div><div class="stat-label">Сообщений</div></div>
     </div>
     <button class="btn-primary" id="saveProfileBtn">Сохранить</button>
-    <button class="btn-ghost" id="plusOpenBtn" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:var(--plus-2);color:var(--plus-text);font-weight:800;">⭐️ Orbita Plus</button>
+    <button class="btn-ghost" id="plusOpenBtn">Orbita Plus</button>
     <button class="btn-ghost" id="exportBtn">📥 Экспорт чатов (JSON)</button>
     <button class="btn-danger" id="clearDataBtn">Очистить все данные</button>
   </div>
@@ -443,11 +399,11 @@
   </header>
   <main class="chat" id="chat"></main>
   <div class="limit-banner" id="limitBanner">
-    <div class="limit-banner-icon"><svg viewBox="0 0 24 24"><path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/></svg></div>
     <div class="limit-banner-text">
-      <div class="limit-banner-title">Лимит 20 сообщений</div>
-      <div class="limit-banner-sub">Оформи Orbita Plus для безлимитных диалогов</div>
+      <div class="limit-banner-title">Достигнут лимит 20 сообщений</div>
+      <div class="limit-banner-sub">Оформите Plus для безлимитных диалогов</div>
     </div>
+    <button class="limit-banner-btn" id="limitBannerBtn">Открыть</button>
   </div>
   <div class="bottom-bar">
     <button class="menu-fab" id="menuBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
@@ -486,7 +442,7 @@ function showMainBtn(text, fn){
 }
 function hideMainBtn(){ try{ tg?.MainButton?.hide(); document.body.classList.remove('has-mainbtn'); }catch(e){} }
 
-const state = { user: null, chats: [], activeId: null, busy: false, abortRequested: false, rateLimit: false, rateLimitTimer: null, searchQuery: '', plus: false, speakEnabled: true };
+const state = { user: null, chats: [], activeId: null, busy: false, abortRequested: false, rateLimit: false, rateLimitTimer: null, searchQuery: '', plus: false };
 const $ = id => document.getElementById(id);
 const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIcon = $('sendIcon'), toast = $('toast');
 
@@ -543,56 +499,137 @@ function scrollDown(){ chatEl.scrollTop = chatEl.scrollHeight; }
 
 /* ============ TTS ============ */
 let currentSpeakingBtn = null;
-function speak(text, btn){
-  if(!window.speechSynthesis){ showToast('Голос недоступен'); return; }
-  if(currentSpeakingBtn && currentSpeakingBtn.classList.contains('speaking')){
-    speechSynthesis.cancel();
-    currentSpeakingBtn.classList.remove('speaking');
-    currentSpeakingBtn = null;
-    return;
-  }
-  speechSynthesis.cancel();
-  if(currentSpeakingBtn) currentSpeakingBtn.classList.remove('speaking');
-  const clean = text.replace(/[*_`#>\-]/g, '').replace(/\n+/g, '. ').slice(0, 800);
-  const utter = new SpeechSynthesisUtterance(clean);
-  utter.lang = 'ru-RU';
-  utter.rate = 1;
-  utter.pitch = 1;
-  const voices = speechSynthesis.getVoices();
-  const ruVoice = voices.find(v => v.lang.startsWith('ru'));
-  if(ruVoice) utter.voice = ruVoice;
-  utter.onend = () => { if(btn){ btn.classList.remove('speaking'); if(currentSpeakingBtn === btn) currentSpeakingBtn = null; } };
-  utter.onerror = () => { if(btn){ btn.classList.remove('speaking'); if(currentSpeakingBtn === btn) currentSpeakingBtn = null; } };
-  if(btn){ btn.classList.add('speaking'); currentSpeakingBtn = btn; }
-  speechSynthesis.speak(utter);
+let speakTimeout = null;
+
+function loadVoices(){
+  if(!window.speechSynthesis) return;
+  try { speechSynthesis.getVoices(); } catch(e) {}
 }
 if(window.speechSynthesis){
-  speechSynthesis.onvoiceschanged = () => {};
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function pickRussianVoice(){
+  if(!window.speechSynthesis) return null;
+  const voices = speechSynthesis.getVoices();
+  if(!voices || !voices.length) return null;
+  return voices.find(v => v.lang === 'ru-RU')
+      || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ru'))
+      || voices.find(v => /russian|русск/i.test(v.name))
+      || null;
+}
+
+function cleanForSpeech(text){
+  return String(text)
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '')
+    .replace(/`/g, '')
+    .replace(/#+\s/g, '')
+    .replace(/\[([^\/\]]+)\/([^\]]+)\]/g, '$1 на $2')
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F000}-\u{1F02F}]/gu, '')
+    .replace(/https?:\/\/\S+/g, 'ссылка')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function splitIntoChunks(text, maxLen){
+  maxLen = maxLen || 180;
+  const chunks = [];
+  const parts = text.split(/(?<=[.!?;:])\s+/);
+  let buf = '';
+  for(const p of parts){
+    if((buf + ' ' + p).length > maxLen && buf){ chunks.push(buf.trim()); buf = p; }
+    else { buf = buf ? buf + ' ' + p : p; }
+  }
+  if(buf) chunks.push(buf.trim());
+  return chunks.length ? chunks : [text];
+}
+
+function stopSpeak(){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  if(speakTimeout){ clearTimeout(speakTimeout); speakTimeout = null; }
+  if(currentSpeakingBtn){
+    currentSpeakingBtn.classList.remove('speaking');
+    currentSpeakingBtn = null;
+  }
+}
+
+function speak(text, btn){
+  if(!window.speechSynthesis){
+    showToast('Озвучка не поддерживается');
+    haptic('error');
+    return;
+  }
+  
+  if(currentSpeakingBtn && currentSpeakingBtn.classList.contains('speaking')){
+    stopSpeak();
+    return;
+  }
+  
+  stopSpeak();
+  
+  const clean = cleanForSpeech(text);
+  if(!clean){
+    showToast('Нечего озвучивать');
+    return;
+  }
+  
+  if(btn){
+    btn.classList.add('speaking');
+    currentSpeakingBtn = btn;
+  }
+  
+  const chunks = splitIntoChunks(clean);
+  const voice = pickRussianVoice();
+  let idx = 0;
+  
+  const finish = () => {
+    if(btn && currentSpeakingBtn === btn){
+      btn.classList.remove('speaking');
+      currentSpeakingBtn = null;
+    }
+  };
+  
+  const speakNext = () => {
+    if(idx >= chunks.length){ finish(); return; }
+    
+    const utter = new SpeechSynthesisUtterance(chunks[idx]);
+    utter.lang = 'ru-RU';
+    utter.rate = 1;
+    utter.pitch = 1;
+    utter.volume = 1;
+    if(voice) utter.voice = voice;
+    
+    utter.onend = () => { idx++; speakNext(); };
+    utter.onerror = () => { finish(); };
+    
+    try{ speechSynthesis.speak(utter); }
+    catch(e){ finish(); }
+  };
+  
+  speakTimeout = setTimeout(speakNext, 80);
 }
 
 /* ============ PLUS MODAL ============ */
 function openPlusModal(){
-  const bg = $('plusModalBg');
-  bg.classList.add('active');
-  const activeBanner = $('plusActiveBanner');
+  $('plusModalBg').classList.add('active');
+  const banner = $('plusActiveBanner');
   const reqBtn = $('plusRequestBtn');
   if(state.plus){
-    activeBanner.style.display = 'flex';
-    $('plusActiveText').textContent = 'Подписка Plus активна. Спасибо!';
-    reqBtn.textContent = '✅ Уже активно';
+    banner.style.display = 'flex';
+    $('plusActiveText').textContent = 'Подписка Plus активна';
+    reqBtn.textContent = 'Уже активно';
     reqBtn.disabled = true;
-    reqBtn.style.opacity = '.6';
   } else {
-    activeBanner.style.display = 'none';
-    reqBtn.textContent = '⭐️ Запросить Plus';
+    banner.style.display = 'none';
+    reqBtn.textContent = 'Запросить Plus';
     reqBtn.disabled = false;
-    reqBtn.style.opacity = '1';
   }
   haptic('light');
 }
-function closePlusModal(){
-  $('plusModalBg').classList.remove('active');
-}
+function closePlusModal(){ $('plusModalBg').classList.remove('active'); }
+
 async function requestPlus(){
   const u = tg?.initDataUnsafe?.user;
   if(!u) return;
@@ -605,7 +642,7 @@ async function requestPlus(){
         username: u.username || ''
       })
     });
-    showToast('⭐️ Запрос отправлен!');
+    showToast('Запрос отправлен');
     haptic('success');
     closePlusModal();
   }catch(e){
@@ -614,35 +651,18 @@ async function requestPlus(){
   }
 }
 
-/* ============ MESSAGE LIMIT ============ */
-function getMsgCount(chat){ return chat?.messages?.length || 0; }
-function isLimitReached(chat){
-  if(state.plus) return false;
-  return getMsgCount(chat) >= MSG_LIMIT_FREE;
-}
+/* ============ LIMIT ============ */
+function isLimitReached(chat){ return !state.plus && (chat?.messages?.length || 0) >= MSG_LIMIT_FREE; }
+
 function updateLimitUI(){
   const chat = getActiveChat();
   const reached = isLimitReached(chat);
-  const banner = $('limitBanner');
-  if(reached){
-    banner.classList.add('show');
-    inputEl.placeholder = '⭐️ Оформи Plus для продолжения';
-    $('inputWrap').classList.add('locked');
-    sendBtn.classList.add('locked');
-    sendBtn.classList.remove('cooldown', 'stop');
-    sendIcon.innerHTML = '<path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/>';
-    $('cooldownText').textContent = '⭐️';
-    sendBtn.disabled = false;
-  } else {
-    banner.classList.remove('show');
-    inputEl.placeholder = 'Спросите что угодно...';
-    $('inputWrap').classList.remove('locked');
-    sendBtn.classList.remove('locked');
-    updateSendBtn();
-  }
+  if(reached) $('limitBanner').classList.add('show');
+  else $('limitBanner').classList.remove('show');
+  updateSendBtn();
 }
 
-/* GATE */
+/* ============ GATE ============ */
 let accessPollTimer=null, gateState='checking';
 async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
@@ -682,12 +702,7 @@ function startAccessPoll(){
     try{
       const res = await fetch(`${API_URL}/status/${uId}`);
       const data = await res.json();
-      if(data.plus && !state.plus){
-        state.plus = true;
-        applyPlusUI();
-        showToast('⭐️ Plus активирован!');
-        haptic('success');
-      }
+      if(data.plus && !state.plus){ state.plus = true; applyPlusUI(); updateLimitUI(); renderActiveChat(); showToast('Plus активирован!'); haptic('success'); }
       if(data.approved){ stopAccessPoll(); gateState='approved'; hideGate(); state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name||'User', joinedAt:Date.now() }; store.saveUser(state.user); initApp(); }
       else if(data.banned){ stopAccessPoll(); gateState='banned'; showGate('banned'); }
     }catch(e){}
@@ -705,7 +720,7 @@ async function sendAccessRequest(){
   }catch(e){ showToast('Не удалось отправить'); btn.disabled=false; $('gateActionText').textContent='Отправить заявку'; haptic('error'); }
 }
 
-/* BIOMETRIC */
+/* ============ BIOMETRIC ============ */
 async function initBiometric(){
   return new Promise(resolve => {
     if(!tg?.BiometricManager) return resolve(false);
@@ -731,7 +746,7 @@ async function showBioGate(){
   });
 }
 
-/* VOICE INPUT */
+/* ============ VOICE INPUT ============ */
 let recognition = null, isRecording = false, voiceFinalText = '';
 let audioContext = null, analyser = null, mediaStream = null, rafId = null;
 
@@ -826,7 +841,7 @@ function stopAudioVisualization(){
 function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
 function stopVoice(){ isRecording=false; $('voiceBtn').classList.remove('recording'); $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition&&recognition.stop(); }catch(e){} }
 
-/* RATE LIMIT */
+/* ============ RATE LIMIT ============ */
 const RATE_MS = 5000;
 function getLastReq(){ return parseInt(localStorage.getItem(KEYS.LAST_REQ)||'0',10); }
 function setLastReq(t){ localStorage.setItem(KEYS.LAST_REQ, String(t)); }
@@ -846,7 +861,7 @@ function startCooldown(){
   wrap.classList.add('cooldown'); tick(); state.rateLimitTimer=setInterval(tick,200);
 }
 
-/* PROFANITY (расширенный — как в предыдущей версии) */
+/* ============ PROFANITY ============ */
 function normalizeAggressive(raw){
   let s = String(raw).toLowerCase();
   try{ s = s.normalize('NFKD'); }catch(e){}
@@ -860,57 +875,36 @@ function normalizeAggressive(raw){
 }
 const BAD_PATTERNS = [
   /ху[йеяёюи]/, /ху[йеяёюи]л/, /ху[йеяёюи]н/, /ху[йеяёюи]в/, /хуяк/,
-  /пизд/, /пизж/, /пезд/, /пиздо/,
-  /бля[дт]/, /бляд/, /блят/, /бля[хк]/,
+  /пизд/, /пизж/, /пезд/, /пиздо/, /бля[дт]/, /бляд/, /блят/, /бля[хк]/,
   /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ебля/, /ебли/, /ебн/, /ебств/, /ебан/, /ебат/,
-  /ёб[аеиуолн]/, /ёбну/, /ёбств/, /сука/, /сучк/, /сучар/, /сучонок/,
-  /мудак/, /мудил/, /мудоз/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /шлюш/,
-  /пидор/, /пидар/, /пидр/, /педик/, /пидорас/, /педераст/, /жоп[аеуы]/,
-  /срач/, /срак/, /сру/, /срал/, /срать/, /перд/, /перну/, /бзд/, /манда/,
-  /уеб/, /уёб/, /уебищ/, /заеб/, /заёб/, /наеб/, /наёб/, /перееб/, /переёб/,
-  /подъеб/, /подъёб/, /приеб/, /приёб/, /доеб/, /доёб/, /въеб/, /въёб/,
+  /ёб[аеиуолн]/, /ёбну/, /ёбств/, /сука/, /сучк/, /сучар/, /сучонок/, /мудак/, /мудил/, /мудоз/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /шлюш/,
+  /пидор/, /пидар/, /пидр/, /педик/, /пидорас/, /педераст/, /жоп[аеуы]/, /срач/, /срак/, /сру/, /срал/, /срать/, /перд/, /перну/, /бзд/, /манда/,
+  /уеб/, /уёб/, /уебищ/, /заеб/, /заёб/, /наеб/, /наёб/, /перееб/, /переёб/, /подъеб/, /подъёб/, /приеб/, /приёб/, /доеб/, /доёб/, /въеб/, /въёб/,
   /отъеб/, /отъёб/, /разъеб/, /разъёб/, /выеб/, /выёб/, /долбоеб/, /долбаеб/, /долбоёб/,
-  /хер[аеуны]/, /хрен[аеуы]/, /херня/, /херов/, /елд/, /елда/,
-  /дроч/, /дрочи/, /гомик/, /гомосек/, /шваль/, /тварь/, /гнид/,
+  /хер[аеуны]/, /хрен[аеуы]/, /херня/, /херов/, /елд/, /елда/, /дроч/, /дрочи/, /гомик/, /гомосек/, /шваль/, /тварь/, /гнид/,
   /дебил/, /идиот/, /кретин/, /даун/, /олеш/, /долбо/, /чмо/, /козел/, /козёл/, /свинья/, /баран/,
-  /дурак/, /дурацк/, /придурок/, /обалдуй/, /оболтус/, /балбес/, /болван/, /остолоп/,
-  /тупица/, /тупой/, /тупизм/, /бестолочь/, /дегенерат/, /инвалид/, /урод/,
+  /дурак/, /дурацк/, /придурок/, /обалдуй/, /оболтус/, /балбес/, /болван/, /остолоп/, /тупица/, /тупой/, /тупизм/, /бестолочь/, /дегенерат/, /инвалид/, /урод/,
   /жирн/, /жиробас/, /карлик/, /коротышк/, /косоглаз/, /хромой/, /слепой/, /горбат/,
-  /молокосос/, /сопляк/, /шкет/, /пацан/, /малолетк/, /школот/, /ботан/,
-  /лошар/, /крыса/, /змея/, /гад/, /падл/, /подлец/, /мерзав/, /негодяй/, /злодей/,
+  /молокосос/, /сопляк/, /шкет/, /пацан/, /малолетк/, /школот/, /ботан/, /лошар/, /крыса/, /змея/, /гад/, /падл/, /подлец/, /мерзав/, /негодяй/, /злодей/,
   /изверг/, /садист/, /маньяк/, /педофил/, /зоофил/,
-  /хач/, /чурк/, /чучмек/, /жид/, /хохол/, /москал/, /кацап/, /бульбаш/, /пшек/, /шваб/,
-  /янки/, /пиндос/, /узкоглаз/, /черномаз/, /чёрномаз/, /ниггер/, /нигер/, /nigga/, /nigger/,
-  /армяшк/, /азерб/, /грузин/, /дагестанц/, /чеченц/, /таджик/, /узбек/,
-  /еврейчик/, /немчура/, /полячишк/, /чухонц/, /итальяшк/, /америкос/, /рашка/, /совок/,
-  /мракобес/, /либераст/, /ватник/, /майдаун/, /укроп/,
+  /хач/, /чурк/, /чучмек/, /жид/, /хохол/, /москал/, /кацап/, /бульбаш/, /пшек/, /шваб/, /янки/, /пиндос/, /узкоглаз/, /черномаз/, /чёрномаз/,
+  /ниггер/, /нигер/, /nigga/, /nigger/, /армяшк/, /азерб/, /грузин/, /дагестанц/, /чеченц/, /таджик/, /узбек/, /еврейчик/, /немчура/, /полячишк/, /чухонц/, /итальяшк/, /америкос/, /рашка/, /совок/, /мракобес/, /либераст/, /ватник/, /майдаун/, /укроп/,
   /гей/, /геи/, /гея/, /гею/, /геев/, /лесби/, /лесбиянк/, /трансгенд/, /fag/, /faggot/, /fagot/,
-  /секс/, /сексуал/, /порн/, /порно/, /порнух/, /трах/, /трахну/, /отсос/, /минет/, /куни/,
-  /анус/, /анальн/, /анал/, /оргазм/, /сперм/, /вагин/, /пенис/, /клитор/, /груд[ьи]/, /грудаст/,
-  /сиськ/, /сисек/, /письк/, /писек/, /поп[аеу]/, /голая/, /голый/, /раздева/, /раздет/,
-  /обнажен/, /нагишом/, /эротик/, /интим/, /презерв/, /вибратор/, /дилдо/, /бдсм/, /bdsm/,
+  /секс/, /сексуал/, /порн/, /порно/, /порнух/, /трах/, /трахну/, /отсос/, /минет/, /куни/, /анус/, /анальн/, /анал/, /оргазм/, /сперм/, /вагин/, /пенис/, /клитор/,
+  /груд[ьи]/, /грудаст/, /сиськ/, /сисек/, /письк/, /писек/, /поп[аеу]/, /голая/, /голый/, /раздева/, /раздет/, /обнажен/, /нагишом/, /эротик/, /интим/, /презерв/, /вибратор/, /дилдо/, /бдсм/, /bdsm/,
   /мастурбац/, /мастурб/, /онанизм/, /изнасил/, /насильник/, /инцест/,
-  /f+u+c+k+/, /f+u+k+/, /f+ck/, /fck/, /sh+i+t+/, /sh1t/, /b+i+t+c+h+/, /b1tch/,
-  /d+i+c+k+/, /d1ck/, /c+u+n+t+/, /c+nt/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/,
-  /s+l+u+t+/, /b+a+s+t+a+r+d+/, /a+s+s+h+o+l+e+/, /m+o+t+h+e+r+f+u+c+k+/,
-  /r+e+t+a+r+d+/, /f+a+g+g+o+t+/, /bastard/, /crap/, /piss/, /damn/, /dammit/,
-  /bollocks/, /bugger/, /wanker/, /tosser/, /twat/, /arse/, /bullshit/, /dipshit/,
-  /sonofabitch/, /scumbag/, /moron/, /imbecile/, /retard/, /loser/, /pervert/, /rapist/,
-  /убью/, /убей/, /убить/, /убива/, /убийц/, /зареж/, /пристрел/, /взорв/, /теракт/, /террорист/,
-  /сдохни/, /сдохнуть/, /сгинь/, /пропади/, /исчезни/, /kill/, /murder/, /die/, /destroy/,
-  /игил/, /джихад/, /халифат/, /нацист/, /нацизм/, /фашист/, /фашизм/, /гитлер/, /hitler/, /свастик/,
-  /неонаци/, /неофашист/, /скинхед/, /skinhead/, /kkk/, /isis/, /isil/, /taliban/, /хайль/, /heil/,
+  /f+u+c+k+/, /f+u+k+/, /f+ck/, /fck/, /sh+i+t+/, /sh1t/, /b+i+t+c+h+/, /b1tch/, /d+i+c+k+/, /d1ck/, /c+u+n+t+/, /c+nt/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/,
+  /s+l+u+t+/, /b+a+s+t+a+r+d+/, /a+s+s+h+o+l+e+/, /m+o+t+h+e+r+f+u+c+k+/, /r+e+t+a+r+d+/, /f+a+g+g+o+t+/, /bastard/, /crap/, /piss/, /damn/, /dammit/,
+  /bollocks/, /bugger/, /wanker/, /tosser/, /twat/, /arse/, /bullshit/, /dipshit/, /sonofabitch/, /scumbag/, /moron/, /imbecile/, /retard/, /loser/, /pervert/, /rapist/,
+  /убью/, /убей/, /убить/, /убива/, /убийц/, /зареж/, /пристрел/, /взорв/, /теракт/, /террорист/, /сдохни/, /сдохнуть/, /сгинь/, /пропади/, /исчезни/, /kill/, /murder/, /die/, /destroy/,
+  /игил/, /джихад/, /халифат/, /нацист/, /нацизм/, /фашист/, /фашизм/, /гитлер/, /hitler/, /свастик/, /неонаци/, /неофашист/, /скинхед/, /skinhead/, /kkk/, /isis/, /isil/, /taliban/, /хайль/, /heil/,
   /расизм/, /расист/, /антисемит/, /ксенофоб/, /геноцид/, /холокост/,
-  /героин/, /кокаин/, /кока/, /метамфет/, /мефедрон/, /метадон/, /марихуан/, /гашиш/,
-  /амфетамин/, /экстази/, /мдма/, /mdma/, /лсд/, /lsd/, /нарко/, /наркот/, /наркоман/, /спайс/,
-  /мескалин/, /psilocybin/, /опиум/, /морфин/, /трамадол/, /фентанил/, /cocaine/, /heroin/, /meth/,
-  /закладк/, /барыга/, /суицид/, /самоубийств/, /suicide/, /повеситьс/, /повешусь/, /вскрыть вены/,
-  /спрыгнуть с/, /застрелитьс/, /отравитьс/, /удавитьс/,
+  /героин/, /кокаин/, /кока/, /метамфет/, /мефедрон/, /метадон/, /марихуан/, /гашиш/, /амфетамин/, /экстази/, /мдма/, /mdma/, /лсд/, /lsd/, /нарко/, /наркот/, /наркоман/, /спайс/,
+  /мескалин/, /psilocybin/, /опиум/, /морфин/, /трамадол/, /фентанил/, /cocaine/, /heroin/, /meth/, /закладк/, /барыга/,
+  /суицид/, /самоубийств/, /suicide/, /повеситьс/, /повешусь/, /вскрыть вены/, /спрыгнуть с/, /застрелитьс/, /отравитьс/, /удавитьс/,
   /богохульств/, /кощунств/, /сатанист/, /сатанизм/, /секта/, /сектант/, /ересь/,
-  /как сделать бомб/, /сделать взрывчатк/, /как отравить/, /как убить/, /как украсть/,
-  /взломать аккаунт/, /детск.*порн/, /быдл/, /хамло/, /наглец/, /подонок/, /отморозок/,
-  /менты/, /легавые/, /фараон/, /полицай/, /чинуш/, /бюрократ/, /коррупционер/,
-  /воров/, /мошенник/, /аферист/, /кидал/, /лохотрон/
+  /как сделать бомб/, /сделать взрывчатк/, /как отравить/, /как убить/, /как украсть/, /взломать аккаунт/, /детск.*порн/,
+  /быдл/, /хамло/, /наглец/, /подонок/, /отморозок/, /менты/, /легавые/, /фараон/, /полицай/, /чинуш/, /бюрократ/, /коррупционер/, /воров/, /мошенник/, /аферист/, /кидал/, /лохотрон/
 ];
 const BAD_EXACT = new Set(['еб','ёб','бля','хер','хрен','жопа','срак','перд','бзд','чмо','манда','гей','геи','ass','damn','fag','cock','dick','sex','lsd','die','kill','nude','naked','scum','slut','hate','fuck','shit','bitch','cunt','pedo','rape','isis','kkk']);
 const WHITELIST = new Set([
@@ -941,7 +935,7 @@ function hasProfanity(raw){
   return false;
 }
 
-/* MARKDOWN */
+/* ============ MARKDOWN ============ */
 function renderText(raw){
   let h = esc(raw);
   h = h.replace(/\$([^$\n]+)\$/g, '$1');
@@ -955,7 +949,7 @@ function renderText(raw){
   return h;
 }
 
-/* УРАВНЕНИЯ */
+/* ============ EQUATIONS ============ */
 function fmtNum(n){
   if(Number.isInteger(n)) return String(n);
   for(let d = 2; d <= 100; d++){
@@ -969,7 +963,7 @@ function fmtNum(n){
   }
   return String(Math.round(n*1000000)/1000000);
 }
-function gcd(a,b){ while(b){ [a,b] = [b, a%b]; } return a || 1; }
+function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
 function solveEquation(text){
   let t = text.toLowerCase().trim();
   t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение)\s+/i, '');
@@ -1058,7 +1052,7 @@ function solveQuadratic(original, left, right){
   return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
 }
 
-/* AUTO-TITLE */
+/* ============ AUTO-TITLE ============ */
 const TOPIC_KEYWORDS = [
   { re:/чёрн\w+дыр|черн\w+дыр|black\s*hole/i, title:'Чёрная дыра' },
   { re:/эйнштейн|einstein/i, title:'Эйнштейн' },
@@ -1088,7 +1082,7 @@ function smartTitle(text){
   return t.slice(0,40) + (t.length>40?'…':'');
 }
 
-/* ЧАТЫ */
+/* ============ CHATS ============ */
 function createChat(){
   const chat = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() };
   state.chats.unshift(chat); state.activeId=chat.id;
@@ -1183,7 +1177,7 @@ function editUserMessage(idx){
   if(!newText || !newText.trim()) return;
   if(hasProfanity(newText)){ showToast('Недопустимо'); return; }
   const wait = checkLimit();
-  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
+  if(wait > 0 && !state.plus){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
   chat.messages = chat.messages.slice(0, idx);
   store.saveChats(state.chats); renderActiveChat(); handleSend(newText.trim());
 }
@@ -1231,7 +1225,7 @@ async function regenerate(idx){
   if(userIdx < 0) return;
   if(isLimitReached(chat)){ openPlusModal(); return; }
   const wait = checkLimit();
-  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
+  if(wait > 0 && !state.plus){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
   const q = chat.messages[userIdx].text;
   chat.messages = chat.messages.slice(0, userIdx);
   store.saveChats(state.chats); renderActiveChat(); await handleSend(q);
@@ -1257,9 +1251,10 @@ async function typeText(el, text){
   cursor.remove(); scrollDown();
 }
 
-/* SEARCH */
+/* ============ SEARCH ============ */
 function cleanQuery(q){ return q.replace(/^(что такое|что значит|кто такой|кто такая|кто такие|расскажи про|расскажи о|расскажи|поясни|объясни|найди|поищи|где находится|где|когда|почему|зачем|как|what is|who is)\s+/i,'').replace(/^про\s+/i,'').replace(/[?!.]+$/g,'').trim(); }
-async function wikiSearch(query, lang = 'ru'){
+async function wikiSearch(query, lang){
+  lang = lang || 'ru';
   const q = query.trim(); if(!q) return null;
   try{
     const res = await fetch(`https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&format=json&origin=*&srlimit=1`);
@@ -1300,8 +1295,9 @@ async function searchInternet(query){
   return await wikiSearch(query,'ru');
 }
 
-/* CONTEXT */
-function getChatContext(chat, maxMessages = 10){
+/* ============ CONTEXT ============ */
+function getChatContext(chat, maxMessages){
+  maxMessages = maxMessages || 10;
   if(!chat || !chat.messages.length) return null;
   const recent = chat.messages.slice(-maxMessages);
   const lastUser = [...recent].reverse().find(m => m.role === 'user');
@@ -1318,33 +1314,33 @@ function isFollowUp(query){
   return patterns.some(re => re.test(q));
 }
 
-/* DIALOGS */
+/* ============ DIALOGS ============ */
 function matchDialog(q){
   const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
   if(/^(привет|прив|здравствуй|хай|hi|hello|hey|добрый день|добрый вечер|доброе утро)/i.test(x)) return name?`Привет, ${name}! Чем помочь?`:'Привет! Чем помочь?';
   if(/как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name?`Всё отлично, ${name}! А у тебя как?`:'Всё отлично! А у тебя как?';
-  if(/^(пока|до свидания|до встречи|бай|bye)/i.test(x)) return name?`До встречи, ${name}! 💙`:'До встречи! 💙';
-  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Всегда рада помочь 💙';
+  if(/^(пока|до свидания|до встречи|бай|bye)/i.test(x)) return name?`До встречи, ${name}!`:'До встречи!';
+  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Всегда рада помочь.';
   if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое|расскажи\s+о\s+себе|расскажи\s+про\s+себя)/i.test(x)) return `Я **Orbita AI** — умный ассистент от компании **ORT** 🛰️\n\nИщу информацию в интернете, отвечаю на вопросы, решаю уравнения.`;
   if(/^(что\s+ты\s+умеешь|что\s+умеешь|твои\s+возможности)/i.test(x)) return `Вот что я умею:\n\n🔍 **Ищу информацию** в интернете\n📚 **Отвечаю на вопросы**\n🧮 **Решаю уравнения** — пошагово\n🕐 **Скажу время и дату**\n🎤 **Распознаю голос**\n🔊 **Читаю ответы** (Plus)\n\nПросто напиши, что тебя интересует!`;
-  if(/^(кто\s+тебя\s+создал|кто\s+тебя\s+сделал|кто\s+разработал|кто\s+твой\s+создатель)/i.test(x)) return `Меня создала компания **ORT** 💙`;
+  if(/^(кто\s+тебя\s+создал|кто\s+тебя\s+сделал|кто\s+разработал|кто\s+твой\s+создатель)/i.test(x)) return `Меня создала компания **ORT**`;
   if(/^(расскажи\s+о\s+компании|что\s+такое\s+ort|расскажи\s+про\s+ort)/i.test(x)) return `**ORT** — компания, которая создала меня 🛰️`;
-  if(/^(ты\s+человек|ты\s+живой|ты\s+робот|ты\s+бот)/i.test(x)) return `Я **искусственный интеллект** 🤖`;
-  if(/^(как\s+тебя\s+зовут|твоё\s+имя)/i.test(x)) return 'Меня зовут **Orbita AI** 🛰️';
-  if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} 🕐`;
+  if(/^(ты\s+человек|ты\s+живой|ты\s+робот|ты\s+бот)/i.test(x)) return `Я **искусственный интеллект**`;
+  if(/^(как\s+тебя\s+зовут|твоё\s+имя)/i.test(x)) return 'Меня зовут **Orbita AI**';
+  if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
   if(/какой\s+сегодня\s+день|какое\s+сегодня\s+число/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
-  if(/что\s+такое\s+plus|что\s+такое\s+плюс|подписк/i.test(x)) return state.plus ? 'У тебя **Plus** активен! 🎉\n\nБез лимитов, голосовые ответы, золотой статус.' : `**Orbita Plus** — это:\n\n⭐️ Без лимита запросов\n⭐️ Без лимита сообщений\n🔊 Голосовые ответы\n👑 Золотой статус\n\nОткрой в **Аккаунт → Orbita Plus**.`;
+  if(/что\s+такое\s+plus|что\s+такое\s+плюс|подписк/i.test(x)) return state.plus ? 'У тебя **Plus** активен! 🎉\n\nБез лимитов, голосовые ответы, особый статус.' : `**Orbita Plus** — это:\n\n• Без лимита запросов\n• Без лимита сообщений\n• Голосовые ответы\n• Особый статус\n\nОткрой в **Аккаунт → Orbita Plus**.`;
   return null;
 }
 
 async function generateAnswer(query, chat){
-  if(hasProfanity(query)) return { text:'Извини, на такие вопросы я не отвечаю 💙', _isBlocked:true };
+  if(hasProfanity(query)) return { text:'Извини, на такие вопросы я не отвечаю.', _isBlocked:true };
   const eq = solveEquation(query);
   if(eq) { await sleep(300); return eq; }
   const x = query.trim().toLowerCase();
   const mm = x.match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
-  if(mm){ const a=parseFloat(mm[1].replace(',','.')),b=parseFloat(mm[3].replace(',','.')),op=mm[2]; let r; switch(op){ case '+':r=a+b;break;case '-':r=a-b;break;case '*':case 'x':case '×':r=a*b;break;case '/':case '÷':if(b===0)return { text:'На ноль делить нельзя 🤔', _isDialog:true };r=a/b;break; } return { text: `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`, _isDialog:true }; }
+  if(mm){ const a=parseFloat(mm[1].replace(',','.')),b=parseFloat(mm[3].replace(',','.')),op=mm[2]; let r; switch(op){ case '+':r=a+b;break;case '-':r=a-b;break;case '*':case 'x':case '×':r=a*b;break;case '/':case '÷':if(b===0)return { text:'На ноль делить нельзя', _isDialog:true };r=a/b;break; } return { text: `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`, _isDialog:true }; }
   const dialog = matchDialog(query);
   if(dialog){ await sleep(400); return { text: dialog, _isDialog:true }; }
   let searchQuery = query;
@@ -1354,23 +1350,13 @@ async function generateAnswer(query, chat){
   }
   const search = await searchInternet(searchQuery);
   if(search){ if(hasProfanity(search.text)) return { text:'Извини, на такие вопросы я не отвечаю.', _isBlocked:true }; return search; }
-  return { text: `К сожалению, не нашла ответа на «${query}» 🤔\n\nПопробуй переформулировать.` };
+  return { text: `К сожалению, не нашла ответа на «${query}».\n\nПопробуй переформулировать.` };
 }
 
-/* SEND */
+/* ============ SEND ============ */
 function updateSendBtn(){
-  const chat = getActiveChat();
-  if(isLimitReached(chat)){
-    sendBtn.disabled = false;
-    sendBtn.classList.add('locked');
-    sendBtn.classList.remove('stop', 'cooldown');
-    sendIcon.innerHTML = '<path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/>';
-    $('cooldownText').textContent = '⭐️';
-    return;
-  }
-  sendBtn.classList.remove('locked');
   if(state.busy){ sendBtn.disabled=false; sendBtn.classList.add('stop'); sendBtn.classList.remove('cooldown'); sendIcon.innerHTML='<rect x="6" y="6" width="12" height="12" rx="2"/>'; return; }
-  if(state.rateLimit){ sendBtn.disabled=true; sendBtn.classList.remove('stop'); sendBtn.classList.add('cooldown'); return; }
+  if(state.rateLimit && !state.plus){ sendBtn.disabled=true; sendBtn.classList.remove('stop'); sendBtn.classList.add('cooldown'); return; }
   sendBtn.classList.remove('stop','cooldown');
   sendIcon.innerHTML='<path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/>';
   sendBtn.disabled = inputEl.value.trim().length === 0;
@@ -1381,15 +1367,8 @@ async function handleSend(textOverride){
   if(!text){ if(state.busy){ state.abortRequested=true; haptic('medium'); } return; }
   if(state.busy) return;
 
-  const chat0 = getActiveChat();
-  if(isLimitReached(chat0)){
-    openPlusModal();
-    haptic('warning');
-    return;
-  }
-
   const wait = checkLimit();
-  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
+  if(wait > 0 && !state.plus){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
 
   if(hasProfanity(text)){
     markReq(); startCooldown();
@@ -1401,7 +1380,7 @@ async function handleSend(textOverride){
     chat.updatedAt = ts; store.saveChats(state.chats);
     appendUserMessage(text, true, chat.messages.length-1);
     await sleep(300);
-    const refuse = { role:'ai', text:'Извини, на такие вопросы я не отвечаю 💙', ts:Date.now()+1, _blocked:true };
+    const refuse = { role:'ai', text:'Извини, на такие вопросы я не отвечаю.', ts:Date.now()+1, _blocked:true };
     chat.messages.push(refuse); store.saveChats(state.chats);
     appendAIMessage(refuse, false, chat.messages.length-1);
     inputEl.value=''; localStorage.removeItem(KEYS.DRAFT);
@@ -1444,29 +1423,26 @@ async function handleSend(textOverride){
   state.busy=false; state.abortRequested=false; updateSendBtn(); updateLimitUI(); haptic('success');
 }
 
-/* DRAWER */
+/* ============ DRAWER ============ */
 function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); lockScroll(true); showBackButton(closeDrawer); haptic('light'); }
 function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); }
 
-/* ACCOUNT */
+/* ============ ACCOUNT ============ */
 function applyPlusUI(){
   const badge = $('headerPlusBadge');
   const bm = $('brandMark');
   const av = $('drawerAvatar');
   const avPrev = $('avatarPreview');
-  const sub = $('drawerSub');
   if(state.plus){
     badge.style.display = 'inline-flex';
     bm.classList.add('plus');
     av.classList.add('plus');
     avPrev.classList.add('plus');
-    sub.textContent = '⭐️ Plus активен';
   } else {
     badge.style.display = 'none';
     bm.classList.remove('plus');
     av.classList.remove('plus');
     avPrev.classList.remove('plus');
-    sub.textContent = 'Аккаунт · Настройки';
   }
 }
 function updateAvatarPreview(){
@@ -1539,7 +1515,7 @@ function exportChats(){
   showToast('Файл сохранён'); haptic('success');
 }
 
-/* ONBOARDING */
+/* ============ ONBOARDING ============ */
 let onbSlide = 0;
 function onbGoTo(i){
   onbSlide = Math.max(0, Math.min(2, i));
@@ -1556,7 +1532,7 @@ function finishOnboarding(){
   lockScroll(false); haptic('success'); initApp();
 }
 
-/* INIT */
+/* ============ INIT ============ */
 function initApp(){
   state.chats = store.getChats();
   state.activeId = store.getActive();
@@ -1569,7 +1545,7 @@ function initApp(){
   initVoice();
 }
 
-/* EVENTS */
+/* ============ EVENTS ============ */
 inputEl.addEventListener('input', () => { updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value); });
 inputEl.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
 sendBtn.addEventListener('click', () => {
@@ -1604,8 +1580,9 @@ $('plusOpenBtn').addEventListener('click', () => { closeAccount(); setTimeout(op
 $('plusRequestBtn').addEventListener('click', requestPlus);
 $('plusCloseBtn').addEventListener('click', closePlusModal);
 $('plusModalBg').addEventListener('click', e => { if(e.target === $('plusModalBg')) closePlusModal(); });
+$('limitBannerBtn').addEventListener('click', () => { haptic('light'); openPlusModal(); });
 
-/* BOOT */
+/* ============ BOOT ============ */
 window.addEventListener('load', async () => {
   const draft = localStorage.getItem(KEYS.DRAFT);
   if(draft){ inputEl.value = draft; updateSendBtn(); }
@@ -1626,7 +1603,6 @@ window.addEventListener('load', async () => {
     }
     initApp();
   }
-  // Периодическая проверка плюса
   setInterval(async () => {
     const uId = tg?.initDataUnsafe?.user?.id;
     if(!uId || uId === ADMIN_TG_ID) return;
@@ -1638,7 +1614,7 @@ window.addEventListener('load', async () => {
         applyPlusUI();
         updateLimitUI();
         renderActiveChat();
-        showToast('⭐️ Plus активирован!');
+        showToast('Plus активирован!');
         haptic('success');
       }
     }catch(e){}
