@@ -7,64 +7,74 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/function-plot@1.24.4/dist/function-plot.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--white:#fff;--overlay:rgba(15,23,42,.45)}
+  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--success:#16a34a;--warn:#f59e0b;--white:#fff;--overlay:rgba(15,23,42,.45)}
   html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
   body{position:fixed;inset:0}
   body.locked{overflow:hidden}
+  .ico{display:inline-block;vertical-align:middle;width:1em;height:1em;flex-shrink:0}
+  .ico svg{display:block;width:100%;height:100%}
   .app{height:100%;display:flex;flex-direction:column;background:var(--bg)}
   .header{display:flex;align-items:center;gap:10px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0}
   .header-brand{flex:1;display:flex;align-items:center;gap:8px;min-width:0;justify-content:center}
-  .brand-mark{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+  .brand-mark{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent)}
   .brand-mark svg{width:24px;height:24px}
-  .brand-mark.plus{background:var(--accent)}
-  .brand-mark.plus svg ellipse{stroke:#fff !important}
-  .brand-mark.plus svg circle{fill:#fff !important}
+  .brand-mark.plus{background:var(--accent);color:#fff}
   .brand-text{display:flex;flex-direction:column;min-width:0}
   .brand-name{font-size:15px;font-weight:800;letter-spacing:-.4px;color:var(--ink);display:flex;align-items:center;gap:6px}
   .brand-sub{font-size:10.5px;color:var(--muted);font-weight:500;margin-top:1px}
   .plus-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:100px;background:var(--accent);color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase}
-  .plus-badge svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:3}
+  .plus-badge .ico{width:9px;height:9px}
   .chat{flex:1;overflow-y:auto;padding:16px 14px 8px;display:flex;flex-direction:column;gap:22px;justify-content:flex-end}
   .chat::-webkit-scrollbar{width:0}
   .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px;text-align:center;width:100%}
-  .empty-planet{width:100px;height:100px;margin-bottom:20px;animation:floatY 5s ease-in-out infinite}
+  .empty-planet{width:100px;height:100px;margin-bottom:20px;color:var(--accent);animation:floatY 5s ease-in-out infinite}
+  .empty-planet svg{width:100%;height:100%}
   @keyframes floatY{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
   .empty-title{font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px}
   .empty-sub{font-size:14px;color:var(--muted);line-height:1.5;max-width:300px;margin-bottom:24px}
   .empty-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:340px}
   .empty-chip{padding:9px 14px;background:var(--white);border:1.5px solid var(--accent);border-radius:100px;font-size:13px;font-weight:600;color:var(--accent-deep);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px}
   .empty-chip:active{background:var(--accent-soft);transform:scale(.97)}
-  .empty-chip .dot{width:6px;height:6px;background:var(--accent);border-radius:50%}
+  .empty-chip .ico{color:var(--accent);width:14px;height:14px}
   .msg{display:flex;gap:10px;max-width:100%;animation:msgIn .3s cubic-bezier(.22,1,.36,1)}
   @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
   .msg.user{justify-content:flex-end;flex-direction:column;align-items:flex-end}
-  .msg.ai .avatar{width:30px;height:30px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .msg.ai .avatar{width:30px;height:30px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .msg.ai .avatar svg{width:20px;height:20px}
   .msg.ai .body{flex:1;min-width:0}
   .msg.ai .name{font-size:12.5px;font-weight:700;color:var(--accent);margin-bottom:4px;display:flex;align-items:center;gap:5px}
-  .msg.ai .name::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
-  .msg.ai .text{font-size:15px;line-height:1.65;color:var(--ink-soft);word-wrap:break-word}
+  .msg.ai .name .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .msg.ai .text{font-size:15px;line-height:1.7;color:var(--ink-soft);word-wrap:break-word}
   .msg.ai .text strong{font-weight:700;color:var(--ink)}
   .msg.ai .text a{color:var(--accent);text-decoration:underline}
   .msg.ai .text code{background:var(--surface);padding:1px 6px;border-radius:4px;font-family:'SF Mono',Monaco,monospace;font-size:13.5px;color:var(--accent-deep)}
+  .msg.ai .text .katex{font-size:1.05em}
   .msg.ai .text .frac{display:inline-block;vertical-align:middle;text-align:center;font-family:'SF Mono',Monaco,monospace;font-size:13px;line-height:1.1;margin:0 3px}
   .msg.ai .text .frac .num{display:block;border-bottom:1.5px solid var(--accent-deep);padding:0 3px}
   .msg.ai .text .frac .den{display:block;padding:0 3px}
+  .msg.ai .text .inl-ico{display:inline-block;vertical-align:-2px;width:14px;height:14px;margin-right:4px;color:var(--accent)}
+  .msg.ai .text .inl-ok{color:var(--success)}
+  .msg.ai .text .inl-warn{color:var(--warn)}
+  .msg.ai .text .inl-err{color:var(--danger)}
   .msg.ai .source{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 11px;background:var(--accent-soft);border:1px solid var(--accent-light);border-radius:8px;font-size:12px;font-weight:600;color:var(--accent-deep);text-decoration:none}
   .msg.user .bubble{max-width:82%;padding:10px 14px;background:var(--white);color:var(--accent-deep);border:1.5px solid var(--accent);border-radius:20px;border-bottom-right-radius:6px;font-size:15px;line-height:1.45;word-wrap:break-word;font-weight:500}
-  .msg-edit-btn{font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:4px;margin-right:4px;font-family:inherit;padding:3px 8px;border-radius:6px}
+  .msg-edit-btn{font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:4px;margin-right:4px;font-family:inherit;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px}
+  .msg-edit-btn .ico{width:11px;height:11px}
   .msg-edit-btn:active{background:var(--accent-soft);color:var(--accent)}
   .msg-actions{display:flex;gap:4px;margin-top:8px;margin-left:-4px;flex-wrap:wrap}
-  .msg-act{width:30px;height:30px;border-radius:8px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)}
+  .msg-act{min-width:30px;height:30px;padding:0 8px;border-radius:8px;border:none;background:transparent;display:inline-flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);font-size:11.5px;font-weight:600;font-family:inherit}
   .msg-act:active{background:var(--accent-soft);color:var(--accent)}
-  .msg-act svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .msg-act .ico{width:14px;height:14px}
   .msg-act.speaking{color:var(--accent);background:var(--accent-soft);animation:speakPulse 1s infinite}
   @keyframes speakPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
   .typing{display:none;gap:10px}
   .typing.active{display:flex}
-  .typing .avatar{width:30px;height:30px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center}
+  .typing .avatar{width:30px;height:30px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
   .typing .avatar svg{width:20px;height:20px;animation:spin 4s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   .typing .dots{display:flex;gap:4px;align-items:center;height:30px;padding-top:6px}
@@ -74,87 +84,59 @@
   @keyframes dotWave{0%,60%,100%{transform:translateY(0) scale(.85);opacity:.4}30%{transform:translateY(-5px) scale(1);opacity:1}}
   .cursor{display:inline-block;width:2px;height:15px;background:var(--accent);vertical-align:text-bottom;margin-left:1px;animation:blink 1s steps(2,start) infinite}
   @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-  .limit-banner{padding:12px 14px;background:var(--accent-soft);border-radius:14px;margin:0 14px 8px;display:none;align-items:center;gap:10px;animation:msgIn .3s}
+  .limit-banner{padding:12px 14px;background:var(--accent-soft);border-radius:14px;margin:0 14px 8px;display:none;align-items:center;gap:10px}
   .limit-banner.show{display:flex}
   .limit-banner-text{flex:1;min-width:0}
   .limit-banner-title{font-size:13px;font-weight:700;color:var(--accent-deep);margin-bottom:2px}
   .limit-banner-sub{font-size:11.5px;color:var(--muted);line-height:1.35}
-  .limit-banner-btn{padding:8px 14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;flex-shrink:0}
-  .limit-banner-btn:active{background:var(--accent-dark);transform:scale(.97)}
+  .limit-banner-btn{padding:8px 14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer}
   .bottom-bar{display:flex;align-items:center;gap:8px;padding:8px 10px calc(10px + env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0}
   .menu-fab{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 4px 14px rgba(37,99,235,.28)}
+  .menu-fab .ico{width:20px;height:20px}
   .menu-fab:active{background:var(--accent-dark);transform:scale(.93)}
-  .menu-fab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
   .input-wrap{flex:1;min-width:0;display:flex;align-items:center;gap:2px;background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:3px 3px 3px 14px}
   .input-wrap:focus-within{border-color:var(--accent)}
   .input-wrap.cooldown{border-color:var(--accent-mid);background:var(--accent-soft)}
   .input-wrap input{flex:1;min-width:0;padding:7px 0;border:none;outline:none;font-size:14.5px;background:transparent;color:var(--ink);font-family:inherit}
   .input-wrap input::placeholder{color:var(--muted)}
-  .attach-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);transition:all .15s}
-  .attach-btn:active{background:var(--accent-soft);color:var(--accent)}
-  .attach-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .attach-btn.loading{color:var(--accent);animation:attachSpin 1s linear infinite}
-  @keyframes attachSpin{to{transform:rotate(360deg)}}
-  .file-preview{margin-bottom:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
-  .file-preview img{max-width:200px;max-height:200px;border-radius:12px;border:1px solid var(--border);display:block}
-  .file-preview-file{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:12.5px;font-weight:600;color:var(--ink-soft);max-width:200px}
-  .file-preview-file svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0}
-  .file-preview-file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .voice-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);transition:all .15s}
-  .voice-btn:active{background:var(--accent-soft);color:var(--accent)}
-  .voice-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .send-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
+  .icb{width:32px;height:32px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);transition:all .15s}
+  .icb:active{background:var(--accent-soft);color:var(--accent)}
+  .icb .ico{width:18px;height:18px}
+  .icb.loading{color:var(--accent);animation:spin 1s linear infinite}
+  .send-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;color:#fff}
+  .send-btn .ico{width:15px;height:15px}
   .send-btn:active:not(:disabled){background:var(--accent-dark);transform:scale(.9)}
   .send-btn:disabled{opacity:.35}
-  .send-btn svg{width:15px;height:15px;fill:#fff}
   .send-btn.stop{background:var(--danger)}
   .send-btn.cooldown{background:var(--accent-mid)}
-  .send-btn.cooldown svg{display:none}
+  .send-btn.cooldown .ico{display:none}
   .send-btn .cooldown-text{display:none;font-size:11px;font-weight:800;color:#fff}
   .send-btn.cooldown .cooldown-text{display:block}
-  .voice-overlay{position:fixed;inset:0;z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#000;overflow:hidden}
-  .voice-overlay.active{display:flex;animation:voiceFadeIn .28s ease-out}
-  @keyframes voiceFadeIn{from{opacity:0}to{opacity:1}}
-  .voice-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 45%, rgba(37,99,235,.18) 0%, transparent 55%);pointer-events:none}
-  .voice-box{position:relative;z-index:2;width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;text-align:center}
-  .voice-canvas{width:280px;height:280px;display:block;margin-bottom:24px;filter:drop-shadow(0 0 60px rgba(59,130,246,.35))}
-  .voice-status{font-size:22px;font-weight:700;color:#fff;margin-bottom:14px;letter-spacing:-.3px}
-  .voice-text{font-size:15px;color:rgba(255,255,255,.75);line-height:1.5;max-width:340px;min-height:44px;font-weight:500;padding:12px 20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;transition:min-height .2s, color .2s}
-  .voice-text.empty{color:rgba(255,255,255,.35);font-style:italic}
-  .voice-hint{font-size:12.5px;color:rgba(255,255,255,.45);margin-top:16px;font-weight:500;display:flex;align-items:center;gap:6px}
-  .voice-hint .hint-dot{width:6px;height:6px;border-radius:50%;background:#a3e635;box-shadow:0 0 10px #a3e635;animation:hintPulse 1.4s ease-in-out infinite}
-  @keyframes hintPulse{0%,100%{opacity:.4}50%{opacity:1}}
-  .voice-cancel{margin-top:36px;padding:13px 36px;border-radius:100px;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-  .voice-cancel:active{background:rgba(255,255,255,.16);transform:scale(.96)}
-  body.has-mainbtn .bottom-bar{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
-  .gate{position:fixed;inset:0;background:var(--bg);z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
-  .gate.hidden{display:none}
-  .gate-icon{width:110px;height:110px;margin-bottom:24px;animation:floatY 5s ease-in-out infinite}
-  .gate-title{font-size:23px;font-weight:800;color:var(--ink);margin-bottom:10px}
-  .gate-sub{font-size:14.5px;color:var(--muted);line-height:1.55;max-width:320px;margin-bottom:24px}
-  .gate-btn{width:100%;max-width:320px;padding:16px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
-  .gate-btn:active{background:var(--accent-dark);transform:scale(.98)}
-  .gate-btn:disabled{opacity:.5}
-  .gate-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .gate-id{font-size:12px;color:var(--muted);margin-top:12px}
-  .gate-waiting{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--surface);border-radius:100px;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:12px}
-  .gate-waiting .spin{width:18px;height:18px;border:2.5px solid var(--accent-light);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+  .math-kb{display:none;padding:6px 10px;background:var(--surface);border-top:1px solid var(--border);overflow-x:auto;white-space:nowrap;flex-shrink:0}
+  .math-kb.show{display:block}
+  .math-kb::-webkit-scrollbar{height:0}
+  .math-kb button{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;padding:0 10px;margin-right:4px;background:var(--white);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
+  .math-kb button:active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
   .overlay{position:fixed;inset:0;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
   .overlay.open{opacity:1;pointer-events:auto}
   .drawer{position:fixed;top:0;left:0;bottom:0;width:88%;max-width:360px;background:var(--bg);z-index:50;transform:translateX(-100%);transition:transform .28s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column}
   .drawer.open{transform:translateX(0)}
   .drawer-head{padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-  .drawer-logo{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center}
+  .drawer-logo{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
   .drawer-logo svg{width:24px;height:24px}
   .drawer-head-text{flex:1;min-width:0}
   .drawer-head-title{font-size:15px;font-weight:800;color:var(--ink)}
   .drawer-head-sub{font-size:11px;color:var(--muted);margin-top:1px}
-  .drawer-new{margin:12px 12px 4px;padding:12px 14px;background:var(--accent);border:none;border-radius:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit}
+  .drawer-tools{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 12px 4px}
+  .drawer-tool{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;background:var(--surface);border:none;border-radius:12px;font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;text-align:center}
+  .drawer-tool:active{background:var(--accent-soft);color:var(--accent)}
+  .drawer-tool .ico{width:20px;height:20px;color:var(--accent)}
+  .drawer-new{margin:8px 12px 4px;padding:12px 14px;background:var(--accent);border:none;border-radius:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit}
+  .drawer-new .ico{width:16px;height:16px}
   .drawer-new:active{background:var(--accent-dark)}
-  .drawer-new svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}
-  .drawer-search{margin:8px 12px 4px;display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--surface);border-radius:10px;border:1.5px solid transparent}
+  .drawer-search{margin:8px 12px 4px;display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--surface);border-radius:10px;border:1.5px solid transparent;color:var(--muted)}
   .drawer-search:focus-within{border-color:var(--accent);background:var(--bg)}
-  .drawer-search svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;flex-shrink:0}
+  .drawer-search .ico{width:15px;height:15px}
   .drawer-search input{flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:13.5px;color:var(--ink);font-family:inherit}
   .drawer-section{padding:12px 16px 6px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center}
   .clear-all-btn{background:none;border:none;font-size:11px;font-weight:700;color:var(--danger);cursor:pointer;text-transform:uppercase;font-family:inherit;padding:2px 6px;border-radius:6px}
@@ -163,20 +145,19 @@
   .chat-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:var(--bg);margin-bottom:2px;position:relative}
   .chat-item.active{background:var(--accent-soft)}
   .chat-item:active{background:var(--surface)}
-  .chat-item-icon{width:32px;height:32px;border-radius:9px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+  .chat-item-icon{width:32px;height:32px;border-radius:9px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;color:var(--accent)}
   .chat-item.active .chat-item-icon{background:var(--accent-light)}
-  .chat-item-icon svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2}
+  .chat-item-icon .ico{width:16px;height:16px}
   .pin-indicator{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
   .chat-item-text{flex:1;min-width:0}
   .chat-item-title{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .chat-item-sub{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .chat-item-pin,.chat-item-del{width:24px;height:24px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.5;flex-shrink:0}
-  .chat-item-pin svg,.chat-item-del svg{width:13px;height:13px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .chat-item-pin,.chat-item-del{width:24px;height:24px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.5;flex-shrink:0;color:var(--muted)}
+  .chat-item-pin .ico,.chat-item-del .ico{width:13px;height:13px}
   .chat-item-pin:active,.chat-item-del:active{background:var(--accent-soft);opacity:1}
-  .chat-item-pin.pinned{opacity:1}
-  .chat-item-pin.pinned svg{stroke:var(--accent);fill:var(--accent-light)}
+  .chat-item-pin.pinned{opacity:1;color:var(--accent)}
   .drawer-foot{padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--border)}
-  .user-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;cursor:pointer;position:relative}
+  .user-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;cursor:pointer;color:var(--muted)}
   .user-card:active{background:var(--surface)}
   .user-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center;position:relative}
   .user-avatar.plus{box-shadow:0 0 0 2px var(--accent-mid)}
@@ -187,29 +168,24 @@
   .modal-overlay.open{opacity:1;pointer-events:auto}
   .modal{width:100%;max-width:480px;background:var(--bg);border-radius:20px 20px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s;max-height:88vh;overflow-y:auto}
   .modal-overlay.open .modal{transform:translateY(0)}
-  .modal-title{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px}
+  .modal-title{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .modal-title .ico{width:22px;height:22px;color:var(--accent)}
   .modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
   .avatar-section{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
   .avatar-preview{width:88px;height:88px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;overflow:hidden;background-size:cover;background-position:center;position:relative;cursor:pointer;border:3px solid var(--bg);box-shadow:0 4px 14px rgba(37,99,235,.25)}
   .avatar-preview.plus{box-shadow:0 0 0 3px var(--accent-mid)}
-  .avatar-preview:active{transform:scale(.97)}
-  .avatar-overlay{position:absolute;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
-  .avatar-preview:active .avatar-overlay{opacity:1}
-  .avatar-overlay svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2}
   .avatar-hint{font-size:11.5px;color:var(--muted);margin-top:8px;text-align:center}
-  .avatar-actions{display:flex;gap:8px;margin-top:8px}
-  .avatar-action-btn{padding:6px 12px;border:1px solid var(--border);border-radius:100px;background:var(--bg);font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
-  .avatar-action-btn:active{background:var(--surface)}
+  .avatar-action-btn{padding:6px 12px;border:1px solid var(--border);border-radius:100px;background:var(--bg);font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit;margin-top:8px}
   .field{margin-bottom:14px}
   .field-label{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;padding-left:2px}
   .field-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;color:var(--ink);background:var(--bg);outline:none}
   .field-input:focus{border-color:var(--accent)}
-  .btn-primary{width:100%;padding:14px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:8px}
-  .btn-primary:active{background:var(--accent-dark)}
-  .btn-ghost{width:100%;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg);color:var(--ink);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:8px}
-  .btn-ghost:active{background:var(--surface)}
-  .btn-danger{width:100%;padding:14px;border:1.5px solid var(--danger-soft);border-radius:12px;background:var(--bg);color:var(--danger);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
-  .btn-danger:active{background:var(--danger-soft)}
+  .btn-primary{width:100%;padding:14px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-primary .ico{width:18px;height:18px}
+  .btn-ghost{width:100%;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg);color:var(--ink);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-ghost .ico{width:18px;height:18px;color:var(--accent)}
+  .btn-danger{width:100%;padding:14px;border:1.5px solid var(--danger-soft);border-radius:12px;background:var(--bg);color:var(--danger);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-danger .ico{width:18px;height:18px}
   .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
   .stat-card{padding:12px;background:var(--surface);border-radius:12px;text-align:center}
   .stat-value{font-size:20px;font-weight:800;color:var(--accent)}
@@ -222,67 +198,297 @@
   .onb-slides{flex:1;overflow:hidden;position:relative}
   .onb-track{display:flex;height:100%;transition:transform .4s cubic-bezier(.22,1,.36,1)}
   .onb-slide{min-width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;padding-top:calc(40px + env(safe-area-inset-top));text-align:center}
-  .onb-planet{width:120px;height:120px;margin-bottom:28px;animation:floatY 5s ease-in-out infinite}
+  .onb-planet{width:120px;height:120px;margin-bottom:28px;color:var(--accent);animation:floatY 5s ease-in-out infinite}
+  .onb-planet svg{width:100%;height:100%}
   .onb-title{font-size:26px;font-weight:800;letter-spacing:-.8px;color:var(--ink);margin-bottom:10px}
   .onb-sub{font-size:15px;color:var(--muted);line-height:1.55;max-width:320px}
   .onb-examples{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px;margin-top:24px}
   .onb-ex{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border-radius:12px;font-size:13.5px;color:var(--ink);text-align:left;font-weight:500}
-  .onb-ex-ico{width:28px;height:28px;border-radius:8px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .onb-ex-ico svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .onb-ex-ico{width:28px;height:28px;border-radius:8px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent)}
+  .onb-ex-ico .ico{width:16px;height:16px}
   .onb-foot{padding:16px 24px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
   .onb-dots{display:flex;gap:6px;justify-content:center;margin-bottom:4px}
   .onb-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .2s}
   .onb-dot.active{background:var(--accent);width:20px;border-radius:3px}
   .onb-skip{background:none;border:none;color:var(--muted);font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;padding:6px}
-  .bio-overlay{position:fixed;inset:0;background:var(--bg);z-index:220;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
-  .bio-overlay.active{display:flex}
-  .bio-icon{width:100px;height:100px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;margin-bottom:24px;animation:floatY 3s infinite}
-  .bio-icon svg{width:52px;height:52px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-  .bio-title{font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px}
-  .bio-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:280px;line-height:1.5}
+  .gate{position:fixed;inset:0;background:var(--bg);z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
+  .gate.hidden{display:none}
+  .gate-icon{width:110px;height:110px;margin-bottom:24px;color:var(--accent);animation:floatY 5s ease-in-out infinite}
+  .gate-icon svg{width:100%;height:100%}
+  .gate-title{font-size:23px;font-weight:800;color:var(--ink);margin-bottom:10px}
+  .gate-sub{font-size:14.5px;color:var(--muted);line-height:1.55;max-width:320px;margin-bottom:24px}
+  .gate-btn{width:100%;max-width:320px;padding:16px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
+  .gate-btn .ico{width:18px;height:18px}
+  .gate-btn:active{background:var(--accent-dark);transform:scale(.98)}
+  .gate-btn:disabled{opacity:.5}
+  .gate-id{font-size:12px;color:var(--muted);margin-top:12px}
+  .gate-waiting{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--surface);border-radius:100px;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:12px}
+  .gate-waiting .spin{width:18px;height:18px;border:2.5px solid var(--accent-light);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
   .plus-modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:230;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .3s}
   .plus-modal-bg.active{display:flex;opacity:1}
   .plus-modal{width:100%;max-width:380px;background:var(--bg);border-radius:24px;padding:28px 22px 20px;box-shadow:0 20px 60px rgba(15,23,42,.25);transform:scale(.9) translateY(20px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);text-align:center}
   .plus-modal-bg.active .plus-modal{transform:scale(1) translateY(0)}
-  .plus-icon{width:64px;height:64px;margin:0 auto 16px;border-radius:18px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center}
-  .plus-icon svg{width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .plus-modal-title{font-size:22px;font-weight:800;letter-spacing:-.4px;color:var(--ink);margin-bottom:6px}
+  .plus-icon{width:64px;height:64px;margin:0 auto 16px;border-radius:18px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
+  .plus-icon .ico{width:34px;height:34px}
+  .plus-modal-title{font-size:22px;font-weight:800;color:var(--ink);margin-bottom:6px}
   .plus-modal-title span{color:var(--accent)}
   .plus-modal-desc{font-size:13.5px;color:var(--muted);line-height:1.5;margin-bottom:22px}
   .plus-list{text-align:left;margin-bottom:20px;display:flex;flex-direction:column;gap:12px}
   .plus-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-soft);font-weight:500;line-height:1.35}
-  .plus-item svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .plus-item .ico{width:18px;height:18px;color:var(--accent)}
   .plus-actions{display:flex;flex-direction:column;gap:6px}
   .plus-btn-primary{width:100%;padding:15px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
-  .plus-btn-primary:active{background:var(--accent-dark);transform:scale(.98)}
-  .plus-btn-primary:disabled{opacity:.5;cursor:default}
   .plus-btn-ghost{width:100%;padding:13px;border:none;border-radius:14px;background:transparent;color:var(--muted);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
-  .plus-btn-ghost:active{background:var(--surface)}
   .plus-active-badge{padding:10px 14px;background:var(--accent-soft);border-radius:12px;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:6px}
-  .plus-active-badge svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
+  .plus-active-badge .ico{width:16px;height:16px}
+  /* Voice */
+  .voice-overlay{position:fixed;inset:0;z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#000;overflow:hidden}
+  .voice-overlay.active{display:flex;animation:fadeIn .28s ease-out}
+  .voice-box{position:relative;z-index:2;width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .voice-canvas{width:280px;height:280px;display:block;margin-bottom:24px;filter:drop-shadow(0 0 60px rgba(59,130,246,.35))}
+  .voice-status{font-size:22px;font-weight:700;color:#fff;margin-bottom:14px}
+  .voice-text{font-size:15px;color:rgba(255,255,255,.75);line-height:1.5;max-width:340px;min-height:44px;font-weight:500;padding:12px 20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;display:flex;align-items:center;justify-content:center}
+  .voice-cancel{margin-top:36px;padding:13px 36px;border-radius:100px;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+  /* Trainer */
+  .trainer-overlay,.cheat-overlay,.graph-overlay{position:fixed;inset:0;background:var(--overlay);z-index:210;display:none;align-items:center;justify-content:center;padding:16px}
+  .trainer-overlay.active,.cheat-overlay.active,.graph-overlay.active{display:flex;animation:fadeIn .25s ease-out}
+  .trainer-panel,.cheat-panel,.graph-panel{width:100%;max-width:520px;max-height:90vh;background:var(--bg);border-radius:20px;padding:20px 18px;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.3)}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .panel-head h2{font-size:18px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .panel-head h2 .ico{width:22px;height:22px;color:var(--accent)}
+  .panel-close{width:32px;height:32px;border-radius:10px;border:none;background:var(--surface);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .panel-close .ico{width:16px;height:16px}
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+  .topic-btn{padding:14px 12px;background:var(--surface);border:1.5px solid transparent;border-radius:12px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);text-align:left;display:flex;align-items:center;gap:8px}
+  .topic-btn .ico{width:18px;height:18px;color:var(--accent);flex-shrink:0}
+  .topic-btn:active{background:var(--accent-soft)}
+  .topic-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+  .difficulty-row{display:flex;gap:6px;margin-bottom:16px}
+  .diff-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
+  .diff-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .trainer-task{padding:16px;background:var(--accent-soft);border-radius:14px;margin-bottom:12px;text-align:center;font-size:17px;font-weight:700;color:var(--accent-deep);font-family:'SF Mono',Monaco,monospace;min-height:60px;display:flex;align-items:center;justify-content:center}
+  .trainer-answer-row{display:flex;gap:8px;margin-bottom:12px}
+  .trainer-input{flex:1;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:'SF Mono',Monaco,monospace;color:var(--ink);outline:none;background:var(--bg)}
+  .trainer-input:focus{border-color:var(--accent)}
+  .trainer-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+  .trainer-stat{padding:10px;background:var(--surface);border-radius:10px;text-align:center}
+  .trainer-stat-val{font-size:18px;font-weight:800;color:var(--accent)}
+  .trainer-stat-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+  .trainer-feedback{padding:12px;border-radius:12px;font-size:14px;font-weight:600;margin-bottom:12px;display:none;align-items:center;gap:8px}
+  .trainer-feedback.show{display:flex}
+  .trainer-feedback.ok{background:#dcfce7;color:#166534}
+  .trainer-feedback.bad{background:#fee2e2;color:#991b1b}
+  .trainer-feedback .ico{width:18px;height:18px;flex-shrink:0}
+  /* Cheat sheet */
+  .cheat-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
+  .cheat-tabs::-webkit-scrollbar{height:0}
+  .cheat-tab{flex-shrink:0;padding:8px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg);font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
+  .cheat-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .cheat-body{font-size:14px;line-height:1.8;color:var(--ink-soft)}
+  .cheat-body .cheat-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center}
+  .cheat-body .cheat-row:last-child{border-bottom:none}
+  .cheat-body .cheat-name{font-size:13px;color:var(--muted);flex:1}
+  .cheat-body .cheat-formula{font-family:'SF Mono',Monaco,monospace;font-weight:600;color:var(--accent-deep)}
+  /* Graph */
+  .graph-panel{max-width:600px}
+  .graph-container{width:100%;height:320px;background:var(--surface);border-radius:14px;overflow:hidden}
+  .graph-input-row{display:flex;gap:8px;margin-bottom:12px}
+  /* Print */
+  @media print{
+    .bottom-bar,.header,.drawer,.overlay,.math-kb,.limit-banner{display:none!important}
+    body,html{overflow:visible;height:auto;position:static}
+    .app{height:auto}
+    .chat{overflow:visible;height:auto;padding:0}
+  }
 </style>
 </head>
 <body>
+
+<!-- ================= SVG ICON LIBRARY ================= -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-planet" viewBox="0 0 64 64" fill="none">
+    <ellipse cx="32" cy="32" rx="26" ry="8" transform="rotate(-20 32 32)" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="32" cy="32" r="13" fill="currentColor"/>
+  </symbol>
+  <symbol id="i-planet-ring" viewBox="0 0 100 100" fill="none">
+    <ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="20" fill="currentColor"/>
+  </symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 6L9 17l-5-5"/>
+  </symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
+  </symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/>
+  </symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 6L6 18M6 6l12 12"/>
+  </symbol>
+  <symbol id="i-infinity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 12c0-2 1.5-3.5 3.5-3.5S13 10 12 12s-1.5 3.5-3.5 3.5S6 14 6 12zM18 12c0-2-1.5-3.5-3.5-3.5S11 10 12 12s1.5 3.5 3.5 3.5S18 14 18 12z"/>
+  </symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/>
+  </symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 17v5M9 10.76V4h6v6.76l2 3.24H7z"/>
+  </symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor"/>
+  </symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/>
+  </symbol>
+  <symbol id="i-calc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M12 10h2M16 10h0M8 14h2M12 14h2M16 14h0M8 18h2M12 18h2M16 18h0"/>
+  </symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5V6a2 2 0 012-2h14v13H6.5A2.5 2.5 0 004 19.5z"/>
+  </symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9 14h6"/>
+  </symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/>
+  </symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+  </symbol>
+  <symbol id="i-speak" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/>
+  </symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+  </symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/>
+  </symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+  </symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+  </symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/>
+  </symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24" fill="currentColor">
+    <rect x="6" y="6" width="12" height="12" rx="2"/>
+  </symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/>
+  </symbol>
+  <symbol id="i-paperclip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+  </symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+    <path d="M4 7h16M4 12h16M4 17h10"/>
+  </symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <path d="M12 5v14M5 12h14"/>
+  </symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+  </symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18l6-6-6-6"/>
+  </symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+  </symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/>
+  </symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13 2L3 14h9l-1 8 10-12h-9z"/>
+  </symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+  </symbol>
+  <symbol id="i-lamp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/>
+  </symbol>
+  <symbol id="i-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+  </symbol>
+  <symbol id="i-function" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 3H5v18M15 3h4v18M5 12h14"/>
+  </symbol>
+  <symbol id="i-sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 4H6l6 8-6 8h12"/>
+  </symbol>
+  <symbol id="i-divide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="6" r="1.5" fill="currentColor"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/><path d="M5 12h14"/>
+  </symbol>
+  <symbol id="i-times" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </symbol>
+  <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M19 5L5 19"/>
+  </symbol>
+  <symbol id="i-equals" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <path d="M5 9h14M5 15h14"/>
+  </symbol>
+  <symbol id="i-pi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 8h16M9 8v10M15 8v10"/>
+  </symbol>
+  <symbol id="i-sqrt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 12l3 8 5-16h10"/>
+  </symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>
+  </symbol>
+  <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+  </symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/>
+  </symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/>
+  </symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  </symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z"/>
+  </symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 2v7L4 20a2 2 0 002 2h12a2 2 0 002-2l-6-11V2M8 2h8M7 15h10"/>
+  </symbol>
+  <symbol id="i-hint" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h1v4h1"/>
+  </symbol>
+  <symbol id="i-laTeX" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4h6M4 4v16h6M20 4h-4l-4 8 4 8h4"/>
+  </symbol>
+</svg>
 
 <div class="onboarding" id="onboarding">
   <div class="onb-slides">
     <div class="onb-track" id="onbTrack">
       <div class="onb-slide">
-        <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg>
+        <div class="onb-planet"><svg><use href="#i-planet-ring"/></svg></div>
         <div class="onb-title">Добро пожаловать!</div>
-        <div class="onb-sub">Orbita AI — твой личный репетитор по математике. Решает уравнения, объясняет шаг за шагом и помогает понять теорию.</div>
+        <div class="onb-sub">Orbita AI — твой личный репетитор по математике. Решает, объясняет шаг за шагом и помогает понять теорию.</div>
       </div>
       <div class="onb-slide">
-        <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="26" stroke="#2563eb" stroke-width="3" fill="none"/><path d="M42 40 L64 50 L42 60 Z" fill="#2563eb"/></svg>
+        <div class="onb-planet"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="26" stroke="currentColor" stroke-width="3"/><path d="M42 40 L64 50 L42 60 Z" fill="currentColor"/></svg></div>
         <div class="onb-title">Что можно</div>
         <div class="onb-examples">
-          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/></svg></div><span>Реши 2x + 5 = 15</span></div>
-          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><span>Производная x³ + 2x</span></div>
-          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><span>Объясни теорему Пифагора</span></div>
+          <div class="onb-ex"><div class="onb-ex-ico"><span class="ico"><svg><use href="#i-equals"/></svg></span></div><span>Реши 2x + 5 = 15</span></div>
+          <div class="onb-ex"><div class="onb-ex-ico"><span class="ico"><svg><use href="#i-function"/></svg></span></div><span>Производная x³ + 2x</span></div>
+          <div class="onb-ex"><div class="onb-ex-ico"><span class="ico"><svg><use href="#i-chart"/></svg></span></div><span>Построй y = x² − 4</span></div>
+          <div class="onb-ex"><div class="onb-ex-ico"><span class="ico"><svg><use href="#i-book-open"/></svg></span></div><span>Объясни теорему Пифагора</span></div>
         </div>
       </div>
       <div class="onb-slide">
-        <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="30" stroke="#2563eb" stroke-width="3" fill="none"/><circle cx="50" cy="50" r="8" fill="#2563eb"/><circle cx="50" cy="20" r="5" fill="#93c5fd"/><circle cx="50" cy="80" r="4" fill="#93c5fd"/><circle cx="20" cy="50" r="4" fill="#93c5fd"/><circle cx="80" cy="50" r="5" fill="#93c5fd"/></svg>
+        <div class="onb-planet"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="3"/><circle cx="50" cy="50" r="8" fill="currentColor"/><circle cx="50" cy="20" r="5" fill="currentColor" opacity=".6"/><circle cx="50" cy="80" r="4" fill="currentColor" opacity=".6"/><circle cx="20" cy="50" r="4" fill="currentColor" opacity=".6"/><circle cx="80" cy="50" r="5" fill="currentColor" opacity=".6"/></svg></div>
         <div class="onb-title">Как тебя зовут?</div>
         <div class="onb-sub">Чтобы Orbita обращалась к тебе по имени</div>
         <input type="text" class="field-input" id="onbName" maxlength="24" placeholder="Твоё имя" autocomplete="off" style="margin-top:24px;text-align:center;font-size:16px">
@@ -295,32 +501,25 @@
   </div>
 </div>
 
-<div class="bio-overlay" id="bioOverlay">
-  <div class="bio-icon"><svg viewBox="0 0 24 24"><path d="M12 1C8 1 4.5 3 4.5 8v3M12 1c4 0 7.5 2 7.5 7v3M4.5 13c0 5 3.5 8 7.5 10M19.5 13c0 5-3.5 8-7.5 10M12 6a3 3 0 00-3 3v6a3 3 0 006 0V9a3 3 0 00-3-3z"/></svg></div>
-  <div class="bio-title">Защита Orbita AI</div>
-  <div class="bio-sub">Подтверди личность, чтобы войти</div>
-  <button class="gate-btn" id="bioBtn" style="max-width:280px"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg><span>Подтвердить</span></button>
-</div>
-
 <div class="gate hidden" id="gate">
-  <svg class="gate-icon" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="42" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 8" opacity="0.35"/><ellipse cx="50" cy="50" rx="34" ry="10" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="18" fill="#2563eb"/><rect x="42" y="46" width="16" height="14" rx="3" fill="#fff"/><path d="M45 46V43a5 5 0 0110 0v3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+  <div class="gate-icon"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="42" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 8" opacity="0.35"/><ellipse cx="50" cy="50" rx="34" ry="10" transform="rotate(-20 50 50)" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="18" fill="currentColor"/><rect x="42" y="46" width="16" height="14" rx="3" fill="#fff"/><path d="M45 46V43a5 5 0 0110 0v3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
   <div class="gate-title" id="gateTitle">Проверка доступа…</div>
   <div class="gate-sub" id="gateSub">Пожалуйста, подождите.</div>
-  <button class="gate-btn" id="gateAction" style="display:none;"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><span id="gateActionText">Отправить заявку</span></button>
+  <button class="gate-btn" id="gateAction" style="display:none;"><span class="ico"><svg><use href="#i-send"/></svg></span><span id="gateActionText">Отправить заявку</span></button>
   <div class="gate-id" id="gateId"></div>
 </div>
 
 <div class="plus-modal-bg" id="plusModalBg">
   <div class="plus-modal">
-    <div class="plus-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></div>
+    <div class="plus-icon"><span class="ico"><svg><use href="#i-star"/></svg></span></div>
     <div class="plus-modal-title">Orbita <span>Plus</span></div>
     <div class="plus-modal-desc">Полный доступ без ограничений</div>
-    <div class="plus-active-badge" id="plusActiveBanner" style="display:none;"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span id="plusActiveText">Подписка активна</span></div>
+    <div class="plus-active-badge" id="plusActiveBanner" style="display:none;"><span class="ico"><svg><use href="#i-check"/></svg></span><span id="plusActiveText">Подписка активна</span></div>
     <div class="plus-list">
-      <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg><span>Без лимита запросов</span></div>
-      <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Без лимита сообщений</span></div>
-      <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/></svg><span>Голосовые ответы AI</span></div>
-      <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg><span>Особый статус</span></div>
+      <div class="plus-item"><span class="ico"><svg><use href="#i-bolt"/></svg></span><span>Без лимита запросов</span></div>
+      <div class="plus-item"><span class="ico"><svg><use href="#i-speak"/></svg></span><span>Голосовые ответы AI</span></div>
+      <div class="plus-item"><span class="ico"><svg><use href="#i-chart"/></svg></span><span>Графики функций</span></div>
+      <div class="plus-item"><span class="ico"><svg><use href="#i-crown"/></svg></span><span>Особый статус</span></div>
     </div>
     <div class="plus-actions">
       <button class="plus-btn-primary" id="plusRequestBtn">Запросить Plus</button>
@@ -333,8 +532,7 @@
   <div class="voice-box">
     <canvas class="voice-canvas" id="voiceCanvas" width="280" height="280"></canvas>
     <div class="voice-status" id="voiceStatus">Слушаю…</div>
-    <div class="voice-text empty" id="voiceText">Продиктуй пример или вопрос</div>
-    <div class="voice-hint" id="voiceHint"><span class="hint-dot"></span><span>Говори чётко, я распознаю речь</span></div>
+    <div class="voice-text empty" id="voiceText">Продиктуй пример</div>
     <button class="voice-cancel" id="voiceCancel">Отмена</button>
   </div>
 </div>
@@ -342,43 +540,117 @@
 <div class="overlay" id="drawerOverlay"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
-    <div class="drawer-logo"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="26" ry="8" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="2.8" stroke-linecap="round"/><circle cx="32" cy="32" r="13" fill="#2563eb"/></svg></div>
+    <div class="drawer-logo"><svg><use href="#i-planet"/></svg></div>
     <div class="drawer-head-text"><div class="drawer-head-title">Orbita AI</div><div class="drawer-head-sub" id="drawerCount">История чатов</div></div>
   </div>
-  <button class="drawer-new" id="newChatBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Новый чат</button>
-  <div class="drawer-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="text" id="chatSearch" placeholder="Поиск по чатам..."></div>
+  <div class="drawer-tools">
+    <button class="drawer-tool" id="toolTrainer"><span class="ico"><svg><use href="#i-target"/></svg></span>Тренажёр</button>
+    <button class="drawer-tool" id="toolCheat"><span class="ico"><svg><use href="#i-book-open"/></svg></span>Шпаргалка</button>
+    <button class="drawer-tool" id="toolGraph"><span class="ico"><svg><use href="#i-chart"/></svg></span>График</button>
+    <button class="drawer-tool" id="toolKeyboard"><span class="ico"><svg><use href="#i-keyboard"/></svg></span>Символы</button>
+  </div>
+  <button class="drawer-new" id="newChatBtn"><span class="ico"><svg><use href="#i-plus"/></svg></span>Новый чат</button>
+  <div class="drawer-search"><span class="ico"><svg><use href="#i-search"/></svg></span><input type="text" id="chatSearch" placeholder="Поиск по чатам..."></div>
   <div class="drawer-section"><span>Недавние</span><button class="clear-all-btn" id="clearAllChatsBtn" style="display:none;">Очистить</button></div>
   <div class="drawer-chats" id="chatsList"></div>
-  <div class="drawer-foot"><div class="user-card" id="userCard"><div class="user-avatar" id="drawerAvatar">A</div><div class="user-info"><div class="user-name" id="drawerName">...</div><div class="user-sub" id="drawerSub">Аккаунт · Настройки</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div></div>
+  <div class="drawer-foot"><div class="user-card" id="userCard"><div class="user-avatar" id="drawerAvatar">A</div><div class="user-info"><div class="user-name" id="drawerName">...</div><div class="user-sub" id="drawerSub">Аккаунт · Настройки</div></div><span class="ico"><svg><use href="#i-arrow-right"/></svg></span></div></div>
 </aside>
 
 <div class="modal-overlay" id="accountOverlay">
   <div class="modal">
-    <div class="modal-title">Аккаунт</div>
+    <div class="modal-title"><span class="ico"><svg><use href="#i-crown"/></svg></span>Аккаунт</div>
     <div class="modal-sub">Настрой свой профиль</div>
     <div class="avatar-section">
-      <div class="avatar-preview" id="avatarPreview"><span id="avatarLetter">A</span><div class="avatar-overlay"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div>
+      <div class="avatar-preview" id="avatarPreview"><span id="avatarLetter">A</span></div>
       <div class="avatar-hint">Нажми чтобы изменить</div>
-      <div class="avatar-actions"><button class="avatar-action-btn" id="removeAvatarBtn">Удалить</button></div>
+      <div class="avatar-action-btn" id="removeAvatarBtn">Удалить</div>
     </div>
     <div class="field"><div class="field-label">Имя</div><input type="text" class="field-input" id="accountNameInput" maxlength="24" placeholder="Твоё имя"></div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-value" id="statChats">0</div><div class="stat-label">Чатов</div></div>
       <div class="stat-card"><div class="stat-value" id="statMsgs">0</div><div class="stat-label">Сообщений</div></div>
     </div>
-    <button class="btn-primary" id="saveProfileBtn">Сохранить</button>
-    <button class="btn-ghost" id="plusOpenBtn">Orbita Plus</button>
-    <button class="btn-ghost" id="exportBtn">📥 Экспорт чатов (JSON)</button>
-    <button class="btn-danger" id="clearDataBtn">Очистить все данные</button>
+    <button class="btn-primary" id="saveProfileBtn"><span class="ico"><svg><use href="#i-check"/></svg></span>Сохранить</button>
+    <button class="btn-ghost" id="plusOpenBtn"><span class="ico"><svg><use href="#i-star"/></svg></span>Orbita Plus</button>
+    <button class="btn-ghost" id="printBtn"><span class="ico"><svg><use href="#i-download"/></svg></span>Сохранить чат в PDF</button>
+    <button class="btn-danger" id="clearDataBtn"><span class="ico"><svg><use href="#i-trash"/></svg></span>Очистить все данные</button>
+  </div>
+</div>
+
+<!-- Trainer modal -->
+<div class="trainer-overlay" id="trainerOverlay">
+  <div class="trainer-panel">
+    <div class="panel-head">
+      <h2><span class="ico"><svg><use href="#i-target"/></svg></span>Тренажёр</h2>
+      <button class="panel-close" id="trainerClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button>
+    </div>
+    <div style="font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Тема</div>
+    <div class="topic-grid" id="topicGrid">
+      <button class="topic-btn active" data-topic="linear"><span class="ico"><svg><use href="#i-equals"/></svg></span>Линейные</button>
+      <button class="topic-btn" data-topic="quadratic"><span class="ico"><svg><use href="#i-function"/></svg></span>Квадратные</button>
+      <button class="topic-btn" data-topic="arithmetic"><span class="ico"><svg><use href="#i-calc"/></svg></span>Арифметика</button>
+      <button class="topic-btn" data-topic="derivative"><span class="ico"><svg><use href="#i-chart"/></svg></span>Производные</button>
+    </div>
+    <div style="font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Сложность</div>
+    <div class="difficulty-row" id="diffRow">
+      <button class="diff-btn active" data-diff="1">Легко</button>
+      <button class="diff-btn" data-diff="2">Средне</button>
+      <button class="diff-btn" data-diff="3">Сложно</button>
+    </div>
+    <div class="trainer-task" id="trainerTask">Выбери тему и нажми «Начать»</div>
+    <div class="trainer-answer-row">
+      <input type="text" class="trainer-input" id="trainerInput" placeholder="Ответ (например 3 или 3; -2)" autocomplete="off">
+      <button class="btn-primary" id="trainerCheck" style="width:auto;margin:0;padding:12px 18px">Проверить</button>
+    </div>
+    <div class="trainer-feedback" id="trainerFeedback"></div>
+    <button class="btn-ghost" id="trainerNext"><span class="ico"><svg><use href="#i-refresh"/></svg></span>Другая задача</button>
+    <div class="trainer-stats">
+      <div class="trainer-stat"><div class="trainer-stat-val" id="tRight">0</div><div class="trainer-stat-lbl">Верно</div></div>
+      <div class="trainer-stat"><div class="trainer-stat-val" id="tWrong">0</div><div class="trainer-stat-lbl">Ошибок</div></div>
+      <div class="trainer-stat"><div class="trainer-stat-val" id="tStreak">0</div><div class="trainer-stat-lbl">Серия</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Cheat sheet modal -->
+<div class="cheat-overlay" id="cheatOverlay">
+  <div class="cheat-panel">
+    <div class="panel-head">
+      <h2><span class="ico"><svg><use href="#i-book-open"/></svg></span>Шпаргалка</h2>
+      <button class="panel-close" id="cheatClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button>
+    </div>
+    <div class="cheat-tabs" id="cheatTabs">
+      <button class="cheat-tab active" data-tab="trig">Тригонометрия</button>
+      <button class="cheat-tab" data-tab="der">Производные</button>
+      <button class="cheat-tab" data-tab="int">Интегралы</button>
+      <button class="cheat-tab" data-tab="log">Логарифмы</button>
+      <button class="cheat-tab" data-tab="short">Сокр. умножение</button>
+    </div>
+    <div class="cheat-body" id="cheatBody"></div>
+  </div>
+</div>
+
+<!-- Graph modal -->
+<div class="graph-overlay" id="graphOverlay">
+  <div class="graph-panel">
+    <div class="panel-head">
+      <h2><span class="ico"><svg><use href="#i-chart"/></svg></span>График функции</h2>
+      <button class="panel-close" id="graphClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button>
+    </div>
+    <div class="graph-input-row">
+      <input type="text" class="trainer-input" id="graphInput" placeholder="y = x^2 - 4" autocomplete="off">
+      <button class="btn-primary" id="graphBuild" style="width:auto;margin:0;padding:12px 18px">Построить</button>
+    </div>
+    <div class="graph-container" id="graphContainer"></div>
   </div>
 </div>
 
 <div class="app">
   <header class="header">
     <div class="header-brand">
-      <div class="brand-mark" id="brandMark"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div>
+      <div class="brand-mark" id="brandMark"><svg><use href="#i-planet"/></svg></div>
       <div class="brand-text">
-        <div class="brand-name">Orbita AI <span class="plus-badge" id="headerPlusBadge" style="display:none;"><svg viewBox="0 0 24 24"><path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/></svg>Plus</span></div>
+        <div class="brand-name">Orbita AI <span class="plus-badge" id="headerPlusBadge" style="display:none;"><span class="ico"><svg><use href="#i-crown"/></svg></span>Plus</span></div>
         <div class="brand-sub">Репетитор по математике</div>
       </div>
     </div>
@@ -391,13 +663,40 @@
     </div>
     <button class="limit-banner-btn" id="limitBannerBtn">Открыть</button>
   </div>
+  <div class="math-kb" id="mathKb">
+    <button data-ins="^2">x²</button>
+    <button data-ins="^3">x³</button>
+    <button data-ins="√(">√</button>
+    <button data-ins="π">π</button>
+    <button data-ins="∫">∫</button>
+    <button data-ins="∞">∞</button>
+    <button data-ins="°">°</button>
+    <button data-ins="×">×</button>
+    <button data-ins="÷">÷</button>
+    <button data-ins="±">±</button>
+    <button data-ins="≤">≤</button>
+    <button data-ins="≥">≥</button>
+    <button data-ins="≠">≠</button>
+    <button data-ins="sin(">sin</button>
+    <button data-ins="cos(">cos</button>
+    <button data-ins="tan(">tan</button>
+    <button data-ins="ln(">ln</button>
+    <button data-ins="log(">log</button>
+    <button data-ins="e^">e^</button>
+    <button data-ins="(">(</button>
+    <button data-ins=")">)</button>
+    <button data-ins="[">[</button>
+    <button data-ins="]">]</button>
+    <button data-ins="/">/</button>
+  </div>
   <div class="bottom-bar">
-    <button class="menu-fab" id="menuBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+    <button class="menu-fab" id="menuBtn"><span class="ico"><svg><use href="#i-menu"/></svg></span></button>
     <div class="input-wrap" id="inputWrap">
       <input type="text" id="input" placeholder="Введите уравнение или вопрос..." autocomplete="off">
-      <button class="attach-btn" id="attachBtn"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
-      <button class="voice-btn" id="voiceBtn"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg></button>
-      <button class="send-btn" id="send" disabled><svg id="sendIcon" viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/></svg><span class="cooldown-text" id="cooldownText">5</span></button>
+      <button class="icb" id="kbBtn" title="Символы"><span class="ico"><svg><use href="#i-keyboard"/></svg></span></button>
+      <button class="icb" id="attachBtn"><span class="ico"><svg><use href="#i-paperclip"/></svg></span></button>
+      <button class="icb" id="voiceBtn"><span class="ico"><svg><use href="#i-mic"/></svg></span></button>
+      <button class="send-btn" id="send" disabled><span class="ico" id="sendIcon"><svg><use href="#i-send"/></svg></span><span class="cooldown-text" id="cooldownText">5</span></button>
     </div>
   </div>
 </div>
@@ -412,6 +711,13 @@ if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.clou
 const API_URL = 'https://shiny-flower-cc1aorbita-gate.2013zakharov.workers.dev';
 const ADMIN_TG_ID = 5268787813;
 const MSG_LIMIT_FREE = 20;
+
+/* SVG icon helper */
+function ico(id, cls){ return `<span class="ico ${cls||''}"><svg><use href="#i-${id}"/></svg></span>`; }
+
+/* answer cache */
+const answerCache = new Map();
+function cacheKey(q){ return q.trim().toLowerCase().replace(/\s+/g,' '); }
 
 const tg = window.Telegram?.WebApp;
 if (tg) {
@@ -429,14 +735,14 @@ function hideBackButton(){ if(tg?.BackButton){ try{ tg.BackButton.offClick(); tg
 function showMainBtn(text, fn){ if(!tg?.MainButton) return; try{ tg.MainButton.setText(text); tg.MainButton.offClick(); tg.MainButton.onClick(fn); tg.MainButton.show(); document.body.classList.add('has-mainbtn'); }catch(e){} }
 function hideMainBtn(){ try{ tg?.MainButton?.hide(); document.body.classList.remove('has-mainbtn'); }catch(e){} }
 
-const state = { user: null, chats: [], activeId: null, busy: false, abortRequested: false, rateLimit: false, rateLimitTimer: null, searchQuery: '', plus: false };
+const state = { user:null, chats:[], activeId:null, busy:false, abortRequested:false, rateLimit:false, rateLimitTimer:null, searchQuery:'', plus:false, hintMode:false };
 const $ = id => document.getElementById(id);
-const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIcon = $('sendIcon'), toast = $('toast');
+const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIconEl = $('sendIcon'), toast = $('toast');
 
 const KEYS = { USER:'o_u', CHATS:'o_c', ACTIVE:'o_a', LAST_REQ:'o_r', DRAFT:'o_d', ONBOARD:'o_onb' };
 const store = {
   getUser(){ try{ return JSON.parse(localStorage.getItem(KEYS.USER)||'null'); }catch{ return null; } },
-  saveUser(u){ localStorage.setItem(KEYS.USER, JSON.stringify(u)); if(tg?.CloudStorage){ try{ tg.CloudStorage.setItem('user', JSON.stringify({name:u.name, avatar:u.avatar||null, joinedAt:u.joinedAt})); }catch(e){} } },
+  saveUser(u){ localStorage.setItem(KEYS.USER, JSON.stringify(u)); },
   getChats(){ try{ return JSON.parse(localStorage.getItem(KEYS.CHATS)||'[]'); }catch{ return []; } },
   saveChats(c){ localStorage.setItem(KEYS.CHATS, JSON.stringify(c)); },
   getActive(){ return localStorage.getItem(KEYS.ACTIVE)||null; },
@@ -454,16 +760,825 @@ function initials(name){ if(!name) return 'A'; const p=name.trim().split(/\s+/);
 function lockScroll(lock){ document.body.classList.toggle('locked',lock); }
 function scrollDown(){ chatEl.scrollTop = chatEl.scrollHeight; }
 
-/* TTS */
-let currentSpeakingBtn = null, speakTimeout = null, speechUnlocked = false, voicesCache = [], resumeTimer = null;
+/* ============== MATH ENGINE ============== */
+function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <= 100; d++){ if(Math.abs(n*d - Math.round(n*d)) < 1e-9){ const num = Math.round(n*d); const g = gcd(Math.abs(num), d); const n1 = num/g, d1 = d/g; if(d1 === 1) return String(n1); return `[${n1}/${d1}]`; } } return String(Math.round(n*1000000)/1000000); }
+function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
+function lcm(a,b){ return Math.abs(a*b) / gcd(a,b); }
+
+/* --- Equations --- */
+function solveEquation(text){
+  let t = text.toLowerCase().trim();
+  t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение|решение)\s+/i,'');
+  t = t.replace(/\s+/g,'').replace(/х/g,'x').replace(/Х/g,'x').replace(/X/g,'x');
+  if(!t.includes('=')) return null;
+  const parts = t.split('='); if(parts.length !== 2) return null;
+  let left = parts[0], right = parts[1];
+  if(!/x/.test(left) && !/x/.test(right)) return null;
+  const hasSquare = /x\^2|x2|x²/.test(left) || /x\^2|x2|x²/.test(right);
+  left = left.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
+  right = right.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
+  return hasSquare ? solveQuadratic(text, left, right) : solveLinear(text, left, right);
+}
+function parsePoly(expr){
+  expr = expr.replace(/^\+/,''); let a=0,b=0,c=0,m;
+  const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g;
+  while((m = aRe.exec(expr)) !== null){ const s = m[1]==='-'?-1:1; a += s*(m[2]===''?1:parseFloat(m[2])); }
+  expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x\^2/g,'');
+  const bRe = /([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g;
+  while((m = bRe.exec(expr)) !== null){ const s = m[1]==='-'?-1:1; b += s*(m[2]===''?1:parseFloat(m[2])); }
+  expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g,'');
+  const cRe = /([+\-]?)(\d+\.?\d*)/g;
+  while((m = cRe.exec(expr)) !== null){ const s = m[1]==='-'?-1:1; c += s*parseFloat(m[2]); }
+  return {a,b,c};
+}
+function polyToStr(a,b,c){
+  const p = [];
+  if(a !== 0){ if(a===1) p.push('x^2'); else if(a===-1) p.push('-x^2'); else p.push(`${fmtNum(a)}x^2`); }
+  if(b !== 0){ const s = b>0?(p.length?' + ':''):(p.length?' - ':'-'); const cf = Math.abs(b); if(cf===1) p.push(s+'x'); else p.push(s+fmtNum(cf)+'x'); }
+  if(c !== 0 || !p.length){ const s = c>0?(p.length?' + ':''):(p.length?' - ':'-'); p.push(s+fmtNum(Math.abs(c))); }
+  return p.join('');
+}
+function solveLinear(original, left, right){
+  const L = parsePoly(left), R = parsePoly(right);
+  const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
+  if(Math.abs(a) > 1e-9) return solveQuadratic(original, left, right);
+  if(Math.abs(b) < 1e-9){ if(Math.abs(c) < 1e-9) return { text:`${ico('infinity')} **Бесконечно много решений**`, _isDialog:true }; return { text:`${ico('x-circle','inl-err')} **Нет решений**`, _isDialog:true }; }
+  const x = -c / b;
+  const s = [];
+  s.push(`**Решаю линейное уравнение:**`);
+  s.push(`$$${original}$$`);
+  s.push(`\n${ico('bulb')} **Метод:** слагаемые с x — в одну сторону, числа — в другую.`);
+  s.push(`\n**Шаг 1.** Переношу всё в левую часть:`);
+  s.push(`$$${polyToStr(0,b,c)} = 0$$`);
+  s.push(`\n**Шаг 2.** Выражаю x:`);
+  if(b === 1) s.push(`$$x = ${-c}$$`);
+  else if(b === -1){ s.push(`$$-x = ${c}$$`); s.push(`$$x = ${-c}$$`); }
+  else { s.push(`$$${fmtNum(b)}\\cdot x = ${fmtNum(-c)}$$`); s.push(`$$x = \\dfrac{${fmtNum(-c)}}{${fmtNum(b)}}$$`); }
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x = ${fmtNum(x)}$`);
+  s.push(`\n${ico('hint')} **Проверка:** подставляем $x = ${fmtNum(x)}$ в исходное — равенство верно.`);
+  return { text: s.join('\n'), _isDialog:true };
+}
+function solveQuadratic(original, left, right){
+  const L = parsePoly(left), R = parsePoly(right);
+  const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
+  if(a === 0) return solveLinear(original, left, right);
+  const D = b*b - 4*a*c;
+  const s = [];
+  s.push(`**Решаю квадратное уравнение:**`);
+  s.push(`$$${original}$$`);
+  s.push(`\n${ico('bulb')} **Формула:** $ax^2+bx+c=0$, дискриминант $D=b^2-4ac$`);
+  s.push(`\n**Шаг 1.** Привожу к виду $ax^2+bx+c=0$:`);
+  s.push(`$$${polyToStr(a,b,c)} = 0$$`);
+  s.push(`Коэффициенты: $a = ${fmtNum(a)}$, $b = ${fmtNum(b)}$, $c = ${fmtNum(c)}$`);
+  s.push(`\n**Шаг 2.** Дискриминант:`);
+  s.push(`$$D = ${fmtNum(b)}^2 - 4 \\cdot (${fmtNum(a)}) \\cdot (${fmtNum(c)}) = ${fmtNum(b*b)} - (${fmtNum(4*a*c)}) = ${fmtNum(D)}$$`);
+  let ans = '';
+  if(D > 0){
+    const sq = Math.sqrt(D);
+    const x1 = (-b + sq)/(2*a), x2 = (-b - sq)/(2*a);
+    s.push(`\n**Шаг 3.** $D > 0$ — два различных корня.`);
+    s.push(`$$x = \\dfrac{-b \\pm \\sqrt{D}}{2a}$$`);
+    s.push(`$$x_1 = \\dfrac{${fmtNum(-b)} + ${fmtNum(sq)}}{${fmtNum(2*a)}} = ${fmtNum(x1)}$$`);
+    s.push(`$$x_2 = \\dfrac{${fmtNum(-b)} - ${fmtNum(sq)}}{${fmtNum(2*a)}} = ${fmtNum(x2)}$$`);
+    ans = `$x_1 = ${fmtNum(x1)}$, $x_2 = ${fmtNum(x2)}$`;
+  } else if(D === 0){
+    const x = -b/(2*a);
+    s.push(`\n**Шаг 3.** $D = 0$ — один корень (кратный).`);
+    s.push(`$$x = \\dfrac{-b}{2a} = ${fmtNum(x)}$$`);
+    ans = `$x = ${fmtNum(x)}$`;
+  } else {
+    s.push(`\n**Шаг 3.** $D < 0$ — действительных корней нет ${ico('x-circle','inl-err')}`);
+    const re = -b/(2*a), im = Math.sqrt(-D)/(2*a);
+    s.push(`\n${ico('bulb')} *Для комплексных чисел:*`);
+    s.push(`$$x_{1,2} = ${fmtNum(re)} \\pm ${fmtNum(im)}i$$`);
+    ans = 'нет действительных корней';
+  }
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** ${ans}`);
+  s.push(`\n${ico('hint')} **Теорема Виета:** $x_1+x_2 = ${fmtNum(-b/a)}$, $x_1 x_2 = ${fmtNum(c/a)}$`);
+  return { text: s.join('\n'), _isDialog:true };
+}
+
+/* --- Factoring --- */
+function factorPolynomial(query){
+  const q = query.toLowerCase().replace(/\s+/g,'');
+  const m = q.match(/(?:разложи|разложить|множител)\w*\s*(?:на\s+множители\s*)?[:]?(.+)/i);
+  if(!m) return null;
+  let expr = m[1].replace(/^\(/,'').replace(/\)$/,'').replace(/[?!.]+$/,'').replace(/[хХ]/g,'x');
+  if(!/x/.test(expr)) return null;
+
+  // Normalize x^2
+  expr = expr.replace(/x²/g,'x^2');
+
+  // Try quadratic ax^2 + bx + c
+  const poly = parsePoly(expr);
+  if(poly.a !== 0){
+    const {a,b,c} = poly;
+    const D = b*b - 4*a*c;
+    if(D < 0) return { text:`${ico('x-circle','inl-err')} **Дискриминант $D = ${fmtNum(D)} < 0$** — на множители с действительными коэффициентами не разлагается.`, _isDialog:true };
+    const sq = Math.sqrt(D);
+    const r1 = (-b + sq)/(2*a), r2 = (-b - sq)/(2*a);
+    const s = [];
+    s.push(`**Разложение на множители:**`);
+    s.push(`$$${polyToStr(a,b,c)}$$`);
+    s.push(`\n${ico('bulb')} **Метод:** находим корни, затем $a(x-x_1)(x-x_2)$.`);
+    s.push(`\n**Шаг 1.** Дискриминант: $D = ${fmtNum(D)}$, $\\sqrt{D} = ${fmtNum(sq)}$`);
+    s.push(`**Шаг 2.** Корни: $x_1 = ${fmtNum(r1)}$, $x_2 = ${fmtNum(r2)}$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
+    // Build factored form nicely
+    const parts = [];
+    if(a !== 1) parts.push(fmtNum(a));
+    const sign1 = r1 >= 0 ? '-' : '+', sign2 = r2 >= 0 ? '-' : '+';
+    parts.push(`(x ${sign1} ${fmtNum(Math.abs(r1))})`);
+    if(Math.abs(r2 - r1) > 1e-9) parts.push(`(x ${sign2} ${fmtNum(Math.abs(r2))})`);
+    else parts.push(`^2`);
+    s.push(`$$${parts.join(' ')}$$`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+
+  // Try special: a^2 - b^2 (like x^2 - 9)
+  // handled by quadratic above
+
+  // Try common factor extraction for simple terms like 2x^3 + 4x^2
+  return null;
+}
+
+/* --- Simplification --- */
+function simplifyExpression(query){
+  const m = query.toLowerCase().match(/(?:упрости|упростить)[:]?\s*(.+)/i);
+  if(!m) return null;
+  let expr = m[1].replace(/[?!.]+$/,'').replace(/\s+/g,'').replace(/[хХ]/g,'x');
+  expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3');
+
+  // Handle product of two binomials (x+a)(x+b)
+  const bino = expr.match(/^\(x([+\-]\d+)\)\(x([+\-]\d+)\)$/);
+  if(bino){
+    const a = parseInt(bino[1]), b = parseInt(bino[2]);
+    const s = [];
+    s.push(`**Упрощение:**`);
+    s.push(`$$(x${bino[1]})(x${bino[2]})$$`);
+    s.push(`\n${ico('bulb')} **Метод:** раскрываем скобки (фонтан).`);
+    s.push(`\n**Шаг 1.** Перемножаю:`);
+    s.push(`$$= x \\cdot x + x \\cdot (${b}) + (${a}) \\cdot x + (${a})(${b})$$`);
+    s.push(`$$= x^2 ${b >= 0 ? '+' : '-'} ${Math.abs(b)}x ${a >= 0 ? '+' : '-'} ${Math.abs(a)}x ${a*b >= 0 ? '+' : '-'} ${Math.abs(a*b)}$$`);
+    s.push(`\n**Шаг 2.** Привожу подобные:`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x^2 ${a+b>=0?'+':'-'} ${Math.abs(a+b)}x ${a*b>=0?'+':'-'} ${Math.abs(a*b)}$`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+
+  return null;
+}
+
+/* --- Column arithmetic --- */
+function columnArithmetic(query){
+  const m = query.trim().match(/^(\d+)\s*([×*])\s*(\d+)$/);
+  if(m){
+    const a = m[1], b = m[3];
+    if(a.length > 8 || b.length > 8) return null;
+    const A = [...a].reverse().map(Number);
+    const B = [...b].reverse().map(Number);
+    const res = new Array(A.length + B.length).fill(0);
+    for(let i=0;i<A.length;i++) for(let j=0;j<B.length;j++) res[i+j] += A[i]*B[j];
+    for(let i=0;i<res.length-1;i++){ res[i+1] += Math.floor(res[i]/10); res[i] %= 10; }
+    while(res.length > 1 && res[res.length-1] === 0) res.pop();
+    const product = res.reverse().join('');
+
+    // Draw column
+    const width = Math.max(a.length, b.length, product.length) + 2;
+    let out = '';
+    out += '  ' + ' '.repeat(width - a.length) + a + '\n';
+    out += '× ' + ' '.repeat(width - b.length) + b + '\n';
+    out += '  ' + '─'.repeat(width) + '\n';
+
+    // Partial products
+    const partials = [];
+    for(let j=0;j<B.length;j++){
+      const partial = (parseInt(a) * B[j]).toString();
+      partials.push(partial.padStart(width - j, ' ') + ' '.repeat(j));
+    }
+    for(const p of partials) out += '  ' + p + '\n';
+    if(B.length > 1){
+      out += '  ' + '─'.repeat(width) + '\n';
+      out += '  ' + product.padStart(width) + '\n';
+    }
+    return { text: `**Умножение столбиком:**\n\`\`\`\n${out}\`\`\`\n\n${ico('check-circle','inl-ok')} **Ответ:** $${a} \\times ${b} = ${product}$`, _isDialog:true };
+  }
+  const md = query.trim().match(/^(\d+)\s*[÷/]\s*(\d+)$/);
+  if(md){
+    const a = parseInt(md[1]), b = parseInt(md[2]);
+    if(b === 0) return { text: `На ноль делить нельзя ${ico('x-circle','inl-err')}`, _isDialog:true };
+    const q = Math.floor(a/b), r = a % b;
+    let out = `${md[1]} | ${md[2]}\n`;
+    out += '─'.repeat(md[1].length + md[2].length + 3) + '\n';
+    out += `    | ${q}` + (r ? ` (ост. ${r})` : '') + '\n';
+    return { text: `**Деление:**\n\`\`\`\n${out}\`\`\`\n\n${ico('check-circle','inl-ok')} **Ответ:** $${a} = ${b} \\cdot ${q}${r?` + ${r}`:''}$`, _isDialog:true };
+  }
+  return null;
+}
+
+/* --- Complex derivatives (sin, cos, ln, e^x + rules) --- */
+function parseGeneralPoly(expr){
+  expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/X/g,'x');
+  expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
+  const terms = [];
+  let s = expr.replace(/-/g,'+-');
+  if(s.startsWith('+')) s = s.slice(1);
+  for(const part of s.split('+')){
+    if(!part) continue;
+    // term like ax^n or ax or a
+    let m = part.match(/^(-?\d*\.?\d*)\*?x\^(\d+)$/);
+    if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, power:parseInt(m[2]), kind:'power'}); continue; }
+    m = part.match(/^(-?\d*\.?\d*)\*?x$/);
+    if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, power:1, kind:'power'}); continue; }
+    m = part.match(/^(-?\d*\.?\d+)$/);
+    if(m){ terms.push({coef:parseFloat(m[1]), power:0, kind:'const'}); continue; }
+    // sin(x), cos(x), ln(x), e^x
+    m = part.match(/^(-?\d*\.?\d*)\*?(sin|cos|tan|ln)\(x\)$/);
+    if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, fn:m[2], kind:'fn'}); continue; }
+    m = part.match(/^(-?\d*\.?\d*)\*?e\^x$/);
+    if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, fn:'exp', kind:'fn'}); continue; }
+    return null;
+  }
+  return terms;
+}
+function termsToStrGen(terms){
+  terms = terms.filter(t => Math.abs(t.coef) > 1e-12);
+  if(!terms.length) return '0';
+  let s = '';
+  for(const t of terms){
+    const absC = Math.abs(t.coef);
+    let body = '';
+    if(t.kind === 'power'){
+      if(t.power === 0) body = '';
+      else if(t.power === 1) body = 'x';
+      else body = `x^{${t.power}}`;
+    } else if(t.kind === 'const') body = '';
+    else if(t.fn === 'exp') body = 'e^{x}';
+    else body = `\\${t.fn}(x)`;
+    let term;
+    if(!body) term = fmtNum(absC);
+    else if(absC === 1) term = body;
+    else term = `${fmtNum(absC)}${body}`;
+    if(s === '') s = (t.coef < 0 ? '-' : '') + term;
+    else s += (t.coef < 0 ? ' - ' : ' + ') + term;
+  }
+  return s;
+}
+function solveDerivative(query){
+  const q = query.toLowerCase();
+  if(!/производн|d\/dx|найди\s+производную/i.test(q)) return null;
+  const m = query.match(/(?:d\/dx\s*\(?|производн\w*\s*(?:от\s*|функции\s*)?)(.+)/i);
+  if(!m) return null;
+  let expr = m[1].trim().replace(/[?!.]+$/,'').replace(/\s+/g,'');
+  expr = expr.replace(/^f\(x\)=/i,'').replace(/^y=/i,'').replace(/^\(/,'').replace(/\)$/,'');
+  if(!/[xXхХ]/.test(expr)) return null;
+  expr = expr.replace(/[хХ]/g,'x');
+
+  // Try polynomial
+  const terms = parseGeneralPoly(expr);
+  if(!terms || !terms.length){
+    // Try product rule: u * v
+    const prod = expr.match(/^(.+?)\*(.+)$/);
+    if(prod){
+      const u = prod[1], v = prod[2];
+      const uT = parseGeneralPoly(u), vT = parseGeneralPoly(v);
+      if(uT && vT){
+        const uStr = termsToStrGen(uT), vStr = termsToStrGen(vT);
+        const duT = uT.map(t => t.kind === 'power' ? {coef:t.coef*t.power, power:t.power-1, kind:'power'} : t.kind==='const'? null : derivOfFn(t)).filter(Boolean);
+        const dvT = vT.map(t => t.kind === 'power' ? {coef:t.coef*t.power, power:t.power-1, kind:'power'} : t.kind==='const'? null : derivOfFn(t)).filter(Boolean);
+        const s = [];
+        s.push(`**Производная произведения** $f = u \\cdot v$:`);
+        s.push(`$$f' = u'v + uv'$$`);
+        s.push(`\nПусть $u = ${uStr}$, $v = ${vStr}$`);
+        s.push(`Тогда $u' = ${termsToStrGen(duT)}$, $v' = ${termsToStrGen(dvT)}$`);
+        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
+        s.push(`$$f'(x) = (${termsToStrGen(duT)})(${vStr}) + (${uStr})(${termsToStrGen(dvT)})$$`);
+        return { text: s.join('\n'), _isDialog:true };
+      }
+    }
+    return null;
+  }
+
+  const dTerms = [];
+  for(const t of terms){
+    if(t.kind === 'power'){ if(t.power > 0) dTerms.push({coef:t.coef*t.power, power:t.power-1, kind:'power'}); }
+    else if(t.kind === 'const'){ /* 0 */ }
+    else if(t.kind === 'fn'){ dTerms.push(derivOfFn(t)); }
+  }
+  const origStr = termsToStrGen(terms);
+  const derivStr = termsToStrGen(dTerms);
+
+  const s = [];
+  s.push(`**Нахожу производную:**`);
+  s.push(`$$f(x) = ${origStr}$$`);
+  s.push(`\n${ico('bulb')} **Правила:**`);
+  s.push(`• $(x^n)' = n x^{n-1}$`);
+  s.push(`• $(\\sin x)' = \\cos x$,  $(\\cos x)' = -\\sin x$`);
+  s.push(`• $(e^x)' = e^x$,  $(\\ln x)' = 1/x$`);
+  s.push(`• $(C f)' = C f'$,  $(f+g)' = f'+g'$`);
+  s.push(`\n**По шагам:**`);
+  for(const t of terms){
+    if(t.kind === 'const'){ s.push(`• $( ${fmtNum(t.coef)} )' = 0$`); continue; }
+    if(t.kind === 'power'){
+      if(t.power === 0) continue;
+      if(t.power === 1) s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}x )' = ${fmtNum(t.coef)}$`);
+      else {
+        const nc = t.coef*t.power;
+        s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}x^{${t.power}} )' = ${t.power} \\cdot ${t.coef === 1 ? '' : fmtNum(t.coef)}x^{${t.power-1}} = ${nc === 1 ? '' : fmtNum(nc)}x^{${t.power-1}}$`);
+      }
+    } else if(t.kind === 'fn'){
+      const d = derivOfFn(t);
+      const name = t.fn === 'exp' ? 'e^x' : `\\${t.fn}(x)`;
+      s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}${name} )' = ${d.coef === 1 ? '' : fmtNum(d.coef)}${d.kind === 'fn' ? (d.fn === 'exp' ? 'e^x' : `\\${d.fn}(x)`) : '...'}$`);
+    }
+  }
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
+  s.push(`$$f'(x) = ${derivStr}$$`);
+  return { text: s.join('\n'), _isDialog:true };
+}
+function derivOfFn(t){
+  const c = t.coef;
+  switch(t.fn){
+    case 'sin': return {coef: c, fn:'cos', kind:'fn'};
+    case 'cos': return {coef: -c, fn:'sin', kind:'fn'};
+    case 'exp': return {coef: c, fn:'exp', kind:'fn'};
+    case 'ln': return {coef: c, kind:'power', power:-1}; // 1/x → c*x^-1
+    case 'tan': return {coef: c, fn:'tan_sec2', kind:'fn'};
+    default: return null;
+  }
+}
+
+/* --- Knowledge base --- */
+function matchMathKnowledge(q){
+  const x = q.trim().toLowerCase().replace(/[?!.]+$/,'').trim();
+
+  if(/объясни\s+проще|простыми\s+словами|для\s+чайников/i.test(x)){
+    return { text: `${ico('bulb')} **Объясняю просто**\n\nНапиши тему, и я объясню без формул — на бытовом примере. Например: «объясни проще дискриминант».`, _isDialog:true };
+  }
+  if(/дискриминант/i.test(x) && /проще|простыми|чайник/i.test(x)){
+    return { text: `**Дискриминант на пальцах**\n\nПредставь, что ты бросаешь мяч. Он может:\n• Перелететь забор (2 корня, $D>0$)\n• Упасть прямо на забор (1 корень, $D=0$)\n• Не долететь (0 корней, $D<0$)\n\n$D = b^2 - 4ac$ — просто число, которое говорит, сколько раз парабола пересечёт ось X.`, _isDialog:true };
+  }
+
+  if(/что\s+такое\s+производн|объясни\s+производн/i.test(x))
+    return { text: `**Производная** — скорость изменения функции в точке.\n\n${ico('bulb')} **Определение:** $f'(x_0) = \\lim_{h\\to 0} \\dfrac{f(x_0+h) - f(x_0)}{h}$\n\n${ico('chart')} **Геометрический смысл:** угловой коэффициент касательной к графику.\n\n${ico('book-open')} **Правила:**\n• $(x^n)' = n x^{n-1}$\n• $(\\sin x)' = \\cos x$\n• $(\\cos x)' = -\\sin x$\n• $(e^x)' = e^x$\n• $(\\ln x)' = 1/x$\n• $(uv)' = u'v + uv'$\n• $(u/v)' = \\dfrac{u'v - uv'}{v^2}$\n\n${ico('hint')} Напиши функцию — найду производную!`, _isDialog:true };
+
+  if(/что\s+такое\s+интеграл/i.test(x))
+    return { text: `**Интеграл** — операция, обратная производной.\n\n${ico('bulb')} **Неопределённый:** $\\int f(x)\\,dx = F(x) + C$, где $F'(x)=f(x)$\n\n${ico('chart')} **Определённый:** $\\int_a^b f(x)\\,dx$ — площадь под графиком.\n\n${ico('book-open')} **Основные:**\n• $\\int x^n\\,dx = \\dfrac{x^{n+1}}{n+1} + C$\n• $\\int \\dfrac{dx}{x} = \\ln|x| + C$\n• $\\int e^x\\,dx = e^x + C$\n• $\\int \\sin x\\,dx = -\\cos x + C$\n• $\\int \\cos x\\,dx = \\sin x + C$`, _isDialog:true };
+
+  if(/теорема\s+пифагор|пифагор/i.test(x))
+    return { text: `**Теорема Пифагора**\n\nВ прямоугольном треугольнике:\n\n$$a^2 + b^2 = c^2$$\n\nгде $c$ — гипотенуза, $a$ и $b$ — катеты.\n\n${ico('hint')} **Пример:** катеты 3 и 4.\n$c^2 = 9+16=25 \\Rightarrow c=5$\n\n${ico('bulb')} **Обратная теорема:** если $a^2+b^2=c^2$ — треугольник прямоугольный.`, _isDialog:true };
+
+  if(/дискриминант/i.test(x))
+    return { text: `**Дискриминант** квадратного уравнения $ax^2+bx+c=0$:\n\n$$D = b^2 - 4ac$$\n\n${ico('bulb')} **Три случая:**\n• $D>0$ — два корня: $x = \\dfrac{-b \\pm \\sqrt{D}}{2a}$\n• $D=0$ — один корень: $x = -\\dfrac{b}{2a}$\n• $D<0$ — действительных корней нет`, _isDialog:true };
+
+  if(/квадратн\w*\s+уравнени/i.test(x))
+    return { text: `**Квадратное уравнение:** $ax^2+bx+c=0$, где $a\\ne 0$.\n\n${ico('bulb')} **Через дискриминант:**\n$$x = \\dfrac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$\n\n${ico('hint')} **Виета:** $x_1+x_2 = -b/a$, $x_1 x_2 = c/a$\n\nНапиши уравнение — решу по шагам!`, _isDialog:true };
+
+  if(/теорема\s+виета/i.test(x))
+    return { text: `**Теорема Виета**\n\nДля $x^2+px+q=0$:\n$$x_1+x_2 = -p, \\quad x_1 x_2 = q$$\n\nДля $ax^2+bx+c=0$:\n$$x_1+x_2 = -\\dfrac{b}{a}, \\quad x_1 x_2 = \\dfrac{c}{a}$$`, _isDialog:true };
+
+  if(/логарифм/i.test(x))
+    return { text: `**Логарифм** $\\log_a b = c \\iff a^c = b$\n\n${ico('book-open')} **Свойства:**\n• $\\log_a(xy) = \\log_a x + \\log_a y$\n• $\\log_a(x/y) = \\log_a x - \\log_a y$\n• $\\log_a(x^n) = n\\log_a x$\n• $\\log_a 1 = 0$, $\\log_a a = 1$\n• $\\log_a b = \\dfrac{\\log_c b}{\\log_c a}$\n\n${ico('bulb')} $\\lg x = \\log_{10}x$, $\\ln x = \\log_e x$, $e\\approx 2.718$`, _isDialog:true };
+
+  if(/синус|косинус|тангенс|тригонометр/i.test(x))
+    return { text: `**Тригонометрия**\n\n${ico('book-open')} **Основные:**\n• $\\sin\\alpha = \\dfrac{\\text{противолеж.}}{\\text{гипотенуза}}$\n• $\\cos\\alpha = \\dfrac{\\text{прилеж.}}{\\text{гипотенуза}}$\n• $\\tan\\alpha = \\dfrac{\\sin\\alpha}{\\cos\\alpha}$\n\n${ico('bulb')} $\\sin^2\\alpha + \\cos^2\\alpha = 1$`, _isDialog:true };
+
+  if(/процент/i.test(x))
+    return { text: `**Проценты**\n\n$1\\% = 1/100 = 0.01$\n\n${ico('book-open')} **Формулы:**\n• $p\\%$ от $A$: $A\\cdot\\dfrac{p}{100}$\n• Сколько % составляет $A$ от $B$: $\\dfrac{A}{B}\\cdot 100\\%$\n• Увеличить на $p\\%$: $A\\cdot(1+p/100)$`, _isDialog:true };
+
+  if(/степен|возведен/i.test(x))
+    return { text: `**Степени** $a^n = a\\cdot a\\cdots a$ ($n$ раз)\n\n${ico('book-open')} **Свойства:**\n• $a^m\\cdot a^n = a^{m+n}$\n• $a^m/a^n = a^{m-n}$\n• $(a^m)^n = a^{mn}$\n• $(ab)^n = a^n b^n$\n• $a^0 = 1$, $a^{-n} = 1/a^n$\n• $a^{1/n} = \\sqrt[n]{a}$`, _isDialog:true };
+
+  if(/прост[ыо]е\s+числ/i.test(x))
+    return { text: `**Простое число** — натуральное $>1$, делится только на 1 и себя.\n\n**Первые простые:** 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53…\n\n${ico('bulb')} 1 — не простое. 2 — единственное чётное простое.`, _isDialog:true };
+
+  if(/\bнод\b|наибольший\s+общий\s+делитель/i.test(x))
+    return { text: `**НОД** — наибольший общий делитель.\n\n${ico('bulb')} **Алгоритм Евклида:**\nпока $b\\ne 0$: $(a,b) \\to (b, a\\bmod b)$\n\nПример: НОД(48,36)\n48 mod 36 = 12; 36 mod 12 = 0 → **НОД = 12**`, _isDialog:true };
+
+  if(/\bнок\b|наименьшее\s+общее\s+кратное/i.test(x))
+    return { text: `**НОК** $= \\dfrac{|a\\cdot b|}{\\text{НОД}(a,b)}$\n\nПример: НОК(12,18), НОД=6, НОК = 12·18/6 = **36**`, _isDialog:true };
+
+  if(/факториал/i.test(x))
+    return { text: `**Факториал** $n! = 1\\cdot 2\\cdot 3\\cdots n$\n\n$0!=1$, $1!=1$, $5!=120$, $7!=5040$\n\n${ico('bulb')} $n! = n\\cdot(n-1)!$`, _isDialog:true };
+
+  if(/модул/i.test(x))
+    return { text: `**Модуль** $|a|$ — расстояние от $a$ до нуля.\n\n$|a| = a$ при $a\\ge 0$, $|a| = -a$ при $a<0$\n\n${ico('book-open')} $|ab| = |a|\\cdot|b|$, $|a+b| \\le |a|+|b|$`, _isDialog:true };
+
+  if(/функц/i.test(x) && !/производн/i.test(x))
+    return { text: `**Функция** — правило, по которому каждому $x$ соответствует один $y$.\n\n${ico('book-open')} **Виды:**\n• Линейная: $y = kx + b$ — прямая\n• Квадратичная: $y = ax^2+bx+c$ — парабола\n• Обратная: $y = k/x$ — гипербола\n• Показательная: $y = a^x$\n• Логарифмическая: $y = \\log_a x$`, _isDialog:true };
+
+  if(/систем[аы]\s+уравнени/i.test(x))
+    return { text: `**Система уравнений**\n\n${ico('book-open')} **Способы:**\n1. Подстановка\n2. Сложение/вычитание\n3. Графический\n\n${ico('hint')} Пример:\n$\\begin{cases} x+y=7 \\\\ x-y=1 \\end{cases}$\nСкладываем: $2x=8 \\Rightarrow x=4$, $y=3$`, _isDialog:true };
+
+  return null;
+}
+
+/* --- Dialogues --- */
+function matchDialog(q){
+  const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
+  const name = state.user?.name?.split(' ')[0] || '';
+  if(/^(привет|прив|здравствуй|хай|hi|hello|hey)/i.test(x)) return name ? `Привет, ${name}! Готов помочь с математикой. Что решаем?` : 'Привет! Готов помочь с математикой. Что решаем?';
+  if(/как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name ? `Всё отлично, ${name}!` : 'Всё отлично!';
+  if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи! Удачи в учёбе!';
+  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Рад помочь.';
+  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `${ico('compass')} Я **Orbita AI** — твой репетитор по математике от компании **ORT**.\n\nРешаю уравнения, производные, строю графики и объясняю теорию.`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Что я умею:**\n\n${ico('equals')} Решаю уравнения пошагово\n${ico('chart')} Нахожу производные (включая sin, cos, ln, e^x)\n${ico('sigma')} Раскладываю на множители, упрощаю\n${ico('calc')} Умножаю/делю столбиком\n${ico('book-open')} Объясняю теорию с примерами\n${ico('grid')} Строю графики функций\n${ico('target')} Тренажёр по темам\n${ico('doc')} Читаю PDF и фото задач\n${ico('mic')} Распознаю голос\n${ico('speak')} Читаю ответы (Plus)`;
+  if(/^(кто\s+тебя\s+создал|кто\s+разработал)/i.test(x)) return `Меня создала компания **ORT**`;
+  if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${ico('clock')}`;
+  if(/какой\s+сегодня\s+день/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})} ${ico('calendar')}`;
+  return null;
+}
+
+/* --- Main answer generator --- */
+async function generateAnswer(query, chat){
+  if(hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
+
+  // 0. Cache hit
+  const key = cacheKey(query);
+  if(answerCache.has(key)){ await sleep(120); return answerCache.get(key); }
+
+  let result = null;
+
+  // 1. Graph
+  const gm = query.match(/(?:построй|построить|график)\s+(?:график\s+)?(?:функции\s+)?y\s*=\s*(.+)/i);
+  if(gm){ result = { text: `Открываю построение графика для $y = ${gm[1].trim()}$. Если окно не открылось — нажми ${ico('chart')} в меню.`, _graph: gm[1].trim(), _isDialog:true }; }
+
+  // 2. Factoring
+  if(!result) result = factorPolynomial(query);
+
+  // 3. Simplification
+  if(!result) result = simplifyExpression(query);
+
+  // 4. Equation
+  if(!result){ const eq = solveEquation(query); if(eq) result = eq; }
+
+  // 5. Derivative
+  if(!result){ const d = solveDerivative(query); if(d) result = d; }
+
+  // 6. Column arithmetic
+  if(!result) result = columnArithmetic(query);
+
+  // 7. Plain arithmetic
+  if(!result){
+    const m = query.trim().toLowerCase().match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
+    if(m){
+      const a = parseFloat(m[1].replace(',','.')), b = parseFloat(m[3].replace(',','.')), op = m[2];
+      let r;
+      switch(op){
+        case '+': r = a+b; break;
+        case '-': r = a-b; break;
+        case '*': case 'x': case '×': r = a*b; break;
+        case '/': case '÷':
+          if(b === 0){ result = { text: `На ноль делить нельзя ${ico('x-circle','inl-err')}`, _isDialog:true }; break; }
+          r = a/b; break;
+      }
+      if(!result) result = { text: `$${a} ${op} ${b} = ${Math.round(r*1000000)/1000000}$$`, _isDialog:true };
+    }
+  }
+
+  // 8. GCD/LCM quick
+  if(!result){
+    const nm = query.toLowerCase().match(/(?:нод|нок)\s*\(?\s*(\d+)\s*[,;\s]+\s*(\d+)/i);
+    if(nm){
+      const a = parseInt(nm[1]), b = parseInt(nm[2]);
+      if(/нок/i.test(query)) result = { text: `**НОК(${a}, ${b}) = ${lcm(a,b)}**\n\n${ico('bulb')} НОД = ${gcd(a,b)}, формула: $\\text{НОК} = \\dfrac{a\\cdot b}{\\text{НОД}}$`, _isDialog:true };
+      else result = { text: `**НОД(${a}, ${b}) = ${gcd(a,b)}**`, _isDialog:true };
+    }
+  }
+
+  // 9. Factorial
+  if(!result){
+    const fm = query.toLowerCase().match(/(\d+)\s*!|факториал\s+(\d+)/);
+    if(fm){
+      const n = parseInt(fm[1] || fm[2]);
+      if(n >= 0 && n <= 20){ let f = 1; for(let i = 2; i <= n; i++) f *= i; result = { text: `**$${n}! = ${f}$**`, _isDialog:true }; }
+    }
+  }
+
+  // 10. Knowledge base
+  if(!result) result = matchMathKnowledge(query);
+
+  // 11. Dialogues
+  if(!result){ const d = matchDialog(query); if(d) result = { text: d, _isDialog: true }; }
+
+  // 12. Not understood
+  if(!result){
+    result = { text: `${ico('hint')} Не могу разобрать запрос «${query}».\n\n**Попробуй так:**\n• ${ico('equals')} _Реши 2x + 5 = 15_\n• ${ico('function')} _Реши x^2 - 5x + 6 = 0_\n• ${ico('chart')} _Производная x^3 + 2x_\n• ${ico('sigma')} _Разложи x^2 - 5x + 6 на множители_\n• ${ico('calc')} _1234 × 567_ столбиком\n• ${ico('book-open')} _Что такое дискриминант?_`, _isDialog: true };
+  }
+
+  if(result && !result._isBlocked) answerCache.set(key, result);
+  return result;
+}
+
+/* ============== RENDERING ============== */
+function renderText(raw){
+  // 1) Extract $...$ blocks (both $$ and $)
+  const mathBlocks = [];
+  let text = String(raw);
+  // $$...$$ first (display math)
+  text = text.replace(/\$\$([^$]+?)\$\$/g, (m, expr) => {
+    const i = mathBlocks.length;
+    mathBlocks.push({expr: expr.trim(), display: true});
+    return `\u0000M${i}\u0000`;
+  });
+  // $...$
+  text = text.replace(/\$([^$\n]+?)\$/g, (m, expr) => {
+    const i = mathBlocks.length;
+    mathBlocks.push({expr: expr.trim(), display: false});
+    return `\u0000M${i}\u0000`;
+  });
+
+  // 2) Escape HTML but allow our inline SVG icons (they are already HTML strings).
+  //    We keep the raw content but process emoji-free text.
+  let h = text;
+
+  // 3) Inline icons markers: they are already inline SVG strings — don't escape them.
+  //    Mark them first.
+  const iconBlocks = [];
+  h = h.replace(/<span class="ico[^"]*"><svg><use href="#i-([a-z0-9-]+)"\/><\/svg><\/span>/gi, (m, id) => {
+    const idx = iconBlocks.length;
+    iconBlocks.push({id, cls: /inl-ok/.test(m) ? 'inl-ok' : /inl-err/.test(m) ? 'inl-err' : /inl-warn/.test(m) ? 'inl-warn' : ''});
+    return `\u0000I${idx}\u0000`;
+  });
+
+  // 4) Escape rest
+  h = esc(h);
+
+  // 5) Code blocks (```...```)
+  h = h.replace(/```([\s\S]*?)```/g, (m, code) => `<pre style="background:var(--surface);padding:12px;border-radius:10px;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:12.5px;line-height:1.4;margin:8px 0;color:var(--ink)">${code.trim()}</pre>`);
+
+  // 6) LaTeX remnants
+  h = h.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, (m,n,d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`);
+  h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  h = h.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'<em>$1</em>');
+  h = h.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+  h = h.replace(/\n/g,'<br>');
+
+  // 7) Restore icons
+  h = h.replace(/\u0000I(\d+)\u0000/g, (m, i) => {
+    const b = iconBlocks[+i];
+    return `<span class="inl-ico ${b.cls}"><svg><use href="#i-${b.id}"/></svg></span>`;
+  });
+
+  // 8) Restore math (KaTeX)
+  h = h.replace(/\u0000M(\d+)\u0000/g, (m, i) => {
+    const b = mathBlocks[+i];
+    if(window.katex){
+      try{ return katex.renderToString(b.expr, { throwOnError: false, displayMode: b.display }); }
+      catch(e){ return b.display ? `$$${b.expr}$$` : `$${b.expr}$`; }
+    }
+    return b.display ? `$$${b.expr}$$` : `$${b.expr}$`;
+  });
+
+  return h;
+}
+
+/* ============== CHAT ============== */
+function createChat(){
+  const c = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() };
+  state.chats.unshift(c); state.activeId = c.id;
+  store.saveChats(state.chats); store.setActive(c.id);
+  renderChatsList(); renderActiveChat(); updateLimitUI();
+  return c;
+}
+function getActiveChat(){ return state.chats.find(c => c.id === state.activeId); }
+function switchChat(id){ if(state.busy) return; state.activeId = id; store.setActive(id); renderChatsList(); renderActiveChat(); closeDrawer(); updateLimitUI(); hapticSel(); }
+async function deleteChat(id){
+  if(state.busy) return;
+  const chat = state.chats.find(c => c.id === id); if(!chat) return;
+  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm(`Удалить «${chat.title}»?`, res => r(res))) : confirm('Удалить?');
+  if(!ok) return;
+  state.chats = state.chats.filter(c => c.id !== id);
+  store.saveChats(state.chats);
+  if(state.activeId === id){ state.activeId = state.chats[0]?.id || null; if(!state.activeId) createChat(); else store.setActive(state.activeId); }
+  renderChatsList(); renderActiveChat(); updateLimitUI(); showToast('Чат удалён');
+}
+function togglePin(id){ const c = state.chats.find(x => x.id === id); if(!c) return; c.pinned = !c.pinned; store.saveChats(state.chats); renderChatsList(); haptic('light'); }
+function ensureChat(){ if(!state.activeId || !getActiveChat()){ if(state.chats.length) { state.activeId = state.chats[0].id; store.setActive(state.activeId); } else createChat(); } }
+function autoTitle(chat, text){
+  if(chat.title && chat.title !== 'Новый чат') return;
+  let prefix = '';
+  if(/реши/i.test(text)) prefix = '= ';
+  else if(/производн/i.test(text)) prefix = 'd/dx ';
+  else if(/разложи/i.test(text)) prefix = '(x) ';
+  else if(/упрости/i.test(text)) prefix = '~ ';
+  else if(/построй|график/i.test(text)) prefix = 'f(x) ';
+  chat.title = (prefix + text.slice(0,40)).trim() || 'Новый чат';
+}
+
+function renderChatsList(){
+  const list = $('chatsList'); list.innerHTML = '';
+  const q = state.searchQuery.toLowerCase().trim();
+  const filtered = state.chats.filter(c => !q || c.title.toLowerCase().includes(q) || c.messages.some(m => m.text.toLowerCase().includes(q)));
+  $('drawerCount').textContent = `Чатов: ${state.chats.length}`;
+  if(!filtered.length){ list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">${q?'Ничего не найдено':'Пока нет чатов'}</div>`; $('clearAllChatsBtn').style.display='none'; return; }
+  $('clearAllChatsBtn').style.display = state.chats.length > 1 && !q ? 'block' : 'none';
+  const sorted = [...filtered].sort((a,b) => { if(a.pinned !== b.pinned) return a.pinned?-1:1; return b.updatedAt - a.updatedAt; });
+  for(const c of sorted){
+    const item = document.createElement('div');
+    item.className = 'chat-item' + (c.id === state.activeId ? ' active' : '');
+    const last = c.messages[c.messages.length-1];
+    const sub = last ? (last.role === 'user' ? 'Вы: ' : 'AI: ') + last.text.slice(0,45) : 'Пустой чат';
+    item.innerHTML = `<div class="chat-item-icon">${ico('search')}${c.pinned?'<div class="pin-indicator"></div>':''}</div><div class="chat-item-text"><div class="chat-item-title">${esc(c.title)}</div><div class="chat-item-sub">${esc(sub)}</div></div><button class="chat-item-pin ${c.pinned?'pinned':''}">${ico('pin')}</button><button class="chat-item-del">${ico('trash')}</button>`;
+    item.addEventListener('click', e => { if(e.target.closest('button')) return; switchChat(c.id); });
+    item.querySelector('.chat-item-del').addEventListener('click', e => { e.stopPropagation(); deleteChat(c.id); });
+    item.querySelector('.chat-item-pin').addEventListener('click', e => { e.stopPropagation(); togglePin(c.id); });
+    list.appendChild(item);
+  }
+}
+
+function renderActiveChat(){
+  chatEl.innerHTML = '';
+  const chat = getActiveChat();
+  if(!chat || !chat.messages.length){ renderEmptyState(); updateLimitUI(); return; }
+  for(let i = 0; i < chat.messages.length; i++){
+    const m = chat.messages[i];
+    if(m.role === 'user') appendUserMessage(m.text, false, i, m.attachment);
+    else appendAIMessage(m, false, i);
+  }
+  scrollDown(); updateLimitUI();
+}
+
+function renderEmptyState(){
+  const name = state.user?.name?.split(' ')[0] || '';
+  const hello = name ? `Привет, ${name}!` : 'Привет!';
+  const chips = [
+    {q:'Реши 2x + 5 = 15', i:'equals'},
+    {q:'Реши x^2 - 5x + 6 = 0', i:'function'},
+    {q:'Производная x^3 + 2x', i:'chart'},
+    {q:'Разложи x^2 - 5x + 6 на множители', i:'sigma'},
+    {q:'1234 × 567', i:'calc'},
+    {q:'Что такое дискриминант?', i:'book-open'}
+  ];
+  const html = chips.map(c => `<button class="empty-chip" data-q="${escA(c.q)}">${ico(c.i)}${esc(c.q)}</button>`).join('');
+  chatEl.innerHTML = `<div class="empty"><div class="empty-planet"><svg><use href="#i-planet-ring"/></svg></div><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Решаю уравнения и производные, строю графики, объясняю шаг за шагом.</div><div class="empty-chips">${html}</div></div>`;
+  chatEl.querySelectorAll('.empty-chip').forEach(b => b.addEventListener('click', () => { haptic('light'); handleSend(b.getAttribute('data-q')); }));
+}
+
+function appendUserMessage(text, animate = true, idx = -1, att = null){
+  const div = document.createElement('div'); div.className = 'msg user';
+  if(!animate) div.style.animation = 'none';
+  let ah = '';
+  if(att){
+    if(att.kind === 'image' && att.url) ah = `<div class="file-preview"><img src="${escA(att.url)}" alt=""></div>`;
+    else if(att.kind === 'pdf') ah = `<div class="file-preview"><div class="file-preview-file">${ico('doc')}<span>${esc(att.name)}</span></div></div>`;
+  }
+  div.innerHTML = `${ah}<div class="bubble">${esc(text)}</div><button class="msg-edit-btn" data-idx="${idx}">${ico('pencil')}Изменить</button>`;
+  chatEl.appendChild(div);
+  div.querySelector('.msg-edit-btn').addEventListener('click', () => editUserMessage(idx));
+  scrollDown();
+}
+
+async function editUserMessage(idx){
+  const chat = getActiveChat();
+  if(!chat || idx < 0 || !chat.messages[idx]) return;
+  const m = chat.messages[idx];
+  const nt = prompt('Изменить сообщение:', m.text);
+  if(!nt || !nt.trim()) return;
+  if(hasProfanity(nt)){ showToast('Недопустимо'); return; }
+  const wait = checkLimit();
+  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
+  chat.messages = chat.messages.slice(0, idx);
+  store.saveChats(state.chats); renderActiveChat(); handleSend(nt.trim());
+}
+
+function appendAIMessage(msg, animate = true, idx = -1){
+  const div = document.createElement('div'); div.className = 'msg ai';
+  if(!animate) div.style.animation = 'none';
+  div.innerHTML = `<div class="avatar"><svg><use href="#i-planet"/></svg></div><div class="body"><div class="name"><span class="dot"></span>Orbita AI</div><div class="text"><span class="typed"></span></div></div>`;
+  chatEl.appendChild(div);
+  const typed = div.querySelector('.typed');
+  if(!animate){ typed.innerHTML = renderText(msg.text); if(!msg._blocked) appendActions(div.querySelector('.body'), msg, idx); }
+  scrollDown();
+  return typed;
+}
+
+function appendActions(body, msg, idx){
+  const acts = document.createElement('div'); acts.className = 'msg-actions';
+  const sp = state.plus ? `<button class="msg-act speak-act">${ico('speak')}</button>` : '';
+  acts.innerHTML = sp
+    + `<button class="msg-act copy-act">${ico('copy')}</button>`
+    + `<button class="msg-act regen">${ico('refresh')}</button>`
+    + `<button class="msg-act hint-act">${ico('hint')}<span>Подсказка</span></button>`
+    + `<button class="msg-act similar-act">${ico('star')}<span>Похожее</span></button>`;
+  body.appendChild(acts);
+  const sb = acts.querySelector('.speak-act');
+  if(sb) sb.onclick = () => speak(msg.text, sb);
+  acts.querySelector('.copy-act').onclick = () => copyText(msg.text);
+  acts.querySelector('.regen').onclick = () => regenerate(idx);
+  acts.querySelector('.hint-act').onclick = () => showHint(msg);
+  acts.querySelector('.similar-act').onclick = () => generateSimilar(msg, body, idx);
+}
+
+function showHint(msg){
+  const hints = {
+    'линейн': 'Перенеси все слагаемые с x в одну сторону, числа — в другую. Затем раздели на коэффициент при x.',
+    'квадратн': 'Найди дискриминант D = b² − 4ac. Если D > 0 — два корня, D = 0 — один, D < 0 — корней нет.',
+    'производн': 'Используй (xⁿ)′ = n·xⁿ⁻¹ для каждого слагаемого. Константа даёт 0.',
+    'разлож': 'Найди корни уравнения = 0, затем запиши a(x−x₁)(x−x₂).',
+    'упрости': 'Раскрой скобки фонтаном и приведи подобные слагаемые.'
+  };
+  let key = Object.keys(hints).find(k => msg.text.toLowerCase().includes(k)) || 'линейн';
+  showToast('Подсказка');
+  const bubble = document.createElement('div');
+  bubble.className = 'msg ai';
+  bubble.innerHTML = `<div class="avatar"><svg><use href="#i-bulb"/></svg></div><div class="body"><div class="name"><span class="dot"></span>Подсказка</div><div class="text">${hints[key]}</div></div>`;
+  chatEl.appendChild(bubble); scrollDown();
+  haptic('success');
+}
+
+function generateSimilar(msg, body, idx){
+  // Try to regenerate original with small tweaks
+  const chat = getActiveChat(); if(!chat) return;
+  const uIdx = [...chat.messages].reverse().findIndex(m => m.role === 'user' && chat.messages.indexOf(m) < idx);
+  if(uIdx < 0){ showToast('Не могу построить'); return; }
+  const userMsg = chat.messages[chat.messages.length - 1 - uIdx];
+  let q = userMsg.text;
+  // Tweak numbers
+  q = q.replace(/(\d+)/g, m => {
+    const n = parseInt(m);
+    if(n === 0) return '0';
+    const delta = Math.floor(Math.random()*5) - 2;
+    return String(Math.max(1, n + delta));
+  });
+  if(q === userMsg.text) q = q + ' (другой)';
+  handleSend(q);
+}
+
+async function copyText(t){
+  try{ await navigator.clipboard.writeText(t); showToast('Скопировано'); }
+  catch(e){ const ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); showToast('Скопировано'); }catch(_){} document.body.removeChild(ta); }
+}
+
+async function regenerate(idx){
+  if(state.busy) return;
+  const chat = getActiveChat(); if(!chat || idx < 0) return;
+  let uIdx = -1; for(let i = idx-1; i >= 0; i--) if(chat.messages[i].role === 'user'){ uIdx = i; break; }
+  if(uIdx < 0) return;
+  if(isLimitReached(chat)){ openPlusModal(); return; }
+  const wait = checkLimit();
+  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
+  const q = chat.messages[uIdx].text;
+  chat.messages = chat.messages.slice(0, uIdx);
+  store.saveChats(state.chats); renderActiveChat(); await handleSend(q);
+}
+
+function showTyping(){
+  let el = document.querySelector('.typing');
+  if(!el){ el = document.createElement('div'); el.className = 'typing'; el.innerHTML = `<div class="avatar"><svg><use href="#i-planet"/></svg></div><div class="dots"><span></span><span></span><span></span></div>`; chatEl.appendChild(el); }
+  el.classList.add('active'); scrollDown();
+}
+function hideTyping(){ const el = document.querySelector('.typing'); if(el) el.classList.remove('active'); }
+
+async function typeText(el, text){
+  const cur = document.createElement('span'); cur.className = 'cursor'; el.after(cur);
+  const delay = Math.min(1400, Math.max(300, text.length*8))/text.length;
+  let buf = '';
+  for(let i = 0; i < text.length; i++){
+    if(state.abortRequested){ el.innerHTML = renderText(text); cur.remove(); return; }
+    buf += text[i]; el.innerHTML = renderText(buf);
+    if(i % 8 === 0) scrollDown();
+    await sleep(delay);
+  }
+  cur.remove(); scrollDown();
+}
+
+/* ============== TTS ============== */
+let currentSpeakingBtn = null, speakTimeout = null, speechUnlocked = false, voicesCache = [];
 function refreshVoices(){ if(!window.speechSynthesis) return; try{ const v = speechSynthesis.getVoices(); if(v && v.length) voicesCache = v; }catch(e){} }
-if(window.speechSynthesis){ refreshVoices(); speechSynthesis.onvoiceschanged = refreshVoices; setTimeout(refreshVoices, 100); setTimeout(refreshVoices, 500); setTimeout(refreshVoices, 1500); }
-function unlockSpeech(){ if(speechUnlocked || !window.speechSynthesis) return; try{ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); setTimeout(() => { try{ speechSynthesis.cancel(); }catch(e){} }, 50); speechUnlocked = true; refreshVoices(); }catch(e){} }
+if(window.speechSynthesis){ refreshVoices(); speechSynthesis.onvoiceschanged = refreshVoices; setTimeout(refreshVoices, 200); setTimeout(refreshVoices, 800); }
+function unlockSpeech(){ if(speechUnlocked || !window.speechSynthesis) return; try{ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); setTimeout(() => { try{ speechSynthesis.cancel(); }catch(e){} }, 50); speechUnlocked = true; }catch(e){} }
 ['touchstart','touchend','click','keydown'].forEach(evt => document.addEventListener(evt, unlockSpeech, { passive: true }));
 function pickRussianVoice(){ if(!voicesCache.length) refreshVoices(); const v = voicesCache; if(!v?.length) return null; return v.find(x=>/milena/i.test(x.name)) || v.find(x=>/yuri/i.test(x.name)) || v.find(x=>x.lang==='ru-RU') || v.find(x=>x.lang?.toLowerCase().startsWith('ru')) || null; }
-function cleanForSpeech(t){ return String(t).replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'').replace(/#+\s/g,'').replace(/\[([^\/\]]+)\/([^\]]+)\]/g,'$1 на $2').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'').replace(/https?:\/\/\S+/g,'ссылка').replace(/\s+/g,' ').trim(); }
+function cleanForSpeech(t){
+  return String(t)
+    .replace(/\$\$([^$]+)\$\$/g, '$1')
+    .replace(/\$([^$]+)\$/g, '$1')
+    .replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, '$1 делить на $2')
+    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 делить на $2')
+    .replace(/x\^2/g, 'икс в квадрате')
+    .replace(/x\^(\d+)/g, 'икс в степени $1')
+    .replace(/x_(\d+)/g, 'икс $1')
+    .replace(/\\sqrt\{([^}]+)\}/g, 'корень из $1')
+    .replace(/\\sqrt/g, 'корень из')
+    .replace(/\\pm/g, 'плюс-минус')
+    .replace(/\\cdot/g, 'умножить на')
+    .replace(/\\times/g, 'умножить на')
+    .replace(/\\le/g, 'меньше или равно')
+    .replace(/\\ge/g, 'больше или равно')
+    .replace(/\\ne/g, 'не равно')
+    .replace(/\\ln/g, 'эл-эн')
+    .replace(/\\sin/g, 'синус')
+    .replace(/\\cos/g, 'косинус')
+    .replace(/\\tan/g, 'тангенс')
+    .replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'')
+    .replace(/#+\s/g,'')
+    .replace(/\{|\}|\\/g,' ')
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'')
+    .replace(/\s+/g,' ').trim();
+}
 function splitIntoChunks(t, max){ max = max || 180; const parts = t.split(/(?<=[.!?;:,])\s+/); const chunks = []; let buf=''; for(const p of parts){ if((buf+' '+p).length>max && buf){ chunks.push(buf.trim()); buf=p; } else { buf = buf?buf+' '+p:p; } } if(buf) chunks.push(buf.trim()); return chunks.length?chunks:[t]; }
-function stopSpeak(){ try{ speechSynthesis.cancel(); }catch(e){} if(speakTimeout){ clearTimeout(speakTimeout); speakTimeout=null; } if(resumeTimer){ clearInterval(resumeTimer); resumeTimer=null; } if(currentSpeakingBtn){ currentSpeakingBtn.classList.remove('speaking'); currentSpeakingBtn=null; } }
+function stopSpeak(){ try{ speechSynthesis.cancel(); }catch(e){} if(speakTimeout){ clearTimeout(speakTimeout); speakTimeout=null; } if(currentSpeakingBtn){ currentSpeakingBtn.classList.remove('speaking'); currentSpeakingBtn=null; } }
 function speak(text, btn){
   if(!window.speechSynthesis){ showToast('Озвучка не поддерживается'); return; }
   if(currentSpeakingBtn?.classList.contains('speaking')){ stopSpeak(); return; }
@@ -471,19 +1586,18 @@ function speak(text, btn){
   const clean = cleanForSpeech(text); if(!clean){ showToast('Нечего озвучивать'); return; }
   if(btn){ btn.classList.add('speaking'); currentSpeakingBtn = btn; }
   refreshVoices(); const chunks = splitIntoChunks(clean); const voice = pickRussianVoice(); let idx = 0;
-  const finish = () => { if(resumeTimer){ clearInterval(resumeTimer); resumeTimer = null; } if(btn && currentSpeakingBtn === btn){ btn.classList.remove('speaking'); currentSpeakingBtn = null; } };
   const next = () => {
-    if(idx >= chunks.length){ finish(); return; }
+    if(idx >= chunks.length){ if(btn && currentSpeakingBtn === btn){ btn.classList.remove('speaking'); currentSpeakingBtn = null; } return; }
     const u = new SpeechSynthesisUtterance(chunks[idx]);
     u.lang='ru-RU'; u.rate=0.95; u.pitch=1; u.volume=1; if(voice) u.voice = voice;
     u.onend = () => { idx++; setTimeout(next, 60); };
-    u.onerror = (e) => { if(e?.error === 'canceled' || e?.error === 'interrupted') return; idx++; setTimeout(next, 60); };
-    try{ speechSynthesis.speak(u); }catch(e){ finish(); }
+    u.onerror = () => { idx++; setTimeout(next, 60); };
+    try{ speechSynthesis.speak(u); }catch(e){}
   };
   speakTimeout = setTimeout(next, 30);
 }
 
-/* PLUS */
+/* ============== PLUS ============== */
 function openPlusModal(){
   $('plusModalBg').classList.add('active');
   const b = $('plusActiveBanner'), r = $('plusRequestBtn');
@@ -501,11 +1615,11 @@ async function requestPlus(){
   }catch(e){ showToast('Ошибка отправки'); haptic('error'); }
 }
 
-/* LIMIT */
+/* ============== LIMIT ============== */
 function isLimitReached(chat){ return !state.plus && (chat?.messages?.length || 0) >= MSG_LIMIT_FREE; }
 function updateLimitUI(){ const chat = getActiveChat(); if(isLimitReached(chat)) $('limitBanner').classList.add('show'); else $('limitBanner').classList.remove('show'); updateSendBtn(); }
 
-/* GATE */
+/* ============== GATE ============== */
 let accessPollTimer = null, gateState = 'checking';
 async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
@@ -531,7 +1645,7 @@ function showGate(s){
   const w = gate.querySelector('.gate-waiting'); if(w) w.remove();
   btn.onclick = sendAccessRequest; btn.style.display='none'; btn.disabled=false;
   if(s==='need_request'){ title.textContent='Доступ ограничен'; sub.textContent='Отправь заявку — админ откроет доступ.'; btn.style.display='flex'; btnText.textContent='Отправить заявку'; }
-  else if(s==='pending'){ title.textContent='Заявка отправлена'; sub.textContent='Ожидай одобрения. Приложение откроется автоматически.'; const wait = document.createElement('div'); wait.className='gate-waiting'; wait.innerHTML='<div class="spin"></div><span>Ожидание…</span>'; btn.parentNode.insertBefore(wait, btn); }
+  else if(s==='pending'){ title.textContent='Заявка отправлена'; sub.textContent='Ожидай одобрения.'; const wait = document.createElement('div'); wait.className='gate-waiting'; wait.innerHTML='<div class="spin"></div><span>Ожидание…</span>'; btn.parentNode.insertBefore(wait, btn); }
   else if(s==='banned'){ title.textContent='Вы забанены'; sub.textContent='Администратор закрыл доступ.'; }
   else if(s==='denied'){ title.textContent='Заявка отклонена'; sub.textContent='Свяжитесь с администратором.'; }
   else if(s==='no_telegram'){ title.textContent='Открой через Telegram'; sub.textContent='Mini App работает только внутри Telegram.'; }
@@ -566,37 +1680,24 @@ async function sendAccessRequest(){
   }catch(e){ showToast('Не удалось отправить'); btn.disabled=false; $('gateActionText').textContent='Отправить заявку'; haptic('error'); }
 }
 
-/* BIOMETRIC */
-async function initBiometric(){ return new Promise(r => { if(!tg?.BiometricManager) return r(false); try{ tg.BiometricManager.init(() => r(!!tg.BiometricManager.isBiometricAvailable)); }catch(e){ r(false); } }); }
-async function requireBiometric(reason){ return new Promise(r => { if(!tg?.BiometricManager?.isBiometricAvailable) return r(true); try{ tg.BiometricManager.authenticate({reason}, ok => r(!!ok)); }catch(e){ r(true); } }); }
-async function showBioGate(){
-  const o = $('bioOverlay'); o.classList.add('active');
-  return new Promise(r => {
-    const tryAuth = async () => { const ok = await requireBiometric('Вход в Orbita AI'); if(ok){ o.classList.remove('active'); haptic('success'); r(true); } else { haptic('error'); showToast('Не удалось'); } };
-    $('bioBtn').onclick = tryAuth; setTimeout(tryAuth, 300);
-  });
-}
-
-/* VOICE */
+/* ============== VOICE ============== */
 let recognition = null, isRecording = false, voiceFinalText = '';
 let audioContext = null, analyser = null, mediaStream = null;
-let orbRaf = null, orbCanvas = null, orbCtx = null, orbStartTime = 0, orbLevel = 0, orbDataArray = null;
-
+let orbRaf = null, orbCtx = null, orbStartTime = 0, orbLevel = 0, orbDataArray = null;
 function initOrbCanvas(){
-  orbCanvas = document.getElementById('voiceCanvas'); if(!orbCanvas) return;
+  const orbCanvas = document.getElementById('voiceCanvas'); if(!orbCanvas) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2), size = 280;
   orbCanvas.width = size*dpr; orbCanvas.height = size*dpr;
   orbCanvas.style.width = size+'px'; orbCanvas.style.height = size+'px';
   orbCtx = orbCanvas.getContext('2d'); orbCtx.setTransform(dpr,0,0,dpr,0,0);
 }
 function drawBlob(ctx, cx, cy, radius, t, level, seed, fill){
-  const points = 80; ctx.beginPath();
+  const points = 60; ctx.beginPath();
   for(let i = 0; i <= points; i++){
     const a = (i/points)*Math.PI*2;
     const w1 = Math.sin(a*3 + t*0.9 + seed)*(2+level*14);
     const w2 = Math.sin(a*5 - t*1.3 + seed*1.7)*(1.5+level*9);
-    const w3 = Math.sin(a*7 + t*0.7 + seed*2.3)*(1+level*5);
-    const rr = radius + w1 + w2 + w3;
+    const rr = radius + w1 + w2;
     const x = cx + Math.cos(a)*rr, y = cy + Math.sin(a)*rr;
     if(i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   }
@@ -607,38 +1708,28 @@ function drawOrbFrame(){
   const w = 280, h = 280, cx = w/2, cy = h/2;
   const t = (performance.now() - orbStartTime)/1000;
   let target = 0;
-  if(analyser && orbDataArray){
-    analyser.getByteFrequencyData(orbDataArray);
-    let s = 0; for(let i = 0; i < orbDataArray.length; i++) s += orbDataArray[i];
-    target = Math.min(1, (s/orbDataArray.length)/70);
-  }
+  if(analyser && orbDataArray){ analyser.getByteFrequencyData(orbDataArray); let s=0; for(let i=0;i<orbDataArray.length;i++) s+=orbDataArray[i]; target=Math.min(1,(s/orbDataArray.length)/70); }
   orbLevel += (target - orbLevel)*0.18;
   orbCtx.clearRect(0,0,w,h);
-  const baseR = 88, r = baseR*(1 + orbLevel*0.12);
+  const r = 88*(1 + orbLevel*0.12);
   const glow = orbCtx.createRadialGradient(cx,cy,r*0.6,cx,cy,r*1.9);
   glow.addColorStop(0, `rgba(96,165,250,${0.28+orbLevel*0.25})`);
-  glow.addColorStop(0.5, `rgba(59,130,246,${0.12+orbLevel*0.1})`);
   glow.addColorStop(1, 'rgba(37,99,235,0)');
   orbCtx.fillStyle = glow; orbCtx.beginPath(); orbCtx.arc(cx,cy,r*1.9,0,Math.PI*2); orbCtx.fill();
-  for(let i = 0; i < 3; i++){
-    const lr = r*(0.95 + i*0.06), alpha = 0.32 - i*0.09;
+  for(let i=0;i<3;i++){
+    const lr = r*(0.95+i*0.06), alpha=0.32-i*0.09;
     const g = orbCtx.createRadialGradient(cx,cy,0,cx,cy,lr*1.15);
     g.addColorStop(0, `rgba(191,219,254,${alpha})`);
     g.addColorStop(1, `rgba(37,99,235,${alpha*0.3})`);
-    drawBlob(orbCtx, cx, cy, lr, t, orbLevel, i*2.1, g);
+    drawBlob(orbCtx,cx,cy,lr,t,orbLevel,i*2.1,g);
   }
   const mg = orbCtx.createRadialGradient(cx - r*0.35, cy - r*0.4, r*0.1, cx, cy, r*1.05);
-  mg.addColorStop(0,'#ffffff'); mg.addColorStop(0.3,'#e0eaff');
-  mg.addColorStop(0.6,'#93c5fd'); mg.addColorStop(0.85,'#3b82f6'); mg.addColorStop(1,'#1d4ed8');
-  drawBlob(orbCtx, cx, cy, r, t*1.15, orbLevel, 0.5, mg);
-  const sh = orbCtx.createRadialGradient(cx - r*0.3, cy - r*0.45, 0, cx - r*0.2, cy - r*0.3, r*0.7);
-  sh.addColorStop(0, 'rgba(255,255,255,0.55)'); sh.addColorStop(1, 'rgba(255,255,255,0)');
-  orbCtx.fillStyle = sh; orbCtx.beginPath();
-  orbCtx.ellipse(cx - r*0.25, cy - r*0.35, r*0.5, r*0.35, -0.6, 0, Math.PI*2); orbCtx.fill();
+  mg.addColorStop(0,'#ffffff'); mg.addColorStop(0.3,'#e0eaff'); mg.addColorStop(0.6,'#93c5fd'); mg.addColorStop(0.85,'#3b82f6'); mg.addColorStop(1,'#1d4ed8');
+  drawBlob(orbCtx,cx,cy,r,t*1.15,orbLevel,0.5,mg);
   orbRaf = requestAnimationFrame(drawOrbFrame);
 }
 function startOrb(){ initOrbCanvas(); orbStartTime = performance.now(); orbLevel = 0; if(orbRaf) cancelAnimationFrame(orbRaf); drawOrbFrame(); }
-function stopOrb(){ if(orbRaf){ cancelAnimationFrame(orbRaf); orbRaf = null; } orbLevel = 0; orbDataArray = null; if(orbCtx) orbCtx.clearRect(0,0,280,280); }
+function stopOrb(){ if(orbRaf){ cancelAnimationFrame(orbRaf); orbRaf = null; } if(orbCtx) orbCtx.clearRect(0,0,280,280); }
 function startAudioVisualization(){
   startOrb();
   if(!navigator.mediaDevices?.getUserMedia) return;
@@ -649,7 +1740,7 @@ function startAudioVisualization(){
     analyser = audioContext.createAnalyser(); analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.75;
     source.connect(analyser);
     orbDataArray = new Uint8Array(analyser.frequencyBinCount);
-  }).catch(err => console.warn('Audio viz:', err));
+  }).catch(()=>{});
 }
 function stopAudioVisualization(){
   stopOrb();
@@ -661,46 +1752,15 @@ function initVoice(){
   if(!SR){ $('voiceBtn').style.display='none'; return; }
   recognition = new SR();
   recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'ru-RU';
-  recognition.onstart = () => {
-    isRecording = true; voiceFinalText = '';
-    $('voiceOverlay').classList.add('active');
-    $('voiceStatus').textContent = 'Слушаю…';
-    const vt = $('voiceText'); vt.textContent = 'Продиктуй пример или вопрос'; vt.classList.add('empty');
-    $('voiceHint').innerHTML = '<span class="hint-dot"></span><span>Говори чётко, я распознаю речь</span>';
-    haptic('medium'); startAudioVisualization();
-  };
-  recognition.onresult = (e) => {
-    let interim = '', final = '';
-    for(let i = e.resultIndex; i < e.results.length; i++){
-      const t = e.results[i][0].transcript;
-      if(e.results[i].isFinal) final += t; else interim += t;
-    }
-    if(final) voiceFinalText = final;
-    const vt = $('voiceText'); const d = final || interim;
-    if(d){ vt.textContent = d; vt.classList.remove('empty'); }
-    else { vt.textContent = 'Продиктуй пример или вопрос'; vt.classList.add('empty'); }
-    $('voiceStatus').textContent = final ? 'Готово!' : 'Слушаю…';
-  };
-  recognition.onerror = (e) => {
-    stopVoice();
-    if(e.error === 'not-allowed') showToast('Доступ к микрофону запрещён');
-    else if(e.error === 'no-speech') showToast('Ничего не услышал');
-    else showToast('Ошибка распознавания');
-    haptic('error');
-  };
-  recognition.onend = () => {
-    if(isRecording){
-      isRecording = false;
-      $('voiceOverlay').classList.remove('active');
-      stopAudioVisualization();
-      if(voiceFinalText.trim()){ const t = voiceFinalText.trim(); voiceFinalText = ''; setTimeout(() => handleSend(t), 200); }
-    }
-  };
+  recognition.onstart = () => { isRecording = true; voiceFinalText = ''; $('voiceOverlay').classList.add('active'); $('voiceStatus').textContent = 'Слушаю…'; const vt=$('voiceText'); vt.textContent='Продиктуй пример'; vt.classList.add('empty'); haptic('medium'); startAudioVisualization(); };
+  recognition.onresult = (e) => { let interim='', final=''; for(let i=e.resultIndex;i<e.results.length;i++){ const t=e.results[i][0].transcript; if(e.results[i].isFinal) final+=t; else interim+=t; } if(final) voiceFinalText=final; const vt=$('voiceText'); const d=final||interim; if(d){ vt.textContent=d; vt.classList.remove('empty'); } $('voiceStatus').textContent = final?'Готово!':'Слушаю…'; };
+  recognition.onerror = (e) => { stopVoice(); if(e.error==='not-allowed') showToast('Микрофон запрещён'); else if(e.error==='no-speech') showToast('Ничего не услышал'); else showToast('Ошибка распознавания'); haptic('error'); };
+  recognition.onend = () => { if(isRecording){ isRecording=false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); if(voiceFinalText.trim()){ const t=voiceFinalText.trim(); voiceFinalText=''; setTimeout(()=>handleSend(t),200); } } };
 }
-function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang = 'ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
-function stopVoice(){ isRecording = false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition && recognition.stop(); }catch(e){} }
+function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
+function stopVoice(){ isRecording=false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition && recognition.stop(); }catch(e){} }
 
-/* RATE LIMIT */
+/* ============== RATE LIMIT ============== */
 const RATE_MS = 5000;
 function getLastReq(){ return parseInt(localStorage.getItem(KEYS.LAST_REQ)||'0',10); }
 function setLastReq(t){ localStorage.setItem(KEYS.LAST_REQ, String(t)); }
@@ -720,7 +1780,7 @@ function startCooldown(){
   state.rateLimitTimer = setInterval(tick, 200);
 }
 
-/* PROFANITY */
+/* ============== PROFANITY ============== */
 function normalizeAggressive(raw){
   let s = String(raw).toLowerCase();
   try{ s = s.normalize('NFKD'); }catch(e){}
@@ -732,7 +1792,7 @@ function normalizeAggressive(raw){
   s = s.replace(/[^а-яёіa-z]/g,'').replace(/(.)\1{2,}/g,'$1');
   return s;
 }
-const BAD_PATTERNS = [/ху[йеяёюи]/, /пизд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/, /ёб[аеиуолн]/, /сука/, /сучк/, /мудак/, /мудил/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /перд/, /манда/, /уеб/, /заеб/, /наеб/, /хер[аеуны]/, /хрен[аеуы]/, /ниггер/, /nigga/, /nigger/, /fag/, /faggot/, /порн/, /порно/, /трах/, /минет/, /куни/, /анус/, /сперм/, /вагин/, /пенис/, /клитор/, /сиськ/, /письк/, /porn/, /pussy/, /dick/, /cock/, /cunt/, /tits/, /nude/, /убью/, /убей/, /убить/, /зареж/, /пристрел/, /взорв/, /теракт/, /сдохни/, /kill/, /murder/, /игил/, /джихад/, /нацист/, /фашист/, /гитлер/, /hitler/, /свастик/, /героин/, /кокаин/, /метамфет/, /марихуан/, /амфетамин/, /экстази/, /нарко/, /f+u+c+k+/, /sh+i+t+/, /b+i+t+c+h+/, /d+i+c+k+/, /c+u+n+t+/, /p+u+s+s+y+/, /c+o+c+k+/];
+const BAD_PATTERNS = [/ху[йеяёюи]/, /пизд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/, /ёб[аеиуолн]/, /сука/, /сучк/, /мудак/, /мудил/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /перд/, /манда/, /уеб/, /заеб/, /наеб/, /хер[аеуны]/, /хрен[аеуы]/, /ниггер/, /nigga/, /nigger/, /fag/, /faggot/, /порн/, /porn/, /pussy/, /dick/, /cock/, /cunt/, /tits/, /nude/, /убью/, /убей/, /убить/, /зареж/, /пристрел/, /взорв/, /теракт/, /сдохни/, /kill/, /murder/, /игил/, /джихад/, /нацист/, /фашист/, /гитлер/, /hitler/, /свастик/, /героин/, /кокаин/, /метамфет/, /марихуан/, /амфетамин/, /экстази/, /нарко/, /f+u+c+k+/, /sh+i+t+/, /b+i+t+c+h+/, /d+i+c+k+/, /c+u+n+t+/, /p+u+s+s+y+/, /c+o+c+k+/];
 function hasProfanity(raw){
   if(!raw || typeof raw !== 'string') return false;
   const lower = raw.toLowerCase();
@@ -742,331 +1802,7 @@ function hasProfanity(raw){
   return false;
 }
 
-/* MARKDOWN */
-function renderText(raw){
-  let h = esc(raw);
-  h = h.replace(/\$([^$\n]+)\$/g, '$1');
-  h = h.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, (m,n,d) => `(${n})/(${d})`);
-  h = h.replace(/\\cdot/g,'·').replace(/\\times/g,'×').replace(/\\sqrt\{([^}]+)\}/g,'√($1)').replace(/\\/g,'');
-  h = h.replace(/\[([^\/\]]+)\/([^\]]+)\]/g, (m,n,d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`);
-  h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
-  h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
-  h = h.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
-  h = h.replace(/\n/g,'<br>');
-  return h;
-}
-
-/* ===== MATH ENGINE ===== */
-function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <= 100; d++){ if(Math.abs(n*d - Math.round(n*d)) < 1e-9){ const num = Math.round(n*d); const g = gcd(Math.abs(num), d); const n1 = num/g, d1 = d/g; if(d1 === 1) return String(n1); return `[${n1}/${d1}]`; } } return String(Math.round(n*1000000)/1000000); }
-function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
-function lcm(a,b){ return Math.abs(a*b) / gcd(a,b); }
-
-/* --- Linear / Quadratic --- */
-function solveEquation(text){
-  let t = text.toLowerCase().trim();
-  t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение|решение)\s+/i,'');
-  t = t.replace(/\s+/g,'').replace(/х/g,'x').replace(/Х/g,'x').replace(/X/g,'x');
-  if(!t.includes('=')) return null;
-  const parts = t.split('='); if(parts.length !== 2) return null;
-  let left = parts[0], right = parts[1];
-  if(!/x/.test(left) && !/x/.test(right)) return null;
-  const hasSquare = /x\^2|x2|x²/.test(left) || /x\^2|x2|x²/.test(right);
-  left = left.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
-  right = right.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
-  if(hasSquare) return solveQuadratic(text, left, right);
-  return solveLinear(text, left, right);
-}
-function parsePoly(expr){
-  expr = expr.replace(/^\+/,''); let a=0,b=0,c=0,m;
-  const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g;
-  while((m = aRe.exec(expr)) !== null){ const s = m[1]==='-'?-1:1; a += s*(m[2]===''?1:parseFloat(m[2])); }
-  expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x\^2/g,'');
-  const bRe = /([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g;
-  while((m = bRe.exec(expr)) !== null){ const s = m[1]==='-'?-1:1; b += s*(m[2]===''?1:parseFloat(m[2])); }
-  expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g,'');
-  const cRe = /([+\-]?)(\d+\.?\d*)/g;
-  while((m = cRe.exec(expr)) !== null){ const s = m[1]==='-'?-1:1; c += s*parseFloat(m[2]); }
-  return {a,b,c};
-}
-function polyToStr(a,b,c){
-  const p = [];
-  if(a !== 0){ if(a===1) p.push('x²'); else if(a===-1) p.push('-x²'); else p.push(`${fmtNum(a)}x²`); }
-  if(b !== 0){ const s = b>0?(p.length?' + ':''):(p.length?' - ':'-'); const cf = Math.abs(b); if(cf===1) p.push(s+'x'); else p.push(s+fmtNum(cf)+'x'); }
-  if(c !== 0 || !p.length){ const s = c>0?(p.length?' + ':''):(p.length?' - ':'-'); p.push(s+fmtNum(Math.abs(c))); }
-  return p.join('');
-}
-function solveLinear(original, left, right){
-  const L = parsePoly(left), R = parsePoly(right);
-  const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
-  if(Math.abs(a) > 1e-9) return solveQuadratic(original, left, right);
-  if(Math.abs(b) < 1e-9){ if(Math.abs(c) < 1e-9) return { text:'**Бесконечно много решений** ♾️', _isDialog:true }; return { text:'**Нет решений** ❌', _isDialog:true }; }
-  const x = -c / b;
-  const s = [];
-  s.push(`**Решаю линейное уравнение:**`);
-  s.push(`   ${original}\n`);
-  s.push(`📌 **Метод:** перенести все слагаемые с x в одну сторону, числа — в другую.\n`);
-  s.push(`**Шаг 1.** Переношу всё в левую часть:`);
-  s.push(`   ${polyToStr(0,b,c)} = 0\n`);
-  s.push(`**Шаг 2.** Выражаю x:`);
-  if(b === 1){ s.push(`   x = ${-c}`); }
-  else if(b === -1){ s.push(`   -x = ${c}`); s.push(`   x = ${-c}`); }
-  else { s.push(`   ${fmtNum(b)}·x = ${fmtNum(-c)}`); s.push(`   x = ${fmtNum(-c)} / ${fmtNum(b)}`); }
-  s.push(`\n✅ **Ответ:** x = ${fmtNum(x)}`);
-  s.push(`\n🔍 **Проверка:** подставляем x = ${fmtNum(x)} в исходное уравнение — равенство верно.`);
-  return { text: s.join('\n'), _isDialog:true };
-}
-function solveQuadratic(original, left, right){
-  const L = parsePoly(left), R = parsePoly(right);
-  const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
-  if(a === 0) return solveLinear(original, left, right);
-  const D = b*b - 4*a*c;
-  const s = [];
-  s.push(`**Решаю квадратное уравнение:**`);
-  s.push(`   ${original}\n`);
-  s.push(`📌 **Формула:** ax² + bx + c = 0, дискриминант D = b² − 4ac\n`);
-  s.push(`**Шаг 1.** Привожу к виду ax² + bx + c = 0:`);
-  s.push(`   ${polyToStr(a,b,c)} = 0\n`);
-  s.push(`Коэффициенты: **a = ${fmtNum(a)}, b = ${fmtNum(b)}, c = ${fmtNum(c)}**\n`);
-  s.push(`**Шаг 2.** Считаю дискриминант:`);
-  s.push(`   D = b² − 4ac = ${fmtNum(b)}² − 4·(${fmtNum(a)})·(${fmtNum(c)})`);
-  s.push(`   D = ${fmtNum(b*b)} − (${fmtNum(4*a*c)})`);
-  s.push(`   **D = ${fmtNum(D)}**\n`);
-  let ans = '';
-  if(D > 0){
-    const sq = Math.sqrt(D);
-    const x1 = (-b + sq)/(2*a), x2 = (-b - sq)/(2*a);
-    s.push(`**Шаг 3.** D > 0 → **два различных корня**\n`);
-    s.push(`Формула: x = (−b ± √D) / (2a)\n`);
-    s.push(`   x₁ = (${fmtNum(-b)} + ${fmtNum(sq)}) / ${fmtNum(2*a)} = ${fmtNum(x1)}`);
-    s.push(`   x₂ = (${fmtNum(-b)} − ${fmtNum(sq)}) / ${fmtNum(2*a)} = ${fmtNum(x2)}`);
-    ans = `x₁ = ${fmtNum(x1)},   x₂ = ${fmtNum(x2)}`;
-  } else if(D === 0){
-    const x = -b/(2*a);
-    s.push(`**Шаг 3.** D = 0 → **один корень (кратный)**\n`);
-    s.push(`   x = −b / (2a) = ${fmtNum(-b)} / ${fmtNum(2*a)} = ${fmtNum(x)}`);
-    ans = `x = ${fmtNum(x)}`;
-  } else {
-    s.push(`**Шаг 3.** D < 0 → **действительных корней нет** ❌`);
-    s.push(`\n💡 *Если изучаешь комплексные числа:*`);
-    const re = -b/(2*a), im = Math.sqrt(-D)/(2*a);
-    s.push(`   x₁ = ${fmtNum(re)} + ${fmtNum(im)}i`);
-    s.push(`   x₂ = ${fmtNum(re)} − ${fmtNum(im)}i`);
-    ans = 'нет действительных корней';
-  }
-  s.push(`\n✅ **Ответ:** ${ans}`);
-  s.push(`\n💡 **Теорема Виета (проверка):** x₁ + x₂ = ${fmtNum(-b/a)}, x₁ · x₂ = ${fmtNum(c/a)}`);
-  return { text: s.join('\n'), _isDialog:true };
-}
-
-/* --- Polynomial derivative --- */
-function parsePolyGeneral(expr){
-  expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/X/g,'x');
-  expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
-  const terms = [];
-  let s = expr.replace(/-/g,'+-');
-  if(s.startsWith('+')) s = s.slice(1);
-  for(const part of s.split('+')){
-    if(!part) continue;
-    const m = part.match(/^(-?\d*\.?\d*)\*?x(?:\^(\d+))?$/);
-    if(m){
-      const c = m[1] === '' || m[1] === '+' ? 1 : m[1] === '-' ? -1 : parseFloat(m[1]);
-      const p = m[2] ? parseInt(m[2]) : 1;
-      terms.push({coef: c, power: p});
-    } else if(/^[-+]?\d*\.?\d+$/.test(part)){
-      terms.push({coef: parseFloat(part), power: 0});
-    } else {
-      return null;
-    }
-  }
-  return terms;
-}
-function termsToStr(terms){
-  terms = terms.filter(t => Math.abs(t.coef) > 1e-12);
-  if(!terms.length) return '0';
-  terms.sort((a,b) => b.power - a.power);
-  let s = '';
-  for(const t of terms){
-    const absC = Math.abs(t.coef);
-    let term = '';
-    if(t.power === 0) term = fmtNum(absC);
-    else if(t.power === 1) term = absC === 1 ? 'x' : `${fmtNum(absC)}x`;
-    else term = absC === 1 ? `x^${t.power}` : `${fmtNum(absC)}x^${t.power}`;
-    if(s === ''){ s = (t.coef < 0 ? '-' : '') + term; }
-    else { s += (t.coef < 0 ? ' − ' : ' + ') + term; }
-  }
-  return s;
-}
-function solveDerivative(query){
-  const q = query.toLowerCase();
-  if(!/производн|d\/dx|найди\s+производную|производная/i.test(q)) return null;
-  const m = query.match(/(?:d\/dx\s*\(?|производн\w*\s*(?:от\s*|функции\s*)?)(.+)/i);
-  if(!m) return null;
-  let expr = m[1].trim().replace(/[?!.]+$/,'').replace(/\s+/g,'');
-  expr = expr.replace(/^f\(x\)=/i,'').replace(/^y=/i,'').replace(/^\(/,'').replace(/\)$/,'');
-  if(!/[xXхХ]/.test(expr)) return null;
-  expr = expr.replace(/[хХ]/g,'x');
-  const terms = parsePolyGeneral(expr);
-  if(!terms || !terms.length) return null;
-
-  const dTerms = terms.map(t => ({coef: t.coef * t.power, power: t.power - 1})).filter(t => t.power >= 0);
-  const origStr = termsToStr(terms);
-  const derivStr = termsToStr(dTerms);
-
-  const s = [];
-  s.push(`**Нахожу производную:**`);
-  s.push(`   f(x) = ${origStr}\n`);
-  s.push(`📌 **Правила:**`);
-  s.push(`   • (xⁿ)′ = n · xⁿ⁻¹`);
-  s.push(`   • (C · f)′ = C · f′`);
-  s.push(`   • (f + g)′ = f′ + g′`);
-  s.push(`   • (константа)′ = 0\n`);
-  s.push(`**По шагам:**`);
-  for(const t of terms){
-    if(t.power === 0){
-      s.push(`   • (${fmtNum(t.coef)})′ = 0`);
-    } else if(t.power === 1){
-      s.push(`   • (${t.coef === 1 ? '' : fmtNum(t.coef)}x)′ = ${fmtNum(t.coef)}`);
-    } else {
-      const newCoef = t.coef * t.power;
-      s.push(`   • (${t.coef === 1 ? '' : fmtNum(t.coef)}x^${t.power})′ = ${fmtNum(t.power)} · ${t.coef === 1 ? '' : fmtNum(t.coef) + '·'}x^${t.power - 1} = ${newCoef === 1 ? '' : fmtNum(newCoef)}x^${t.power - 1}`);
-    }
-  }
-  s.push(`\n✅ **Ответ:**`);
-  s.push(`   f′(x) = ${derivStr}`);
-  return { text: s.join('\n'), _isDialog: true };
-}
-
-/* --- Math knowledge base --- */
-function matchMathKnowledge(q){
-  const x = q.trim().toLowerCase().replace(/[?!.]+$/,'').trim();
-
-  if(/что\s+такое\s+производн|объясни\s+производн|производная\s+это/i.test(x))
-    return { text: `**Производная** — это скорость изменения функции в точке.\n\n📌 **Определение:**\nПроизводная f′(x₀) = lim(h→0) [f(x₀+h) − f(x₀)] / h\n\n📌 **Геометрический смысл:**\nПроизводная — это угловой коэффициент касательной к графику в точке.\n\n📌 **Правила:**\n• (xⁿ)′ = n·xⁿ⁻¹\n• (sin x)′ = cos x\n• (cos x)′ = −sin x\n• (eˣ)′ = eˣ\n• (ln x)′ = 1/x\n• (C·f)′ = C·f′\n• (f+g)′ = f′ + g′\n\n📌 **Пример:**\nf(x) = 3x² + 2x → f′(x) = 6x + 2\n\n💡 Напиши мне функцию — решу производную!`, _isDialog:true };
-
-  if(/что\s+такое\s+интеграл|объясни\s+интеграл/i.test(x))
-    return { text: `**Интеграл** — операция, обратная производной.\n\n📌 **Неопределённый интеграл:**\n∫ f(x) dx = F(x) + C, где F′(x) = f(x)\n\n📌 **Определённый интеграл:**\n∫ₐᵇ f(x) dx — площадь под графиком на отрезке [a; b].\n\n📌 **Формула Ньютона-Лейбница:**\n∫ₐᵇ f(x) dx = F(b) − F(a)\n\n📌 **Основные интегралы:**\n• ∫ xⁿ dx = xⁿ⁺¹/(n+1) + C\n• ∫ 1/x dx = ln|x| + C\n• ∫ eˣ dx = eˣ + C\n• ∫ sin x dx = −cos x + C\n• ∫ cos x dx = sin x + C\n• ∫ dx = x + C`, _isDialog:true };
-
-  if(/теорема\s+пифагор|пифагор/i.test(x))
-    return { text: `**Теорема Пифагора**\n\nВ прямоугольном треугольнике квадрат гипотенузы равен сумме квадратов катетов:\n\na² + b² = c²\n\nгде **c** — гипотенуза, **a** и **b** — катеты.\n\n📌 **Пример:**\nКатеты 3 и 4. Гипотенуза?\nc² = 3² + 4² = 9 + 16 = 25\nc = √25 = **5**\n\n📌 **Обратная теорема:**\nЕсли a² + b² = c², то треугольник прямоугольный.\n\n💡 **Пифагоровы тройки:** (3,4,5), (5,12,13), (8,15,17), (7,24,25)`, _isDialog:true };
-
-  if(/площад[ья]\s+круг|площадь\s+окружност/i.test(x))
-    return { text: `**Площадь круга**\n\nS = π · r²\n\nгде r — радиус, π ≈ 3.14159\n\n📌 **Длина окружности:**\nC = 2πr\n\n📌 **Пример:**\nРадиус r = 5 см.\nS = π · 5² = 25π ≈ 78.54 см²\nC = 2π · 5 = 10π ≈ 31.42 см`, _isDialog:true };
-
-  if(/дискриминант/i.test(x))
-    return { text: `**Дискриминант** — величина, по которой определяют число корней квадратного уравнения ax² + bx + c = 0.\n\n**D = b² − 4ac**\n\n📌 **Три случая:**\n• D > 0 → **два разных корня**\nx = (−b ± √D) / (2a)\n• D = 0 → **один корень (кратный)**\nx = −b / (2a)\n• D < 0 → **действительных корней нет**\n\n📌 **Пример:**\nx² − 5x + 6 = 0\na=1, b=−5, c=6\nD = 25 − 24 = 1 > 0\nx₁ = (5+1)/2 = 3, x₂ = (5−1)/2 = 2`, _isDialog:true };
-
-  if(/квадратн\w+\s+уравнени/i.test(x))
-    return { text: `**Квадратное уравнение** — уравнение вида ax² + bx + c = 0, где a ≠ 0.\n\n📌 **Решение через дискриминант:**\nD = b² − 4ac\n• D > 0 → x = (−b ± √D)/(2a)\n• D = 0 → x = −b/(2a)\n• D < 0 → корней нет\n\n📌 **Теорема Виета:**\nx₁ + x₂ = −b/a\nx₁ · x₂ = c/a\n\n💡 Напиши уравнение — решу по шагам!`, _isDialog:true };
-
-  if(/теорема\s+виета|виет/i.test(x))
-    return { text: `**Теорема Виета**\n\nДля приведённого квадратного уравнения x² + px + q = 0:\n\nx₁ + x₂ = −p\nx₁ · x₂ = q\n\n📌 **Для общего вида ax² + bx + c = 0:**\nx₁ + x₂ = −b/a\nx₁ · x₂ = c/a\n\n📌 **Пример:**\nx² − 5x + 6 = 0\nx₁ + x₂ = 5, x₁·x₂ = 6 → x₁=2, x₂=3 ✔`, _isDialog:true };
-
-  if(/логарифм/i.test(x))
-    return { text: `**Логарифм** — показатель степени, в которую нужно возвести основание, чтобы получить число.\n\nlogₐ b = c  ⟺  aᶜ = b\n\n📌 **Свойства:**\n• logₐ(xy) = logₐx + logₐy\n• logₐ(x/y) = logₐx − logₐy\n• logₐ(xⁿ) = n·logₐx\n• logₐ 1 = 0\n• logₐ a = 1\n• logₐ b = log꜀ b / log꜀ a (переход к новому основанию)\n\n📌 **Обозначения:**\n• lg x = log₁₀ x — десятичный\n• ln x = logₑ x — натуральный (e ≈ 2.718)\n\n📌 **Пример:**\nlog₂ 8 = 3, потому что 2³ = 8`, _isDialog:true };
-
-  if(/синус|косинус|тангенс|тригонометр/i.test(x))
-    return { text: `**Тригонометрия** — раздел о соотношениях углов и сторон.\n\n📌 **В прямоугольном треугольнике:**\n• sin α = противолежащий катет / гипотенуза\n• cos α = прилежащий катет / гипотенуза\n• tg α = противолежащий / прилежащий = sin α / cos α\n• ctg α = cos α / sin α\n\n📌 **Основное тождество:**\nsin² α + cos² α = 1\n\n📌 **Таблица углов:**\n| α  | 0° | 30° | 45° | 60° | 90° |\n| sin | 0 | 1/2 | √2/2 | √3/2 | 1 |\n| cos | 1 | √3/2 | √2/2 | 1/2 | 0 |`, _isDialog:true };
-
-  if(/процент/i.test(x))
-    return { text: `**Проценты**\n\n1% = 1/100 = 0.01\n\n📌 **Формулы:**\n• Найти p% от числа A: A · p/100\n• Сколько % составляет A от B: A/B · 100%\n• Увеличить на p%: A · (1 + p/100)\n• Уменьшить на p%: A · (1 − p/100)\n\n📌 **Пример:**\n15% от 200 = 200 · 15/100 = **30**\nСколько % 40 от 200? 40/200 · 100% = **20%**`, _isDialog:true };
-
-  if(/степен|возведен/i.test(x))
-    return { text: `**Степени**\n\naⁿ = a · a · … · a (n раз)\n\n📌 **Свойства:**\n• aᵐ · aⁿ = aᵐ⁺ⁿ\n• aᵐ / aⁿ = aᵐ⁻ⁿ\n• (aᵐ)ⁿ = aᵐ·ⁿ\n• (ab)ⁿ = aⁿ · bⁿ\n• a⁰ = 1 (a ≠ 0)\n• a⁻ⁿ = 1 / aⁿ\n• a^(1/n) = ⁿ√a\n\n📌 **Пример:**\n2³ · 2² = 2⁵ = 32\n(3²)³ = 3⁶ = 729`, _isDialog:true };
-
-  if(/прост[ыо]е\s+числ/i.test(x))
-    return { text: `**Простое число** — натуральное число > 1, которое делится только на 1 и на себя.\n\n📌 **Первые простые числа:**\n2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97…\n\n📌 **Важно:** 1 — не простое. 2 — единственное чётное простое.\n\n📌 **Проверка:** число n простое, если у него нет делителей среди 2, 3, …, √n.`, _isDialog:true };
-
-  if(/\bнод\b|наибольший\s+общий\s+делитель/i.test(x))
-    return { text: `**НОД** — наибольший общий делитель двух чисел.\n\n📌 **Алгоритм Евклида:**\nпока b ≠ 0: (a, b) → (b, a mod b)\n\n📌 **Пример: НОД(48, 36)**\n48 mod 36 = 12\n36 mod 12 = 0\n**НОД = 12** ✔`, _isDialog:true };
-
-  if(/\bнок\b|наименьшее\s+общее\s+кратное/i.test(x))
-    return { text: `**НОК** — наименьшее общее кратное.\n\n📌 **Формула:**\nНОК(a, b) = |a·b| / НОД(a, b)\n\n📌 **Пример: НОК(12, 18)**\nНОД(12, 18) = 6\nНОК = 12·18 / 6 = **36** ✔`, _isDialog:true };
-
-  if(/факториал/i.test(x))
-    return { text: `**Факториал** n! — произведение всех натуральных чисел от 1 до n.\n\nn! = 1 · 2 · 3 · … · n\n\n📌 **Значения:**\n0! = 1\n1! = 1\n2! = 2\n3! = 6\n4! = 24\n5! = 120\n6! = 720\n7! = 5040\n\n📌 **Свойство:** n! = n · (n−1)!`, _isDialog:true };
-
-  if(/модул/i.test(x))
-    return { text: `**Модуль** числа |a| — расстояние от a до нуля.\n\n📌 **Определение:**\n|a| = a, если a ≥ 0\n|a| = −a, если a < 0\n\n📌 **Свойства:**\n• |a| ≥ 0\n• |ab| = |a|·|b|\n• |a + b| ≤ |a| + |b|\n\n📌 **Пример:**\n|−7| = 7\n|3| = 3`, _isDialog:true };
-
-  if(/функц/i.test(x) && !/производн/i.test(x))
-    return { text: `**Функция** — правило, по которому каждому x соответствует одно y.\n\nОбозначение: y = f(x)\n\n📌 **Виды функций:**\n• Линейная: y = kx + b (график — прямая)\n• Квадратичная: y = ax² + bx + c (парабола)\n• Обратная: y = k/x (гипербола)\n• Степенная: y = xⁿ\n• Показательная: y = aˣ\n• Логарифмическая: y = logₐ x\n\n📌 **Свойства:** область определения, область значений, чётность, монотонность, периодичность.`, _isDialog:true };
-
-  if(/систем[аы]\s+уравнени/i.test(x))
-    return { text: `**Система уравнений** — несколько уравнений, для которых ищут общее решение.\n\n📌 **Способы решения:**\n1. **Подстановка** — выразить одну переменную через другую\n2. **Сложение/вычитание** — сложить или вычесть уравнения\n3. **Графический** — найти точки пересечения графиков\n\n📌 **Пример:**\n{ x + y = 7\n{ x − y = 1\nСкладываем: 2x = 8 → x = 4, тогда y = 3.`, _isDialog:true };
-
-  if(/процент.*сложн|сложн.*процент/i.test(x))
-    return { text: `**Сложный процент** — начисление процентов на сумму с уже начисленными процентами.\n\nA = P · (1 + r/n)^(n·t)\n\nгде:\nP — начальная сумма\nr — годовая ставка (в долях)\nn — число начислений в год\nt — годы\n\n📌 **Пример:** 1000₽ под 10% годовых на 2 года\nA = 1000 · 1.1² = 1210₽`, _isDialog:true };
-
-  return null;
-}
-
-/* CHATS */
-function createChat(){
-  const c = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() };
-  state.chats.unshift(c); state.activeId = c.id;
-  store.saveChats(state.chats); store.setActive(c.id);
-  renderChatsList(); renderActiveChat(); updateLimitUI();
-  return c;
-}
-function getActiveChat(){ return state.chats.find(c => c.id === state.activeId); }
-function switchChat(id){ if(state.busy) return; state.activeId = id; store.setActive(id); renderChatsList(); renderActiveChat(); closeDrawer(); updateLimitUI(); hapticSel(); }
-async function deleteChat(id){
-  if(state.busy) return;
-  const chat = state.chats.find(c => c.id === id); if(!chat) return;
-  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm(`Удалить «${chat.title}»?`, res => r(res))) : confirm('Удалить?');
-  if(!ok) return;
-  state.chats = state.chats.filter(c => c.id !== id);
-  store.saveChats(state.chats);
-  if(state.activeId === id){ state.activeId = state.chats[0]?.id || null; if(!state.activeId) createChat(); else store.setActive(state.activeId); }
-  renderChatsList(); renderActiveChat(); updateLimitUI(); showToast('Чат удалён');
-}
-function togglePin(id){ const c = state.chats.find(x => x.id === id); if(!c) return; c.pinned = !c.pinned; store.saveChats(state.chats); renderChatsList(); haptic('light'); }
-function ensureChat(){ if(!state.activeId || !getActiveChat()){ if(state.chats.length) { state.activeId = state.chats[0].id; store.setActive(state.activeId); } else createChat(); } }
-function autoTitle(chat, text){ if(chat.title && chat.title !== 'Новый чат') return; chat.title = text.slice(0,40) || 'Новый чат'; }
-
-function renderChatsList(){
-  const list = $('chatsList'); list.innerHTML = '';
-  const q = state.searchQuery.toLowerCase().trim();
-  const filtered = state.chats.filter(c => !q || c.title.toLowerCase().includes(q) || c.messages.some(m => m.text.toLowerCase().includes(q)));
-  $('drawerCount').textContent = `Чатов: ${state.chats.length}`;
-  if(!filtered.length){ list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">${q?'Ничего не найдено':'Пока нет чатов'}</div>`; $('clearAllChatsBtn').style.display='none'; return; }
-  $('clearAllChatsBtn').style.display = state.chats.length > 1 && !q ? 'block' : 'none';
-  const sorted = [...filtered].sort((a,b) => { if(a.pinned !== b.pinned) return a.pinned?-1:1; return b.updatedAt - a.updatedAt; });
-  for(const c of sorted){
-    const item = document.createElement('div');
-    item.className = 'chat-item' + (c.id === state.activeId ? ' active' : '');
-    const last = c.messages[c.messages.length-1];
-    const sub = last ? (last.role === 'user' ? 'Вы: ' : 'AI: ') + last.text.slice(0,45) : 'Пустой чат';
-    item.innerHTML = `<div class="chat-item-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>${c.pinned?'<div class="pin-indicator"></div>':''}</div><div class="chat-item-text"><div class="chat-item-title">${esc(c.title)}</div><div class="chat-item-sub">${esc(sub)}</div></div><button class="chat-item-pin ${c.pinned?'pinned':''}"><svg viewBox="0 0 24 24"><path d="M12 17v5M9 10.76V4h6v6.76l2 3.24H7z"/></svg></button><button class="chat-item-del"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>`;
-    item.addEventListener('click', e => { if(e.target.closest('button')) return; switchChat(c.id); });
-    item.querySelector('.chat-item-del').addEventListener('click', e => { e.stopPropagation(); deleteChat(c.id); });
-    item.querySelector('.chat-item-pin').addEventListener('click', e => { e.stopPropagation(); togglePin(c.id); });
-    list.appendChild(item);
-  }
-}
-
-function renderActiveChat(){
-  chatEl.innerHTML = '';
-  const chat = getActiveChat();
-  if(!chat || !chat.messages.length){ renderEmptyState(); updateLimitUI(); return; }
-  for(let i = 0; i < chat.messages.length; i++){
-    const m = chat.messages[i];
-    if(m.role === 'user') appendUserMessage(m.text, false, i, m.attachment);
-    else appendAIMessage(m, false, i);
-  }
-  scrollDown(); updateLimitUI();
-}
-
-function renderEmptyState(){
-  const name = state.user?.name?.split(' ')[0] || '';
-  const hello = name ? `Привет, ${name}!` : 'Привет!';
-  const chips = ['Реши 2x + 5 = 15', 'Реши x² − 5x + 6 = 0', 'Производная x³ + 2x', 'Что такое дискриминант?', 'Теорема Пифагора'];
-  const html = chips.map(c => `<button class="empty-chip" data-q="${escA(c)}"><span class="dot"></span>${esc(c)}</button>`).join('');
-  chatEl.innerHTML = `<div class="empty"><svg class="empty-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Я решаю уравнения и производные, объясняю шаг за шагом и помогаю понять математику.</div><div class="empty-chips">${html}</div></div>`;
-  chatEl.querySelectorAll('.empty-chip').forEach(b => b.addEventListener('click', () => { haptic('light'); handleSend(b.getAttribute('data-q')); }));
-}
-
-/* FILES */
+/* ============== FILES ============== */
 async function handleFileUpload(file){
   if(!file) return;
   if(file.size > 10*1024*1024){ showToast('Файл больше 10 МБ'); return; }
@@ -1074,31 +1810,23 @@ async function handleFileUpload(file){
   const btn = $('attachBtn'); btn.classList.add('loading'); haptic('light');
   try{
     let text = '', url = null, kind = 'file';
-    if(type === 'application/pdf' || name.toLowerCase().endsWith('.pdf')){
-      showToast('Обрабатываю PDF…');
-      text = await extractPdfText(file); kind = 'pdf';
-    } else if(type.startsWith('image/')){
-      url = URL.createObjectURL(file); kind = 'image';
-      showToast('Распознаю текст…');
-      try{ text = await extractImageText(file); if(text) showToast('Текст распознан ✓'); }catch(e){ text = ''; }
-    } else { showToast('Только PDF и картинки'); btn.classList.remove('loading'); return; }
+    if(type === 'application/pdf' || name.toLowerCase().endsWith('.pdf')){ showToast('Обрабатываю PDF…'); text = await extractPdfText(file); kind = 'pdf'; }
+    else if(type.startsWith('image/')){ url = URL.createObjectURL(file); kind = 'image'; showToast('Распознаю текст…'); try{ text = await extractImageText(file); }catch(e){ text=''; } }
+    else { showToast('Только PDF и картинки'); btn.classList.remove('loading'); return; }
     btn.classList.remove('loading');
     ensureChat();
     const chat = getActiveChat();
     const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
     const ts = Date.now();
-    const fm = { role:'user', text: kind==='image'?'📷 Изображение':`📄 ${name}`, attachment:{ kind, name, url, extractedText: text||'' }, ts };
+    const fm = { role:'user', text: kind==='image'?'Изображение':`Документ: ${name}`, attachment:{ kind, name, url, extractedText: text||'' }, ts };
     chat.messages.push(fm); chat.updatedAt = ts;
     if(chat.title === 'Новый чат') chat.title = name.slice(0,40);
     store.saveChats(state.chats);
     appendUserMessage(fm.text, true, chat.messages.length-1, fm.attachment);
     renderChatsList();
-    if(text && text.trim().length > 10){
-      setTimeout(() => handleSend(`Проверь это задание и объясни решение:\n\n${text.slice(0,2000)}`), 400);
-    } else showToast('Не удалось распознать текст');
-  }catch(e){
-    btn.classList.remove('loading'); showToast('Ошибка обработки');
-  }
+    if(text && text.trim().length > 10) setTimeout(() => handleSend(`Проверь это задание и объясни решение:\n\n${text.slice(0,2000)}`), 400);
+    else showToast('Не удалось распознать текст');
+  }catch(e){ btn.classList.remove('loading'); showToast('Ошибка обработки'); }
 }
 async function extractPdfText(file){
   if(!window.pdfjsLib) throw new Error('pdf.js');
@@ -1117,11 +1845,7 @@ async function extractImageText(file){
   if(!window.Tesseract) throw new Error('tesseract');
   let w = null;
   try{
-    w = await Tesseract.createWorker('rus+eng', 1, {
-      langPath: 'https://tessdata.projectnaptha.com/4.0.0',
-      workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/worker.min.js',
-      corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0'
-    });
+    w = await Tesseract.createWorker('rus+eng', 1, { langPath: 'https://tessdata.projectnaptha.com/4.0.0', workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/worker.min.js', corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0' });
     const r = await w.recognize(file);
     const t = (r?.data?.text || '').trim();
     await w.terminate();
@@ -1129,179 +1853,12 @@ async function extractImageText(file){
   }catch(e){ if(w){ try{ await w.terminate(); }catch(_){} } throw e; }
 }
 
-function appendUserMessage(text, animate = true, idx = -1, att = null){
-  const div = document.createElement('div'); div.className = 'msg user';
-  if(!animate) div.style.animation = 'none';
-  let ah = '';
-  if(att){
-    if(att.kind === 'image' && att.url) ah = `<div class="file-preview"><img src="${escA(att.url)}" alt=""></div>`;
-    else if(att.kind === 'pdf') ah = `<div class="file-preview"><div class="file-preview-file"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg><span>${esc(att.name)}</span></div></div>`;
-  }
-  div.innerHTML = `${ah}<div class="bubble">${esc(text)}</div><button class="msg-edit-btn" data-idx="${idx}">✎ Изменить</button>`;
-  chatEl.appendChild(div);
-  div.querySelector('.msg-edit-btn').addEventListener('click', () => editUserMessage(idx));
-  scrollDown();
-}
-
-async function editUserMessage(idx){
-  const chat = getActiveChat();
-  if(!chat || idx < 0 || !chat.messages[idx]) return;
-  const m = chat.messages[idx];
-  const nt = prompt('Изменить сообщение:', m.text);
-  if(!nt || !nt.trim()) return;
-  if(hasProfanity(nt)){ showToast('Недопустимо'); return; }
-  const wait = checkLimit();
-  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
-  chat.messages = chat.messages.slice(0, idx);
-  store.saveChats(state.chats); renderActiveChat(); handleSend(nt.trim());
-}
-
-function appendAIMessage(msg, animate = true, idx = -1){
-  const div = document.createElement('div'); div.className = 'msg ai';
-  if(!animate) div.style.animation = 'none';
-  const src = msg.source ? `<a class="source" href="${escA(msg.source.url)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>${esc(msg.source.title)}</a>` : '';
-  div.innerHTML = `<div class="avatar"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div><div class="body"><div class="name">Orbita AI</div><div class="text"><span class="typed"></span></div>${src}</div>`;
-  chatEl.appendChild(div);
-  const typed = div.querySelector('.typed');
-  if(!animate){ typed.innerHTML = renderText(msg.text); if(!msg._blocked) appendActions(div.querySelector('.body'), msg, idx); }
-  scrollDown();
-  return typed;
-}
-
-function appendActions(body, msg, idx){
-  const acts = document.createElement('div'); acts.className = 'msg-actions';
-  const sp = state.plus ? `<button class="msg-act speak-act"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/></svg></button>` : '';
-  acts.innerHTML = sp + `<button class="msg-act copy-act"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button><button class="msg-act regen"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>`;
-  body.appendChild(acts);
-  const sb = acts.querySelector('.speak-act');
-  if(sb) sb.onclick = () => speak(msg.text, sb);
-  acts.querySelector('.copy-act').onclick = () => copyText(msg.text);
-  acts.querySelector('.regen').onclick = () => regenerate(idx);
-}
-
-async function copyText(t){
-  try{ await navigator.clipboard.writeText(t); showToast('Скопировано'); }
-  catch(e){ const ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); showToast('Скопировано'); }catch(_){} document.body.removeChild(ta); }
-}
-
-async function regenerate(idx){
-  if(state.busy) return;
-  const chat = getActiveChat(); if(!chat || idx < 0) return;
-  let uIdx = -1; for(let i = idx-1; i >= 0; i--) if(chat.messages[i].role === 'user'){ uIdx = i; break; }
-  if(uIdx < 0) return;
-  if(isLimitReached(chat)){ openPlusModal(); return; }
-  const wait = checkLimit();
-  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
-  const q = chat.messages[uIdx].text;
-  chat.messages = chat.messages.slice(0, uIdx);
-  store.saveChats(state.chats); renderActiveChat(); await handleSend(q);
-}
-
-function showTyping(){
-  let el = document.querySelector('.typing');
-  if(!el){ el = document.createElement('div'); el.className = 'typing'; el.innerHTML = `<div class="avatar"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div><div class="dots"><span></span><span></span><span></span></div>`; chatEl.appendChild(el); }
-  el.classList.add('active'); scrollDown();
-}
-function hideTyping(){ const el = document.querySelector('.typing'); if(el) el.classList.remove('active'); }
-
-async function typeText(el, text){
-  const cur = document.createElement('span'); cur.className = 'cursor'; el.after(cur);
-  const delay = Math.min(1800, Math.max(400, text.length*12))/text.length;
-  let buf = '';
-  for(let i = 0; i < text.length; i++){
-    if(state.abortRequested){ el.innerHTML = renderText(text); cur.remove(); return; }
-    buf += text[i]; el.innerHTML = renderText(buf);
-    if(i % 5 === 0) scrollDown();
-    await sleep(delay);
-  }
-  cur.remove(); scrollDown();
-}
-
-/* DIALOGS */
-function matchDialog(q){
-  const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
-  const name = state.user?.name?.split(' ')[0] || '';
-  if(/^(привет|прив|здравствуй|хай|hi|hello|hey)/i.test(x)) return name ? `Привет, ${name}! Готов помочь с математикой. Что решаем?` : 'Привет! Готов помочь с математикой. Что решаем?';
-  if(/как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name ? `Всё отлично, ${name}!` : 'Всё отлично!';
-  if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи! Удачи в учёбе 📚';
-  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Рад помочь 😊';
-  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `Я **Orbita AI** — твой репетитор по математике от компании **ORT** 🛰️\n\nРешаю уравнения, производные, объясняю теорию.`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `Вот чем я могу помочь:\n\n🧮 **Решаю уравнения** — линейные и квадратные, пошагово\n📈 **Нахожу производные** многочленов\n➕ **Считаю примеры:** арифметика, проценты, степени\n📚 **Объясняю теорию:** производная, интеграл, дискриминант, теорема Пифагора, логарифмы, тригонометрия и многое другое\n📄 **Читаю PDF** и проверяю задания оттуда\n📷 **Распознаю текст с картинок**\n🕐 **Скажу время**\n🎤 **Распознаю голос**\n🔊 **Читаю ответы** (Plus)`;
-  if(/^(кто\s+тебя\s+создал|кто\s+разработал)/i.test(x)) return `Меня создала компания **ORT**`;
-  if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
-  if(/какой\s+сегодня\s+день/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}`;
-  if(/что\s+такое\s+plus|подписк/i.test(x)) return state.plus ? 'У тебя **Plus** активен! 🎉' : `**Orbita Plus** — без лимитов и с голосовыми ответами. Аккаунт → Orbita Plus.`;
-  if(/как\s+решать|как\s+решить\s+уравнени/i.test(x)) return `Чтобы решить уравнение:\n\n1. Перенеси все слагаемые с переменной в одну сторону, числа — в другую\n2. Приведи подобные слагаемые\n3. Раздели обе части на коэффициент при x\n4. Сделай проверку\n\n💡 Просто напиши мне уравнение — решу по шагам!`;
-  return null;
-}
-
-async function generateAnswer(query, chat){
-  if(hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
-
-  // 1. Уравнение
-  const eq = solveEquation(query);
-  if(eq){ await sleep(300); return eq; }
-
-  // 2. Производная
-  const deriv = solveDerivative(query);
-  if(deriv){ await sleep(300); return deriv; }
-
-  // 3. Арифметика
-  const m = query.trim().toLowerCase().match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
-  if(m){
-    const a = parseFloat(m[1].replace(',','.')), b = parseFloat(m[3].replace(',','.')), op = m[2];
-    let r;
-    switch(op){
-      case '+': r = a+b; break;
-      case '-': r = a-b; break;
-      case '*': case 'x': case '×': r = a*b; break;
-      case '/': case '÷':
-        if(b === 0) return { text: 'На ноль делить нельзя ❌', _isDialog: true };
-        r = a/b; break;
-    }
-    return { text: `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`, _isDialog: true };
-  }
-
-  // 4. НОД/НОК двух чисел — быстрый расчёт
-  const nm = query.toLowerCase().match(/(?:нод|нок)\s*\(?\s*(\d+)\s*[,;\s]+\s*(\d+)/i);
-  if(nm){
-    const a = parseInt(nm[1]), b = parseInt(nm[2]);
-    if(/нок/i.test(query)){
-      const l = lcm(a,b);
-      return { text: `**НОК(${a}, ${b}) = ${l}**\n\n📌 НОД(${a}, ${b}) = ${gcd(a,b)}\n📌 Формула: НОК = a·b / НОД`, _isDialog:true };
-    }
-    const g = gcd(a,b);
-    return { text: `**НОД(${a}, ${b}) = ${g}**\n\n📌 Проверка: ${a}/${g} = ${a/g}, ${b}/${g} = ${b/g}`, _isDialog:true };
-  }
-
-  // 5. Факториал
-  const fm = query.toLowerCase().match(/(\d+)\s*!|факториал\s+(\d+)/);
-  if(fm){
-    const n = parseInt(fm[1] || fm[2]);
-    if(n >= 0 && n <= 20){
-      let f = 1; for(let i = 2; i <= n; i++) f *= i;
-      return { text: `**${n}! = ${f}**\n\n📌 ${n}! = 1·2·3·…·${n}`, _isDialog:true };
-    }
-  }
-
-  // 6. База знаний по математике
-  const kb = matchMathKnowledge(query);
-  if(kb){ await sleep(350); return kb; }
-
-  // 7. Диалоги
-  const d = matchDialog(query);
-  if(d){ await sleep(400); return { text: d, _isDialog: true }; }
-
-  // 8. Не понял
-  return { text: `🤔 К сожалению, не могу разобрать запрос «${query}».\n\nПопробуй так:\n• **Уравнение:** _Реши 2x + 5 = 15_\n• **Квадратное:** _Реши x² − 5x + 6 = 0_\n• **Производная:** _Производная x³ + 2x_\n• **Теория:** _Что такое дискриминант?_\n• **Арифметика:** _25 × 4_`, _isDialog: true };
-}
-
-/* SEND */
+/* ============== SEND ============== */
 function updateSendBtn(){
-  if(state.busy){ sendBtn.disabled = false; sendBtn.classList.add('stop'); sendBtn.classList.remove('cooldown'); sendIcon.innerHTML = '<rect x="6" y="6" width="12" height="12" rx="2"/>'; return; }
+  if(state.busy){ sendBtn.disabled = false; sendBtn.classList.add('stop'); sendBtn.classList.remove('cooldown'); sendIconEl.innerHTML = '<svg><use href="#i-stop"/></svg>'; return; }
   if(state.rateLimit){ sendBtn.disabled = true; sendBtn.classList.remove('stop'); sendBtn.classList.add('cooldown'); return; }
   sendBtn.classList.remove('stop','cooldown');
-  sendIcon.innerHTML = '<path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/>';
+  sendIconEl.innerHTML = '<svg><use href="#i-send"/></svg>';
   sendBtn.disabled = inputEl.value.trim().length === 0;
 }
 
@@ -1345,7 +1902,7 @@ async function handleSend(textOverride){
     appendUserMessage(text, true, chat.messages.length-1);
     renderChatsList();
     await sleep(350);
-    const dt = prev ? `🔄 **Ты уже задавал этот вопрос**\n\nВот мой прошлый ответ:\n\n${prev.text}` : `🔄 **Ты уже задавал этот вопрос** — смотри выше 👆`;
+    const dt = prev ? `${ico('refresh')} **Ты уже задавал этот вопрос**\n\nВот мой прошлый ответ:\n\n${prev.text}` : `${ico('refresh')} **Ты уже задавал этот вопрос** — смотри выше`;
     const dm = { role:'ai', text: dt, ts: Date.now()+1 };
     chat.messages.push(dm); chat.updatedAt = Date.now(); store.saveChats(state.chats);
     appendAIMessage(dm, false, chat.messages.length-1);
@@ -1384,15 +1941,18 @@ async function handleSend(textOverride){
   const lastAi = chatEl.lastElementChild;
   if(lastAi?.classList.contains('ai')){ const body = lastAi.querySelector('.body'); if(body && !body.querySelector('.msg-actions')) appendActions(body, aiMsg, chat.messages.length-1); }
 
+  // Auto-open graph if requested
+  if(result._graph){ setTimeout(() => { openGraph(result._graph); }, 300); }
+
   state.busy = false; state.abortRequested = false;
   updateSendBtn(); updateLimitUI(); haptic('success');
 }
 
-/* DRAWER */
+/* ============== DRAWER ============== */
 function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); lockScroll(true); showBackButton(closeDrawer); haptic('light'); }
 function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); }
 
-/* ACCOUNT */
+/* ============== ACCOUNT ============== */
 function applyPlusUI(){
   const b = $('headerPlusBadge'), bm = $('brandMark'), av = $('drawerAvatar'), ap = $('avatarPreview');
   if(state.plus){ b.style.display = 'inline-flex'; bm.classList.add('plus'); av.classList.add('plus'); ap.classList.add('plus'); }
@@ -1455,7 +2015,191 @@ async function clearAllData(){
   closeAccount(); location.reload();
 }
 
-/* ONBOARDING */
+/* ============== TRAINER ============== */
+let trainer = { topic:'linear', diff:1, task:null, answer:null, right:0, wrong:0, streak:0 };
+function genTrainerTask(){
+  const {topic, diff} = trainer;
+  const R = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+  if(topic === 'linear'){
+    const a = R(1, diff*3+2), b = R(-5*diff, 10*diff), c = R(-10*diff, 20*diff);
+    const x = (c - b)/a;
+    // Make integer solutions when possible
+    const xInt = Math.round(x);
+    const cAdj = a*xInt + b;
+    return { text: `${a}x ${b>=0?'+':'-'} ${Math.abs(b)} = ${cAdj}`, answer: xInt };
+  }
+  if(topic === 'quadratic'){
+    const r1 = R(-5*diff, 5*diff), r2 = R(-5*diff, 5*diff);
+    const b = -(r1+r2), c = r1*r2;
+    const eq = `x^2 ${b>=0?'+':'-'} ${Math.abs(b)}x ${c>=0?'+':'-'} ${Math.abs(c)} = 0`;
+    const ans = r1 === r2 ? [r1] : [r1, r2].sort((a,b)=>a-b);
+    return { text: eq, answer: ans };
+  }
+  if(topic === 'arithmetic'){
+    const a = R(10*diff, 99*diff), b = R(2, 20*diff);
+    const op = ['+','-','×'][R(0,2)];
+    let ans;
+    if(op === '+') ans = a+b;
+    else if(op === '-') ans = a-b;
+    else ans = a*b;
+    return { text: `${a} ${op} ${b}`, answer: ans };
+  }
+  if(topic === 'derivative'){
+    const a = R(1, 5), n = R(2, diff+2);
+    const text = `Производная от ${a}x^${n}`;
+    const ans = `${a*n}x^${n-1}`;
+    return { text, answer: ans, _free: true };
+  }
+  return { text:'2x + 5 = 15', answer:5 };
+}
+function startTrainerTask(){
+  trainer.task = genTrainerTask();
+  $('trainerTask').textContent = trainer.task.text;
+  $('trainerInput').value = '';
+  $('trainerFeedback').classList.remove('show');
+}
+function checkTrainer(){
+  if(!trainer.task) return;
+  const inp = $('trainerInput').value.trim().replace(/\s+/g,'').replace(/,/g,'.').toLowerCase();
+  if(!inp){ showToast('Введи ответ'); return; }
+  const fb = $('trainerFeedback');
+  const ans = trainer.task.answer;
+  let correct = false;
+  if(Array.isArray(ans)){
+    const userNums = inp.split(/[;,\s]+/).map(s => parseFloat(s.replace(',','.'))).filter(n => !isNaN(n));
+    correct = userNums.length === ans.length && ans.every(a => userNums.some(u => Math.abs(u-a) < 1e-6));
+  } else if(typeof ans === 'number'){
+    const u = parseFloat(inp);
+    correct = !isNaN(u) && Math.abs(u - ans) < 1e-6;
+  } else {
+    // string compare for derivative
+    correct = inp.replace(/\^/g,'').replace(/\*/g,'') === String(ans).replace(/\^/g,'').replace(/\*/g,'').toLowerCase();
+  }
+  if(correct){
+    trainer.right++; trainer.streak++;
+    fb.className = 'trainer-feedback ok show';
+    fb.innerHTML = `${ico('check-circle')}<span>Верно! ${trainer.streak >= 3 ? `Серия ${trainer.streak}!` : ''}</span>`;
+    haptic('success');
+  } else {
+    trainer.wrong++; trainer.streak = 0;
+    fb.className = 'trainer-feedback bad show';
+    const ansStr = Array.isArray(ans) ? ans.join(', ') : ans;
+    fb.innerHTML = `${ico('x-circle')}<span>Неверно. Правильный ответ: <b>${ansStr}</b></span>`;
+    haptic('error');
+  }
+  $('tRight').textContent = trainer.right;
+  $('tWrong').textContent = trainer.wrong;
+  $('tStreak').textContent = trainer.streak;
+}
+function openTrainer(){ $('trainerOverlay').classList.add('active'); if(!trainer.task) startTrainerTask(); haptic('light'); }
+function closeTrainer(){ $('trainerOverlay').classList.remove('active'); }
+
+/* ============== CHEAT SHEET ============== */
+const CHEATS = {
+  trig: [
+    {n:'Основное тождество', f:'sin²α + cos²α = 1'},
+    {n:'Тангенс', f:'tg α = sin α / cos α'},
+    {n:'Котангенс', f:'ctg α = cos α / sin α'},
+    {n:'Сумма углов', f:'sin(α+β) = sin α cos β + cos α sin β'},
+    {n:'Сумма углов', f:'cos(α+β) = cos α cos β − sin α sin β'},
+    {n:'Двойной угол', f:'sin 2α = 2 sin α cos α'},
+    {n:'Двойной угол', f:'cos 2α = cos²α − sin²α'},
+    {n:'Понижение', f:'sin²α = (1 − cos 2α)/2'},
+    {n:'Понижение', f:'cos²α = (1 + cos 2α)/2'},
+    {n:'Значения 30°', f:'sin 30° = 1/2, cos 30° = √3/2'},
+    {n:'Значения 45°', f:'sin 45° = cos 45° = √2/2'},
+    {n:'Значения 60°', f:'sin 60° = √3/2, cos 60° = 1/2'}
+  ],
+  der: [
+    {n:'Степень', f:'(xⁿ)′ = n · xⁿ⁻¹'},
+    {n:'Константа', f:'(C)′ = 0'},
+    {n:'Синус', f:'(sin x)′ = cos x'},
+    {n:'Косинус', f:'(cos x)′ = −sin x'},
+    {n:'Тангенс', f:'(tg x)′ = 1 / cos²x'},
+    {n:'Экспонента', f:'(eˣ)′ = eˣ'},
+    {n:'Логарифм', f:'(ln x)′ = 1 / x'},
+    {n:'Корень', f:'(√x)′ = 1 / (2√x)'},
+    {n:'Произведение', f:'(uv)′ = u′v + uv′'},
+    {n:'Частное', f:'(u/v)′ = (u′v − uv′)/v²'},
+    {n:'Сложная', f:'(f(g(x)))′ = f′(g) · g′(x)'}
+  ],
+  int: [
+    {n:'Степень', f:'∫ xⁿ dx = xⁿ⁺¹/(n+1) + C'},
+    {n:'Обратная', f:'∫ dx / x = ln|x| + C'},
+    {n:'Экспонента', f:'∫ eˣ dx = eˣ + C'},
+    {n:'Синус', f:'∫ sin x dx = −cos x + C'},
+    {n:'Косинус', f:'∫ cos x dx = sin x + C'},
+    {n:'Константа', f:'∫ C dx = Cx + C₁'},
+    {n:'Ньютон-Лейбниц', f:'∫ₐᵇ f dx = F(b) − F(a)'}
+  ],
+  log: [
+    {n:'Определение', f:'logₐ b = c ⟺ aᶜ = b'},
+    {n:'Произведение', f:'logₐ(xy) = logₐx + logₐy'},
+    {n:'Частное', f:'logₐ(x/y) = logₐx − logₐy'},
+    {n:'Степень', f:'logₐ(xⁿ) = n · logₐx'},
+    {n:'Единица', f:'logₐ 1 = 0'},
+    {n:'Основание', f:'logₐ a = 1'},
+    {n:'Переход', f:'logₐ b = log꜀ b / log꜀ a'},
+    {n:'Основное', f:'a^(logₐ b) = b'}
+  ],
+  short: [
+    {n:'Квадрат суммы', f:'(a+b)² = a² + 2ab + b²'},
+    {n:'Квадрат разности', f:'(a−b)² = a² − 2ab + b²'},
+    {n:'Разность квадратов', f:'a² − b² = (a−b)(a+b)'},
+    {n:'Куб суммы', f:'(a+b)³ = a³ + 3a²b + 3ab² + b³'},
+    {n:'Куб разности', f:'(a−b)³ = a³ − 3a²b + 3ab² − b³'},
+    {n:'Сумма кубов', f:'a³ + b³ = (a+b)(a² − ab + b²)'},
+    {n:'Разность кубов', f:'a³ − b³ = (a−b)(a² + ab + b²)'}
+  ]
+};
+function renderCheat(tab){
+  document.querySelectorAll('.cheat-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  const body = $('cheatBody');
+  const rows = CHEATS[tab] || [];
+  body.innerHTML = rows.map(r => `<div class="cheat-row"><span class="cheat-name">${esc(r.n)}</span><span class="cheat-formula">${esc(r.f)}</span></div>`).join('');
+}
+function openCheat(){ $('cheatOverlay').classList.add('active'); renderCheat('trig'); haptic('light'); }
+function closeCheat(){ $('cheatOverlay').classList.remove('active'); }
+
+/* ============== GRAPH ============== */
+function openGraph(expr){
+  $('graphOverlay').classList.add('active');
+  if(expr) $('graphInput').value = 'y = ' + expr;
+  setTimeout(buildGraph, 100);
+  haptic('light');
+}
+function closeGraph(){ $('graphOverlay').classList.remove('active'); }
+function buildGraph(){
+  const raw = $('graphInput').value.trim();
+  if(!raw){ showToast('Введи функцию'); return; }
+  // Extract expression after y=
+  let expr = raw.replace(/^y\s*=/i,'').replace(/^f\(x\)\s*=/i,'').trim();
+  // Convert ^ to JS **
+  let js = expr.replace(/\^/g,'**').replace(/\bpi\b/gi,'Math.PI').replace(/\be\b/g,'Math.E');
+  // Insert * between number and x
+  js = js.replace(/(\d)([x(])/g,'$1*$2').replace(/([x)])(\d)/g,'$1*$2').replace(/\)(\()/g,')*(').replace(/x(\()/g,'x*(').replace(/\)x/g,')*x');
+  // Functions
+  const fn = new Function('x', `with(Math){ return ${js}; }`);
+  try{
+    const f = fn(1);
+    if(typeof f !== 'number') throw new Error();
+  }catch(e){ showToast('Не могу разобрать выражение'); return; }
+  const container = $('graphContainer');
+  container.innerHTML = '';
+  try{
+    functionPlot({
+      target: container,
+      width: container.clientWidth,
+      height: 320,
+      grid: true,
+      xAxis: {domain:[-10,10]},
+      yAxis: {domain:[-10,10]},
+      data: [{ fn: js, color: '#2563eb', graphType: 'polyline' }]
+    });
+  }catch(e){ showToast('Ошибка построения'); }
+}
+
+/* ============== ONBOARDING ============== */
 let onbSlide = 0;
 function onbGoTo(i){ onbSlide = Math.max(0, Math.min(2, i)); $('onbTrack').style.transform = `translateX(-${onbSlide*100}%)`; document.querySelectorAll('.onb-dot').forEach(d => d.classList.toggle('active', +d.dataset.slide === onbSlide)); }
 function finishOnboarding(){
@@ -1467,7 +2211,7 @@ function finishOnboarding(){
   lockScroll(false); initApp();
 }
 
-/* INIT */
+/* ============== INIT ============== */
 function initApp(){
   state.chats = store.getChats();
   state.activeId = store.getActive();
@@ -1480,7 +2224,7 @@ function initApp(){
   initVoice();
 }
 
-/* EVENTS */
+/* ============== EVENTS ============== */
 inputEl.addEventListener('input', () => { updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value); });
 inputEl.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
 sendBtn.addEventListener('click', () => {
@@ -1518,13 +2262,47 @@ $('plusRequestBtn').addEventListener('click', requestPlus);
 $('plusCloseBtn').addEventListener('click', closePlusModal);
 $('plusModalBg').addEventListener('click', e => { if(e.target === $('plusModalBg')) closePlusModal(); });
 $('limitBannerBtn').addEventListener('click', openPlusModal);
+$('printBtn').addEventListener('click', () => { closeAccount(); setTimeout(() => window.print(), 300); });
+$('kbBtn').addEventListener('click', () => { $('mathKb').classList.toggle('show'); hapticSel(); });
+document.querySelectorAll('#mathKb button').forEach(b => b.addEventListener('click', () => {
+  const ins = b.dataset.ins;
+  const start = inputEl.selectionStart ?? inputEl.value.length;
+  const end = inputEl.selectionEnd ?? inputEl.value.length;
+  inputEl.value = inputEl.value.slice(0,start) + ins + inputEl.value.slice(end);
+  inputEl.focus();
+  const pos = start + ins.length;
+  try{ inputEl.setSelectionRange(pos, pos); }catch(e){}
+  updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value);
+}));
+$('toolTrainer').addEventListener('click', () => { closeDrawer(); setTimeout(openTrainer, 200); });
+$('toolCheat').addEventListener('click', () => { closeDrawer(); setTimeout(openCheat, 200); });
+$('toolGraph').addEventListener('click', () => { closeDrawer(); setTimeout(() => openGraph(), 200); });
+$('toolKeyboard').addEventListener('click', () => { closeDrawer(); $('mathKb').classList.add('show'); setTimeout(() => inputEl.focus(), 100); });
+$('trainerClose').addEventListener('click', closeTrainer);
+$('trainerOverlay').addEventListener('click', e => { if(e.target === $('trainerOverlay')) closeTrainer(); });
+document.querySelectorAll('#topicGrid .topic-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#topicGrid .topic-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active'); trainer.topic = b.dataset.topic; startTrainerTask(); hapticSel();
+}));
+document.querySelectorAll('#diffRow .diff-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#diffRow .diff-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active'); trainer.diff = +b.dataset.diff; startTrainerTask(); hapticSel();
+}));
+$('trainerCheck').addEventListener('click', checkTrainer);
+$('trainerNext').addEventListener('click', startTrainerTask);
+$('trainerInput').addEventListener('keydown', e => { if(e.key === 'Enter') checkTrainer(); });
+$('cheatClose').addEventListener('click', closeCheat);
+$('cheatOverlay').addEventListener('click', e => { if(e.target === $('cheatOverlay')) closeCheat(); });
+$('cheatTabs').addEventListener('click', e => { const t = e.target.closest('.cheat-tab'); if(t) renderCheat(t.dataset.tab); });
+$('graphClose').addEventListener('click', closeGraph);
+$('graphOverlay').addEventListener('click', e => { if(e.target === $('graphOverlay')) closeGraph(); });
+$('graphBuild').addEventListener('click', buildGraph);
+$('graphInput').addEventListener('keydown', e => { if(e.key === 'Enter') buildGraph(); });
 
-/* BOOT */
+/* ============== BOOT ============== */
 window.addEventListener('load', async () => {
   const draft = localStorage.getItem(KEYS.DRAFT);
   if(draft){ inputEl.value = draft; updateSendBtn(); }
-  const bioAvail = await initBiometric();
-  if(bioAvail && store.getUser()?.bio){ const ok = await showBioGate(); if(!ok) return; }
   await checkAccess();
   if(gateState === 'approved'){
     state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() };
@@ -1546,11 +2324,7 @@ window.addEventListener('load', async () => {
     try{
       const res = await fetch(`${API_URL}/status/${uId}`);
       const data = await res.json();
-      if(data.plus && !state.plus){
-        state.plus = true;
-        applyPlusUI(); updateLimitUI(); renderActiveChat();
-        showToast('Plus активирован!'); haptic('success');
-      }
+      if(data.plus && !state.plus){ state.plus = true; applyPlusUI(); updateLimitUI(); renderActiveChat(); showToast('Plus активирован!'); haptic('success'); }
     }catch(e){}
   }, 15000);
 });
