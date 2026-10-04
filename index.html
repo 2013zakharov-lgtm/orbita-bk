@@ -5,12 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Orbita AI — Математика</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/function-plot@1.24.4/dist/function-plot.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--success:#16a34a;--warn:#f59e0b;--white:#fff;--overlay:rgba(15,23,42,.45)}
+  @media (prefers-color-scheme: dark){
+    :root{--accent:#3b82f6;--accent-dark:#2563eb;--accent-deep:#93c5fd;--accent-light:#1e3a8a;--accent-soft:#1e293b;--accent-mid:#60a5fa;--ink:#f1f5f9;--ink-soft:#cbd5e1;--bg:#0f172a;--surface:#1e293b;--border:#334155;--muted:#94a3b8;--danger:#f87171;--danger-soft:#7f1d1d;--success:#4ade80;--warn:#fbbf24;--white:#1e293b;--overlay:rgba(0,0,0,.6)}
+    .msg.user .bubble{background:var(--accent-soft);color:var(--ink)}
+    .msg.ai .text code{background:var(--bg)}
+    .msg.ai .text pre{background:var(--bg)!important;color:var(--ink)!important}
+    .empty-chip{background:var(--bg)}
+    .drawer-tool{background:var(--bg)}
+    .quick-menu button:active{background:var(--accent-light);color:var(--ink)}
+    .trainer-feedback.ok{background:#14532d;color:#bbf7d0}
+    .trainer-feedback.bad{background:#7f1d1d;color:#fecaca}
+    .plus-modal{background:var(--surface)}
+    .modal{background:var(--bg)}
+    .trainer-panel,.cheat-panel,.graph-panel{background:var(--surface)}
+    .trainer-input,.field-input{background:var(--bg);color:var(--ink)}
+    .math-kb button{background:var(--bg);color:var(--ink)}
+  }
   html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
   body{position:fixed;inset:0}
   body.locked{overflow:hidden}
@@ -61,8 +77,14 @@
   .msg.ai .text .inl-ok{color:var(--success)}
   .msg.ai .text .inl-warn{color:var(--warn)}
   .msg.ai .text .inl-err{color:var(--danger)}
-  .msg.ai .source{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 11px;background:var(--accent-soft);border:1px solid var(--accent-light);border-radius:8px;font-size:12px;font-weight:600;color:var(--accent-deep);text-decoration:none}
+  .msg.ai .graph-inline{margin-top:10px;border-radius:12px;overflow:hidden;background:var(--surface);border:1px solid var(--border)}
+  .msg.ai .graph-inline canvas{display:block;width:100%;height:auto}
   .msg.user .bubble{max-width:82%;padding:10px 14px;background:var(--white);color:var(--accent-deep);border:1.5px solid var(--accent);border-radius:20px;border-bottom-right-radius:6px;font-size:15px;line-height:1.45;word-wrap:break-word;font-weight:500}
+  .msg.user .file-preview{margin-bottom:6px;max-width:82%}
+  .msg.user .file-preview img{max-width:220px;max-height:220px;border-radius:12px;border:1px solid var(--border);display:block}
+  .msg.user .file-preview-file{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:12.5px;font-weight:600;color:var(--ink-soft);max-width:220px}
+  .msg.user .file-preview-file .ico{color:var(--accent)}
+  .msg.user .file-preview-file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .msg-edit-btn{font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:4px;margin-right:4px;font-family:inherit;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px}
   .msg-edit-btn .ico{width:11px;height:11px}
   .msg-edit-btn:active{background:var(--accent-soft);color:var(--accent)}
@@ -103,6 +125,12 @@
   .icb:active{background:var(--accent-soft);color:var(--accent)}
   .icb .ico{width:18px;height:18px}
   .icb.loading{color:var(--accent);animation:spin 1s linear infinite}
+  /* 4 squares button */
+  .fsquares{width:34px;height:34px;border-radius:50%;border:none;background:var(--accent);cursor:pointer;flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:8px;transition:all .15s}
+  .fsquares:active{background:var(--accent-dark);transform:scale(.9)}
+  .fsquares.open{background:var(--accent-dark)}
+  .fsquares.open span{transform:scale(.85)}
+  .fsquares span{background:#fff;border-radius:1.5px;transition:transform .15s}
   .send-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;color:#fff}
   .send-btn .ico{width:15px;height:15px}
   .send-btn:active:not(:disabled){background:var(--accent-dark);transform:scale(.9)}
@@ -112,6 +140,15 @@
   .send-btn.cooldown .ico{display:none}
   .send-btn .cooldown-text{display:none;font-size:11px;font-weight:800;color:#fff}
   .send-btn.cooldown .cooldown-text{display:block}
+  /* Quick menu */
+  .quick-menu{position:fixed;right:12px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:45;background:var(--bg);border-radius:18px;padding:6px;box-shadow:0 12px 40px rgba(15,23,42,.28);border:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:200px;opacity:0;transform:translateY(12px) scale(.92);pointer-events:none;transform-origin:bottom right;transition:opacity .22s ease,transform .22s cubic-bezier(.34,1.56,.64,1)}
+  .quick-menu.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+  .quick-menu button{display:flex;align-items:center;gap:12px;padding:11px 14px;background:transparent;border:none;border-radius:12px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit;white-space:nowrap;text-align:left;transition:background .12s}
+  .quick-menu button:active{background:var(--accent-soft);color:var(--accent)}
+  .quick-menu button .ico{width:18px;height:18px;color:var(--accent)}
+  .quick-menu .qm-divider{height:1px;background:var(--border);margin:4px 8px}
+  .quick-menu-backdrop{position:fixed;inset:0;z-index:44;display:none}
+  .quick-menu-backdrop.show{display:block}
   .math-kb{display:none;padding:6px 10px;background:var(--surface);border-top:1px solid var(--border);overflow-x:auto;white-space:nowrap;flex-shrink:0}
   .math-kb.show{display:block}
   .math-kb::-webkit-scrollbar{height:0}
@@ -248,9 +285,9 @@
   .voice-status{font-size:22px;font-weight:700;color:#fff;margin-bottom:14px}
   .voice-text{font-size:15px;color:rgba(255,255,255,.75);line-height:1.5;max-width:340px;min-height:44px;font-weight:500;padding:12px 20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;display:flex;align-items:center;justify-content:center}
   .voice-cancel{margin-top:36px;padding:13px 36px;border-radius:100px;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
-  .trainer-overlay,.cheat-overlay,.graph-overlay{position:fixed;inset:0;background:var(--overlay);z-index:210;display:none;align-items:center;justify-content:center;padding:16px}
-  .trainer-overlay.active,.cheat-overlay.active,.graph-overlay.active{display:flex;animation:fadeIn .25s ease-out}
-  .trainer-panel,.cheat-panel,.graph-panel{width:100%;max-width:520px;max-height:90vh;background:var(--bg);border-radius:20px;padding:20px 18px;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.3)}
+  .trainer-overlay,.cheat-overlay,.graph-overlay,.exam-overlay{position:fixed;inset:0;background:var(--overlay);z-index:210;display:none;align-items:center;justify-content:center;padding:16px}
+  .trainer-overlay.active,.cheat-overlay.active,.graph-overlay.active,.exam-overlay.active{display:flex;animation:fadeIn .25s ease-out}
+  .trainer-panel,.cheat-panel,.graph-panel,.exam-panel{width:100%;max-width:520px;max-height:90vh;background:var(--bg);border-radius:20px;padding:20px 18px;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.3)}
   .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
   .panel-head h2{font-size:18px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px}
   .panel-head h2 .ico{width:22px;height:22px;color:var(--accent)}
@@ -264,7 +301,7 @@
   .difficulty-row{display:flex;gap:6px;margin-bottom:16px}
   .diff-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
   .diff-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
-  .trainer-task{padding:16px;background:var(--accent-soft);border-radius:14px;margin-bottom:12px;text-align:center;font-size:17px;font-weight:700;color:var(--accent-deep);font-family:'SF Mono',Monaco,monospace;min-height:60px;display:flex;align-items:center;justify-content:center}
+  .trainer-task{padding:16px;background:var(--accent-soft);border-radius:14px;margin-bottom:12px;text-align:center;font-size:17px;font-weight:700;color:var(--accent-deep);font-family:'SF Mono',Monaco,monospace;min-height:60px;display:flex;align-items:center;justify-content:center;white-space:pre-line}
   .trainer-answer-row{display:flex;gap:8px;margin-bottom:12px}
   .trainer-input{flex:1;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:'SF Mono',Monaco,monospace;color:var(--ink);outline:none;background:var(--bg)}
   .trainer-input:focus{border-color:var(--accent)}
@@ -289,8 +326,13 @@
   .graph-panel{max-width:600px}
   .graph-container{width:100%;height:320px;background:var(--surface);border-radius:14px;overflow:hidden}
   .graph-input-row{display:flex;gap:8px;margin-bottom:12px}
+  /* Exam mode */
+  .exam-timer{font-size:24px;font-weight:800;color:var(--accent);font-family:'SF Mono',Monaco,monospace;text-align:center;padding:12px;background:var(--surface);border-radius:12px;margin-bottom:12px}
+  .exam-timer.danger{color:var(--danger);animation:speakPulse 1s infinite}
+  .exam-question{padding:16px;background:var(--accent-soft);border-radius:14px;margin-bottom:12px;text-align:center;font-size:16px;font-weight:700;color:var(--accent-deep);font-family:'SF Mono',Monaco,monospace;min-height:60px;display:flex;align-items:center;justify-content:center;white-space:pre-line}
+  .exam-progress{font-size:12px;font-weight:600;color:var(--muted);text-align:center;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
   @media print{
-    .bottom-bar,.header,.drawer,.overlay,.math-kb,.limit-banner{display:none!important}
+    .bottom-bar,.header,.drawer,.overlay,.math-kb,.limit-banner,.quick-menu{display:none!important}
     body,html{overflow:visible;height:auto;position:static}
     .app{height:auto}
     .chat{overflow:visible;height:auto;padding:0}
@@ -309,158 +351,55 @@
     <ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
     <circle cx="50" cy="50" r="20" fill="currentColor"/>
   </symbol>
-  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-  </symbol>
-  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M20 6L9 17l-5-5"/>
-  </symbol>
-  <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
-  </symbol>
-  <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/>
-  </symbol>
-  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M18 6L6 18M6 6l12 12"/>
-  </symbol>
-  <symbol id="i-infinity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M6 12c0-2 1.5-3.5 3.5-3.5S13 10 12 12s-1.5 3.5-3.5 3.5S6 14 6 12zM18 12c0-2-1.5-3.5-3.5-3.5S11 10 12 12s1.5 3.5 3.5 3.5S18 14 18 12z"/>
-  </symbol>
-  <symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/>
-  </symbol>
-  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 17v5M9 10.76V4h6v6.76l2 3.24H7z"/>
-  </symbol>
-  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor"/>
-  </symbol>
-  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/>
-  </symbol>
-  <symbol id="i-calc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M12 10h2M16 10h0M8 14h2M12 14h2M16 14h0M8 18h2M12 18h2M16 18h0"/>
-  </symbol>
-  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5V6a2 2 0 012-2h14v13H6.5A2.5 2.5 0 004 19.5z"/>
-  </symbol>
-  <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9 14h6"/>
-  </symbol>
-  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/>
-  </symbol>
-  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-  </symbol>
-  <symbol id="i-speak" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/>
-  </symbol>
-  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-  </symbol>
-  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/>
-  </symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-  </symbol>
-  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-  </symbol>
-  <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/>
-  </symbol>
-  <symbol id="i-stop" viewBox="0 0 24 24" fill="currentColor">
-    <rect x="6" y="6" width="12" height="12" rx="2"/>
-  </symbol>
-  <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/>
-  </symbol>
-  <symbol id="i-paperclip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
-  </symbol>
-  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-    <path d="M4 7h16M4 12h16M4 17h10"/>
-  </symbol>
-  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-    <path d="M12 5v14M5 12h14"/>
-  </symbol>
-  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-    <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
-  </symbol>
-  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M9 18l6-6-6-6"/>
-  </symbol>
-  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-  </symbol>
-  <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/>
-  </symbol>
-  <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M13 2L3 14h9l-1 8 10-12h-9z"/>
-  </symbol>
-  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-  </symbol>
-  <symbol id="i-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
-  </symbol>
-  <symbol id="i-function" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M9 3H5v18M15 3h4v18M5 12h14"/>
-  </symbol>
-  <symbol id="i-sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M18 4H6l6 8-6 8h12"/>
-  </symbol>
-  <symbol id="i-divide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="6" r="1.5" fill="currentColor"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/><path d="M5 12h14"/>
-  </symbol>
-  <symbol id="i-times" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-    <path d="M6 6l12 12M18 6L6 18"/>
-  </symbol>
-  <symbol id="i-percent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M19 5L5 19"/>
-  </symbol>
-  <symbol id="i-equals" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-    <path d="M5 9h14M5 15h14"/>
-  </symbol>
-  <symbol id="i-pi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 8h16M9 8v10M15 8v10"/>
-  </symbol>
-  <symbol id="i-sqrt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 12l3 8 5-16h10"/>
-  </symbol>
-  <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>
-  </symbol>
-  <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
-  </symbol>
-  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/>
-  </symbol>
-  <symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/>
-  </symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </symbol>
-  <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z"/>
-  </symbol>
-  <symbol id="i-flask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M10 2v7L4 20a2 2 0 002 2h12a2 2 0 002-2l-6-11V2M8 2h8M7 15h10"/>
-  </symbol>
-  <symbol id="i-hint" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h1v4h1"/>
-  </symbol>
-  <symbol id="i-laTeX" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 4h6M4 4v16h6M20 4h-4l-4 8 4 8h4"/>
-  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="i-infinity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12c0-2 1.5-3.5 3.5-3.5S13 10 12 12s-1.5 3.5-3.5 3.5S6 14 6 12zM18 12c0-2-1.5-3.5-3.5-3.5S11 10 12 12s1.5 3.5 3.5 3.5S18 14 18 12z"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 10.76V4h6v6.76l2 3.24H7z"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></symbol>
+  <symbol id="i-calc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M12 10h2M16 10h0M8 14h2M12 14h2M16 14h0M8 18h2M12 18h2M16 18h0"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9 14h6"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></symbol>
+  <symbol id="i-speak" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></symbol>
+  <symbol id="i-paperclip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></symbol>
+  <symbol id="i-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></symbol>
+  <symbol id="i-function" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5v18M15 3h4v18M5 12h14"/></symbol>
+  <symbol id="i-sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4H6l6 8-6 8h12"/></symbol>
+  <symbol id="i-equals" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 9h14M5 15h14"/></symbol>
+  <symbol id="i-pi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M9 8v10M15 8v10"/></symbol>
+  <symbol id="i-sqrt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l3 8 5-16h10"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z"/></symbol>
+  <symbol id="i-hint" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h1v4h1"/></symbol>
+  <symbol id="i-laTeX" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6M4 4v16h6M20 4h-4l-4 8 4 8h4"/></symbol>
+  <symbol id="i-exam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></symbol>
+  <symbol id="i-notebook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 2v20M12 8h4M12 12h4M12 16h4"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M3 12h18"/></symbol>
 </svg>
 
+<!-- ONBOARDING -->
 <div class="onboarding" id="onboarding">
   <div class="onb-slides">
     <div class="onb-track" id="onbTrack">
@@ -493,6 +432,7 @@
   </div>
 </div>
 
+<!-- GATE -->
 <div class="gate hidden" id="gate">
   <div class="gate-icon"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="42" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 8" opacity="0.35"/><ellipse cx="50" cy="50" rx="34" ry="10" transform="rotate(-20 50 50)" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="18" fill="currentColor"/><rect x="42" y="46" width="16" height="14" rx="3" fill="#fff"/><path d="M45 46V43a5 5 0 0110 0v3" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
   <div class="gate-title" id="gateTitle">Проверка доступа…</div>
@@ -501,6 +441,7 @@
   <div class="gate-id" id="gateId"></div>
 </div>
 
+<!-- PLUS MODAL -->
 <div class="plus-modal-bg" id="plusModalBg">
   <div class="plus-modal">
     <div class="plus-icon"><span class="ico"><svg><use href="#i-star"/></svg></span></div>
@@ -510,7 +451,7 @@
     <div class="plus-list">
       <div class="plus-item"><span class="ico"><svg><use href="#i-bolt"/></svg></span><span>Без лимита запросов</span></div>
       <div class="plus-item"><span class="ico"><svg><use href="#i-speak"/></svg></span><span>Голосовые ответы AI</span></div>
-      <div class="plus-item"><span class="ico"><svg><use href="#i-chart"/></svg></span><span>Графики функций</span></div>
+      <div class="plus-item"><span class="ico"><svg><use href="#i-chart"/></svg></span><span>Инлайн-графики</span></div>
       <div class="plus-item"><span class="ico"><svg><use href="#i-crown"/></svg></span><span>Особый статус</span></div>
     </div>
     <div class="plus-actions">
@@ -520,6 +461,7 @@
   </div>
 </div>
 
+<!-- VOICE -->
 <div class="voice-overlay" id="voiceOverlay">
   <div class="voice-box">
     <canvas class="voice-canvas" id="voiceCanvas" width="280" height="280"></canvas>
@@ -529,6 +471,7 @@
   </div>
 </div>
 
+<!-- DRAWER -->
 <div class="overlay" id="drawerOverlay"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
@@ -539,7 +482,7 @@
     <button class="drawer-tool" id="toolTrainer"><span class="ico"><svg><use href="#i-target"/></svg></span>Тренажёр</button>
     <button class="drawer-tool" id="toolCheat"><span class="ico"><svg><use href="#i-book-open"/></svg></span>Шпаргалка</button>
     <button class="drawer-tool" id="toolGraph"><span class="ico"><svg><use href="#i-chart"/></svg></span>График</button>
-    <button class="drawer-tool" id="toolKeyboard"><span class="ico"><svg><use href="#i-keyboard"/></svg></span>Символы</button>
+    <button class="drawer-tool" id="toolExam"><span class="ico"><svg><use href="#i-exam"/></svg></span>Экзамен</button>
   </div>
   <button class="drawer-new" id="newChatBtn"><span class="ico"><svg><use href="#i-plus"/></svg></span>Новый чат</button>
   <div class="drawer-search"><span class="ico"><svg><use href="#i-search"/></svg></span><input type="text" id="chatSearch" placeholder="Поиск по чатам..."></div>
@@ -548,6 +491,7 @@
   <div class="drawer-foot"><div class="user-card" id="userCard"><div class="user-avatar" id="drawerAvatar">A</div><div class="user-info"><div class="user-name" id="drawerName">...</div><div class="user-sub" id="drawerSub">Аккаунт · Настройки</div></div><span class="ico"><svg><use href="#i-arrow-right"/></svg></span></div></div>
 </aside>
 
+<!-- ACCOUNT -->
 <div class="modal-overlay" id="accountOverlay">
   <div class="modal">
     <div class="modal-title"><span class="ico"><svg><use href="#i-crown"/></svg></span>Аккаунт</div>
@@ -564,11 +508,13 @@
     </div>
     <button class="btn-primary" id="saveProfileBtn"><span class="ico"><svg><use href="#i-check"/></svg></span>Сохранить</button>
     <button class="btn-ghost" id="plusOpenBtn"><span class="ico"><svg><use href="#i-star"/></svg></span>Orbita Plus</button>
+    <button class="btn-ghost" id="notebookBtn"><span class="ico"><svg><use href="#i-notebook"/></svg></span>Печать тетради</button>
     <button class="btn-ghost" id="printBtn"><span class="ico"><svg><use href="#i-download"/></svg></span>Сохранить чат в PDF</button>
     <button class="btn-danger" id="clearDataBtn"><span class="ico"><svg><use href="#i-trash"/></svg></span>Очистить все данные</button>
   </div>
 </div>
 
+<!-- TRAINER -->
 <div class="trainer-overlay" id="trainerOverlay">
   <div class="trainer-panel">
     <div class="panel-head">
@@ -581,6 +527,8 @@
       <button class="topic-btn" data-topic="quadratic"><span class="ico"><svg><use href="#i-function"/></svg></span>Квадратные</button>
       <button class="topic-btn" data-topic="arithmetic"><span class="ico"><svg><use href="#i-calc"/></svg></span>Арифметика</button>
       <button class="topic-btn" data-topic="derivative"><span class="ico"><svg><use href="#i-chart"/></svg></span>Производные</button>
+      <button class="topic-btn" data-topic="inequality"><span class="ico"><svg><use href="#i-sigma"/></svg></span>Неравенства</button>
+      <button class="topic-btn" data-topic="integral"><span class="ico"><svg><use href="#i-sigma"/></svg></span>Интегралы</button>
     </div>
     <div style="font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Сложность</div>
     <div class="difficulty-row" id="diffRow">
@@ -603,6 +551,26 @@
   </div>
 </div>
 
+<!-- EXAM -->
+<div class="exam-overlay" id="examOverlay">
+  <div class="exam-panel">
+    <div class="panel-head">
+      <h2><span class="ico"><svg><use href="#i-exam"/></svg></span>Экзамен</h2>
+      <button class="panel-close" id="examClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button>
+    </div>
+    <div class="exam-timer" id="examTimer">20:00</div>
+    <div class="exam-progress" id="examProgress">Задача 0 из 5</div>
+    <div class="exam-question" id="examQuestion">Нажми «Начать»</div>
+    <div class="trainer-answer-row">
+      <input type="text" class="trainer-input" id="examInput" placeholder="Ответ" autocomplete="off">
+      <button class="btn-primary" id="examCheck" style="width:auto;margin:0;padding:12px 18px">Далее</button>
+    </div>
+    <div class="trainer-feedback" id="examFeedback"></div>
+    <button class="btn-primary" id="examStart"><span class="ico"><svg><use href="#i-bolt"/></svg></span>Начать экзамен</button>
+  </div>
+</div>
+
+<!-- CHEAT -->
 <div class="cheat-overlay" id="cheatOverlay">
   <div class="cheat-panel">
     <div class="panel-head">
@@ -620,6 +588,7 @@
   </div>
 </div>
 
+<!-- GRAPH -->
 <div class="graph-overlay" id="graphOverlay">
   <div class="graph-panel">
     <div class="panel-head">
@@ -627,13 +596,14 @@
       <button class="panel-close" id="graphClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button>
     </div>
     <div class="graph-input-row">
-      <input type="text" class="trainer-input" id="graphInput" placeholder="y = x^2 - 4" autocomplete="off">
+      <input type="text" class="trainer-input" id="graphInput" placeholder="y = x^2 - 4; y = x + 2" autocomplete="off">
       <button class="btn-primary" id="graphBuild" style="width:auto;margin:0;padding:12px 18px">Построить</button>
     </div>
     <div class="graph-container" id="graphContainer"></div>
   </div>
 </div>
 
+<!-- APP -->
 <div class="app">
   <header class="header">
     <div class="header-brand">
@@ -653,43 +623,28 @@
     <button class="limit-banner-btn" id="limitBannerBtn">Открыть</button>
   </div>
   <div class="math-kb" id="mathKb">
-    <button data-ins="^2">x²</button>
-    <button data-ins="^3">x³</button>
-    <button data-ins="√(">√</button>
-    <button data-ins="π">π</button>
-    <button data-ins="∫">∫</button>
-    <button data-ins="∞">∞</button>
-    <button data-ins="°">°</button>
-    <button data-ins="×">×</button>
-    <button data-ins="÷">÷</button>
-    <button data-ins="±">±</button>
-    <button data-ins="≤">≤</button>
-    <button data-ins="≥">≥</button>
-    <button data-ins="≠">≠</button>
-    <button data-ins="sin(">sin</button>
-    <button data-ins="cos(">cos</button>
-    <button data-ins="tan(">tan</button>
-    <button data-ins="ln(">ln</button>
-    <button data-ins="log(">log</button>
-    <button data-ins="e^">e^</button>
-    <button data-ins="(">(</button>
-    <button data-ins=")">)</button>
-    <button data-ins="[">[</button>
-    <button data-ins="]">]</button>
-    <button data-ins="/">/</button>
+    <button data-ins="^2">x²</button><button data-ins="^3">x³</button><button data-ins="√(">√</button><button data-ins="π">π</button><button data-ins="∫">∫</button><button data-ins="∞">∞</button><button data-ins="×">×</button><button data-ins="÷">÷</button><button data-ins="±">±</button><button data-ins="≤">≤</button><button data-ins="≥">≥</button><button data-ins="≠">≠</button><button data-ins="sin(">sin</button><button data-ins="cos(">cos</button><button data-ins="tan(">tan</button><button data-ins="ln(">ln</button><button data-ins="log(">log</button><button data-ins="e^">e^</button><button data-ins="(">(</button><button data-ins=")">)</button><button data-ins="/">/</button>
   </div>
   <div class="bottom-bar">
     <button class="menu-fab" id="menuBtn"><span class="ico"><svg><use href="#i-menu"/></svg></span></button>
     <div class="input-wrap" id="inputWrap">
       <input type="text" id="input" placeholder="Введите уравнение или вопрос..." autocomplete="off">
-      <button class="icb" id="kbBtn" title="Символы"><span class="ico"><svg><use href="#i-keyboard"/></svg></span></button>
-      <button class="icb" id="voiceBtn"><span class="ico"><svg><use href="#i-mic"/></svg></span></button>
+      <button class="fsquares" id="fsquaresBtn" title="Ещё"><span></span><span></span><span></span><span></span></button>
       <button class="send-btn" id="send" disabled><span class="ico" id="sendIcon"><svg><use href="#i-send"/></svg></span><span class="cooldown-text" id="cooldownText">5</span></button>
     </div>
   </div>
 </div>
 
+<!-- Quick menu -->
+<div class="quick-menu-backdrop" id="qmBackdrop"></div>
+<div class="quick-menu" id="quickMenu">
+  <button data-action="voice"><span class="ico"><svg><use href="#i-mic"/></svg></span><span>Голосовой ввод</span></button>
+  <button data-action="keyboard"><span class="ico"><svg><use href="#i-keyboard"/></svg></span><span>Матем. символы</span></button>
+  <button data-action="attach"><span class="ico"><svg><use href="#i-paperclip"/></svg></span><span>Файл / фото</span></button>
+</div>
+
 <input type="file" id="avatarInput" accept="image/*" style="display:none">
+<input type="file" id="fileInput" accept="image/*" style="display:none">
 <div class="toast" id="toast"></div>
 
 <script>
@@ -748,19 +703,7 @@ function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <
 function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
 function lcm(a,b){ return Math.abs(a*b) / gcd(a,b); }
 
-function solveEquation(text){
-  let t = text.toLowerCase().trim();
-  t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение|решение)\s+/i,'');
-  t = t.replace(/\s+/g,'').replace(/х/g,'x').replace(/Х/g,'x').replace(/X/g,'x');
-  if(!t.includes('=')) return null;
-  const parts = t.split('='); if(parts.length !== 2) return null;
-  let left = parts[0], right = parts[1];
-  if(!/x/.test(left) && !/x/.test(right)) return null;
-  const hasSquare = /x\^2|x2|x²/.test(left) || /x\^2|x2|x²/.test(right);
-  left = left.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
-  right = right.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
-  return hasSquare ? solveQuadratic(text, left, right) : solveLinear(text, left, right);
-}
+/* --- Polynomial helpers --- */
 function parsePoly(expr){
   expr = expr.replace(/^\+/,''); let a=0,b=0,c=0,m;
   const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g;
@@ -780,6 +723,21 @@ function polyToStr(a,b,c){
   if(c !== 0 || !p.length){ const s = c>0?(p.length?' + ':''):(p.length?' - ':'-'); p.push(s+fmtNum(Math.abs(c))); }
   return p.join('');
 }
+
+/* --- Linear / Quadratic equations --- */
+function solveEquation(text){
+  let t = text.toLowerCase().trim();
+  t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение|решение)\s+/i,'');
+  t = t.replace(/\s+/g,'').replace(/х/g,'x').replace(/Х/g,'x').replace(/X/g,'x');
+  if(!t.includes('=')) return null;
+  const parts = t.split('='); if(parts.length !== 2) return null;
+  let left = parts[0], right = parts[1];
+  if(!/x/.test(left) && !/x/.test(right)) return null;
+  const hasSquare = /x\^2|x2|x²/.test(left) || /x\^2|x2|x²/.test(right);
+  left = left.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
+  right = right.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
+  return hasSquare ? solveQuadratic(text, left, right) : solveLinear(text, left, right);
+}
 function solveLinear(original, left, right){
   const L = parsePoly(left), R = parsePoly(right);
   const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
@@ -797,7 +755,6 @@ function solveLinear(original, left, right){
   else if(b === -1){ s.push(`$$-x = ${c}$$`); s.push(`$$x = ${-c}$$`); }
   else { s.push(`$$${fmtNum(b)}\\cdot x = ${fmtNum(-c)}$$`); s.push(`$$x = \\dfrac{${fmtNum(-c)}}{${fmtNum(b)}}$$`); }
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x = ${fmtNum(x)}$`);
-  s.push(`\n${ico('hint')} **Проверка:** подставляем $x = ${fmtNum(x)}$ в исходное — равенство верно.`);
   return { text: s.join('\n'), _isDialog:true };
 }
 function solveQuadratic(original, left, right){
@@ -808,87 +765,402 @@ function solveQuadratic(original, left, right){
   const s = [];
   s.push(`**Решаю квадратное уравнение:**`);
   s.push(`$$${original}$$`);
-  s.push(`\n${ico('bulb')} **Формула:** $ax^2+bx+c=0$, дискриминант $D=b^2-4ac$`);
   s.push(`\n**Шаг 1.** Привожу к виду $ax^2+bx+c=0$:`);
   s.push(`$$${polyToStr(a,b,c)} = 0$$`);
-  s.push(`Коэффициенты: $a = ${fmtNum(a)}$, $b = ${fmtNum(b)}$, $c = ${fmtNum(c)}$`);
-  s.push(`\n**Шаг 2.** Дискриминант:`);
-  s.push(`$$D = ${fmtNum(b)}^2 - 4 \\cdot (${fmtNum(a)}) \\cdot (${fmtNum(c)}) = ${fmtNum(b*b)} - (${fmtNum(4*a*c)}) = ${fmtNum(D)}$$`);
+  s.push(`Коэффициенты: $a=${fmtNum(a)}, b=${fmtNum(b)}, c=${fmtNum(c)}$`);
+  s.push(`\n**Шаг 2.** Дискриминант $D = b^2 - 4ac$:`);
+  s.push(`$$D = ${fmtNum(b)}^2 - 4 \\cdot (${fmtNum(a)}) \\cdot (${fmtNum(c)}) = ${fmtNum(D)}$$`);
   let ans = '';
   if(D > 0){
     const sq = Math.sqrt(D);
     const x1 = (-b + sq)/(2*a), x2 = (-b - sq)/(2*a);
-    s.push(`\n**Шаг 3.** $D > 0$ — два различных корня.`);
-    s.push(`$$x = \\dfrac{-b \\pm \\sqrt{D}}{2a}$$`);
+    s.push(`\n**Шаг 3.** $D>0$ — два корня:`);
     s.push(`$$x_1 = \\dfrac{${fmtNum(-b)} + ${fmtNum(sq)}}{${fmtNum(2*a)}} = ${fmtNum(x1)}$$`);
     s.push(`$$x_2 = \\dfrac{${fmtNum(-b)} - ${fmtNum(sq)}}{${fmtNum(2*a)}} = ${fmtNum(x2)}$$`);
     ans = `$x_1 = ${fmtNum(x1)}$, $x_2 = ${fmtNum(x2)}$`;
   } else if(D === 0){
     const x = -b/(2*a);
-    s.push(`\n**Шаг 3.** $D = 0$ — один корень (кратный).`);
-    s.push(`$$x = \\dfrac{-b}{2a} = ${fmtNum(x)}$$`);
+    s.push(`\n**Шаг 3.** $D=0$ — один корень: $x = ${fmtNum(x)}$`);
     ans = `$x = ${fmtNum(x)}$`;
   } else {
-    s.push(`\n**Шаг 3.** $D < 0$ — действительных корней нет ${ico('x-circle','inl-err')}`);
-    const re = -b/(2*a), im = Math.sqrt(-D)/(2*a);
-    s.push(`\n${ico('bulb')} *Для комплексных чисел:*`);
-    s.push(`$$x_{1,2} = ${fmtNum(re)} \\pm ${fmtNum(im)}i$$`);
+    s.push(`\n**Шаг 3.** $D<0$ — действительных корней нет ${ico('x-circle','inl-err')}`);
     ans = 'нет действительных корней';
   }
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** ${ans}`);
-  s.push(`\n${ico('hint')} **Теорема Виета:** $x_1+x_2 = ${fmtNum(-b/a)}$, $x_1 x_2 = ${fmtNum(c/a)}$`);
+  s.push(`\n${ico('hint')} **Виета:** $x_1+x_2 = ${fmtNum(-b/a)}$, $x_1 x_2 = ${fmtNum(c/a)}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
 
+/* --- Systems of equations --- */
+function solveSystem(query){
+  // Detect patterns: {eq1, eq2}, {eq1; eq2}, "система: eq1; eq2", multiline
+  let raw = query.trim();
+  // Strip prefix
+  raw = raw.replace(/^(реши|решить|система|систему|system)\s*:?\s*/i,'');
+  // Strip outer braces
+  let inner = null;
+  const braceMatch = raw.match(/^\{([\s\S]+)\}$/);
+  if(braceMatch){
+    inner = braceMatch[1];
+  } else if(/систем/i.test(query)){
+    inner = raw;
+  } else {
+    // Try detecting two equations separated by ; or newline
+    if(/[;]/.test(raw) || /\n/.test(raw)){
+      const parts = raw.split(/[;\n]+/).map(s=>s.trim()).filter(Boolean);
+      if(parts.length === 2 && parts.every(p => p.includes('='))) inner = parts.join('; ');
+    }
+  }
+  if(!inner) return null;
+  // Split by ; , or } {
+  const eqs = inner.split(/[;]|\},\s*\{|, (?=[a-zA-Z])/).map(s => s.replace(/^[{\s]+|[}\s]+$/g,'').trim()).filter(Boolean);
+  if(eqs.length !== 2) return null;
+  // Parse each: must contain = with x and y
+  const sys = eqs.map(eq => parseLinearTwoVar(eq));
+  if(!sys[0] || !sys[1]) return null;
+  return solveTwoVarSystem(eqs, sys[0], sys[1]);
+}
+function parseLinearTwoVar(eq){
+  // Format: ax + by = c  where a,b,c are numbers (may be absent)
+  let e = eq.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/[уУ]/g,'y').replace(/[×]/g,'*');
+  if(!e.includes('=')) return null;
+  const [lhs, rhs] = e.split('=');
+  if(!lhs || rhs === undefined) return null;
+  // Move rhs to lhs: lhs - rhs = 0
+  const parts = lhs + '-' + rhs;
+  // Parse into ax + by + c = 0
+  let a = 0, b = 0, c = 0;
+  // Replace - with +-
+  let str = parts.replace(/-/g,'+-');
+  if(str.startsWith('+')) str = str.slice(1);
+  for(const term of str.split('+')){
+    if(!term) continue;
+    // x*y? no, terms are single variable
+    if(/x$/.test(term)){
+      const cf = term.slice(0,-1);
+      if(cf === '' || cf === '+') a += 1;
+      else if(cf === '-') a -= 1;
+      else { const v = parseFloat(cf); if(isNaN(v)) return null; a += v; }
+    } else if(/y$/.test(term)){
+      const cf = term.slice(0,-1);
+      if(cf === '' || cf === '+') b += 1;
+      else if(cf === '-') b -= 1;
+      else { const v = parseFloat(cf); if(isNaN(v)) return null; b += v; }
+    } else if(/^[+\-]?\d*\.?\d+$/.test(term)){
+      c += parseFloat(term);
+    } else {
+      return null;
+    }
+  }
+  return { a, b, c };
+}
+function solveTwoVarSystem(eqs, s1, s2){
+  const { a: a1, b: b1, c: c1 } = s1;
+  const { a: a2, b: b2, c: c2 } = s2;
+  const det = a1*b2 - a2*b1;
+  const s = [];
+  s.push(`**Решаю систему уравнений:**`);
+  s.push(`$$\\begin{cases}${eqs[0].replace(/\*/g,'')} \\\\ ${eqs[1].replace(/\*/g,'')} \\end{cases}$$`);
+  if(Math.abs(det) < 1e-12){
+    // Parallel or same lines
+    // Check if consistent
+    if(Math.abs(a1*c2 - a2*c1) < 1e-9 && Math.abs(b1*c2 - b2*c1) < 1e-9){
+      return { text: `${ico('infinity')} **Бесконечно много решений** — прямые совпадают.`, _isDialog:true };
+    }
+    return { text: `${ico('x-circle','inl-err')} **Нет решений** — прямые параллельны.`, _isDialog:true };
+  }
+  s.push(`\n${ico('bulb')} **Метод Крамера** (или через определитель):`);
+  s.push(`\n**Шаг 1.** Приведём к виду $a_1x+b_1y=c_1$, $a_2x+b_2y=c_2$:`);
+  s.push(`$a_1=${fmtNum(a1)}, b_1=${fmtNum(b1)}, c_1=${fmtNum(c1)}$`);
+  s.push(`$a_2=${fmtNum(a2)}, b_2=${fmtNum(b2)}, c_2=${fmtNum(c2)}$`);
+  s.push(`\n**Шаг 2.** Главный определитель $\\Delta = a_1 b_2 - a_2 b_1$:`);
+  s.push(`$$\\Delta = ${fmtNum(a1)} \\cdot ${fmtNum(b2)} - ${fmtNum(a2)} \\cdot ${fmtNum(b1)} = ${fmtNum(det)}$$`);
+  const dx = c1*b2 - c2*b1;
+  const dy = a1*c2 - a2*c1;
+  s.push(`\n**Шаг 3.** Вспомогательные определители:`);
+  s.push(`$$\\Delta_x = c_1 b_2 - c_2 b_1 = ${fmtNum(dx)}$$`);
+  s.push(`$$\\Delta_y = a_1 c_2 - a_2 c_1 = ${fmtNum(dy)}$$`);
+  const x = dx / det, y = dy / det;
+  s.push(`\n**Шаг 4.** Находим корни:`);
+  s.push(`$$x = \\dfrac{\\Delta_x}{\\Delta} = ${fmtNum(x)}$$`);
+  s.push(`$$y = \\dfrac{\\Delta_y}{\\Delta} = ${fmtNum(y)}$$`);
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x = ${fmtNum(x)}$, $y = ${fmtNum(y)}$`);
+  s.push(`\n${ico('hint')} **Проверка:** подставь найденные значения в оба уравнения — равенства верны.`);
+  return { text: s.join('\n'), _isDialog:true };
+}
+
+/* --- Inequalities --- */
+function solveInequality(query){
+  const q = query.trim();
+  // Detect inequality symbol
+  const m = q.match(/^(.+?)(<=|>=|≤|≥|<|>)(.+)$/);
+  if(!m) return null;
+  let [_, left, op, right] = m;
+  // Normalize operator
+  const ops = { '<=':'\\le', '>=':'\\ge', '≤':'\\le', '≥':'\\ge', '<':'<', '>':'>' };
+  const katexOp = ops[op];
+  const jsOp = op === '<=' || op === '≤' ? '<=' : op === '>=' || op === '≥' ? '>=' : op;
+  // Remove prefix "реши"
+  left = left.replace(/^(реши|решить|неравенство)\s+/i,'').replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
+  right = right.replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
+  if(!/x/.test(left) && !/x/.test(right)) return null;
+  // Move everything to left: left - right <op> 0
+  left = left.replace(/x²/g,'x^2');
+  right = right.replace(/x²/g,'x^2');
+  // Check if quadratic
+  const hasSq = /x\^2|x2/.test(left) || /x\^2|x2/.test(right);
+  if(hasSq) return solveQuadInequality(query, left, right, katexOp, jsOp);
+  return solveLinearInequality(query, left, right, katexOp, jsOp);
+}
+function solveLinearInequality(original, left, right, kOp, jsOp){
+  const L = parsePoly(left), R = parsePoly(right);
+  let b = L.b - R.b, c = L.c - R.c;
+  // b*x + c <op> 0
+  if(Math.abs(b) < 1e-12) return { text: `Неравенство вырождается (нет x).`, _isDialog:true };
+  // x <op'> -c/b — if b < 0, flip op
+  let finalOp = kOp;
+  let threshold = -c/b;
+  if(b < 0){
+    const flip = { '\\le':'\\ge', '\\ge':'\\le', '<':'>', '>':'<' };
+    finalOp = flip[kOp];
+  }
+  const s = [];
+  s.push(`**Решаю линейное неравенство:**`);
+  s.push(`$$${original}$$`);
+  s.push(`\n**Шаг 1.** Переношу всё в левую часть:`);
+  s.push(`$$${polyToStr(0,b,c)} ${kOp} 0$$`);
+  s.push(`\n**Шаг 2.** ${b < 0 ? `Коэффициент при x отрицательный — знак меняю на противоположный:` : 'Выражаю x:'}`);
+  s.push(`$$x ${finalOp} ${fmtNum(threshold)}$$`);
+  // Interval notation
+  const isStrict = finalOp === '<' || finalOp === '>';
+  let interval;
+  if(finalOp === '<') interval = `(-\\infty; ${fmtNum(threshold)})`;
+  else if(finalOp === '>') interval = `(${fmtNum(threshold)}; +\\infty)`;
+  else if(finalOp === '\\le') interval = `(-\\infty; ${fmtNum(threshold)}]`;
+  else interval = `[${fmtNum(threshold)}; +\\infty)`;
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in ${interval}$`);
+  return { text: s.join('\n'), _isDialog:true };
+}
+function solveQuadInequality(original, left, right, kOp, jsOp){
+  const L = parsePoly(left), R = parsePoly(right);
+  const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
+  // ax^2 + bx + c <op> 0
+  if(Math.abs(a) < 1e-12) return solveLinearInequality(original, left, right, kOp, jsOp);
+  const D = b*b - 4*a*c;
+  const s = [];
+  s.push(`**Решаю квадратное неравенство:**`);
+  s.push(`$$${original}$$`);
+  s.push(`\n**Шаг 1.** Переношу в левую часть:`);
+  s.push(`$$${polyToStr(a,b,c)} ${kOp} 0$$`);
+  s.push(`\n**Шаг 2.** Находим корни $ax^2+bx+c = 0$:`);
+  s.push(`$$D = ${fmtNum(D)}$$`);
+  if(D < 0){
+    // No real roots — sign is constant = sign(a)
+    const positive = a > 0;
+    const holds = (kOp === '>' || kOp === '\\ge') === positive ? true : false;
+    // If a>0, expr is always positive → holds for > and >=; fails for < and <=
+    if(positive && (kOp === '>' || kOp === '\\ge')){
+      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$ — верно для всех x (ветви вверх, корней нет)`);
+    } else if(!positive && (kOp === '<' || kOp === '\\le')){
+      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$ — верно для всех x (ветви вниз, корней нет)`);
+    } else {
+      s.push(`\n${ico('x-circle','inl-err')} **Ответ:** нет решений`);
+    }
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  if(D === 0){
+    const x0 = -b/(2*a);
+    s.push(`\n**Шаг 3.** $D=0$ — корень $x_0 = ${fmtNum(x0)}$ (двойной)`);
+    if(kOp === '>' || kOp === '<'){
+      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; ${fmtNum(x0)}) \\cup (${fmtNum(x0)}; +\\infty)$`);
+    } else {
+      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$`);
+    }
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  const sq = Math.sqrt(D);
+  const r1 = (-b - sq)/(2*a), r2 = (-b + sq)/(2*a);
+  const lo = Math.min(r1, r2), hi = Math.max(r1, r2);
+  s.push(`\n**Шаг 3.** Корни: $x_1 = ${fmtNum(lo)}$, $x_2 = ${fmtNum(hi)}$`);
+  s.push(`\n**Шаг 4.** Метод интервалов. Ветви ${a > 0 ? 'вверх' : 'вниз'}:`);
+  const betweenPositive = a > 0; // positive between roots if a>0
+  let interval = '';
+  const wantPositive = (kOp === '>' || kOp === '\\ge');
+  if(wantPositive === betweenPositive){
+    // Answer between roots (or outside) — determine
+    // If a>0 and want >0: outside intervals
+    // If a<0 and want <0: outside intervals
+  }
+  // Determine which interval satisfies
+  // sign: a>0 → + outside, - inside; a<0 → - outside, + inside
+  const testX = (lo + hi) / 2;
+  const valAtMid = a*testX*testX + b*testX + c;
+  const midSatisfies = (kOp === '>' || kOp === '\\ge') ? valAtMid > 0 : valAtMid < 0;
+  if(midSatisfies){
+    interval = kOp === '<' || kOp === '>' ? `(${fmtNum(lo)}; ${fmtNum(hi)})` : `[${fmtNum(lo)}; ${fmtNum(hi)}]`;
+  } else {
+    const opLo = kOp === '>' || kOp === '<' ? ')' : ']';
+    const opHi = kOp === '>' || kOp === '<' ? '(' : '[';
+    interval = `(-\\infty; ${fmtNum(lo)}${opLo} \\cup ${opHi}${fmtNum(hi)}; +\\infty)`;
+  }
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in ${interval}$`);
+  return { text: s.join('\n'), _isDialog:true };
+}
+
+/* --- Factor advanced --- */
+function factorAdvanced(query){
+  const q = query.toLowerCase().replace(/\s+/g,'');
+  const m = q.match(/(?:разложи|разложить|множител)\w*\s*(?:на\s+множители\s*)?[:]?(.+)/i);
+  if(!m) return null;
+  let expr = m[1].replace(/^\(/,'').replace(/\)$/,'').replace(/[?!.]+$/,'').replace(/[хХ]/g,'x');
+  expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3');
+  if(!/x/.test(expr)) return null;
+
+  // Grouping: e.g. x^3 + x^2 + x + 1
+  // Try to parse as polynomial with general powers
+  const poly = parseAnyPoly(expr);
+  if(poly && poly.terms.length >= 2){
+    // Try common factor (integer GCD)
+    const intCoefs = poly.terms.map(t => Math.round(t.coef));
+    const isInts = intCoefs.every(c => Math.abs(c - Math.round(c)) < 1e-9);
+    if(isInts){
+      let g = Math.abs(intCoefs[0]);
+      for(let i = 1; i < intCoefs.length; i++) g = gcd(g, Math.abs(intCoefs[i]));
+      const minPower = Math.min(...poly.terms.map(t => t.power));
+      if((g > 1 || minPower > 0) && poly.terms.length > 1){
+        const gCoef = g;
+        const gPow = minPower;
+        const inner = poly.terms.map(t => ({ coef: t.coef / gCoef, power: t.power - gPow }));
+        const gStr = (gCoef === 1 ? '' : fmtNum(gCoef)) + (gPow === 0 ? '' : gPow === 1 ? 'x' : `x^${gPow}`);
+        const innerStr = polyTermsToStr(inner);
+        const s = [];
+        s.push(`**Разложение на множители (вынесение общего):**`);
+        s.push(`$$${polyTermsToStr(poly.terms)}$$`);
+        s.push(`\n${ico('bulb')} **Находим общий множитель:** $${gStr}$`);
+        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${gStr}(${innerStr})$`);
+        // If inner is factorable further, mention
+        if(inner.length === 3){
+          const a2 = inner.find(t => t.power === 2)?.coef || 0;
+          const b2 = inner.find(t => t.power === 1)?.coef || 0;
+          const c2 = inner.find(t => t.power === 0)?.coef || 0;
+          if(a2 !== 0){
+            const D = b2*b2 - 4*a2*c2;
+            if(D >= 0){
+              const sq = Math.sqrt(D);
+              const r1 = (-b2 + sq)/(2*a2), r2 = (-b2 - sq)/(2*a2);
+              const p1 = r1 >= 0 ? `(x - ${fmtNum(r1)})` : `(x + ${fmtNum(-r1)})`;
+              const p2 = r2 >= 0 ? `(x - ${fmtNum(r2)})` : `(x + ${fmtNum(-r2)})`;
+              s.push(`\n${ico('hint')} Дополнительно можно разложить: $${gStr}${p1}${p2}$`);
+            }
+          }
+        }
+        return { text: s.join('\n'), _isDialog:true };
+      }
+    }
+    // Grouping: split terms into 2+2 and factor
+    if(poly.terms.length === 4){
+      // Try x^3 + a*x^2 + b*x + c → group (t1+t2) + (t3+t4)
+      const t = [...poly.terms].sort((a,b) => b.power - a.power);
+      const g1 = gcd(Math.abs(t[0].coef), Math.abs(t[1].coef));
+      const g2 = gcd(Math.abs(t[2].coef), Math.abs(t[3].coef));
+      const i1 = [{coef: t[0].coef/g1, power: t[0].power - Math.min(t[0].power, t[1].power)}, {coef: t[1].coef/g1, power: t[1].power - Math.min(t[0].power, t[1].power)}];
+      const i2 = [{coef: t[2].coef/g2, power: t[2].power - Math.min(t[2].power, t[3].power)}, {coef: t[3].coef/g2, power: t[3].power - Math.min(t[2].power, t[3].power)}];
+      const s1 = polyTermsToStr(i1), s2 = polyTermsToStr(i2);
+      // Check if s1 === s2 (grouping works)
+      if(s1.replace(/\s/g,'') === s2.replace(/\s/g,'')){
+        const g1Str = (g1 === 1 ? '' : fmtNum(g1)) + (Math.min(t[0].power, t[1].power) === 0 ? '' : `x^${Math.min(t[0].power, t[1].power)}`);
+        const g2Str = (g2 === 1 ? '' : fmtNum(g2)) + (Math.min(t[2].power, t[3].power) === 0 ? '' : `x^${Math.min(t[2].power, t[3].power)}`);
+        const s = [];
+        s.push(`**Разложение группировкой:**`);
+        s.push(`$$${polyTermsToStr(poly.terms)}$$`);
+        s.push(`\n**Шаг 1.** Группирую попарно:`);
+        s.push(`$$(${polyTermsToStr([t[0],t[1]])}) + (${polyTermsToStr([t[2],t[3]])})$$`);
+        s.push(`\n**Шаг 2.** Выношу общий множитель из каждой группы:`);
+        s.push(`$$${g1Str}(${s1}) + ${g2Str}(${s2})$$`);
+        s.push(`\n**Шаг 3.** Общая скобка $( ${s1} )$:`);
+        s.push(`$$(${s1})(${g1Str} + ${g2Str})$$`);
+        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $(${s1})(${g1Str} + ${g2Str})$`);
+        return { text: s.join('\n'), _isDialog:true };
+      }
+    }
+  }
+  // Fallback to quadratic
+  return factorPolynomial(query);
+}
+function parseAnyPoly(expr){
+  expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x');
+  expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
+  const terms = [];
+  let s = expr.replace(/-/g,'+-');
+  if(s.startsWith('+')) s = s.slice(1);
+  for(const part of s.split('+')){
+    if(!part) continue;
+    let m = part.match(/^(-?\d*\.?\d*)\*?x\^(\d+)$/);
+    if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, power:parseInt(m[2])}); continue; }
+    m = part.match(/^(-?\d*\.?\d*)\*?x$/);
+    if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, power:1}); continue; }
+    m = part.match(/^(-?\d*\.?\d+)$/);
+    if(m){ terms.push({coef:parseFloat(m[1]), power:0}); continue; }
+    return null;
+  }
+  return { terms };
+}
+function polyTermsToStr(terms){
+  terms = terms.filter(t => Math.abs(t.coef) > 1e-12).sort((a,b) => b.power - a.power);
+  if(!terms.length) return '0';
+  let s = '';
+  for(const t of terms){
+    const absC = Math.abs(t.coef);
+    let body = t.power === 0 ? '' : t.power === 1 ? 'x' : `x^${t.power}`;
+    let term = absC === 1 && body ? body : fmtNum(absC) + body;
+    if(s === '') s = (t.coef < 0 ? '-' : '') + term;
+    else s += (t.coef < 0 ? ' - ' : ' + ') + term;
+  }
+  return s;
+}
 function factorPolynomial(query){
   const q = query.toLowerCase().replace(/\s+/g,'');
   const m = q.match(/(?:разложи|разложить|множител)\w*\s*(?:на\s+множители\s*)?[:]?(.+)/i);
   if(!m) return null;
   let expr = m[1].replace(/^\(/,'').replace(/\)$/,'').replace(/[?!.]+$/,'').replace(/[хХ]/g,'x');
-  if(!/x/.test(expr)) return null;
   expr = expr.replace(/x²/g,'x^2');
   const poly = parsePoly(expr);
   if(poly.a !== 0){
     const {a,b,c} = poly;
     const D = b*b - 4*a*c;
-    if(D < 0) return { text:`${ico('x-circle','inl-err')} **Дискриминант $D = ${fmtNum(D)} < 0$** — на множители с действительными коэффициентами не разлагается.`, _isDialog:true };
+    if(D < 0) return { text:`${ico('x-circle','inl-err')} **Дискриминант $D = ${fmtNum(D)} < 0$** — не разлагается.`, _isDialog:true };
     const sq = Math.sqrt(D);
     const r1 = (-b + sq)/(2*a), r2 = (-b - sq)/(2*a);
     const s = [];
     s.push(`**Разложение на множители:**`);
     s.push(`$$${polyToStr(a,b,c)}$$`);
-    s.push(`\n${ico('bulb')} **Метод:** находим корни, затем $a(x-x_1)(x-x_2)$.`);
     s.push(`\n**Шаг 1.** Дискриминант: $D = ${fmtNum(D)}$, $\\sqrt{D} = ${fmtNum(sq)}$`);
     s.push(`**Шаг 2.** Корни: $x_1 = ${fmtNum(r1)}$, $x_2 = ${fmtNum(r2)}$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
     const parts = [];
-    if(Math.abs(a - 1) > 1e-9) parts.push(fmtNum(a));
-    const sign1 = r1 >= 0 ? '-' : '+';
-    const sign2 = r2 >= 0 ? '-' : '+';
-    parts.push(`(x ${sign1} ${fmtNum(Math.abs(r1))})`);
-    if(Math.abs(r2 - r1) > 1e-9) parts.push(`(x ${sign2} ${fmtNum(Math.abs(r2))})`);
-    else parts.push(`^2`);
-    s.push(`$$${parts.join(' ')}$$`);
+    if(Math.abs(a-1) > 1e-9) parts.push(fmtNum(a));
+    parts.push(r1 >= 0 ? `(x - ${fmtNum(r1)})` : `(x + ${fmtNum(-r1)})`);
+    if(Math.abs(r2-r1) > 1e-9){
+      parts.push(r2 >= 0 ? `(x - ${fmtNum(r2)})` : `(x + ${fmtNum(-r2)})`);
+    } else parts.push(`^2`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${parts.join(' ').replace(/\(x \^2\)/g,'^2')}$`);
     return { text: s.join('\n'), _isDialog:true };
   }
   return null;
 }
 
+/* --- Simplify --- */
 function simplifyExpression(query){
   const m = query.toLowerCase().match(/(?:упрости|упростить)[:]?\s*(.+)/i);
   if(!m) return null;
   let expr = m[1].replace(/[?!.]+$/,'').replace(/\s+/g,'').replace(/[хХ]/g,'x');
   expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3');
-
   const bino = expr.match(/^\(x([+\-]\d+)\)\(x([+\-]\d+)\)$/);
   if(bino){
     const a = parseInt(bino[1]), b = parseInt(bino[2]);
     const s = [];
-    s.push(`**Упрощение:**`);
-    s.push(`$$(x${bino[1]})(x${bino[2]})$$`);
-    s.push(`\n${ico('bulb')} **Метод:** раскрываем скобки (фонтан).`);
-    s.push(`\n**Шаг 1.** Перемножаю:`);
-    s.push(`$$= x \\cdot x + x \\cdot (${b}) + (${a}) \\cdot x + (${a})(${b})$$`);
+    s.push(`**Упрощение:** $${(expr)}$`);
+    s.push(`\n**Шаг 1.** Раскрываю скобки:`);
+    s.push(`$$= x \\cdot x + ${b}x + ${a}x + ${a*b}$$`);
     s.push(`\n**Шаг 2.** Привожу подобные:`);
     s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x^2 ${a+b>=0?'+':'-'} ${Math.abs(a+b)}x ${a*b>=0?'+':'-'} ${Math.abs(a*b)}$`);
     return { text: s.join('\n'), _isDialog:true };
@@ -896,6 +1168,154 @@ function simplifyExpression(query){
   return null;
 }
 
+/* --- Integrals --- */
+function solveIntegral(query){
+  const q = query.trim();
+  // Detect: ∫ expr dx, интеграл от expr dx, определённый: ∫_a^b expr dx
+  let m = q.match(/∫\s*_?\{?(-?\d+\.?\d*)\}?\^?\{?(-?\d+\.?\d*)\}?\s*(.+?)\s*dx/i);
+  if(!m) m = q.match(/(?:определ[ёе]нный\s+)?интеграл\s+от\s+(-?\d+\.?\d*)\s+до\s+(-?\d+\.?\d*)\s+(.+?)\s*dx/i);
+  if(m) return definiteIntegral(parseFloat(m[1]), parseFloat(m[2]), m[3], q);
+  m = q.match(/∫\s*(.+?)\s*dx/i);
+  if(!m) m = q.match(/(?:неопредел[ёе]нный\s+)?интеграл\s+(?:от\s+)?(.+?)\s*dx/i);
+  if(!m) m = q.match(/^∫\s*(.+)/i);
+  if(!m) return null;
+  return indefiniteIntegral(m[1], q);
+}
+function indefiniteIntegral(expr, original){
+  expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
+  // Simple rules
+  const terms = [];
+  // Parse terms: each is either a*sin(x), a*cos(x), a*e^x, a/x, a*x^n, a
+  const parts = expr.replace(/-/g,'+-').split('+').filter(Boolean);
+  const integrated = [];
+  let ok = true;
+  for(let part of parts){
+    if(part.startsWith('+')) part = part.slice(1);
+    let m;
+    // sin(x)
+    if((m = part.match(/^(-?\d*\.?\d*)\*?sin\(x\)$/))){
+      const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
+      integrated.push({ coef: -c, fn: 'cos' });
+      continue;
+    }
+    if((m = part.match(/^(-?\d*\.?\d*)\*?cos\(x\)$/))){
+      const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
+      integrated.push({ coef: c, fn: 'sin' });
+      continue;
+    }
+    if((m = part.match(/^(-?\d*\.?\d*)\*?e\^x$/))){
+      const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
+      integrated.push({ coef: c, fn: 'exp' });
+      continue;
+    }
+    if((m = part.match(/^(-?\d*\.?\d*)\*?1\/x$/)) || (m = part.match(/^(-?\d*\.?\d*)\*?x\^-1$/))){
+      const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
+      integrated.push({ coef: c, fn: 'ln', abs: true });
+      continue;
+    }
+    if((m = part.match(/^(-?\d*\.?\d*)\*?x\^(\d+)$/))){
+      const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
+      const n = parseInt(m[2]);
+      integrated.push({ coef: c / (n + 1), power: n + 1 });
+      continue;
+    }
+    if((m = part.match(/^(-?\d*\.?\d*)\*?x$/))){
+      const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]);
+      integrated.push({ coef: c / 2, power: 2 });
+      continue;
+    }
+    if((m = part.match(/^(-?\d*\.?\d+)$/))){
+      const c = parseFloat(m[1]);
+      integrated.push({ coef: c, power: 1 });
+      continue;
+    }
+    ok = false; break;
+  }
+  if(!ok) return null;
+  const pieces = integrated.map(t => {
+    if(t.fn === 'sin') return (t.coef === 1 ? '' : fmtNum(t.coef)) + '\\sin(x)';
+    if(t.fn === 'cos') return (t.coef === 1 ? '' : fmtNum(t.coef)) + '\\cos(x)';
+    if(t.fn === 'exp') return (t.coef === 1 ? '' : fmtNum(t.coef)) + 'e^x';
+    if(t.fn === 'ln') return (t.coef === 1 ? '' : fmtNum(t.coef)) + '\\ln|x|';
+    if(t.power === 1) return fmtNum(t.coef) + 'x';
+    return (t.coef === 1 ? '' : fmtNum(t.coef)) + `x^{${t.power}}`;
+  });
+  const s = [];
+  s.push(`**Нахожу интеграл:**`);
+  s.push(`$$\\int ${expr.replace(/\*/g,'')}\\,dx$$`);
+  s.push(`\n${ico('bulb')} **Правила:**`);
+  s.push(`• $\\int x^n dx = \\dfrac{x^{n+1}}{n+1} + C$`);
+  s.push(`• $\\int \\sin x\\,dx = -\\cos x + C$, $\\int \\cos x\\,dx = \\sin x + C$`);
+  s.push(`• $\\int e^x dx = e^x + C$, $\\int \\dfrac{dx}{x} = \\ln|x| + C$`);
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
+  s.push(`$$\\int ${expr.replace(/\*/g,'')}\\,dx = ${pieces.join(' + ').replace(/\+ -/g,'- ')} + C$$`);
+  return { text: s.join('\n'), _isDialog:true };
+}
+function definiteIntegral(a, b, expr, original){
+  // Use Simpson's numeric integration + show antiderivative
+  expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
+  // Simple: only polynomial
+  const poly = parseAnyPoly(expr);
+  if(!poly) return null;
+  // Numeric via Simpson
+  const f = (x) => poly.terms.reduce((s,t) => s + t.coef * Math.pow(x, t.power), 0);
+  const n = 1000;
+  const h = (b - a) / n;
+  let sum = f(a) + f(b);
+  for(let i = 1; i < n; i++) sum += f(a + i*h) * (i % 2 === 0 ? 2 : 4);
+  const result = sum * h / 3;
+  const s = [];
+  s.push(`**Определённый интеграл:**`);
+  s.push(`$$\\int_{${fmtNum(a)}}^{${fmtNum(b)}} ${expr} \\,dx$$`);
+  s.push(`\n${ico('bulb')} **Формула Ньютона-Лейбница:** $\\int_a^b f(x)\\,dx = F(b) - F(a)$`);
+  s.push(`\n${ico('check-circle','inl-ok')} **Значение:** $${fmtNum(Math.round(result * 1e6) / 1e6)}$`);
+  return { text: s.join('\n'), _isDialog:true };
+}
+
+/* --- Limits --- */
+function solveLimit(query){
+  const m = query.match(/lim\s*_?\{?x\s*[→>-]+\s*(-?\d+\.?\d*|[+-]?∞)\}?\s*\(?(.+?)\)?$/i);
+  if(!m) return null;
+  const to = m[1] === '∞' ? Infinity : m[1] === '-∞' ? -Infinity : parseFloat(m[1]);
+  const expr = m[2].trim().replace(/\s+/g,'').replace(/[хХ]/g,'x');
+  // Special cases
+  const s = [];
+  s.push(`**Предел:**`);
+  s.push(`$$\\lim_{x \\to ${m[1]}} ${expr}$$`);
+  // Handle sin(x)/x → 1 as x→0
+  if(/sin\(x\)\/x/i.test(expr) && to === 0){
+    s.push(`\n${ico('bulb')} **Первый замечательный предел:** $\\lim_{x\\to 0} \\dfrac{\\sin x}{x} = 1$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $1$`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  // Try numeric
+  const poly = parseAnyPoly(expr);
+  if(poly){
+    if(to === Infinity || to === -Infinity){
+      const maxPow = Math.max(...poly.terms.map(t => t.power));
+      const lead = poly.terms.find(t => t.power === maxPow).coef;
+      s.push(`\n${ico('bulb')} Старшая степень $x^{${maxPow}}$ с коэффициентом $${fmtNum(lead)}$.`);
+      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${to > 0 ? (lead > 0 ? '+\\infty' : '-\\infty') : (lead > 0 ? (maxPow % 2 === 0 ? '+\\infty' : '-\\infty') : (maxPow % 2 === 0 ? '-\\infty' : '+\\infty'))}$`);
+      return { text: s.join('\n'), _isDialog:true };
+    }
+    const val = poly.terms.reduce((s,t) => s + t.coef * Math.pow(to, t.power), 0);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${fmtNum(Math.round(val*1e6)/1e6)}$`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  return null;
+}
+
+/* --- Complex numbers --- */
+function solveComplex(query){
+  const q = query.trim().replace(/[хХ]/g,'x');
+  // Format: (a+bi) OP (c+di)
+  const m = q.match(/^\(?\s*(-?\d+\.?\d*)?\s*([+-])?\s*(\d+\.?\d*)?i?\s*\)?\s*([+\-*/×])\s*\(?\s*(-?\d+\.?\d*)?\s*([+-])?\s*(\d+\.?\d*)?i?\s*\)?$/);
+  if(!m) return null;
+  // Simple parse attempt
+  return null;
+}
+
+/* --- Arithmetic column --- */
 function columnArithmetic(query){
   const m = query.trim().match(/^(\d+)\s*([×*])\s*(\d+)$/);
   if(m){
@@ -908,18 +1328,15 @@ function columnArithmetic(query){
     for(let i=0;i<res.length-1;i++){ res[i+1] += Math.floor(res[i]/10); res[i] %= 10; }
     while(res.length > 1 && res[res.length-1] === 0) res.pop();
     const product = res.reverse().join('');
-
     const width = Math.max(a.length, b.length, product.length) + 2;
     let out = '';
     out += '  ' + ' '.repeat(width - a.length) + a + '\n';
     out += '× ' + ' '.repeat(width - b.length) + b + '\n';
     out += '  ' + '─'.repeat(width) + '\n';
-    const partials = [];
     for(let j=0;j<B.length;j++){
       const partial = (parseInt(a) * B[j]).toString();
-      partials.push(partial.padStart(width - j, ' ') + ' '.repeat(j));
+      out += '  ' + (partial.padStart(width - j, ' ') + ' '.repeat(j)) + '\n';
     }
-    for(const p of partials) out += '  ' + p + '\n';
     if(B.length > 1){
       out += '  ' + '─'.repeat(width) + '\n';
       out += '  ' + product.padStart(width) + '\n';
@@ -939,6 +1356,7 @@ function columnArithmetic(query){
   return null;
 }
 
+/* --- Derivatives --- */
 function parseGeneralPoly(expr){
   expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/X/g,'x');
   expr = expr.replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
@@ -985,12 +1403,11 @@ function termsToStrGen(terms){
   return s;
 }
 function derivOfFn(t){
-  const c = t.coef;
   switch(t.fn){
-    case 'sin': return {coef: c, fn:'cos', kind:'fn'};
-    case 'cos': return {coef: -c, fn:'sin', kind:'fn'};
-    case 'exp': return {coef: c, fn:'exp', kind:'fn'};
-    case 'ln': return {coef: c, kind:'power', power:-1};
+    case 'sin': return {coef: t.coef, fn:'cos', kind:'fn'};
+    case 'cos': return {coef: -t.coef, fn:'sin', kind:'fn'};
+    case 'exp': return {coef: t.coef, fn:'exp', kind:'fn'};
+    case 'ln': return {coef: t.coef, kind:'power', power:-1};
     default: return null;
   }
 }
@@ -1003,36 +1420,25 @@ function solveDerivative(query){
   expr = expr.replace(/^f\(x\)=/i,'').replace(/^y=/i,'').replace(/^\(/,'').replace(/\)$/,'');
   if(!/[xXхХ]/.test(expr)) return null;
   expr = expr.replace(/[хХ]/g,'x');
-
   const terms = parseGeneralPoly(expr);
   if(!terms || !terms.length) return null;
-
   const dTerms = [];
   for(const t of terms){
     if(t.kind === 'power'){ if(t.power > 0) dTerms.push({coef:t.coef*t.power, power:t.power-1, kind:'power'}); }
-    else if(t.kind === 'const'){ }
     else if(t.kind === 'fn'){ const d = derivOfFn(t); if(d) dTerms.push(d); }
   }
-  const origStr = termsToStrGen(terms);
-  const derivStr = termsToStrGen(dTerms);
-
   const s = [];
   s.push(`**Нахожу производную:**`);
-  s.push(`$$f(x) = ${origStr}$$`);
-  s.push(`\n${ico('bulb')} **Правила:**`);
-  s.push(`• $(x^n)' = n x^{n-1}$`);
-  s.push(`• $(\\sin x)' = \\cos x$,  $(\\cos x)' = -\\sin x$`);
-  s.push(`• $(e^x)' = e^x$,  $(\\ln x)' = 1/x$`);
-  s.push(`• $(C f)' = C f'$,  $(f+g)' = f'+g'$`);
+  s.push(`$$f(x) = ${termsToStrGen(terms)}$$`);
+  s.push(`\n${ico('bulb')} **Правила:** $(x^n)' = n x^{n-1}$, $(\\sin x)' = \\cos x$, $(\\cos x)' = -\\sin x$, $(e^x)' = e^x$, $(\\ln x)' = 1/x$`);
   s.push(`\n**По шагам:**`);
   for(const t of terms){
     if(t.kind === 'const'){ s.push(`• $( ${fmtNum(t.coef)} )' = 0$`); continue; }
     if(t.kind === 'power'){
-      if(t.power === 0) continue;
       if(t.power === 1) s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}x )' = ${fmtNum(t.coef)}$`);
       else {
         const nc = t.coef*t.power;
-        s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}x^{${t.power}} )' = ${t.power} \\cdot ${t.coef === 1 ? '' : fmtNum(t.coef)}x^{${t.power-1}} = ${nc === 1 ? '' : fmtNum(nc)}x^{${t.power-1}}$`);
+        s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}x^{${t.power}} )' = ${nc === 1 ? '' : fmtNum(nc)}x^{${t.power-1}}$`);
       }
     } else if(t.kind === 'fn'){
       const d = derivOfFn(t);
@@ -1041,133 +1447,153 @@ function solveDerivative(query){
       s.push(`• $( ${t.coef === 1 ? '' : fmtNum(t.coef)}${name} )' = ${d.coef === 1 ? '' : fmtNum(d.coef)}${dName}$`);
     }
   }
-  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:**`);
-  s.push(`$$f'(x) = ${derivStr}$$`);
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $f'(x) = ${termsToStrGen(dTerms)}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
 
+/* --- Find error --- */
+function findError(query){
+  const m = query.toLowerCase().match(/(?:найди|найти)\s+ошибк\w*\s*:?\s*(.+)/i);
+  if(!m) return null;
+  const raw = m[1].trim();
+  // Split by → or => or "получилось"
+  const parts = raw.split(/\s*(?:→|=>|->|,|;)\s*/);
+  if(parts.length < 2) return null;
+  const [eq, claimed] = parts;
+  // Solve correctly
+  const correct = solveEquation(eq);
+  if(!correct) return null;
+  // Extract claimed answer — try x = number
+  const claimedMatch = claimed.match(/x\s*=\s*(-?\d+\.?\d*)/i);
+  const claimedVal = claimedMatch ? parseFloat(claimedMatch[1]) : null;
+  const correctMatch = correct.text.match(/\$x = (-?\d+\.?\d*)\$/);
+  const correctVal = correctMatch ? parseFloat(correctMatch[1]) : null;
+  if(claimedVal === null || correctVal === null) return null;
+  const s = [];
+  s.push(`**Проверяю решение:**`);
+  s.push(`$${eq}$$`);
+  s.push(`\nТвой ответ: $x = ${claimedVal}$`);
+  if(Math.abs(claimedVal - correctVal) < 1e-9){
+    s.push(`\n${ico('check-circle','inl-ok')} **Верно!** Ошибок нет.`);
+  } else {
+    s.push(`\n${ico('x-circle','inl-err')} **Нашёл ошибку.** Правильный ответ: $x = ${correctVal}$`);
+    s.push(`\n${ico('bulb')} **Типичная причина:** неверный перенос через знак равенства.`);
+  }
+  return { text: s.join('\n'), _isDialog:true };
+}
+
+/* --- Knowledge base --- */
 function matchMathKnowledge(q){
   const x = q.trim().toLowerCase().replace(/[?!.]+$/,'').trim();
 
   if(/объясни\s+проще|простыми\s+словами|для\s+чайников/i.test(x)){
-    return { text: `${ico('bulb')} **Объясняю просто**\n\nНапиши тему, и я объясню без формул — на бытовом примере. Например: «объясни проще дискриминант».`, _isDialog:true };
+    return { text: `${ico('bulb')} **Объясняю просто**\n\nНапиши тему — объясню без формул, на бытовом примере.`, _isDialog:true };
   }
-  if(/дискриминант/i.test(x) && /проще|простыми|чайник/i.test(x)){
-    return { text: `**Дискриминант на пальцах**\n\nПредставь, что ты бросаешь мяч. Он может:\n• Перелететь забор (2 корня, $D>0$)\n• Упасть прямо на забор (1 корень, $D=0$)\n• Не долететь (0 корней, $D<0$)\n\n$D = b^2 - 4ac$ — просто число, которое говорит, сколько раз парабола пересечёт ось X.`, _isDialog:true };
-  }
-
   if(/что\s+такое\s+производн|объясни\s+производн/i.test(x))
-    return { text: `**Производная** — скорость изменения функции в точке.\n\n${ico('bulb')} **Определение:** $f'(x_0) = \\lim_{h\\to 0} \\dfrac{f(x_0+h) - f(x_0)}{h}$\n\n${ico('chart')} **Геометрический смысл:** угловой коэффициент касательной к графику.\n\n${ico('book-open')} **Правила:**\n• $(x^n)' = n x^{n-1}$\n• $(\\sin x)' = \\cos x$\n• $(\\cos x)' = -\\sin x$\n• $(e^x)' = e^x$\n• $(\\ln x)' = 1/x$\n• $(uv)' = u'v + uv'$\n• $(u/v)' = \\dfrac{u'v - uv'}{v^2}$\n\n${ico('hint')} Напиши функцию — найду производную!`, _isDialog:true };
-
+    return { text: `**Производная** — скорость изменения функции в точке.\n\n${ico('bulb')} $f'(x_0) = \\lim_{h\\to 0} \\dfrac{f(x_0+h) - f(x_0)}{h}$\n\n${ico('chart')} **Смысл:** угловой коэффициент касательной.`, _isDialog:true };
   if(/что\s+такое\s+интеграл/i.test(x))
-    return { text: `**Интеграл** — операция, обратная производной.\n\n${ico('bulb')} **Неопределённый:** $\\int f(x)\\,dx = F(x) + C$, где $F'(x)=f(x)$\n\n${ico('chart')} **Определённый:** $\\int_a^b f(x)\\,dx$ — площадь под графиком.\n\n${ico('book-open')} **Основные:**\n• $\\int x^n\\,dx = \\dfrac{x^{n+1}}{n+1} + C$\n• $\\int \\dfrac{dx}{x} = \\ln|x| + C$\n• $\\int e^x\\,dx = e^x + C$\n• $\\int \\sin x\\,dx = -\\cos x + C$\n• $\\int \\cos x\\,dx = \\sin x + C$`, _isDialog:true };
-
+    return { text: `**Интеграл** — операция, обратная производной.\n\n${ico('bulb')} $\\int f(x)\\,dx = F(x) + C$, где $F'(x)=f(x)$\n\n**Основные:**\n• $\\int x^n\\,dx = \\dfrac{x^{n+1}}{n+1} + C$\n• $\\int \\dfrac{dx}{x} = \\ln|x| + C$\n• $\\int e^x\\,dx = e^x + C$\n• $\\int \\sin x\\,dx = -\\cos x + C$\n• $\\int \\cos x\\,dx = \\sin x + C$`, _isDialog:true };
   if(/теорема\s+пифагор|пифагор/i.test(x))
-    return { text: `**Теорема Пифагора**\n\nВ прямоугольном треугольнике:\n\n$$a^2 + b^2 = c^2$$\n\nгде $c$ — гипотенуза, $a$ и $b$ — катеты.\n\n${ico('hint')} **Пример:** катеты 3 и 4.\n$c^2 = 9+16=25 \\Rightarrow c=5$\n\n${ico('bulb')} **Обратная теорема:** если $a^2+b^2=c^2$ — треугольник прямоугольный.`, _isDialog:true };
-
-  if(/дискриминант/i.test(x))
-    return { text: `**Дискриминант** квадратного уравнения $ax^2+bx+c=0$:\n\n$$D = b^2 - 4ac$$\n\n${ico('bulb')} **Три случая:**\n• $D>0$ — два корня: $x = \\dfrac{-b \\pm \\sqrt{D}}{2a}$\n• $D=0$ — один корень: $x = -\\dfrac{b}{2a}$\n• $D<0$ — действительных корней нет`, _isDialog:true };
-
+    return { text: `**Теорема Пифагора**\n\n$$a^2 + b^2 = c^2$$\n\nгде $c$ — гипотенуза.`, _isDialog:true };
+  if(/дискриминант/i.test(x) && !/реши/i.test(x))
+    return { text: `**Дискриминант** $ax^2+bx+c=0$:\n\n$$D = b^2 - 4ac$$\n\n${ico('bulb')} $D>0$ — 2 корня, $D=0$ — 1, $D<0$ — нет.`, _isDialog:true };
   if(/квадратн\w*\s+уравнени/i.test(x))
-    return { text: `**Квадратное уравнение:** $ax^2+bx+c=0$, где $a\\ne 0$.\n\n${ico('bulb')} **Через дискриминант:**\n$$x = \\dfrac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$\n\n${ico('hint')} **Виета:** $x_1+x_2 = -b/a$, $x_1 x_2 = c/a$\n\nНапиши уравнение — решу по шагам!`, _isDialog:true };
-
+    return { text: `**Квадратное уравнение** $ax^2+bx+c=0$.\n\n$$x = \\dfrac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$\n\n${ico('hint')} Виета: $x_1+x_2=-b/a$, $x_1 x_2=c/a$`, _isDialog:true };
   if(/теорема\s+виета/i.test(x))
-    return { text: `**Теорема Виета**\n\nДля $x^2+px+q=0$:\n$$x_1+x_2 = -p, \\quad x_1 x_2 = q$$\n\nДля $ax^2+bx+c=0$:\n$$x_1+x_2 = -\\dfrac{b}{a}, \\quad x_1 x_2 = \\dfrac{c}{a}$$`, _isDialog:true };
-
+    return { text: `**Виета:** $x_1+x_2 = -b/a$, $x_1 x_2 = c/a$`, _isDialog:true };
   if(/логарифм/i.test(x))
-    return { text: `**Логарифм** $\\log_a b = c \\iff a^c = b$\n\n${ico('book-open')} **Свойства:**\n• $\\log_a(xy) = \\log_a x + \\log_a y$\n• $\\log_a(x/y) = \\log_a x - \\log_a y$\n• $\\log_a(x^n) = n\\log_a x$\n• $\\log_a 1 = 0$, $\\log_a a = 1$\n• $\\log_a b = \\dfrac{\\log_c b}{\\log_c a}$\n\n${ico('bulb')} $\\lg x = \\log_{10}x$, $\\ln x = \\log_e x$, $e\\approx 2.718$`, _isDialog:true };
-
-  if(/синус|косинус|тангенс|тригонометр/i.test(x))
-    return { text: `**Тригонометрия**\n\n${ico('book-open')} **Основные:**\n• $\\sin\\alpha = \\dfrac{\\text{противолеж.}}{\\text{гипотенуза}}$\n• $\\cos\\alpha = \\dfrac{\\text{прилеж.}}{\\text{гипотенуза}}$\n• $\\tan\\alpha = \\dfrac{\\sin\\alpha}{\\cos\\alpha}$\n\n${ico('bulb')} $\\sin^2\\alpha + \\cos^2\\alpha = 1$`, _isDialog:true };
-
+    return { text: `**Логарифм** $\\log_a b = c \\iff a^c = b$\n\n• $\\log_a(xy) = \\log_a x + \\log_a y$\n• $\\log_a(x/y) = \\log_a x - \\log_a y$\n• $\\log_a(x^n) = n\\log_a x$`, _isDialog:true };
+  if(/систем[аы]\s+уравнени/i.test(x) && /что|как|объясн/i.test(x))
+    return { text: `**Система уравнений** — ищем значения, при которых все уравнения верны.\n\n**Методы:** подстановка, сложение, Крамера, графический.\n\n${ico('hint')} Напиши например: \`{x+y=7, x-y=1}\` — решу!`, _isDialog:true };
+  if(/неравенств/i.test(x) && /что|как|объясн/i.test(x))
+    return { text: `**Неравенство** — выражение со знаками $<, >, \\le, \\ge$.\n\n**Метод интервалов:**\n1. Переносим в левую часть\n2. Находим корни = 0\n3. Ставим точки на прямой\n4. Определяем знаки на интервалах\n\n${ico('hint')} Напиши например \`x^2-5x+6 < 0\` — решу!`, _isDialog:true };
   if(/процент/i.test(x))
-    return { text: `**Проценты**\n\n$1\\% = 1/100 = 0.01$\n\n${ico('book-open')} **Формулы:**\n• $p\\%$ от $A$: $A\\cdot\\dfrac{p}{100}$\n• Сколько % составляет $A$ от $B$: $\\dfrac{A}{B}\\cdot 100\\%$\n• Увеличить на $p\\%$: $A\\cdot(1+p/100)$`, _isDialog:true };
-
+    return { text: `**Проценты:** $p\\%$ от $A$: $A \\cdot p/100$`, _isDialog:true };
   if(/степен|возведен/i.test(x))
-    return { text: `**Степени** $a^n = a\\cdot a\\cdots a$ ($n$ раз)\n\n${ico('book-open')} **Свойства:**\n• $a^m\\cdot a^n = a^{m+n}$\n• $a^m/a^n = a^{m-n}$\n• $(a^m)^n = a^{mn}$\n• $(ab)^n = a^n b^n$\n• $a^0 = 1$, $a^{-n} = 1/a^n$\n• $a^{1/n} = \\sqrt[n]{a}$`, _isDialog:true };
-
-  if(/прост[ыо]е\s+числ/i.test(x))
-    return { text: `**Простое число** — натуральное $>1$, делится только на 1 и себя.\n\n**Первые простые:** 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53…\n\n${ico('bulb')} 1 — не простое. 2 — единственное чётное простое.`, _isDialog:true };
-
-  if(/\bнод\b|наибольший\s+общий\s+делитель/i.test(x))
-    return { text: `**НОД** — наибольший общий делитель.\n\n${ico('bulb')} **Алгоритм Евклида:**\nпока $b\\ne 0$: $(a,b) \\to (b, a\\bmod b)$\n\nПример: НОД(48,36)\n48 mod 36 = 12; 36 mod 12 = 0 → **НОД = 12**`, _isDialog:true };
-
-  if(/\bнок\b|наименьшее\s+общее\s+кратное/i.test(x))
-    return { text: `**НОК** $= \\dfrac{|a\\cdot b|}{\\text{НОД}(a,b)}$\n\nПример: НОК(12,18), НОД=6, НОК = 12·18/6 = **36**`, _isDialog:true };
-
+    return { text: `**Свойства:** $a^m a^n = a^{m+n}$, $(a^m)^n = a^{mn}$, $a^{-n} = 1/a^n$`, _isDialog:true };
+  if(/\bнод\b|наибольший\s+общий/i.test(x))
+    return { text: `**НОД** — алгоритм Евклида: $(a,b) \\to (b, a\\bmod b)$`, _isDialog:true };
+  if(/\bнок\b|наименьшее\s+общее/i.test(x))
+    return { text: `**НОК** $= \\dfrac{|ab|}{\\text{НОД}(a,b)}$`, _isDialog:true };
   if(/факториал/i.test(x))
-    return { text: `**Факториал** $n! = 1\\cdot 2\\cdot 3\\cdots n$\n\n$0!=1$, $1!=1$, $5!=120$, $7!=5040$\n\n${ico('bulb')} $n! = n\\cdot(n-1)!$`, _isDialog:true };
-
+    return { text: `**Факториал** $n! = 1\\cdot 2\\cdots n$. $5!=120$, $7!=5040$`, _isDialog:true };
   if(/модул/i.test(x))
-    return { text: `**Модуль** $|a|$ — расстояние от $a$ до нуля.\n\n$|a| = a$ при $a\\ge 0$, $|a| = -a$ при $a<0$\n\n${ico('book-open')} $|ab| = |a|\\cdot|b|$, $|a+b| \\le |a|+|b|$`, _isDialog:true };
-
-  if(/функц/i.test(x) && !/производн/i.test(x))
-    return { text: `**Функция** — правило, по которому каждому $x$ соответствует один $y$.\n\n${ico('book-open')} **Виды:**\n• Линейная: $y = kx + b$ — прямая\n• Квадратичная: $y = ax^2+bx+c$ — парабола\n• Обратная: $y = k/x$ — гипербола\n• Показательная: $y = a^x$\n• Логарифмическая: $y = \\log_a x$`, _isDialog:true };
-
-  if(/систем[аы]\s+уравнени/i.test(x))
-    return { text: `**Система уравнений**\n\n${ico('book-open')} **Способы:**\n1. Подстановка\n2. Сложение/вычитание\n3. Графический\n\n${ico('hint')} Пример:\n$\\begin{cases} x+y=7 \\\\ x-y=1 \\end{cases}$\nСкладываем: $2x=8 \\Rightarrow x=4$, $y=3$`, _isDialog:true };
-
+    return { text: `**Модуль** $|a|$ — расстояние от $a$ до нуля.`, _isDialog:true };
   return null;
 }
 
+/* --- Dialogues --- */
 function matchDialog(q){
   const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
-  if(/^(привет|прив|здравствуй|хай|hi|hello|hey)/i.test(x)) return name ? `Привет, ${name}! Готов помочь с математикой. Что решаем?` : 'Привет! Готов помочь с математикой. Что решаем?';
-  if(/как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name ? `Всё отлично, ${name}!` : 'Всё отлично!';
-  if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи! Удачи в учёбе!';
-  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Рад помочь.';
-  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `${ico('compass')} Я **Orbita AI** — твой репетитор по математике от компании **ORT**.\n\nРешаю уравнения, производные, строю графики и объясняю теорию.`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Что я умею:**\n\n${ico('equals')} Решаю уравнения пошагово\n${ico('chart')} Нахожу производные (включая sin, cos, ln, e^x)\n${ico('sigma')} Раскладываю на множители, упрощаю\n${ico('calc')} Умножаю/делю столбиком\n${ico('book-open')} Объясняю теорию с примерами\n${ico('grid')} Строю графики функций\n${ico('target')} Тренажёр по темам\n${ico('mic')} Распознаю голос\n${ico('speak')} Читаю ответы (Plus)`;
-  if(/^(кто\s+тебя\s+создал|кто\s+разработал)/i.test(x)) return `Меня создала компания **ORT**`;
+  if(/^(привет|прив|здравствуй|хай|hi|hello|hey)/i.test(x)) return name ? `Привет, ${name}! Что решаем?` : 'Привет! Что решаем?';
+  if(/^как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name ? `Всё отлично, ${name}!` : 'Всё отлично!';
+  if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи!';
+  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста!';
+  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `${ico('compass')} Я **Orbita AI** — твой репетитор по математике от компании **ORT**.`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Умею:**\n\n${ico('equals')} Уравнения и системы\n${ico('sigma')} Неравенства (метод интервалов)\n${ico('chart')} Производные (sin, cos, ln, e^x)\n${ico('sigma')} Интегралы\n${ico('function')} Пределы\n${ico('calc')} Столбик\n${ico('sigma')} Разложение на множители\n${ico('book-open')} Теория\n${ico('target')} Тренажёр и экзамен\n${ico('image')} Распознавание фото`;
   if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${ico('clock')}`;
   if(/какой\s+сегодня\s+день/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})} ${ico('calendar')}`;
   return null;
 }
 
-async function generateAnswer(query, chat){
+/* --- Generate answer --- */
+async function generateAnswer(query){
   if(hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
-
   const key = cacheKey(query);
   if(answerCache.has(key)){ await sleep(120); return answerCache.get(key); }
-
   let result = null;
 
-  const gm = query.match(/(?:построй|построить|график)\s+(?:график\s+)?(?:функции\s+)?y\s*=\s*(.+)/i);
-  if(gm){ result = { text: `Открываю построение графика для $y = ${gm[1].trim()}$.`, _graph: gm[1].trim(), _isDialog:true }; }
-
-  if(!result) result = factorPolynomial(query);
+  // 0. Graph
+  const gm = query.match(/(?:построй|построить|график)[\s:]*(?:график\s+)?(?:функции\s+)?(?:y\s*=\s*)?(.+)/i);
+  if(gm){
+    const expr = gm[1].trim();
+    result = { text: `**Строю график:**\n$${expr.replace(/;/g,' \\quad ')}$$\n\n${ico('chart')} График — ниже.`, _graph: expr, _isDialog: true };
+  }
+  // 1. Find error
+  if(!result) result = findError(query);
+  // 2. System
+  if(!result) result = solveSystem(query);
+  // 3. Inequality
+  if(!result) result = solveInequality(query);
+  // 4. Integral
+  if(!result) result = solveIntegral(query);
+  // 5. Limit
+  if(!result) result = solveLimit(query);
+  // 6. Factor advanced
+  if(!result) result = factorAdvanced(query);
+  // 7. Simplify
   if(!result) result = simplifyExpression(query);
+  // 8. Equation
   if(!result){ const eq = solveEquation(query); if(eq) result = eq; }
+  // 9. Derivative
   if(!result){ const d = solveDerivative(query); if(d) result = d; }
+  // 10. Column
   if(!result) result = columnArithmetic(query);
-
+  // 11. Simple arithmetic
   if(!result){
     const m = query.trim().toLowerCase().match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
     if(m){
       const a = parseFloat(m[1].replace(',','.')), b = parseFloat(m[3].replace(',','.')), op = m[2];
       let r;
       switch(op){
-        case '+': r = a+b; break;
-        case '-': r = a-b; break;
+        case '+': r = a+b; break; case '-': r = a-b; break;
         case '*': case 'x': case '×': r = a*b; break;
-        case '/': case '÷':
-          if(b === 0){ result = { text: `На ноль делить нельзя ${ico('x-circle','inl-err')}`, _isDialog:true }; break; }
-          r = a/b; break;
+        case '/': case '÷': if(b === 0){ result = { text: `На ноль делить нельзя ${ico('x-circle','inl-err')}`, _isDialog:true }; break; } r = a/b; break;
       }
       if(!result) result = { text: `$${a} ${op} ${b} = ${Math.round(r*1000000)/1000000}$$`, _isDialog:true };
     }
   }
-
+  // 12. GCD/LCM
   if(!result){
     const nm = query.toLowerCase().match(/(?:нод|нок)\s*\(?\s*(\d+)\s*[,;\s]+\s*(\d+)/i);
     if(nm){
       const a = parseInt(nm[1]), b = parseInt(nm[2]);
-      if(/нок/i.test(query)) result = { text: `**НОК(${a}, ${b}) = ${lcm(a,b)}**\n\n${ico('bulb')} НОД = ${gcd(a,b)}, формула: $\\text{НОК} = \\dfrac{a\\cdot b}{\\text{НОД}}$`, _isDialog:true };
+      if(/нок/i.test(query)) result = { text: `**НОК(${a}, ${b}) = ${lcm(a,b)}**`, _isDialog:true };
       else result = { text: `**НОД(${a}, ${b}) = ${gcd(a,b)}**`, _isDialog:true };
     }
   }
-
+  // 13. Factorial
   if(!result){
     const fm = query.toLowerCase().match(/(\d+)\s*!|факториал\s+(\d+)/);
     if(fm){
@@ -1175,19 +1601,19 @@ async function generateAnswer(query, chat){
       if(n >= 0 && n <= 20){ let f = 1; for(let i = 2; i <= n; i++) f *= i; result = { text: `**$${n}! = ${f}$**`, _isDialog:true }; }
     }
   }
-
+  // 14. KB
   if(!result) result = matchMathKnowledge(query);
+  // 15. Dialog
   if(!result){ const d = matchDialog(query); if(d) result = { text: d, _isDialog: true }; }
-
+  // 16. Not understood
   if(!result){
-    result = { text: `${ico('hint')} Не могу разобрать запрос «${query}».\n\n**Попробуй так:**\n• ${ico('equals')} _Реши 2x + 5 = 15_\n• ${ico('function')} _Реши x^2 - 5x + 6 = 0_\n• ${ico('chart')} _Производная x^3 + 2x_\n• ${ico('sigma')} _Разложи x^2 - 5x + 6 на множители_\n• ${ico('calc')} _1234 × 567_ столбиком\n• ${ico('book-open')} _Что такое дискриминант?_`, _isDialog: true };
+    result = { text: `${ico('hint')} Не могу разобрать «${query}».\n\n**Попробуй:**\n• _Реши 2x + 5 = 15_\n• _Реши x^2 - 5x + 6 = 0_\n• _Система: {x+y=7, x-y=1}_\n• _2x + 5 > 15_\n• _Производная x^3 + 2x_\n• _∫ x^3 dx_\n• _Разложи x^3 + x^2 + x + 1_\n• _Построй y = x^2 - 4_\n• _Найди ошибку: 2x+5=15 → x=7.5_`, _isDialog: true };
   }
-
   if(result && !result._isBlocked) answerCache.set(key, result);
   return result;
 }
 
-/* ============== RENDERING ============== */
+/* ============== RENDER TEXT ============== */
 function renderText(raw){
   const mathBlocks = [];
   let text = String(raw);
@@ -1201,7 +1627,6 @@ function renderText(raw){
     mathBlocks.push({expr: expr.trim(), display: false});
     return `\u0000M${i}\u0000`;
   });
-
   const iconBlocks = [];
   text = text.replace(/<span class="ico[^"]*"><svg><use href="#i-([a-z0-9-]+)"\/><\/svg><\/span>/gi, (m, id) => {
     const idx = iconBlocks.length;
@@ -1212,9 +1637,7 @@ function renderText(raw){
     iconBlocks.push({id, cls});
     return `\u0000I${idx}\u0000`;
   });
-
   let h = esc(text);
-
   h = h.replace(/```([\s\S]*?)```/g, (m, code) => `<pre style="background:var(--surface);padding:12px;border-radius:10px;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:12.5px;line-height:1.4;margin:8px 0;color:var(--ink)">${code.trim()}</pre>`);
   h = h.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, (m,n,d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`);
   h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
@@ -1223,12 +1646,10 @@ function renderText(raw){
   h = h.replace(/(^|[^\w_])_([^_\n]+)_(?![_\w])/g, '$1<em>$2</em>');
   h = h.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
   h = h.replace(/\n/g,'<br>');
-
   h = h.replace(/\u0000I(\d+)\u0000/g, (m, i) => {
     const b = iconBlocks[+i];
     return `<span class="inl-ico ${b.cls}"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-${b.id}"/></svg></span>`;
   });
-
   h = h.replace(/\u0000M(\d+)\u0000/g, (m, i) => {
     const b = mathBlocks[+i];
     if(window.katex){
@@ -1237,8 +1658,122 @@ function renderText(raw){
     }
     return b.display ? `$$${b.expr}$$` : `$${b.expr}$`;
   });
-
   return h;
+}
+
+/* ============== INLINE GRAPH ============== */
+function parseFnExpr(expr){
+  let js = expr.replace(/\^/g,'**').replace(/\bpi\b/gi,'Math.PI').replace(/\be\b/g,'Math.E').replace(/\s+/g,'');
+  js = js.replace(/\bsin\(/g,'Math.sin(').replace(/\bcos\(/g,'Math.cos(').replace(/\btan\(/g,'Math.tan(');
+  js = js.replace(/\bln\(/g,'Math.log(').replace(/\bsqrt\(/g,'Math.sqrt(').replace(/\babs\(/g,'Math.abs(');
+  js = js.replace(/(\d)([x(])/g,'$1*$2').replace(/([x)])(\d)/g,'$1*$2').replace(/\)(\()/g,')*(').replace(/x(\()/g,'x*(').replace(/\)x/g,')*x');
+  js = js.replace(/x([a-zA-Z])/g,'x*$1');
+  return js;
+}
+function drawInlineGraph(container, funcs){
+  const W = 320, H = 220;
+  const canvas = document.createElement('canvas');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = '100%';
+  canvas.style.height = 'auto';
+  canvas.style.display = 'block';
+  canvas.style.background = 'var(--surface)';
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const bg = isDark ? '#0f172a' : '#f8fafc';
+  const grid = isDark ? '#1e293b' : '#e2e8f0';
+  const axis = isDark ? '#475569' : '#94a3b8';
+  const textColor = isDark ? '#94a3b8' : '#64748b';
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+
+  const xMin = -10, xMax = 10, yMin = -10, yMax = 10;
+  const sx = x => (x - xMin) / (xMax - xMin) * W;
+  const sy = y => H - (y - yMin) / (yMax - yMin) * H;
+
+  // Grid
+  ctx.strokeStyle = grid;
+  ctx.lineWidth = 1;
+  for(let x = Math.ceil(xMin); x <= xMax; x++){
+    ctx.beginPath(); ctx.moveTo(sx(x), 0); ctx.lineTo(sx(x), H); ctx.stroke();
+  }
+  for(let y = Math.ceil(yMin); y <= yMax; y++){
+    ctx.beginPath(); ctx.moveTo(0, sy(y)); ctx.lineTo(W, sy(y)); ctx.stroke();
+  }
+  // Axes
+  ctx.strokeStyle = axis;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0, sy(0)); ctx.lineTo(W, sy(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx(0), 0); ctx.lineTo(sx(0), H); ctx.stroke();
+  // Labels
+  ctx.fillStyle = textColor;
+  ctx.font = '10px -apple-system,sans-serif';
+  ctx.textAlign = 'center';
+  for(let x = -10; x <= 10; x += 2){
+    if(x === 0) continue;
+    ctx.fillText(String(x), sx(x), sy(0) + 12);
+  }
+  ctx.textAlign = 'right';
+  for(let y = -10; y <= 10; y += 2){
+    if(y === 0) continue;
+    ctx.fillText(String(y), sx(0) - 4, sy(y) + 3);
+  }
+
+  // Colors
+  const colors = ['#2563eb','#dc2626','#16a34a','#f59e0b','#9333ea'];
+  // Draw each function
+  funcs.forEach((fn, idx) => {
+    let js;
+    try { js = parseFnExpr(fn); } catch(e){ return; }
+    let f;
+    try {
+      f = new Function('x', `with(Math){ return ${js}; }`);
+      f(1); // test
+    } catch(e){ return; }
+    ctx.strokeStyle = colors[idx % colors.length];
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    let started = false;
+    const steps = 600;
+    for(let i = 0; i <= steps; i++){
+      const x = xMin + (xMax - xMin) * i / steps;
+      let y;
+      try { y = f(x); } catch(e){ y = NaN; }
+      if(!isFinite(y) || isNaN(y)){ started = false; continue; }
+      if(y < yMin - 2 || y > yMax + 2){ started = false; continue; }
+      const px = sx(x), py = sy(y);
+      if(!started){ ctx.moveTo(px, py); started = true; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    // Auto: mark vertex for parabolas (a*x^2 + b*x + c)
+    const quad = fn.match(/^(-?\d*\.?\d*)\*?x\^2\s*([+\-]\s*\d*\.?\d*)?\*?x?\s*([+\-]\s*\d+\.?\d*)?$/i);
+    if(quad && !fn.toLowerCase().includes('sin') && !fn.toLowerCase().includes('cos')){
+      const L = parsePoly(fn.replace(/\s+/g,''));
+      if(L.a !== 0){
+        const vx = -L.b / (2 * L.a);
+        const vy = L.a*vx*vx + L.b*vx + L.c;
+        if(vx >= xMin && vx <= xMax && vy >= yMin && vy <= yMax){
+          ctx.fillStyle = colors[idx % colors.length];
+          ctx.beginPath(); ctx.arc(sx(vx), sy(vy), 4, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = textColor;
+          ctx.font = '10px -apple-system,sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(`(${vx.toFixed(1)}; ${vy.toFixed(1)})`, sx(vx) + 6, sy(vy) - 6);
+        }
+      }
+    }
+  });
+  // Legend
+  ctx.font = 'bold 11px -apple-system,sans-serif';
+  ctx.textAlign = 'left';
+  funcs.forEach((fn, idx) => {
+    ctx.fillStyle = colors[idx % colors.length];
+    ctx.fillText(`y = ${fn}`, 8, 16 + idx * 14);
+  });
 }
 
 /* ============== CHAT ============== */
@@ -1267,10 +1802,14 @@ function autoTitle(chat, text){
   if(chat.title && chat.title !== 'Новый чат') return;
   let prefix = '';
   if(/реши/i.test(text)) prefix = '= ';
-  else if(/производн/i.test(text)) prefix = 'd/dx ';
-  else if(/разложи/i.test(text)) prefix = '(x) ';
+  else if(/производн/i.test(text)) prefix = "f' ";
+  else if(/разложи/i.test(text)) prefix = '( ) ';
   else if(/упрости/i.test(text)) prefix = '~ ';
   else if(/построй|график/i.test(text)) prefix = 'f(x) ';
+  else if(/система/i.test(text)) prefix = '{ ';
+  else if(/∫|интеграл/i.test(text)) prefix = '∫ ';
+  else if(/неравенств|[<>≤≥]/i.test(text)) prefix = '≷ ';
+  else if(/найди.*ошибк/i.test(text)) prefix = '! ';
   chat.title = (prefix + text.slice(0,40)).trim() || 'Новый чат';
 }
 
@@ -1312,14 +1851,16 @@ function renderEmptyState(){
   const hello = name ? `Привет, ${name}!` : 'Привет!';
   const chips = [
     {q:'Реши 2x + 5 = 15', i:'equals'},
-    {q:'Реши x^2 - 5x + 6 = 0', i:'function'},
+    {q:'Система: {x+y=7, x-y=1}', i:'function'},
+    {q:'x^2 - 5x + 6 < 0', i:'sigma'},
     {q:'Производная x^3 + 2x', i:'chart'},
-    {q:'Разложи x^2 - 5x + 6 на множители', i:'sigma'},
-    {q:'1234 × 567', i:'calc'},
-    {q:'Что такое дискриминант?', i:'book-open'}
+    {q:'∫ x^3 dx', i:'sigma'},
+    {q:'Построй y = x^2 - 4', i:'chart'},
+    {q:'Разложи x^3 + x^2 + x + 1', i:'grid'},
+    {q:'Найди ошибку: 2x+5=15 → x=7.5', i:'hint'}
   ];
   const html = chips.map(c => `<button class="empty-chip" data-q="${escA(c.q)}">${ico(c.i)}${esc(c.q)}</button>`).join('');
-  chatEl.innerHTML = `<div class="empty"><div class="empty-planet"><svg><use href="#i-planet-ring"/></svg></div><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Решаю уравнения и производные, строю графики, объясняю шаг за шагом.</div><div class="empty-chips">${html}</div></div>`;
+  chatEl.innerHTML = `<div class="empty"><div class="empty-planet"><svg><use href="#i-planet-ring"/></svg></div><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Решаю уравнения, системы, неравенства, интегралы. Строю графики и объясняю шаг за шагом.</div><div class="empty-chips">${html}</div></div>`;
   chatEl.querySelectorAll('.empty-chip').forEach(b => b.addEventListener('click', () => { haptic('light'); handleSend(b.getAttribute('data-q')); }));
 }
 
@@ -1329,7 +1870,7 @@ function appendUserMessage(text, animate = true, idx = -1, att = null){
   let ah = '';
   if(att){
     if(att.kind === 'image' && att.url) ah = `<div class="file-preview"><img src="${escA(att.url)}" alt=""></div>`;
-    else if(att.kind === 'pdf') ah = `<div class="file-preview"><div class="file-preview-file">${ico('doc')}<span>${esc(att.name)}</span></div></div>`;
+    else if(att.kind === 'image') ah = `<div class="file-preview"><div class="file-preview-file">${ico('image')}<span>${esc(att.name||'фото')}</span></div></div>`;
   }
   div.innerHTML = `${ah}<div class="bubble">${esc(text)}</div><button class="msg-edit-btn" data-idx="${idx}">${ico('pencil')}Изменить</button>`;
   chatEl.appendChild(div);
@@ -1356,7 +1897,18 @@ function appendAIMessage(msg, animate = true, idx = -1){
   div.innerHTML = `<div class="avatar"><svg><use href="#i-planet"/></svg></div><div class="body"><div class="name"><span class="dot"></span>Orbita AI</div><div class="text"><span class="typed"></span></div></div>`;
   chatEl.appendChild(div);
   const typed = div.querySelector('.typed');
-  if(!animate){ typed.innerHTML = renderText(msg.text); if(!msg._blocked) appendActions(div.querySelector('.body'), msg, idx); }
+  if(!animate){
+    typed.innerHTML = renderText(msg.text);
+    if(!msg._blocked) appendActions(div.querySelector('.body'), msg, idx);
+    // Draw inline graph if needed
+    if(msg._graph){
+      const gDiv = document.createElement('div');
+      gDiv.className = 'graph-inline';
+      typed.parentElement.appendChild(gDiv);
+      const funcs = String(msg._graph).split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean);
+      setTimeout(() => { try{ drawInlineGraph(gDiv, funcs); }catch(e){} }, 50);
+    }
+  }
   scrollDown();
   return typed;
 }
@@ -1366,6 +1918,7 @@ function appendActions(body, msg, idx){
   const sp = state.plus ? `<button class="msg-act speak-act">${ico('speak')}</button>` : '';
   acts.innerHTML = sp
     + `<button class="msg-act copy-act">${ico('copy')}</button>`
+    + `<button class="msg-act latex-act">${ico('laTeX')}</button>`
     + `<button class="msg-act regen">${ico('refresh')}</button>`
     + `<button class="msg-act hint-act">${ico('hint')}<span>Подсказка</span></button>`
     + `<button class="msg-act similar-act">${ico('star')}<span>Похожее</span></button>`;
@@ -1373,20 +1926,40 @@ function appendActions(body, msg, idx){
   const sb = acts.querySelector('.speak-act');
   if(sb) sb.onclick = () => speak(msg.text, sb);
   acts.querySelector('.copy-act').onclick = () => copyText(msg.text);
+  acts.querySelector('.latex-act').onclick = () => copyLaTeX(msg.text);
   acts.querySelector('.regen').onclick = () => regenerate(idx);
   acts.querySelector('.hint-act').onclick = () => showHint(msg);
-  acts.querySelector('.similar-act').onclick = () => generateSimilar(msg, body, idx);
+  acts.querySelector('.similar-act').onclick = () => generateSimilar(msg, idx);
+}
+
+async function copyLaTeX(text){
+  // Extract math blocks $...$
+  const blocks = [];
+  text.replace(/\$\$([^$]+?)\$\$/g, (m, expr) => { blocks.push(expr.trim()); return m; });
+  text.replace(/\$([^$\n]+?)\$/g, (m, expr) => { blocks.push(expr.trim()); return m; });
+  const latex = blocks.length ? blocks.join('\n\n') : text.replace(/\\dfrac/g,'\\frac');
+  await copyText(latex);
+  showToast('LaTeX скопирован');
 }
 
 function showHint(msg){
   const hints = {
-    'линейн': 'Перенеси все слагаемые с x в одну сторону, числа — в другую. Затем раздели на коэффициент при x.',
-    'квадратн': 'Найди дискриминант D = b² − 4ac. Если D > 0 — два корня, D = 0 — один, D < 0 — корней нет.',
-    'производн': 'Используй (xⁿ)′ = n·xⁿ⁻¹ для каждого слагаемого. Константа даёт 0.',
-    'разлож': 'Найди корни уравнения = 0, затем запиши a(x−x₁)(x−x₂).',
-    'упрости': 'Раскрой скобки фонтаном и приведи подобные слагаемые.'
+    'линейн': 'Перенеси слагаемые с x в одну сторону, числа — в другую. Раздели на коэффициент при x.',
+    'квадратн': 'Найди дискриминант D = b² − 4ac. D>0 — два корня, D=0 — один, D<0 — нет.',
+    'производн': 'Используй (xⁿ)′ = n·xⁿ⁻¹. Константа даёт 0.',
+    'разлож': 'Вынеси общий множитель или сгруппируй попарно.',
+    'интеграл': 'Используй ∫ xⁿ dx = xⁿ⁺¹/(n+1) + C.',
+    'систем': 'Метод Крамера: Δ = a₁b₂ − a₂b₁, Δₓ, Δᵧ.',
+    'неравенств': 'Метод интервалов: корни на прямой, знаки на промежутках.'
   };
-  let key = Object.keys(hints).find(k => msg.text.toLowerCase().includes(k)) || 'линейн';
+  const lower = msg.text.toLowerCase();
+  let key = Object.keys(hints).find(k => lower.includes(k));
+  if(!key){
+    if(/[<>≤≥]/.test(msg.text)) key = 'неравенств';
+    else if(/∫/.test(msg.text)) key = 'интеграл';
+    else if(/систем|\\begin\{cases\}/.test(msg.text)) key = 'систем';
+    else key = 'линейн';
+  }
   showToast('Подсказка');
   const bubble = document.createElement('div');
   bubble.className = 'msg ai';
@@ -1395,20 +1968,18 @@ function showHint(msg){
   haptic('success');
 }
 
-function generateSimilar(msg, body, idx){
+function generateSimilar(msg, idx){
   const chat = getActiveChat(); if(!chat) return;
-  const uIdx = [...chat.messages].reverse().findIndex(m => m.role === 'user' && chat.messages.indexOf(m) < idx);
+  let uIdx = -1; for(let i = idx-1; i >= 0; i--) if(chat.messages[i].role === 'user'){ uIdx = i; break; }
   if(uIdx < 0){ showToast('Не могу построить'); return; }
-  const userMsg = chat.messages[chat.messages.length - 1 - uIdx];
-  let q = userMsg.text;
-  q = q.replace(/(\d+)/g, m => {
+  const orig = chat.messages[uIdx].text;
+  const tweaked = orig.replace(/(\d+)/g, m => {
     const n = parseInt(m);
     if(n === 0) return '0';
     const delta = Math.floor(Math.random()*5) - 2;
-    return String(Math.max(1, n + delta));
+    return String(Math.max(1, Math.abs(n + delta)));
   });
-  if(q === userMsg.text) q = q + ' (другой)';
-  handleSend(q);
+  handleSend(tweaked === orig ? orig + ' (другой)' : tweaked);
 }
 
 async function copyText(t){
@@ -1458,27 +2029,16 @@ function unlockSpeech(){ if(speechUnlocked || !window.speechSynthesis) return; t
 function pickRussianVoice(){ if(!voicesCache.length) refreshVoices(); const v = voicesCache; if(!v?.length) return null; return v.find(x=>/milena/i.test(x.name)) || v.find(x=>/yuri/i.test(x.name)) || v.find(x=>x.lang==='ru-RU') || v.find(x=>x.lang?.toLowerCase().startsWith('ru')) || null; }
 function cleanForSpeech(t){
   return String(t)
-    .replace(/\$\$([^$]+)\$\$/g, '$1')
-    .replace(/\$([^$]+)\$/g, '$1')
+    .replace(/\$\$([^$]+)\$\$/g, '$1').replace(/\$([^$]+)\$/g, '$1')
     .replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, '$1 делить на $2')
     .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 делить на $2')
-    .replace(/x\^2/g, 'икс в квадрате')
-    .replace(/x\^(\d+)/g, 'икс в степени $1')
+    .replace(/x\^2/g, 'икс в квадрате').replace(/x\^(\d+)/g, 'икс в степени $1')
     .replace(/x_(\d+)/g, 'икс $1')
-    .replace(/\\sqrt\{([^}]+)\}/g, 'корень из $1')
-    .replace(/\\sqrt/g, 'корень из')
-    .replace(/\\pm/g, 'плюс-минус')
-    .replace(/\\cdot/g, 'умножить на')
-    .replace(/\\times/g, 'умножить на')
-    .replace(/\\le/g, 'меньше или равно')
-    .replace(/\\ge/g, 'больше или равно')
-    .replace(/\\ne/g, 'не равно')
-    .replace(/\\ln/g, 'эл-эн')
-    .replace(/\\sin/g, 'синус')
-    .replace(/\\cos/g, 'косинус')
-    .replace(/\\tan/g, 'тангенс')
-    .replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'')
-    .replace(/#+\s/g,'')
+    .replace(/\\sqrt\{([^}]+)\}/g, 'корень из $1').replace(/\\sqrt/g, 'корень из')
+    .replace(/\\pm/g, 'плюс-минус').replace(/\\cdot/g, 'умножить на').replace(/\\times/g, 'умножить на')
+    .replace(/\\le/g, 'меньше или равно').replace(/\\ge/g, 'больше или равно').replace(/\\ne/g, 'не равно')
+    .replace(/\\ln/g, 'эл-эн').replace(/\\sin/g, 'синус').replace(/\\cos/g, 'косинус').replace(/\\tan/g, 'тангенс')
+    .replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'').replace(/#+\s/g,'')
     .replace(/\{|\}|\\/g,' ')
     .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'')
     .replace(/\s+/g,' ').trim();
@@ -1595,26 +2155,16 @@ function normalizeVoiceText(t){
   if(!t) return '';
   let s = ' ' + String(t).toLowerCase() + ' ';
   s = s
-    .replace(/\bикс\b/g, 'x')
-    .replace(/\bигрек\b/g, 'y')
-    .replace(/\bигрик\b/g, 'y')
-    .replace(/\bзет\b/g, 'z')
-    .replace(/\bравно\b/g, '=')
-    .replace(/\bплюс\b/g, '+')
-    .replace(/\bминус\b/g, '-')
-    .replace(/\bумножить на\b/g, '*')
-    .replace(/\bумножить\b/g, '*')
-    .replace(/\bразделить на\b/g, '/')
-    .replace(/\bделить на\b/g, '/')
-    .replace(/\bв квадрате\b/g, '^2')
-    .replace(/\bв кубе\b/g, '^3')
-    .replace(/\bв степени\b/g, '^')
-    .replace(/\bкорень из\b/g, 'sqrt')
-    .replace(/\bкорень\b/g, 'sqrt')
-    .replace(/\bпи\b/g, 'π')
-    .replace(/\s+/g, ' ')
-    .trim();
-  s = s.replace(/\s*([=+\-*/^])\s*/g, '$1');
+    .replace(/\bикс\b/g, 'x').replace(/\bигрек\b/g, 'y').replace(/\bигрик\b/g, 'y').replace(/\bзет\b/g, 'z')
+    .replace(/\bравно\b/g, '=').replace(/\bплюс\b/g, '+').replace(/\bминус\b/g, '-')
+    .replace(/\bумножить на\b/g, '*').replace(/\bумножить\b/g, '*')
+    .replace(/\bразделить на\b/g, '/').replace(/\bделить на\b/g, '/')
+    .replace(/\bв квадрате\b/g, '^2').replace(/\bв кубе\b/g, '^3').replace(/\bв степени\b/g, '^')
+    .replace(/\bкорень из\b/g, 'sqrt').replace(/\bкорень\b/g, 'sqrt').replace(/\bпи\b/g, 'π')
+    .replace(/\bбольше или равно\b/g, '>=').replace(/\bменьше или равно\b/g, '<=')
+    .replace(/\bбольше\b/g, '>').replace(/\bменьше\b/g, '<')
+    .replace(/\s+/g, ' ').trim();
+  s = s.replace(/\s*([=+\-*/^><])\s*/g, '$1');
   s = s.replace(/(\d)\s+([a-zA-Zа-яёπ])/g, '$1$2');
   return s;
 }
@@ -1684,7 +2234,7 @@ function stopAudioVisualization(){
 }
 function initVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR){ $('voiceBtn').style.display='none'; return; }
+  if(!SR){ return; }
   recognition = new SR();
   recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'ru-RU';
   recognition.onstart = () => {
@@ -1726,6 +2276,48 @@ function initVoice(){
 }
 function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
 function stopVoice(){ isRecording=false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition && recognition.stop(); }catch(e){} }
+
+/* ============== OCR (image files) ============== */
+async function handleFileUpload(file){
+  if(!file) return;
+  if(file.size > 10*1024*1024){ showToast('Файл больше 10 МБ'); return; }
+  if(!file.type.startsWith('image/')){ showToast('Только изображения'); return; }
+  showToast('Распознаю текст…');
+  let text = '';
+  try{ text = await extractImageText(file); }catch(e){ text = ''; }
+  if(!text || text.trim().length < 2){ showToast('Не удалось распознать текст'); return; }
+  const url = URL.createObjectURL(file);
+  ensureChat();
+  const chat = getActiveChat();
+  const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
+  const ts = Date.now();
+  const fm = { role:'user', text:`Распознанный текст:\n${text.slice(0,300)}`, attachment:{ kind:'image', name: file.name || 'фото', url }, ts };
+  chat.messages.push(fm); chat.updatedAt = ts;
+  if(chat.title === 'Новый чат') chat.title = 'Фото · ' + (file.name || 'задача').slice(0,30);
+  store.saveChats(state.chats);
+  appendUserMessage(fm.text, true, chat.messages.length-1, fm.attachment);
+  renderChatsList();
+  // Auto-analyze
+  setTimeout(() => {
+    const q = `Распознай и реши задачу с картинки:\n\n${text.slice(0,2000)}`;
+    handleSend(q);
+  }, 400);
+}
+async function extractImageText(file){
+  if(!window.Tesseract) throw new Error('tesseract missing');
+  let w = null;
+  try{
+    w = await Tesseract.createWorker('rus+eng', 1, {
+      langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+      workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/worker.min.js',
+      corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0'
+    });
+    const r = await w.recognize(file);
+    const t = (r?.data?.text || '').trim();
+    await w.terminate();
+    return t.slice(0, 2000);
+  }catch(e){ if(w){ try{ await w.terminate(); }catch(_){} } throw e; }
+}
 
 /* ============== RATE LIMIT ============== */
 const RATE_MS = 5000;
@@ -1782,10 +2374,8 @@ async function handleSend(textOverride){
   const text = (textOverride ?? inputEl.value).trim();
   if(!text){ if(state.busy){ state.abortRequested = true; haptic('medium'); } return; }
   if(state.busy) return;
-
   const wait = checkLimit();
   if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
-
   if(hasProfanity(text)){
     markReq(); startCooldown();
     ensureChat(); const chat = getActiveChat();
@@ -1802,10 +2392,8 @@ async function handleSend(textOverride){
     updateSendBtn(); renderChatsList(); updateLimitUI();
     return;
   }
-
   ensureChat();
   const chat = getActiveChat(); if(!chat) return;
-
   const lastUser = [...chat.messages].reverse().find(m => m.role === 'user');
   if(lastUser && lastUser.text.trim().toLowerCase() === text.toLowerCase()){
     const idx = chat.messages.indexOf(lastUser);
@@ -1818,7 +2406,7 @@ async function handleSend(textOverride){
     appendUserMessage(text, true, chat.messages.length-1);
     renderChatsList();
     await sleep(350);
-    const dt = prev ? `${ico('refresh')} **Ты уже задавал этот вопрос**\n\nВот мой прошлый ответ:\n\n${prev.text}` : `${ico('refresh')} **Ты уже задавал этот вопрос** — смотри выше`;
+    const dt = prev ? `${ico('refresh')} **Ты уже задавал этот вопрос**\n\n${prev.text}` : `${ico('refresh')} **Смотри выше**`;
     const dm = { role:'ai', text: dt, ts: Date.now()+1 };
     chat.messages.push(dm); chat.updatedAt = Date.now(); store.saveChats(state.chats);
     appendAIMessage(dm, false, chat.messages.length-1);
@@ -1826,12 +2414,10 @@ async function handleSend(textOverride){
     updateSendBtn(); renderChatsList(); updateLimitUI();
     return;
   }
-
   markReq(); startCooldown();
   state.busy = true; state.abortRequested = false;
   inputEl.value = ''; localStorage.removeItem(KEYS.DRAFT);
   updateSendBtn(); haptic('light');
-
   const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
   const ts = Date.now();
   chat.messages.push({ role:'user', text, ts });
@@ -1839,26 +2425,26 @@ async function handleSend(textOverride){
   appendUserMessage(text, true, chat.messages.length-1);
   renderChatsList();
   showTyping();
-
   let result;
-  try{ result = await generateAnswer(text, chat); }
+  try{ result = await generateAnswer(text); }
   catch(e){ hideTyping(); state.busy = false; updateSendBtn(); showToast('Ошибка'); return; }
-
   hideTyping();
-  const aiMsg = { role:'ai', text: result.text, source: result.source, ts: Date.now(), _blocked: result._isBlocked };
+  const aiMsg = { role:'ai', text: result.text, source: result.source, ts: Date.now(), _blocked: result._isBlocked, _graph: result._graph };
   chat.messages.push(aiMsg); chat.updatedAt = Date.now(); store.saveChats(state.chats);
-
   if(result._isBlocked){ appendAIMessage(aiMsg, false, chat.messages.length-1); state.busy = false; updateSendBtn(); updateLimitUI(); return; }
-
   const el = appendAIMessage(aiMsg, true, chat.messages.length-1);
   if(state.abortRequested){ el.innerHTML = renderText(result.text); const c = el.parentElement.querySelector('.cursor'); if(c) c.remove(); }
   else await typeText(el, result.text);
-
+  // Graph after typing
+  if(result._graph){
+    const gDiv = document.createElement('div');
+    gDiv.className = 'graph-inline';
+    el.parentElement.appendChild(gDiv);
+    const funcs = String(result._graph).split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean);
+    setTimeout(() => { try{ drawInlineGraph(gDiv, funcs); }catch(e){} }, 100);
+  }
   const lastAi = chatEl.lastElementChild;
   if(lastAi?.classList.contains('ai')){ const body = lastAi.querySelector('.body'); if(body && !body.querySelector('.msg-actions')) appendActions(body, aiMsg, chat.messages.length-1); }
-
-  if(result._graph){ setTimeout(() => { openGraph(result._graph); }, 300); }
-
   state.busy = false; state.abortRequested = false;
   updateSendBtn(); updateLimitUI(); haptic('success');
 }
@@ -1951,17 +2537,25 @@ function genTrainerTask(){
   if(topic === 'arithmetic'){
     const a = R(10*diff, 99*diff), b = R(2, 20*diff);
     const op = ['+','-','×'][R(0,2)];
-    let ans;
-    if(op === '+') ans = a+b;
-    else if(op === '-') ans = a-b;
-    else ans = a*b;
+    let ans = op === '+' ? a+b : op === '-' ? a-b : a*b;
     return { text: `${a} ${op} ${b}`, answer: ans };
   }
   if(topic === 'derivative'){
     const a = R(1, 5), n = R(2, diff+2);
-    const text = `Производная от ${a}x^${n}`;
+    const text = `Найди производную: ${a}x^${n}`;
     const ans = `${a*n}x^${n-1}`;
     return { text, answer: ans, _free: true };
+  }
+  if(topic === 'inequality'){
+    const a = R(1, 3*diff), b = R(-5, 10);
+    const x0 = R(-5, 5);
+    const sign = ['<','>','≤','≥'][R(0,3)];
+    const bAdj = a*x0 + b;
+    return { text: `${a}x ${b>=0?'+':'-'} ${Math.abs(b)} ${sign} ${bAdj}`, answer: x0, _ineq: true };
+  }
+  if(topic === 'integral'){
+    const n = R(1, 4);
+    return { text: `∫ x^${n} dx`, answer: `x^${n+1}/${n+1}`, _free: true };
   }
   return { text:'2x + 5 = 15', answer:5 };
 }
@@ -1996,7 +2590,7 @@ function checkTrainer(){
     trainer.wrong++; trainer.streak = 0;
     fb.className = 'trainer-feedback bad show';
     const ansStr = Array.isArray(ans) ? ans.join(', ') : ans;
-    fb.innerHTML = `${ico('x-circle')}<span>Неверно. Правильный ответ: <b>${ansStr}</b></span>`;
+    fb.innerHTML = `${ico('x-circle')}<span>Неверно. Ответ: <b>${ansStr}</b></span>`;
     haptic('error');
   }
   $('tRight').textContent = trainer.right;
@@ -2005,6 +2599,86 @@ function checkTrainer(){
 }
 function openTrainer(){ $('trainerOverlay').classList.add('active'); if(!trainer.task) startTrainerTask(); haptic('light'); }
 function closeTrainer(){ $('trainerOverlay').classList.remove('active'); }
+
+/* ============== EXAM ============== */
+let exam = { active:false, timeLeft:0, tasks:[], current:0, answers:[], timer:null };
+function startExam(){
+  exam.active = true;
+  exam.timeLeft = 20 * 60;
+  exam.tasks = [];
+  exam.current = 0;
+  exam.answers = [];
+  const savedTopic = trainer.topic, savedDiff = trainer.diff;
+  for(let i = 0; i < 5; i++){
+    trainer.topic = ['linear','quadratic','arithmetic','derivative','inequality'][i % 5];
+    trainer.diff = 2;
+    exam.tasks.push(genTrainerTask());
+  }
+  trainer.topic = savedTopic; trainer.diff = savedDiff;
+  $('examStart').style.display = 'none';
+  $('examTimer').classList.remove('danger');
+  updateExamUI();
+  exam.timer = setInterval(() => {
+    exam.timeLeft--;
+    updateExamUI();
+    if(exam.timeLeft <= 0) finishExam();
+  }, 1000);
+  haptic('success');
+}
+function updateExamUI(){
+  const m = Math.floor(exam.timeLeft / 60), s = exam.timeLeft % 60;
+  $('examTimer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if(exam.timeLeft <= 60) $('examTimer').classList.add('danger');
+  $('examProgress').textContent = `Задача ${exam.current + 1} из ${exam.tasks.length}`;
+  const t = exam.tasks[exam.current];
+  $('examQuestion').textContent = t ? t.text : '';
+  $('examInput').value = '';
+  $('examFeedback').classList.remove('show');
+}
+function checkExamAnswer(){
+  if(!exam.active) return;
+  const t = exam.tasks[exam.current];
+  if(!t) return;
+  const inp = $('examInput').value.trim().toLowerCase().replace(/\s+/g,'');
+  const ans = t.answer;
+  let correct = false;
+  if(Array.isArray(ans)){
+    const nums = inp.split(/[;,\s]+/).map(s => parseFloat(s.replace(',','.'))).filter(n => !isNaN(n));
+    correct = nums.length === ans.length && ans.every(a => nums.some(u => Math.abs(u-a) < 1e-6));
+  } else if(typeof ans === 'number'){
+    const u = parseFloat(inp);
+    correct = !isNaN(u) && Math.abs(u - ans) < 1e-6;
+  } else {
+    correct = inp.replace(/\^/g,'').replace(/\*/g,'') === String(ans).replace(/\^/g,'').replace(/\*/g,'').toLowerCase();
+  }
+  exam.answers.push({ task: t, userAnswer: inp, correct });
+  exam.current++;
+  if(exam.current >= exam.tasks.length) finishExam();
+  else updateExamUI();
+}
+function finishExam(){
+  exam.active = false;
+  if(exam.timer){ clearInterval(exam.timer); exam.timer = null; }
+  const correct = exam.answers.filter(a => a.correct).length;
+  const total = exam.tasks.length;
+  const pct = Math.round(correct / total * 100);
+  let grade = '2';
+  if(pct >= 90) grade = '5';
+  else if(pct >= 70) grade = '4';
+  else if(pct >= 50) grade = '3';
+  $('examQuestion').innerHTML = `<div style="text-align:center">Результат: <b>${correct}/${total}</b> (${pct}%)<br><span style="font-size:32px">Оценка: ${grade}</span></div>`;
+  $('examProgress').textContent = 'Экзамен завершён';
+  $('examTimer').textContent = '00:00';
+  $('examStart').style.display = 'flex';
+  $('examStart').innerHTML = `${ico('refresh')}Ещё раз`;
+  haptic(pct >= 70 ? 'success' : 'error');
+}
+function openExam(){ $('examOverlay').classList.add('active'); haptic('light'); }
+function closeExam(){
+  if(exam.timer){ clearInterval(exam.timer); exam.timer = null; }
+  exam.active = false;
+  $('examOverlay').classList.remove('active');
+}
 
 /* ============== CHEAT SHEET ============== */
 const CHEATS = {
@@ -2018,9 +2692,9 @@ const CHEATS = {
     {n:'Двойной угол', f:'cos 2α = cos²α − sin²α'},
     {n:'Понижение', f:'sin²α = (1 − cos 2α)/2'},
     {n:'Понижение', f:'cos²α = (1 + cos 2α)/2'},
-    {n:'Значения 30°', f:'sin 30° = 1/2, cos 30° = √3/2'},
-    {n:'Значения 45°', f:'sin 45° = cos 45° = √2/2'},
-    {n:'Значения 60°', f:'sin 60° = √3/2, cos 60° = 1/2'}
+    {n:'30°', f:'sin 30° = 1/2, cos 30° = √3/2'},
+    {n:'45°', f:'sin 45° = cos 45° = √2/2'},
+    {n:'60°', f:'sin 60° = √3/2, cos 60° = 1/2'}
   ],
   der: [
     {n:'Степень', f:'(xⁿ)′ = n · xⁿ⁻¹'},
@@ -2073,7 +2747,7 @@ function renderCheat(tab){
 function openCheat(){ $('cheatOverlay').classList.add('active'); renderCheat('trig'); haptic('light'); }
 function closeCheat(){ $('cheatOverlay').classList.remove('active'); }
 
-/* ============== GRAPH ============== */
+/* ============== GRAPH (modal) ============== */
 function openGraph(expr){
   $('graphOverlay').classList.add('active');
   if(expr) $('graphInput').value = 'y = ' + expr;
@@ -2084,27 +2758,14 @@ function closeGraph(){ $('graphOverlay').classList.remove('active'); }
 function buildGraph(){
   const raw = $('graphInput').value.trim();
   if(!raw){ showToast('Введи функцию'); return; }
-  let expr = raw.replace(/^y\s*=/i,'').replace(/^f\(x\)\s*=/i,'').trim();
-  let js = expr.replace(/\^/g,'**').replace(/\bpi\b/gi,'Math.PI').replace(/\be\b/g,'Math.E');
-  js = js.replace(/(\d)([x(])/g,'$1*$2').replace(/([x)])(\d)/g,'$1*$2').replace(/\)(\()/g,')*(').replace(/x(\()/g,'x*(').replace(/\)x/g,')*x');
-  try{
-    const fn = new Function('x', `with(Math){ return ${js}; }`);
-    const f = fn(1);
-    if(typeof f !== 'number') throw new Error();
-  }catch(e){ showToast('Не могу разобрать выражение'); return; }
+  const exprs = raw.split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean);
   const container = $('graphContainer');
   container.innerHTML = '';
-  try{
-    functionPlot({
-      target: container,
-      width: container.clientWidth,
-      height: 320,
-      grid: true,
-      xAxis: {domain:[-10,10]},
-      yAxis: {domain:[-10,10]},
-      data: [{ fn: js, color: '#2563eb', graphType: 'polyline' }]
-    });
-  }catch(e){ showToast('Ошибка построения'); }
+  const wrapper = document.createElement('div');
+  wrapper.style.width = '100%';
+  container.appendChild(wrapper);
+  try{ drawInlineGraph(wrapper, exprs); }
+  catch(e){ showToast('Ошибка построения'); }
 }
 
 /* ============== ONBOARDING ============== */
@@ -2130,6 +2791,19 @@ function initApp(){
   if(!state.user){ state.user = { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() }; store.saveUser(state.user); }
   updateAvatarUI(); applyPlusUI();
   initVoice();
+}
+
+/* ============== QUICK MENU ============== */
+function openQuickMenu(){
+  $('quickMenu').classList.add('open');
+  $('fsquaresBtn').classList.add('open');
+  $('qmBackdrop').classList.add('show');
+  haptic('light');
+}
+function closeQuickMenu(){
+  $('quickMenu').classList.remove('open');
+  $('fsquaresBtn').classList.remove('open');
+  $('qmBackdrop').classList.remove('show');
 }
 
 /* ============== EVENTS ============== */
@@ -2158,7 +2832,6 @@ $('accountOverlay').addEventListener('click', e => { if(e.target === $('accountO
 $('avatarPreview').addEventListener('click', () => $('avatarInput').click());
 $('avatarInput').addEventListener('change', e => { if(e.target.files[0]) handleAvatarUpload(e.target.files[0]); e.target.value = ''; });
 $('removeAvatarBtn').addEventListener('click', () => { if(state.user?.avatar){ state.user.avatar = null; store.saveUser(state.user); updateAvatarPreview(); } });
-$('voiceBtn').addEventListener('click', startVoice);
 $('voiceCancel').addEventListener('click', stopVoice);
 $('onbSkip').addEventListener('click', finishOnboarding);
 document.querySelectorAll('.onb-slide').forEach((s, i) => s.addEventListener('click', () => { if(i < 2) onbGoTo(i+1); }));
@@ -2169,7 +2842,25 @@ $('plusCloseBtn').addEventListener('click', closePlusModal);
 $('plusModalBg').addEventListener('click', e => { if(e.target === $('plusModalBg')) closePlusModal(); });
 $('limitBannerBtn').addEventListener('click', openPlusModal);
 $('printBtn').addEventListener('click', () => { closeAccount(); setTimeout(() => window.print(), 300); });
-$('kbBtn').addEventListener('click', () => { $('mathKb').classList.toggle('show'); hapticSel(); });
+$('notebookBtn').addEventListener('click', () => { closeAccount(); setTimeout(printNotebook, 300); });
+/* Quick menu */
+$('fsquaresBtn').addEventListener('click', () => {
+  if($('quickMenu').classList.contains('open')) closeQuickMenu();
+  else openQuickMenu();
+});
+$('qmBackdrop').addEventListener('click', closeQuickMenu);
+$('quickMenu').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-action]');
+  if(!btn) return;
+  const action = btn.dataset.action;
+  closeQuickMenu();
+  setTimeout(() => {
+    if(action === 'voice'){ startVoice(); }
+    else if(action === 'keyboard'){ $('mathKb').classList.toggle('show'); setTimeout(() => inputEl.focus(), 100); hapticSel(); }
+    else if(action === 'attach'){ $('fileInput').click(); }
+  }, 200);
+});
+$('fileInput').addEventListener('change', e => { if(e.target.files[0]) handleFileUpload(e.target.files[0]); e.target.value = ''; });
 document.querySelectorAll('#mathKb button').forEach(b => b.addEventListener('click', () => {
   const ins = b.dataset.ins;
   const start = inputEl.selectionStart ?? inputEl.value.length;
@@ -2183,7 +2874,7 @@ document.querySelectorAll('#mathKb button').forEach(b => b.addEventListener('cli
 $('toolTrainer').addEventListener('click', () => { closeDrawer(); setTimeout(openTrainer, 200); });
 $('toolCheat').addEventListener('click', () => { closeDrawer(); setTimeout(openCheat, 200); });
 $('toolGraph').addEventListener('click', () => { closeDrawer(); setTimeout(() => openGraph(), 200); });
-$('toolKeyboard').addEventListener('click', () => { closeDrawer(); $('mathKb').classList.add('show'); setTimeout(() => inputEl.focus(), 100); });
+$('toolExam').addEventListener('click', () => { closeDrawer(); setTimeout(openExam, 200); });
 $('trainerClose').addEventListener('click', closeTrainer);
 $('trainerOverlay').addEventListener('click', e => { if(e.target === $('trainerOverlay')) closeTrainer(); });
 document.querySelectorAll('#topicGrid .topic-btn').forEach(b => b.addEventListener('click', () => {
@@ -2204,6 +2895,22 @@ $('graphClose').addEventListener('click', closeGraph);
 $('graphOverlay').addEventListener('click', e => { if(e.target === $('graphOverlay')) closeGraph(); });
 $('graphBuild').addEventListener('click', buildGraph);
 $('graphInput').addEventListener('keydown', e => { if(e.key === 'Enter') buildGraph(); });
+$('examClose').addEventListener('click', closeExam);
+$('examOverlay').addEventListener('click', e => { if(e.target === $('examOverlay')) closeExam(); });
+$('examStart').addEventListener('click', startExam);
+$('examCheck').addEventListener('click', checkExamAnswer);
+$('examInput').addEventListener('keydown', e => { if(e.key === 'Enter') checkExamAnswer(); });
+
+/* Notebook print */
+function printNotebook(){
+  const chat = getActiveChat(); if(!chat || !chat.messages.length){ showToast('Чат пустой'); return; }
+  const userQs = chat.messages.filter(m => m.role === 'user').map(m => m.text);
+  const html = `<html><head><title>Тетрадь</title><style>body{font-family:Arial;padding:20px;color:#0f172a}h1{font-size:20px}div.task{margin-bottom:40px;padding:12px;border-left:3px solid #2563eb;background:#f8fafc}div.task h3{margin:0 0 8px 0;font-size:16px}div.lines{height:80px;background:repeating-linear-gradient(#fff 0 25px, #cbd5e1 25px 26px);margin-top:8px}@media print{body{padding:0}}</style></head><body><h1>Рабочая тетрадь</h1><p>${new Date().toLocaleDateString('ru-RU')}</p>${userQs.map((q,i)=>`<div class="task"><h3>${i+1}. ${esc(q)}</h3><div class="lines"></div></div>`).join('')}</body></html>`;
+  const w = window.open('', '_blank');
+  if(!w){ showToast('Разреши попапы'); return; }
+  w.document.write(html); w.document.close();
+  setTimeout(() => { w.print(); }, 300);
+}
 
 /* ============== BOOT ============== */
 window.addEventListener('load', async () => {
