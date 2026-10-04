@@ -7,22 +7,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  :root,[data-theme="light"]{
-    --accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;
-    --accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;
-    --ink:#0f172a;--ink-soft:#334155;--bg:#ffffff;
-    --surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;
-    --danger:#ef4444;--danger-soft:#fef2f2;--white:#ffffff;
-    --overlay:rgba(15,23,42,.45);
-  }
-  [data-theme="dark"]{
-    --accent:#3b82f6;--accent-dark:#60a5fa;--accent-deep:#93c5fd;
-    --accent-light:#1e3a8a;--accent-soft:#172554;--accent-mid:#1e40af;
-    --ink:#f1f5f9;--ink-soft:#cbd5e1;--bg:#0a0a0a;
-    --surface:#111827;--border:#1e293b;--muted:#64748b;
-    --danger:#f87171;--danger-soft:#2a1313;--white:#111827;
-    --overlay:rgba(0,0,0,.7);
-  }
+  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#ffffff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--white:#ffffff;--overlay:rgba(15,23,42,.45)}
   html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
   body{position:fixed;inset:0}
   body.locked{overflow:hidden}
@@ -194,7 +179,6 @@
 </head>
 <body>
 
-<!-- GATE -->
 <div class="gate" id="gate">
   <svg class="gate-icon" viewBox="0 0 100 100" fill="none">
     <circle cx="50" cy="50" r="42" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 8" opacity="0.35"/>
@@ -212,13 +196,10 @@
   <div class="gate-id" id="gateId"></div>
 </div>
 
-<!-- DRAWER -->
 <div class="overlay" id="drawerOverlay"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
-    <div class="drawer-logo">
-      <svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="26" ry="8" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="2.8" stroke-linecap="round"/><circle cx="32" cy="32" r="13" fill="#2563eb"/></svg>
-    </div>
+    <div class="drawer-logo"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="26" ry="8" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="2.8" stroke-linecap="round"/><circle cx="32" cy="32" r="13" fill="#2563eb"/></svg></div>
     <div class="drawer-head-text">
       <div class="drawer-head-title">Orbita AI</div>
       <div class="drawer-head-sub">История чатов</div>
@@ -236,7 +217,6 @@
   </div>
 </aside>
 
-<!-- ACCOUNT -->
 <div class="modal-overlay" id="accountOverlay">
   <div class="modal">
     <div class="modal-title">Аккаунт</div>
@@ -249,7 +229,6 @@
   </div>
 </div>
 
-<!-- ADMIN -->
 <div class="modal-overlay" id="adminOverlay">
   <div class="modal">
     <div class="modal-title">Панель админа</div>
@@ -261,13 +240,10 @@
   </div>
 </div>
 
-<!-- APP -->
 <div class="app">
   <header class="header">
     <div class="header-brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg>
-      </div>
+      <div class="brand-mark"><svg viewBox="0 0 64 64" fill="none"><ellipse cx="32" cy="32" rx="24" ry="7.5" transform="rotate(-20 32 32)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="12" fill="#2563eb"/></svg></div>
       <div class="brand-text"><div class="brand-name">Orbita AI</div><div class="brand-sub">Поиск в интернете</div></div>
     </div>
   </header>
@@ -386,43 +362,27 @@ let accessPollTimer = null;
 let gateState = 'checking';
 
 async function checkAccess() {
-  const uid_ = tg?.initDataUnsafe?.user?.id;
+  const uId = tg?.initDataUnsafe?.user?.id;
 
-  // Вне Telegram — блокируем
-  if (!uid_) {
+  if (!uId) {
     gateState = 'no_telegram';
     showGate('no_telegram');
     return;
   }
-
-  // Админ — всегда пускаем
-  if (uid_ === ADMIN_TG_ID) {
+  if (uId === ADMIN_TG_ID) {
     gateState = 'approved';
     hideGate();
     return;
   }
 
   try {
-    const res = await fetch(`${API_URL}/status/${uid_}`);
+    const res = await fetch(`${API_URL}/status/${uId}`);
     if (!res.ok) throw new Error();
     const data = await res.json();
 
-    if (data.banned) {
-      gateState = 'banned';
-      showGate('banned');
-      return;
-    }
-    if (data.approved) {
-      gateState = 'approved';
-      hideGate();
-      return;
-    }
-    if (data.request) {
-      gateState = 'pending';
-      showGate('pending');
-      startAccessPoll();
-      return;
-    }
+    if (data.banned) { gateState = 'banned'; showGate('banned'); return; }
+    if (data.approved) { gateState = 'approved'; hideGate(); return; }
+    if (data.request) { gateState = 'pending'; showGate('pending'); startAccessPoll(); return; }
     gateState = 'need_request';
     showGate('need_request');
   } catch(e) {
@@ -441,14 +401,12 @@ function showGate(state_) {
   const sub = $('gateSub');
   const btn = $('gateAction');
   const btnText = $('gateActionText');
-  const uid_ = tg?.initDataUnsafe?.user?.id || '—';
-  $('gateId').textContent = `Ваш ID: ${uid_}`;
+  const uId = tg?.initDataUnsafe?.user?.id || '—';
+  $('gateId').textContent = `Ваш ID: ${uId}`;
 
-  // Очищаем старый waiting
   const w = gate.querySelector('.gate-waiting');
   if (w) w.remove();
 
-  // Сброс кнопки по умолчанию
   btn.onclick = sendAccessRequest;
   btn.style.display = 'none';
   btn.disabled = false;
@@ -483,10 +441,9 @@ function showGate(state_) {
     sub.textContent = 'Пожалуйста, подождите.';
   }
 
-  // Кнопка админ-панели если админ
   const oldAdmin = gate.querySelector('.admin-gate-btn');
   if (oldAdmin) oldAdmin.remove();
-  if (uid_ === ADMIN_TG_ID) {
+  if (uId === ADMIN_TG_ID) {
     const adminBtn = document.createElement('button');
     adminBtn.className = 'gate-btn admin-gate-btn';
     adminBtn.style.cssText = 'max-width:240px;margin-top:24px;background:var(--danger)';
@@ -504,10 +461,10 @@ function hideGate() {
 function startAccessPoll() {
   stopAccessPoll();
   accessPollTimer = setInterval(async () => {
-    const uid_ = tg?.initDataUnsafe?.user?.id;
-    if (!uid_) return;
+    const uId = tg?.initDataUnsafe?.user?.id;
+    if (!uId) return;
     try {
-      const res = await fetch(`${API_URL}/status/${uid_}`);
+      const res = await fetch(`${API_URL}/status/${uId}`);
       const data = await res.json();
       if (data.approved) {
         stopAccessPoll();
@@ -515,7 +472,6 @@ function startAccessPoll() {
         hideGate();
         showToast('Доступ открыт');
         haptic('success');
-        // Перезапускаем приложение
         state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() };
         store.saveUser(state.user);
         initApp();
@@ -694,287 +650,115 @@ function startCooldown() {
 }
 
 /* ============================================================
-   ⛔ РАСШИРЕННЫЙ ФИЛЬТР ЗАПРЕЩЁННЫХ СЛОВ
+   ЛОГИРОВАНИЕ
    ============================================================ */
+function sendLog(query) {
+  try {
+    const u = tg?.initDataUnsafe?.user;
+    if (!u) return;
+    fetch(API_URL + '/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: u.id,
+        name: [u.first_name, u.last_name].filter(Boolean).join(' ') || 'User',
+        username: u.username || '',
+        query: String(query || '').slice(0, 200)
+      })
+    }).catch(() => {});
+  } catch(e) {}
+}
 
-// Агрессивная нормализация: ловит обходы через leet, транслит, пробелы, точки, zero-width
+/* ============================================================
+   ФИЛЬТР ЗАПРЕЩЁННЫХ СЛОВ
+   ============================================================ */
 function normalizeAggressive(raw) {
   let s = String(raw).toLowerCase();
   try { s = s.normalize('NFKD'); } catch(e) {}
-  // Диакритика
   s = s.replace(/[\u0300-\u036f]/g, '');
-  // Zero-width + невидимые
   s = s.replace(/[\u200B-\u200F\u2028-\u202F\u205F-\u206F\uFEFF\u00AD]/g, '');
-  // Латиница → кириллические гомоглифы
   const hg = {'a':'а','e':'е','o':'о','c':'с','p':'р','x':'х','y':'у','k':'к','m':'м','t':'т','h':'н','b':'в','u':'и','n':'п','r':'г','g':'д','q':'й','i':'і','l':'і'};
   s = s.replace(/[a-z]/g, ch => hg[ch] || ch);
-  // Leet
-  s = s.replace(/0/g,'о').replace(/1/g,'и').replace(/3/g,'е').replace(/4/g,'а')
-       .replace(/5/g,'с').replace(/6/g,'б').replace(/7/g,'т').replace(/8/g,'в').replace(/9/g,'д');
-  // Символы
+  s = s.replace(/0/g,'о').replace(/1/g,'и').replace(/3/g,'е').replace(/4/g,'а').replace(/5/g,'с').replace(/6/g,'б').replace(/7/g,'т').replace(/8/g,'в').replace(/9/g,'д');
   s = s.replace(/[@]/g,'а').replace(/[$]/g,'с').replace(/[!]/g,'и').replace(/[+]/g,'т');
-  // Только буквы
   s = s.replace(/[^а-яёіa-z]/g, '');
-  // Схлопывание повторов 3+
   s = s.replace(/(.)\1{2,}/g, '$1');
   return s;
 }
 
-// Основные паттерны
 const BAD_PATTERNS = [
-  // ============ РУССКИЙ МАТ ============
-  /ху[йеяёюи]/, /ху[йеяёюи]л/, /ху[йеяёюи]н/, /ху[йеяёюи]в/,
-  /пизд/, /пизж/, /пезд/,
-  /бля[дт]/, /бляд/, /блят/,
-  /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ебля/, /ебли/, /ебн/,
-  /ёб[аеиуолн]/,
-  /сука/, /сучк/, /сучар/, /сучонок/,
-  /мудак/, /мудил/, /мудоз/, /мудох/,
-  /мраз[ьи]/, /мразот/,
-  /гандон/, /гондон/, /гандо/,
-  /залуп/,
-  /шлюх/, /шлюш/, /шлюнд/,
-  /пидор/, /пидар/, /пидр/, /педик/, /пидор/,
-  /жоп[аеуы]/,
-  /срач/, /срак/, /сру/, /срал/,
-  /перд/, /перну/,
-  /бзд/,
-  /манда/, /манду/, /манде/, /мандо/, /мандавош/,
-  /уеб/, /уёб/,
-  /заеб/, /заёб/,
-  /наеб/, /наёб/,
-  /перееб/, /переёб/,
-  /подъеб/, /подъёб/,
-  /приеб/, /приёб/,
-  /доеб/, /доёб/,
-  /въеб/, /въёб/,
-  /отъеб/, /отъёб/,
-  /разъеб/, /разъёб/,
-  /выеб/, /выёб/,
-  /долбоеб/, /долбаеб/, /долбоёб/,
-  /хер[аеуны]/, /хрен[аеуы]/,
-  /елд/, /елда/,
-  /дроч/, /дрочи/,
-  /гомик/, /гомосек/,
-  /педик/, /пидорас/,
-  /шваль/,
-  /тварь/,
-  /гнид/,
-  /лох/, /лош/,
-  /дебил/, /дебиль/,
-  /идиот/, /идиот/,
-  /кретин/, /кретин/,
-  /даун/,
-  /олеш/,
-  /далбо/,
-  /чмо/,
-  /козел/, /козёл/,
-  /свинья/, /свин/,
-  /баран/,
-  // ============ НАЦИОНАЛЬНЫЕ ОСКОРБЛЕНИЯ ============
-  /хач/, /хачик/,
-  /чурк/, /чурка/,
-  /чучмек/,
-  /жид/, /жидов/,
-  /хохол/, /хохл/,
-  /москал/,
-  /кацап/,
-  /бульбаш/,
-  /пшек/,
-  /шваб/,
-  /янки/,
-  /пиндос/,
-  /узкоглаз/,
-  /черномаз/,
-  /чёрномаз/,
-  /ниггер/, /нигер/, /nigga/, /nigger/,
-  /армяшк/,
-  /азер/,
-  /грузин/,
-  /дагестан/,
-  // ============ ОСКОРБЛЕНИЯ ПО ОРИЕНТАЦИИ / ИДЕНТИЧНОСТИ ============
-  /гей/, /геи/, /гея/, /гею/,
-  /лесби/,
-  /транс/,
-  /пидор/,
-  /педик/,
-  /fag/, /faggot/,
-  // ============ СЕКСУАЛЬНОЕ ============
-  /секс/, /сексуал/,
-  /порн/, /порно/,
-  /трах/, /трахну/,
-  /выдалбл/,
-  /отсос/,
-  /минет/,
-  /куни/,
-  /анус/,
-  /анал/,
-  /оргазм/,
-  /сперм/,
-  /вагин/,
-  /пенис/,
-  /член/, /члены/,
-  /клитор/,
-  /груд[ьи]/, /грудаст/,
-  /сиськ/, /сисек/,
-  /письк/, /писек/,
-  /поп[аеу]/,
-  /голая/, /голый/,
-  /раздева/, /раздет/,
-  /porn/, /pussy/, /dick/, /cock/, /cunt/,
-  /tits/, /boobs/,
-  /nude/, /naked/,
-  // ============ УГРОЗЫ / НАСИЛИЕ ============
-  /убью/, /убей/,
-  /убить/, /убива/,
-  /зареж/, /зарезать/,
-  /пристрел/,
-  /взорв/,
-  /взорвать/,
-  /теракт/,
-  /смерть/, /сдохни/, /сдохнуть/,
-  /kill/, /murder/,
-  /die/,
-  // ============ ЭКСТРЕМИЗМ / ТЕРРОРИЗМ ============
-  /игил/, /игил/,
-  /исламск.*государств/,
-  /теракт/, /террорист/,
-  /джихад/,
-  /халифат/,
-  /нацист/, /нацизм/,
-  /фашист/, /фашизм/,
-  /гитлер/, /hitler/,
-  /ss/, /свастик/,
-  // ============ НАРКОТИКИ ============
-  /героин/, /кокаин/, /кока/,
-  /метамфет/, /мефедрон/,
-  /марихуан/, /марих/,
-  /амфетамин/,
-  /экстази/,
-  /лсд/, /lsd/,
-  /нарко/, /наркот/,
-  /cocaine/, /heroin/, /meth/, /weed/,
-  // ============ АНГЛИЙСКИЙ МАТ ============
-  /f+u+c+k+/, /f+u+k+/, /f+ck/,
-  /sh+i+t+/, /sh1t/,
-  /b+i+t+c+h+/, /b1tch/,
-  /d+i+c+k+/, /d1ck/,
-  /c+u+n+t+/, /c+nt/,
-  /p+u+s+s+y+/,
-  /c+o+c+k+/,
-  /w+h+o+r+e+/,
-  /s+l+u+t+/,
-  /b+a+s+t+a+r+d+/,
-  /a+s+s+h+o+l+e+/, /asshole/,
-  /m+o+t+h+e+r+f+u+c+k+/,
-  /n+i+g+g+/, /n1gg/,
-  /r+e+t+a+r+d+/,
-  /f+a+g+g+o+t+/,
-  /bastard/,
-  /damn/,
-  /crap/,
-  /piss/
+  /ху[йеяёюи]/, /пизд/, /пизж/, /пезд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/,
+  /ебуч/, /ебля/, /ебли/, /ёб[аеиуолн]/, /сука/, /сучк/, /сучар/, /сучонок/, /мудак/, /мудил/, /мудоз/, /мудох/,
+  /мраз[ьи]/, /мразот/, /гандон/, /гондон/, /гандо/, /залуп/, /шлюх/, /шлюш/, /шлюнд/,
+  /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /сру/, /срал/, /перд/, /перну/, /бзд/,
+  /манда/, /манду/, /манде/, /мандо/, /мандавош/, /уеб/, /уёб/, /заеб/, /заёб/, /наеб/, /наёб/,
+  /перееб/, /переёб/, /подъеб/, /подъёб/, /приеб/, /приёб/, /доеб/, /доёб/, /въеб/, /въёб/,
+  /отъеб/, /отъёб/, /разъеб/, /разъёб/, /выеб/, /выёб/, /долбоеб/, /долбаеб/, /долбоёб/,
+  /хер[аеуны]/, /хрен[аеуы]/, /елд/, /елда/, /дроч/, /дрочи/, /гомик/, /гомосек/,
+  /педик/, /пидорас/, /шваль/, /тварь/, /гнид/, /лох/, /лош/, /дебил/, /дебиль/,
+  /идиот/, /кретин/, /даун/, /олеш/, /далбо/, /чмо/, /козел/, /козёл/,
+  /свинья/, /свин/, /баран/, /хач/, /хачик/, /чурк/, /чурка/, /чучмек/, /жид/, /жидов/,
+  /хохол/, /хохл/, /москал/, /кацап/, /бульбаш/, /пшек/, /шваб/, /янки/, /пиндос/,
+  /узкоглаз/, /черномаз/, /чёрномаз/, /ниггер/, /нигер/, /nigga/, /nigger/,
+  /армяшк/, /азер/, /грузин/, /дагестан/, /гей/, /геи/, /гея/, /гею/,
+  /лесби/, /транс/, /fag/, /faggot/, /секс/, /сексуал/, /порн/, /порно/, /трах/, /трахну/,
+  /выдалбл/, /отсос/, /минет/, /куни/, /анус/, /анал/, /оргазм/, /сперм/, /вагин/,
+  /пенис/, /член/, /члены/, /клитор/, /груд[ьи]/, /грудаст/, /сиськ/, /сисек/,
+  /письк/, /писек/, /поп[аеу]/, /голая/, /голый/, /раздева/, /раздет/, /porn/, /pussy/, /dick/, /cock/, /cunt/,
+  /tits/, /boobs/, /nude/, /naked/, /убью/, /убей/, /убить/, /убива/, /зареж/, /зарезать/,
+  /пристрел/, /взорв/, /взорвать/, /теракт/, /смерть/, /сдохни/, /сдохнуть/, /kill/, /murder/,
+  /die/, /игил/, /исламск.*государств/, /теракт/, /террорист/, /джихад/, /халифат/,
+  /нацист/, /нацизм/, /фашист/, /фашизм/, /гитлер/, /hitler/, /свастик/,
+  /героин/, /кокаин/, /кока/, /метамфет/, /мефедрон/, /марихуан/, /марих/, /амфетамин/,
+  /экстази/, /лсд/, /lsd/, /нарко/, /наркот/, /cocaine/, /heroin/, /meth/, /weed/,
+  /f+u+c+k+/, /f+u+k+/, /f+ck/, /sh+i+t+/, /sh1t/, /b+i+t+c+h+/, /b1tch/,
+  /d+i+c+k+/, /d1ck/, /c+u+n+t+/, /c+nt/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/,
+  /s+l+u+t+/, /b+a+s+t+a+r+d+/, /a+s+s+h+o+l+e+/, /asshole/, /m+o+t+h+e+r+f+u+c+k+/,
+  /n+i+g+g+/, /n1gg/, /r+e+t+a+r+d+/, /f+a+g+g+o+t+/, /bastard/, /crap/, /piss/
 ];
 
-// Короткие точные (проверяются по токенам, а не по подстроке)
 const BAD_EXACT = new Set([
   'еб','ёб','бля','хер','хрен','манда','жопа','срак','перд','бзд','чмо',
   'гей','геи','ass','damn','fag','cock','dick','sex','ss','lsd','die','kill','nude','naked'
 ]);
 
-// Белый список — слова, которые ложно триггерятся
 const WHITELIST = new Set([
-  // Продукты
   'мандарин','мандаринка','мандарины','мандаринов','мандаринный',
-  'хлеб','хлеба','хлебушек','хлебный','хлебозавод',
-  'гребень','гребешок','гребешки',
-  // Обычные слова с матными корнями
-  'тебя','себя','себе','тебе','тебята','тебекать',
-  'потреб','потребность','потребности','потреблять','потребление','потребитель',
-  'лебедь','лебединый','лебедка','лебёдка','лебёдушка',
-  'учебник','учебный','учеба','учёба','учебники','учебничек',
-  'мебель','мебельный','мебельщик',
-  'веб','вебка','вебкам','вебсайт','вебмастер','вебкам',
-  'стебель','стебельки','стебель',
-  'жеребец','жеребёнок','жеребята',
-  'треб','требование','требования','требую','требуется','требовательный',
-  'хребет','хребта','хребты',
-  'теребить','тереблю','теребит',
-  // Секс-образование / медицинское
-  'сексуальность','сексуальный','сексуально','сексуал',
-  'секция','сектор','секрет','секретарь','секретный','секвестировать',
+  'хлеб','хлеба','хлебушек','хлебный','хлебозавод','гребень','гребешок','гребешки',
+  'тебя','себя','себе','тебе','тебята','потреб','потребность','потребности','потреблять','потребление','потребитель',
+  'лебедь','лебединый','лебедка','лебёдка','лебёдушка','учебник','учебный','учеба','учёба','учебники','учебничек',
+  'мебель','мебельный','мебельщик','веб','вебка','вебкам','вебсайт','вебмастер',
+  'стебель','стебельки','жеребец','жеребёнок','жеребята','треб','требование','требования',
+  'требую','требуется','требовательный','хребет','хребта','хребты','теребить','тереблю','теребит',
+  'сексуальность','сексуальный','сексуально','сексуал','секция','сектор','секрет','секретарь','секретный','секвестировать',
   'порядок','порядком','порядке','порог','порода','порогом','португал',
-  // Иностранные слова
   'seb','class','pass','passenger','assistant','massive','asset','assemble','assess',
   'assign','associate','assume','assure','bass','grass','glass','brass','cassette',
-  'harass','embarrass','sexology','sexy',
-  // Технические
-  'cockpit','cocker','peacock','woodcock',
-  'dickens','dickinson',
-  'shirt','shirts','shield','shift','shipping','ship','shimmer',
-  'situation','possibility','mission','commission',
-  // Кока-кола и кокос
-  'кока','кокос','кокосы','кокосовый','кокосовый',
-  'кока-кола','кокаин', // но кокаин всё равно в паттернах оставлю как запрещённое — уберу
-  // Метро и метка
-  'метро','метка','метки','меткий','метла','металл',
-  // Мари
-  'мари','мария','марина','маринован','мариновать','маринад','марионетка',
-  // Тварь как животное
-  'тварина','тварюшка',
-  // Лох как растение (лох серебристый)
-  'лох', 'лоховые',
-  // Свинья как животное — оставляю в паттернах но добавляю в белый (спорно, уберу)
-  // Баран как животное
-  'баран','бараны','баранка','барашек',
-  // Анал как аналог
-  'аналог','аналогия','аналогичный','аналоговый','аналогичен',
-  // Сперм как не продукт
-  // Груд как грудная клетка
-  'грудь','грудина','грудинка','грудной',
-  // Попа как популярное
+  'harass','embarrass','sexology','sexy','cockpit','cocker','peacock','woodcock',
+  'dickens','dickinson','shirt','shirts','shield','shift','shipping','ship','shimmer',
+  'situation','possibility','mission','commission','кока','кокос','кокосы','кокосовый',
+  'метро','метка','метки','меткий','метла','металл','мари','мария','марина','маринован','мариновать','маринад','марионетка',
+  'тварина','тварюшка','лох','лоховые','баран','бараны','баранка','барашек',
+  'аналог','аналогия','аналогичный','аналоговый','аналогичен','грудь','грудина','грудинка','грудной',
   'попал','попала','попали','попало','попытка','попытк','популяр','популярность',
-  'пополн','пополам','попойка','попона',
-  // Голая как голая поверхность
-  'гололёд','гололёд','голый','голые','голыми','голодный','голодовка',
-  // Член как член предложения
-  'член','члены','членство','членский','членов','членом','членовредительство',
-  // Раздел как раздел
-  'раздел','разделение','раздевать','раздет','разделенный',
-  // Дие как диета
-  'диета','диетический','диетолог',
-  // Убей как убей комара
-  'убей','убить','убийство','убийца','убийственный',
-  // Сексологи (медицинское)
+  'пополн','пополам','попойка','попона','гололёд','голый','голые','голыми','голодный','голодовка',
+  'член','члены','членство','членский','членов','членом','раздел','разделение','раздевать','раздет','разделенный',
+  'диета','диетический','диетолог','убей','убить','убийство','убийца','убийственный',
   'сексолог','сексология','сексопатолог'
 ]);
 
 function hasProfanity(raw) {
   if (!raw || typeof raw !== 'string' || raw.length === 0) return false;
-
-  // 1. Прямая проверка исходного текста
   const lower = raw.toLowerCase();
-  for (const re of BAD_PATTERNS) {
-    if (re.test(lower)) return true;
-  }
-
-  // 2. Проверка нормализованного
+  for (const re of BAD_PATTERNS) if (re.test(lower)) return true;
   const norm = normalizeAggressive(raw);
-  if (norm) {
-    for (const re of BAD_PATTERNS) {
-      if (re.test(norm)) return true;
-    }
-  }
-
-  // 3. Проверка по токенам
+  if (norm) for (const re of BAD_PATTERNS) if (re.test(norm)) return true;
   const tokens = raw.toLowerCase().split(/[^а-яёіa-z0-9]+/i).filter(Boolean);
   for (const tk of tokens) {
     const ntk = normalizeAggressive(tk);
-    if (!ntk) continue;
-    if (WHITELIST.has(ntk)) continue;
+    if (!ntk || WHITELIST.has(ntk)) continue;
     if (BAD_EXACT.has(ntk)) return true;
   }
-
   return false;
 }
 
@@ -1062,16 +846,12 @@ function renderChatsList() {
     const lastMsg = c.messages[c.messages.length - 1];
     const sub = lastMsg ? (lastMsg.role === 'user' ? 'Вы: ' : 'AI: ') + lastMsg.text.slice(0, 45) : 'Пустой чат';
     item.innerHTML = `
-      <div class="chat-item-icon">
-        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      </div>
+      <div class="chat-item-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
       <div class="chat-item-text">
         <div class="chat-item-title">${esc(c.title)}</div>
         <div class="chat-item-sub">${esc(sub)}</div>
       </div>
-      <button class="chat-item-del" aria-label="Удалить">
-        <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-      </button>
+      <button class="chat-item-del"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
     `;
     item.addEventListener('click', e => {
       if (e.target.closest('.chat-item-del')) return;
@@ -1170,7 +950,6 @@ function appendAIMessage(msg, animate = true, idx = -1) {
   chatEl.appendChild(div);
   const typed = div.querySelector('.typed');
   if (!animate) typed.innerHTML = renderText(msg.text);
-
   if (!animate && !msg._blocked) {
     const body = div.querySelector('.body');
     appendActions(body, msg, idx);
@@ -1363,7 +1142,7 @@ async function generateAnswer(query) {
 }
 
 /* ============================================================
-   SEND FLOW
+   SEND
    ============================================================ */
 function updateSendBtn() {
   if (state.busy) {
@@ -1395,6 +1174,7 @@ async function handleSend(textOverride) {
   // Запрещённые слова
   if (hasProfanity(text)) {
     markReq(); startCooldown();
+    sendLog(text);
     ensureChat();
     const chat = getActiveChat();
     const empty = chatEl.querySelector('.empty'); if (empty) empty.remove();
@@ -1417,6 +1197,7 @@ async function handleSend(textOverride) {
   }
 
   markReq(); startCooldown();
+  sendLog(text);
   ensureChat();
   const chat = getActiveChat();
   if (!chat) return;
@@ -1470,7 +1251,6 @@ async function handleSend(textOverride) {
     await typeText(typeEl, result.text);
   }
 
-  // Добавить actions после печати
   const lastAi = chatEl.lastElementChild;
   if (lastAi?.classList.contains('ai')) {
     const body = lastAi.querySelector('.body');
@@ -1636,7 +1416,6 @@ window.addEventListener('load', async () => {
 
   await checkAccess();
 
-  // Показать приложение ТОЛЬКО если доступ одобрен
   if (gateState === 'approved') {
     state.user = store.getUser() || {
       name: tg?.initDataUnsafe?.user?.first_name || 'User',
@@ -1645,8 +1424,8 @@ window.addEventListener('load', async () => {
     store.saveUser(state.user);
     initApp();
 
-    const uid_ = tg?.initDataUnsafe?.user?.id;
-    if (uid_ === ADMIN_TG_ID) {
+    const uId = tg?.initDataUnsafe?.user?.id;
+    if (uId === ADMIN_TG_ID) {
       const btn = document.createElement('button');
       btn.className = 'icon-btn';
       btn.style.cssText = 'position:fixed;right:12px;top:calc(14px + env(safe-area-inset-top));z-index:30;background:var(--danger);color:#fff';
