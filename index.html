@@ -7,7 +7,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--success:#10b981;--white:#fff;--overlay:rgba(15,23,42,.45)}
+  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--white:#fff;--overlay:rgba(15,23,42,.45)}
   html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
   body{position:fixed;inset:0}
   body.locked{overflow:hidden}
@@ -221,7 +221,6 @@
 </head>
 <body>
 
-<!-- ONBOARDING -->
 <div class="onboarding" id="onboarding">
   <div class="onb-slides">
     <div class="onb-track" id="onbTrack">
@@ -497,7 +496,7 @@ async function showBioGate(){
   });
 }
 
-/* VOICE с реакцией на звук */
+/* VOICE */
 let recognition = null, isRecording = false, voiceFinalText = '';
 let audioContext = null, analyser = null, mediaStream = null, rafId = null;
 
@@ -654,34 +653,21 @@ function hasProfanity(raw){
   return false;
 }
 
-/* MARKDOWN с защитой от старого LaTeX */
+/* MARKDOWN */
 function renderText(raw){
   let h = esc(raw);
-  
-  // 🛡 Защита от остатков старого формата LaTeX
   h = h.replace(/\$([^$\n]+)\$/g, '$1');
   h = h.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, (m, n, d) => `(${n})/(${d})`);
-  h = h.replace(/\\cdot/g, '·');
-  h = h.replace(/\\times/g, '×');
-  h = h.replace(/\\sqrt\{([^}]+)\}/g, '√($1)');
-  h = h.replace(/\\/g, '');
-  
-  // Дроби вида [a/b] — вертикальные
-  h = h.replace(/\[([^\/\]]+)\/([^\]]+)\]/g, (m, n, d) => {
-    return `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`;
-  });
-  // Бэктики
+  h = h.replace(/\\cdot/g, '·').replace(/\\times/g, '×').replace(/\\sqrt\{([^}]+)\}/g, '√($1)').replace(/\\/g, '');
+  h = h.replace(/\[([^\/\]]+)\/([^\]]+)\]/g, (m, n, d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`);
   h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
-  // Жирный
   h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
-  // Ссылки
   h = h.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
-  // Переносы
   h = h.replace(/\n/g,'<br>');
   return h;
 }
 
-/* РЕШЕНИЕ УРАВНЕНИЙ */
+/* УРАВНЕНИЯ */
 function fmtNum(n){
   if(Number.isInteger(n)) return String(n);
   for(let d = 2; d <= 100; d++){
@@ -707,11 +693,9 @@ function solveEquation(text){
   if(parts.length !== 2) return null;
   let left = parts[0], right = parts[1];
   if(!/x/.test(left) && !/x/.test(right)) return null;
-
   const hasSquare = /x\^2|x2|x²/.test(left) || /x\^2|x2|x²/.test(right);
   left = left.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
   right = right.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
-
   if(hasSquare) return solveQuadratic(text, left, right);
   return solveLinear(text, left, right);
 }
@@ -744,16 +728,11 @@ function parsePoly(expr){
 
 function polyToStr(a, b, c){
   const parts = [];
-  if(a !== 0){
-    if(a === 1) parts.push('x²');
-    else if(a === -1) parts.push('-x²');
-    else parts.push(`${fmtNum(a)}x²`);
-  }
+  if(a !== 0){ if(a === 1) parts.push('x²'); else if(a === -1) parts.push('-x²'); else parts.push(`${fmtNum(a)}x²`); }
   if(b !== 0){
     const sign = b > 0 ? (parts.length ? ' + ' : '') : (parts.length ? ' - ' : '-');
     const coef = Math.abs(b);
-    if(coef === 1) parts.push(sign + 'x');
-    else parts.push(sign + fmtNum(coef) + 'x');
+    if(coef === 1) parts.push(sign + 'x'); else parts.push(sign + fmtNum(coef) + 'x');
   }
   if(c !== 0 || parts.length === 0){
     const sign = c > 0 ? (parts.length ? ' + ' : '') : (parts.length ? ' - ' : '-');
@@ -762,27 +741,17 @@ function polyToStr(a, b, c){
   return parts.join('');
 }
 
-/* ✅ ИСПРАВЛЕНО: solveLinear правильно использует b вместо a */
 function solveLinear(original, left, right){
   const L = parsePoly(left);
   const R = parsePoly(right);
-  const a = L.a - R.a;  // коэффициент x²
-  const b = L.b - R.b;  // коэффициент x
-  const c = L.c - R.c;  // свободный член
-
-  // Если x² всё-таки есть — решаем как квадратное
-  if(Math.abs(a) > 1e-9){
-    return solveQuadratic(original, left, right);
-  }
-
-  // Линейное: b·x + c = 0
+  const a = L.a - R.a;
+  const b = L.b - R.b;
+  const c = L.c - R.c;
+  if(Math.abs(a) > 1e-9) return solveQuadratic(original, left, right);
   if(Math.abs(b) < 1e-9){
-    if(Math.abs(c) < 1e-9){
-      return { text: 'Уравнение имеет **бесконечно много решений** ♾️\n\nЛюбое значение x подходит.', _isEquation:true, _isDialog:true };
-    }
-    return { text: `Уравнение **не имеет решений** ❌\n\nПолучается ${c} = 0, что неверно.`, _isEquation:true, _isDialog:true };
+    if(Math.abs(c) < 1e-9) return { text: 'Уравнение имеет **бесконечно много решений** ♾️', _isEquation:true, _isDialog:true };
+    return { text: `Уравнение **не имеет решений** ❌`, _isEquation:true, _isDialog:true };
   }
-
   const x = -c / b;
   const steps = [];
   steps.push(`**Решаю уравнение:** ${original}\n`);
@@ -791,15 +760,9 @@ function solveLinear(original, left, right){
   steps.push(`**Шаг 2.** Привожу подобные:`);
   steps.push(`   ${polyToStr(0, b, c)} = 0\n`);
   steps.push(`**Шаг 3.** Выражаю x:`);
-  if(b === 1){
-    steps.push(`   x = ${-c}`);
-  } else if(b === -1){
-    steps.push(`   -x = ${c}`);
-    steps.push(`   x = ${-c}`);
-  } else {
-    steps.push(`   ${b}x = ${-c}`);
-    steps.push(`   x = ${-c} / ${b}`);
-  }
+  if(b === 1){ steps.push(`   x = ${-c}`); }
+  else if(b === -1){ steps.push(`   -x = ${c}`); steps.push(`   x = ${-c}`); }
+  else { steps.push(`   ${b}x = ${-c}`); steps.push(`   x = ${-c} / ${b}`); }
   steps.push(`\n**Ответ:** x = ${fmtNum(x)}`);
   return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
 }
@@ -810,11 +773,7 @@ function solveQuadratic(original, left, right){
   const a = L.a - R.a;
   const b = L.b - R.b;
   const c = L.c - R.c;
-
-  if(a === 0){
-    return solveLinear(original, left, right);
-  }
-
+  if(a === 0) return solveLinear(original, left, right);
   const D = b*b - 4*a*c;
   const steps = [];
   steps.push(`**Решаю квадратное уравнение:** ${original}\n`);
@@ -826,39 +785,28 @@ function solveQuadratic(original, left, right){
   steps.push(`   D = ${fmtNum(b)}² − 4·${fmtNum(a)}·${fmtNum(c)}`);
   steps.push(`   D = ${fmtNum(b*b)} − ${fmtNum(4*a*c)}`);
   steps.push(`   **D = ${fmtNum(D)}**\n`);
-
   let answer = '';
   if(D > 0){
     const x1 = (-b + Math.sqrt(D)) / (2*a);
     const x2 = (-b - Math.sqrt(D)) / (2*a);
     steps.push(`**Шаг 3.** D > 0 → два корня\n`);
-    steps.push(`**Формула:** x = (−b ± √D) / 2a\n`);
-    steps.push(`x₁ = (${-b} + √${fmtNum(D)}) / ${2*a}`);
-    steps.push(`x₁ = ${fmtNum(x1)}\n`);
-    steps.push(`x₂ = (${-b} − √${fmtNum(D)}) / ${2*a}`);
-    steps.push(`x₂ = ${fmtNum(x2)}`);
+    steps.push(`x₁ = (${-b} + √${fmtNum(D)}) / ${2*a} = ${fmtNum(x1)}`);
+    steps.push(`x₂ = (${-b} − √${fmtNum(D)}) / ${2*a} = ${fmtNum(x2)}`);
     answer = `x₁ = ${fmtNum(x1)},  x₂ = ${fmtNum(x2)}`;
   } else if(D === 0){
     const x = -b / (2*a);
-    steps.push(`**Шаг 3.** D = 0 → один корень\n`);
-    steps.push(`**Формула:** x = −b / 2a\n`);
+    steps.push(`**Шаг 3.** D = 0 → один корень`);
     steps.push(`x = ${-b} / ${2*a} = ${fmtNum(x)}`);
     answer = `x = ${fmtNum(x)}`;
   } else {
-    steps.push(`**Шаг 3.** D < 0 → **нет действительных корней** ❌\n`);
-    const re = -b / (2*a);
-    const im = Math.sqrt(-D) / (2*a);
-    steps.push(`Но есть комплексные корни:`);
-    steps.push(`x₁ = ${fmtNum(re)} + ${fmtNum(Math.abs(im))}i`);
-    steps.push(`x₂ = ${fmtNum(re)} − ${fmtNum(Math.abs(im))}i`);
-    answer = `x₁ = ${fmtNum(re)} + ${fmtNum(Math.abs(im))}i,  x₂ = ${fmtNum(re)} − ${fmtNum(Math.abs(im))}i`;
+    steps.push(`**Шаг 3.** D < 0 → **нет действительных корней** ❌`);
+    answer = 'нет действительных корней';
   }
-
   steps.push(`\n**Ответ:** ${answer}`);
   return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
 }
 
-/* AUTO-TITLE */
+/* АВТОЗАГОЛОВКИ */
 const TOPIC_KEYWORDS = [
   { re:/чёрн\w+дыр|черн\w+дыр|black\s*hole/i, title:'Чёрная дыра' },
   { re:/эйнштейн|einstein/i, title:'Эйнштейн' },
@@ -874,12 +822,9 @@ const TOPIC_KEYWORDS = [
   { re:/python|питон/i, title:'Python' },
   { re:/javascript|js/i, title:'JavaScript' },
   { re:/уравнени|реши\s|solve/i, title:'Уравнение' },
-  { re:/погод|weather/i, title:'Погода' },
   { re:/атом|atom/i, title:'Атом' },
-  { re:/молекул|molecule/i, title:'Молекулы' },
-  { re:/гравитац|gravity/i, title:'Гравитация' },
   { re:/квант|quantum/i, title:'Квантовая физика' },
-  { re:/релятив|relativity/i, title:'Теория относительности' }
+  { re:/гравитац|gravity/i, title:'Гравитация' }
 ];
 function smartTitle(text){
   const clean = text.trim().replace(/\s+/g,' ');
@@ -894,7 +839,7 @@ function smartTitle(text){
   return t.slice(0,40) + (t.length>40?'…':'');
 }
 
-/* CHATS */
+/* ЧАТЫ */
 function createChat(){
   const chat = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() };
   state.chats.unshift(chat); state.activeId=chat.id;
@@ -1058,8 +1003,9 @@ async function typeText(el, text){
   cursor.remove(); scrollDown();
 }
 
-/* SEARCH */
+/* SEARCH с воркером и fallback */
 function cleanQuery(q){ return q.replace(/^(что такое|что значит|кто такой|кто такая|кто такие|расскажи про|расскажи о|расскажи|поясни|объясни|найди|поищи|где находится|где|когда|почему|зачем|как|what is|who is)\s+/i,'').replace(/^про\s+/i,'').replace(/[?!.]+$/g,'').trim(); }
+
 async function wikiSearch(query, lang = 'ru'){
   const q = query.trim(); if(!q) return null;
   try{
@@ -1088,13 +1034,63 @@ async function ddgSearch(query){
     return null;
   }catch(e){ return null; }
 }
+
 async function searchInternet(query){
   if(!navigator.onLine) throw new Error('OFFLINE');
   const cleaned = cleanQuery(query) || query;
+
+  // ✅ Сначала через воркер (с кэшем)
+  try{
+    const res = await fetch(`${API_URL}/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: cleaned })
+    });
+    if(res.ok){
+      const data = await res.json();
+      if(data.ok && data.text){
+        return { text: data.text, source: data.source };
+      }
+    }
+  }catch(e){ /* fallback ниже */ }
+
+  // Резерв — прямой поиск
   let r = await wikiSearch(cleaned,'ru'); if(r) return r;
   r = await wikiSearch(cleaned,'en'); if(r){ r.text += '\n\n(из англоязычной Wikipedia)'; return r; }
   r = await ddgSearch(cleaned); if(r) return r;
   return await wikiSearch(query,'ru');
+}
+
+/* ============ КОНТЕКСТ ДИАЛОГА ============ */
+function getChatContext(chat, maxMessages = 10){
+  if(!chat || !chat.messages.length) return null;
+  const recent = chat.messages.slice(-maxMessages);
+  const lastUser = [...recent].reverse().find(m => m.role === 'user');
+  const lastAI = [...recent].reverse().find(m => m.role === 'ai' && !m._blocked);
+  return { lastUser: lastUser?.text || '', lastAI: lastAI?.text || '', history: recent };
+}
+
+function isFollowUp(query){
+  const q = query.trim().toLowerCase();
+  if(q.split(/\s+/).length <= 3){
+    if(/^(а\s+|и\s+|но\s+)/i.test(q)) return true;
+    if(/^(почему|зачем|как|где|когда|какой|какая|какие|что)[\s?!.]*$/i.test(q)) return true;
+  }
+  const patterns = [
+    /^(расскажи\s+)?(подробнее|поподробнее|детальнее|ещё|еще)/i,
+    /^(а\s+)?(пример|примеры|покажи|приведи)/i,
+    /^(объясни\s+)?(проще|попроще|простыми\s+словами)/i,
+    /^почему\s+(так|это|именно)/i,
+    /^а\s+как\s+(насчёт|насчет|же)/i,
+    /^что[\s-]?(то\s+)?ещё\s+(знаешь|есть)/i,
+    /^продолжай/i,
+    /^и\s+что\s+(дальше|потом)/i,
+    /^а\s+(если|что|как|где|когда|почему)/i,
+    /^то\s+есть/i,
+    /^т\.?е\.?/i,
+    /^(да|нет|угу|ага|ок|окей|хорошо|понял|понятно)[\s?!.]*$/i
+  ];
+  return patterns.some(re => re.test(q));
 }
 
 /* DIALOGS */
@@ -1117,17 +1113,37 @@ function matchDialog(q){
   return null;
 }
 
-async function generateAnswer(query){
+/* ✅ generateAnswer с контекстом */
+async function generateAnswer(query, chat){
   if(hasProfanity(query)) return { text:'Извини, на такие вопросы я не отвечаю 💙', _isBlocked:true };
+
   const eq = solveEquation(query);
   if(eq) { await sleep(300); return eq; }
+
   const x = query.trim().toLowerCase();
   const mm = x.match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
   if(mm){ const a=parseFloat(mm[1].replace(',','.')),b=parseFloat(mm[3].replace(',','.')),op=mm[2]; let r; switch(op){ case '+':r=a+b;break;case '-':r=a-b;break;case '*':case 'x':case '×':r=a*b;break;case '/':case '÷':if(b===0)return { text:'На ноль делить нельзя 🤔', _isDialog:true };r=a/b;break; } return { text: `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`, _isDialog:true }; }
+
   const dialog = matchDialog(query);
   if(dialog){ await sleep(400); return { text: dialog, _isDialog:true }; }
-  const search = await searchInternet(query);
-  if(search){ if(hasProfanity(search.text)) return { text:'Извини, на такие вопросы я не отвечаю.', _isBlocked:true }; return search; }
+
+  // ✅ Контекст: расширяем запрос, если это follow-up
+  let searchQuery = query;
+  if(isFollowUp(query)){
+    const ctx = getChatContext(chat);
+    if(ctx?.lastUser){
+      const topic = cleanQuery(ctx.lastUser) || ctx.lastUser;
+      const cleaned = query.replace(/^(а|и|но)\s+/i,'').trim();
+      searchQuery = `${cleaned} ${topic}`;
+      console.log('[Context]', searchQuery);
+    }
+  }
+
+  const search = await searchInternet(searchQuery);
+  if(search){
+    if(hasProfanity(search.text)) return { text:'Извини, на такие вопросы я не отвечаю.', _isBlocked:true };
+    return search;
+  }
   return { text: `К сожалению, не нашла ответа на «${query}» 🤔\n\nПопробуй переформулировать.` };
 }
 
@@ -1181,7 +1197,7 @@ async function handleSend(textOverride){
   showTyping();
 
   let result;
-  try{ result = await generateAnswer(text); }
+  try{ result = await generateAnswer(text, chat); }
   catch(e){ hideTyping(); state.busy=false; updateSendBtn(); showToast(e.message === 'OFFLINE' ? 'Нет интернета' : 'Ошибка'); haptic('error'); return; }
 
   hideTyping();
@@ -1244,7 +1260,7 @@ function updateAvatarUI(){
 }
 function handleAvatarUpload(file){
   if(!file) return;
-  if(file.size > 2 * 1024 * 1024){ showToast('Файл слишком большой (макс 2MB)'); haptic('error'); return; }
+  if(file.size > 2 * 1024 * 1024){ showToast('Файл слишком большой'); haptic('error'); return; }
   const reader = new FileReader();
   reader.onload = e => {
     const img = new Image();
@@ -1257,8 +1273,7 @@ function handleAvatarUpload(file){
       canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, w, h);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-      state.user.avatar = dataUrl;
+      state.user.avatar = canvas.toDataURL('image/jpeg', 0.8);
       updateAvatarPreview();
       haptic('light');
     };
