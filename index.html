@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Orbita AI</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--white:#fff;--overlay:rgba(15,23,42,.45)}
@@ -93,6 +95,16 @@
   .input-wrap.cooldown{border-color:var(--accent-mid);background:var(--accent-soft)}
   .input-wrap input{flex:1;min-width:0;padding:7px 0;border:none;outline:none;font-size:14.5px;background:transparent;color:var(--ink);font-family:inherit}
   .input-wrap input::placeholder{color:var(--muted)}
+  .attach-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);transition:all .15s}
+  .attach-btn:active{background:var(--accent-soft);color:var(--accent)}
+  .attach-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .attach-btn.loading{color:var(--accent);animation:attachSpin 1s linear infinite}
+  @keyframes attachSpin{to{transform:rotate(360deg)}}
+  .file-preview{margin-bottom:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+  .file-preview img{max-width:200px;max-height:200px;border-radius:12px;border:1px solid var(--border);display:block}
+  .file-preview-file{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:12.5px;font-weight:600;color:var(--ink-soft);max-width:200px}
+  .file-preview-file svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0}
+  .file-preview-file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .voice-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);transition:all .15s}
   .voice-btn:active{background:var(--accent-soft);color:var(--accent)}
   .voice-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -263,15 +275,15 @@
       <div class="onb-slide">
         <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg>
         <div class="onb-title">Добро пожаловать!</div>
-        <div class="onb-sub">Orbita AI — умный ассистент от компании ORT. Ищет информацию, отвечает на вопросы, решает уравнения.</div>
+        <div class="onb-sub">Orbita AI — умный ассистент. Ищет информацию, отвечает на вопросы, решает уравнения, работает с файлами.</div>
       </div>
       <div class="onb-slide">
         <svg class="onb-planet" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="26" stroke="#2563eb" stroke-width="3" fill="none"/><path d="M42 40 L64 50 L42 60 Z" fill="#2563eb"/></svg>
-        <div class="onb-title">Что можно спросить</div>
+        <div class="onb-title">Что можно</div>
         <div class="onb-examples">
           <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></div><span>Что такое чёрная дыра?</span></div>
           <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/></svg></div><span>Реши 2x + 5 = 15</span></div>
-          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></div><span>Кто тебя создал?</span></div>
+          <div class="onb-ex"><div class="onb-ex-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><span>Загрузи PDF или фото</span></div>
         </div>
       </div>
       <div class="onb-slide">
@@ -305,15 +317,10 @@
 
 <div class="plus-modal-bg" id="plusModalBg">
   <div class="plus-modal">
-    <div class="plus-icon">
-      <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
-    </div>
+    <div class="plus-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></div>
     <div class="plus-modal-title">Orbita <span>Plus</span></div>
     <div class="plus-modal-desc">Полный доступ без ограничений</div>
-    <div class="plus-active-badge" id="plusActiveBanner" style="display:none;">
-      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-      <span id="plusActiveText">Подписка активна</span>
-    </div>
+    <div class="plus-active-badge" id="plusActiveBanner" style="display:none;"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span id="plusActiveText">Подписка активна</span></div>
     <div class="plus-list">
       <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg><span>Без лимита запросов</span></div>
       <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Без лимита сообщений</span></div>
@@ -398,6 +405,7 @@
     <button class="menu-fab" id="menuBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
     <div class="input-wrap" id="inputWrap">
       <input type="text" id="input" placeholder="Спросите что угодно..." autocomplete="off">
+      <button class="attach-btn" id="attachBtn" title="Прикрепить файл"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
       <button class="voice-btn" id="voiceBtn"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg></button>
       <button class="send-btn" id="send" disabled><svg id="sendIcon" viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/></svg><span class="cooldown-text" id="cooldownText">5</span></button>
     </div>
@@ -405,9 +413,12 @@
 </div>
 
 <input type="file" id="avatarInput" accept="image/*" style="display:none">
+<input type="file" id="fileInput" accept="image/*,.pdf" style="display:none">
 <div class="toast" id="toast"></div>
 
 <script>
+if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 const API_URL = 'https://shiny-flower-cc1aorbita-gate.2013zakharov.workers.dev';
 const ADMIN_TG_ID = 5268787813;
 const MSG_LIMIT_FREE = 20;
@@ -441,7 +452,7 @@ const store = {
     localStorage.setItem(KEYS.CHATS, JSON.stringify(c));
     if(tg?.CloudStorage){
       try{
-        const slim = c.slice(0, 5).map(ch => ({ id: ch.id, title: ch.title, pinned: !!ch.pinned, createdAt: ch.createdAt, updatedAt: ch.updatedAt, messages: ch.messages.slice(-20).map(m => ({ role: m.role, text: (m.text||'').slice(0, 500), ts: m.ts, source: m.source, reaction: m.reaction, _blocked: m._blocked })) }));
+        const slim = c.slice(0, 5).map(ch => ({ id: ch.id, title: ch.title, pinned: !!ch.pinned, createdAt: ch.createdAt, updatedAt: ch.updatedAt, messages: ch.messages.slice(-20).map(m => ({ role: m.role, text: (m.text||'').slice(0, 500), ts: m.ts, source: m.source, reaction: m.reaction, _blocked: m._blocked, attachment: m.attachment && { kind: m.attachment.kind, name: m.attachment.name } })) }));
         const payload = JSON.stringify(slim);
         if(payload.length < 4000){ tg.CloudStorage.setItem('chats', payload); }
       }catch(e){}
@@ -480,25 +491,19 @@ function initials(name){ if(!name) return 'A'; const p=name.trim().split(/\s+/);
 function lockScroll(lock){ document.body.classList.toggle('locked',lock); }
 function scrollDown(){ chatEl.scrollTop = chatEl.scrollHeight; }
 
-/* ============ TTS с поддержкой iOS ============ */
+/* TTS */
 let currentSpeakingBtn = null;
 let speakTimeout = null;
 let speechUnlocked = false;
 let voicesCache = [];
 let resumeTimer = null;
 
-function refreshVoices(){
-  if(!window.speechSynthesis) return;
-  try{ const v = speechSynthesis.getVoices(); if(v && v.length) voicesCache = v; }catch(e){}
-}
+function refreshVoices(){ if(!window.speechSynthesis) return; try{ const v = speechSynthesis.getVoices(); if(v && v.length) voicesCache = v; }catch(e){} }
 if(window.speechSynthesis){
   refreshVoices();
   speechSynthesis.onvoiceschanged = refreshVoices;
-  setTimeout(refreshVoices, 100);
-  setTimeout(refreshVoices, 500);
-  setTimeout(refreshVoices, 1500);
+  setTimeout(refreshVoices, 100); setTimeout(refreshVoices, 500); setTimeout(refreshVoices, 1500);
 }
-
 function unlockSpeech(){
   if(speechUnlocked) return;
   if(!window.speechSynthesis) return;
@@ -507,121 +512,75 @@ function unlockSpeech(){
     u.volume = 0; u.rate = 1; u.pitch = 1; u.lang = 'ru-RU';
     speechSynthesis.speak(u);
     setTimeout(() => { try{ speechSynthesis.cancel(); }catch(e){} }, 50);
-    speechUnlocked = true;
-    refreshVoices();
+    speechUnlocked = true; refreshVoices();
   }catch(e){}
 }
-['touchstart','touchend','click','keydown'].forEach(evt => {
-  document.addEventListener(evt, unlockSpeech, { passive: true });
-});
+['touchstart','touchend','click','keydown'].forEach(evt => document.addEventListener(evt, unlockSpeech, { passive: true }));
 
 function pickRussianVoice(){
   if(!voicesCache.length) refreshVoices();
-  const voices = voicesCache;
-  if(!voices || !voices.length) return null;
+  const voices = voicesCache; if(!voices || !voices.length) return null;
   const iosRu = voices.find(v => /milena/i.test(v.name));
   const iosYuri = voices.find(v => /yuri/i.test(v.name));
-  if(iosRu) return iosRu;
-  if(iosYuri) return iosYuri;
-  return voices.find(v => v.lang === 'ru-RU')
-      || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ru'))
-      || voices.find(v => /russian|русск/i.test(v.name))
-      || null;
+  if(iosRu) return iosRu; if(iosYuri) return iosYuri;
+  return voices.find(v => v.lang === 'ru-RU') || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ru')) || voices.find(v => /russian|русск/i.test(v.name)) || null;
 }
-
 function cleanForSpeech(text){
-  return String(text)
-    .replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '')
-    .replace(/#+\s/g, '')
+  return String(text).replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'').replace(/#+\s/g,'')
     .replace(/\[([^\/\]]+)\/([^\]]+)\]/g, '$1 на $2')
     .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F000}-\u{1F02F}]/gu, '')
-    .replace(/https?:\/\/\S+/g, 'ссылка')
-    .replace(/\s+/g, ' ').trim();
+    .replace(/https?:\/\/\S+/g, 'ссылка').replace(/\s+/g, ' ').trim();
 }
-
 function splitIntoChunks(text, maxLen){
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   maxLen = maxLen || (isIOS ? 120 : 180);
-  const chunks = [];
-  const parts = text.split(/(?<=[.!?;:,])\s+/);
-  let buf = '';
-  for(const p of parts){
-    if((buf + ' ' + p).length > maxLen && buf){ chunks.push(buf.trim()); buf = p; }
-    else { buf = buf ? buf + ' ' + p : p; }
-  }
+  const chunks = []; const parts = text.split(/(?<=[.!?;:,])\s+/); let buf = '';
+  for(const p of parts){ if((buf + ' ' + p).length > maxLen && buf){ chunks.push(buf.trim()); buf = p; } else { buf = buf ? buf + ' ' + p : p; } }
   if(buf) chunks.push(buf.trim());
   return chunks.length ? chunks : [text];
 }
-
 function stopSpeak(){
   try{ speechSynthesis.cancel(); }catch(e){}
   if(speakTimeout){ clearTimeout(speakTimeout); speakTimeout = null; }
   if(resumeTimer){ clearInterval(resumeTimer); resumeTimer = null; }
   if(currentSpeakingBtn){ currentSpeakingBtn.classList.remove('speaking'); currentSpeakingBtn = null; }
 }
-
 function startResumeWatchdog(){
   if(resumeTimer) clearInterval(resumeTimer);
-  resumeTimer = setInterval(() => {
-    try{ if(speechSynthesis.paused && speechSynthesis.speaking) speechSynthesis.resume(); }catch(e){}
-  }, 200);
+  resumeTimer = setInterval(() => { try{ if(speechSynthesis.paused && speechSynthesis.speaking) speechSynthesis.resume(); }catch(e){} }, 200);
 }
-
 function speak(text, btn){
   if(!window.speechSynthesis){ showToast('Озвучка не поддерживается'); haptic('error'); return; }
   if(currentSpeakingBtn && currentSpeakingBtn.classList.contains('speaking')){ stopSpeak(); return; }
-  stopSpeak();
-  if(!speechUnlocked) unlockSpeech();
-  const clean = cleanForSpeech(text);
-  if(!clean){ showToast('Нечего озвучивать'); return; }
+  stopSpeak(); if(!speechUnlocked) unlockSpeech();
+  const clean = cleanForSpeech(text); if(!clean){ showToast('Нечего озвучивать'); return; }
   if(btn){ btn.classList.add('speaking'); currentSpeakingBtn = btn; }
   refreshVoices();
-  const chunks = splitIntoChunks(clean);
-  const voice = pickRussianVoice();
-  let idx = 0;
-  const finish = () => {
-    if(resumeTimer){ clearInterval(resumeTimer); resumeTimer = null; }
-    if(btn && currentSpeakingBtn === btn){ btn.classList.remove('speaking'); currentSpeakingBtn = null; }
-  };
+  const chunks = splitIntoChunks(clean); const voice = pickRussianVoice(); let idx = 0;
+  const finish = () => { if(resumeTimer){ clearInterval(resumeTimer); resumeTimer = null; } if(btn && currentSpeakingBtn === btn){ btn.classList.remove('speaking'); currentSpeakingBtn = null; } };
   const speakNext = () => {
     if(idx >= chunks.length){ finish(); return; }
     const utter = new SpeechSynthesisUtterance(chunks[idx]);
     utter.lang = 'ru-RU'; utter.rate = 0.95; utter.pitch = 1; utter.volume = 1;
     if(voice) utter.voice = voice;
     utter.onend = () => { idx++; setTimeout(speakNext, 60); };
-    utter.onerror = (e) => {
-      if(e && (e.error === 'canceled' || e.error === 'interrupted')) return;
-      idx++; setTimeout(speakNext, 60);
-    };
-    try{
-      speechSynthesis.speak(utter);
-      if(speechSynthesis.paused) speechSynthesis.resume();
-    }catch(e){ finish(); showToast('Ошибка озвучки'); haptic('error'); }
+    utter.onerror = (e) => { if(e && (e.error === 'canceled' || e.error === 'interrupted')) return; idx++; setTimeout(speakNext, 60); };
+    try{ speechSynthesis.speak(utter); if(speechSynthesis.paused) speechSynthesis.resume(); }catch(e){ finish(); }
   };
   speakTimeout = setTimeout(() => { startResumeWatchdog(); speakNext(); }, 30);
 }
 
-/* ============ PLUS MODAL ============ */
+/* PLUS */
 function openPlusModal(){
   $('plusModalBg').classList.add('active');
-  const banner = $('plusActiveBanner');
-  const reqBtn = $('plusRequestBtn');
-  if(state.plus){
-    banner.style.display = 'flex';
-    $('plusActiveText').textContent = 'Подписка Plus активна';
-    reqBtn.textContent = 'Уже активно';
-    reqBtn.disabled = true;
-  } else {
-    banner.style.display = 'none';
-    reqBtn.textContent = 'Запросить Plus';
-    reqBtn.disabled = false;
-  }
+  const banner = $('plusActiveBanner'), reqBtn = $('plusRequestBtn');
+  if(state.plus){ banner.style.display = 'flex'; $('plusActiveText').textContent = 'Подписка Plus активна'; reqBtn.textContent = 'Уже активно'; reqBtn.disabled = true; }
+  else { banner.style.display = 'none'; reqBtn.textContent = 'Запросить Plus'; reqBtn.disabled = false; }
   haptic('light');
 }
 function closePlusModal(){ $('plusModalBg').classList.remove('active'); }
 async function requestPlus(){
-  const u = tg?.initDataUnsafe?.user;
-  if(!u) return;
+  const u = tg?.initDataUnsafe?.user; if(!u) return;
   try{
     await fetch(`${API_URL}/request`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: u.id, name: 'PLUS REQUEST: ' + ([u.first_name, u.last_name].filter(Boolean).join(' ') || 'User'), username: u.username || '' }) });
@@ -629,7 +588,7 @@ async function requestPlus(){
   }catch(e){ showToast('Ошибка отправки'); haptic('error'); }
 }
 
-/* ============ LIMIT ============ */
+/* LIMIT */
 function isLimitReached(chat){ return !state.plus && (chat?.messages?.length || 0) >= MSG_LIMIT_FREE; }
 function updateLimitUI(){
   const chat = getActiveChat();
@@ -638,7 +597,7 @@ function updateLimitUI(){
   updateSendBtn();
 }
 
-/* ============ GATE ============ */
+/* GATE */
 let accessPollTimer=null, gateState='checking';
 async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
@@ -650,6 +609,7 @@ async function checkAccess(){
     const data = await res.json();
     state.plus = !!data.plus;
     if(data.banned){ gateState='banned'; showGate('banned'); return; }
+    if(data.denied){ gateState='denied'; showGate('denied'); return; }
     if(data.approved){ gateState='approved'; hideGate(); return; }
     gateState='need_request'; showGate('need_request');
   }catch(e){ gateState='error'; showGate('error'); }
@@ -665,6 +625,7 @@ function showGate(s){
   if(s==='need_request'){ title.textContent='Доступ ограничен'; sub.textContent='Отправь заявку — админ увидит её и откроет доступ.'; btn.style.display='flex'; btnText.textContent='Отправить заявку'; }
   else if(s==='pending'){ title.textContent='Заявка отправлена'; sub.textContent='Ожидай одобрения. Приложение откроется автоматически.'; const wait = document.createElement('div'); wait.className='gate-waiting'; wait.innerHTML='<div class="spin"></div><span>Ожидание…</span>'; btn.parentNode.insertBefore(wait, btn); }
   else if(s==='banned'){ title.textContent='Вы забанены'; sub.textContent='Администратор закрыл доступ.'; }
+  else if(s==='denied'){ title.textContent='Заявка отклонена'; sub.textContent='Администратор отклонил вашу заявку. Если это ошибка — свяжитесь с ним.'; }
   else if(s==='no_telegram'){ title.textContent='Открой через Telegram'; sub.textContent='Mini App работает только внутри Telegram.'; }
   else if(s==='error'){ title.textContent='Сервер недоступен'; sub.textContent='Не удалось проверить доступ.'; btn.style.display='flex'; btnText.textContent='Повторить'; btn.onclick=()=>checkAccess(); }
   else { title.textContent='Проверка доступа…'; sub.textContent='Пожалуйста, подождите.'; }
@@ -673,14 +634,14 @@ function hideGate(){ $('gate').classList.add('hidden'); lockScroll(false); }
 function startAccessPoll(){
   stopAccessPoll();
   accessPollTimer = setInterval(async () => {
-    const uId = tg?.initDataUnsafe?.user?.id;
-    if(!uId) return;
+    const uId = tg?.initDataUnsafe?.user?.id; if(!uId) return;
     try{
       const res = await fetch(`${API_URL}/status/${uId}`);
       const data = await res.json();
       if(data.plus && !state.plus){ state.plus = true; applyPlusUI(); updateLimitUI(); renderActiveChat(); showToast('Plus активирован!'); haptic('success'); }
       if(data.approved){ stopAccessPoll(); gateState='approved'; hideGate(); state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name||'User', joinedAt:Date.now() }; store.saveUser(state.user); initApp(); }
       else if(data.banned){ stopAccessPoll(); gateState='banned'; showGate('banned'); }
+      else if(data.denied){ stopAccessPoll(); gateState='denied'; showGate('denied'); }
     }catch(e){}
   }, 4000);
 }
@@ -692,102 +653,50 @@ async function sendAccessRequest(){
     const res = await fetch(`${API_URL}/request`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId: u.id, name: [u.first_name,u.last_name].filter(Boolean).join(' '), username: u.username||'' }) });
     const data = await res.json();
     if(data.error==='banned'){ showGate('banned'); haptic('error'); return; }
+    if(data.error==='denied'){ showGate('denied'); haptic('error'); return; }
     showGate('pending'); startAccessPoll(); haptic('success');
   }catch(e){ showToast('Не удалось отправить'); btn.disabled=false; $('gateActionText').textContent='Отправить заявку'; haptic('error'); }
 }
 
-/* ============ BIOMETRIC ============ */
+/* BIOMETRIC */
 async function initBiometric(){ return new Promise(resolve => { if(!tg?.BiometricManager) return resolve(false); try{ tg.BiometricManager.init(() => resolve(!!tg.BiometricManager.isBiometricAvailable)); }catch(e){ resolve(false); } }); }
 async function requireBiometric(reason){ return new Promise(resolve => { if(!tg?.BiometricManager?.isBiometricAvailable) return resolve(true); try{ tg.BiometricManager.authenticate({reason}, (ok) => resolve(!!ok)); }catch(e){ resolve(true); } }); }
 async function showBioGate(){
   const overlay = $('bioOverlay'); overlay.classList.add('active');
   return new Promise(resolve => {
-    const tryAuth = async () => {
-      const ok = await requireBiometric('Вход в Orbita AI');
-      if(ok){ overlay.classList.remove('active'); haptic('success'); resolve(true); }
-      else { haptic('error'); showToast('Не удалось подтвердить'); }
-    };
-    $('bioBtn').onclick = tryAuth;
-    setTimeout(tryAuth, 300);
+    const tryAuth = async () => { const ok = await requireBiometric('Вход в Orbita AI'); if(ok){ overlay.classList.remove('active'); haptic('success'); resolve(true); } else { haptic('error'); showToast('Не удалось подтвердить'); } };
+    $('bioBtn').onclick = tryAuth; setTimeout(tryAuth, 300);
   });
 }
 
-/* ============ VOICE INPUT ============ */
+/* VOICE */
 let recognition = null, isRecording = false, voiceFinalText = '';
 let audioContext = null, analyser = null, mediaStream = null, rafId = null;
-
 function initVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR){ $('voiceBtn').style.display='none'; return; }
   recognition = new SR();
   recognition.continuous = false; recognition.interimResults = true; recognition.lang='ru-RU';
-  recognition.onstart = () => {
-    isRecording=true; voiceFinalText='';
-    $('voiceOverlay').classList.add('active');
-    $('voiceBtn').classList.add('recording');
-    $('voiceStatus').textContent='Слушаю…';
-    $('voiceText').textContent='Скажи что-нибудь';
-    $('voiceHint').textContent='Говори чётко, я распознаю речь';
-    haptic('medium');
-    startAudioVisualization();
-  };
-  recognition.onresult = (e) => {
-    let interim='', final='';
-    for(let i=e.resultIndex; i<e.results.length; i++){
-      const t = e.results[i][0].transcript;
-      if(e.results[i].isFinal) final += t; else interim += t;
-    }
-    if(final) voiceFinalText = final;
-    $('voiceText').textContent = final || interim || 'Скажи что-нибудь';
-    $('voiceStatus').textContent = final ? 'Готово!' : 'Слушаю…';
-    $('voiceHint').textContent = final ? 'Отправляю…' : 'Говори чётко';
-  };
-  recognition.onerror = (e) => {
-    stopVoice();
-    if(e.error==='not-allowed') showToast('Доступ к микрофону запрещён');
-    else if(e.error==='no-speech') showToast('Ничего не услышал');
-    else showToast('Ошибка распознавания');
-    haptic('error');
-  };
-  recognition.onend = () => {
-    if(isRecording){
-      isRecording=false;
-      $('voiceBtn').classList.remove('recording');
-      $('voiceOverlay').classList.remove('active');
-      stopAudioVisualization();
-      if(voiceFinalText.trim()){ const text = voiceFinalText.trim(); voiceFinalText=''; setTimeout(()=>handleSend(text), 200); }
-    }
-  };
+  recognition.onstart = () => { isRecording=true; voiceFinalText=''; $('voiceOverlay').classList.add('active'); $('voiceBtn').classList.add('recording'); $('voiceStatus').textContent='Слушаю…'; $('voiceText').textContent='Скажи что-нибудь'; $('voiceHint').textContent='Говори чётко'; haptic('medium'); startAudioVisualization(); };
+  recognition.onresult = (e) => { let interim='', final=''; for(let i=e.resultIndex; i<e.results.length; i++){ const t = e.results[i][0].transcript; if(e.results[i].isFinal) final += t; else interim += t; } if(final) voiceFinalText = final; $('voiceText').textContent = final || interim || 'Скажи что-нибудь'; $('voiceStatus').textContent = final ? 'Готово!' : 'Слушаю…'; $('voiceHint').textContent = final ? 'Отправляю…' : 'Говори чётко'; };
+  recognition.onerror = (e) => { stopVoice(); if(e.error==='not-allowed') showToast('Доступ к микрофону запрещён'); else if(e.error==='no-speech') showToast('Ничего не услышал'); else showToast('Ошибка распознавания'); haptic('error'); };
+  recognition.onend = () => { if(isRecording){ isRecording=false; $('voiceBtn').classList.remove('recording'); $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); if(voiceFinalText.trim()){ const text = voiceFinalText.trim(); voiceFinalText=''; setTimeout(()=>handleSend(text), 200); } } };
 }
 function startAudioVisualization(){
   if(!navigator.mediaDevices?.getUserMedia) return;
   navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-    mediaStream = stream;
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const source = audioContext.createMediaStreamSource(stream);
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.7;
-    source.connect(analyser);
+    mediaStream = stream; audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(stream); analyser = audioContext.createAnalyser();
+    analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.7; source.connect(analyser);
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    const micCircle = $('micCircle');
-    const rings = [$('ring1'), $('ring2'), $('ring3')];
-    const ringStates = [0, 0, 0];
+    const micCircle = $('micCircle'); const rings = [$('ring1'), $('ring2'), $('ring3')]; const ringStates = [0, 0, 0];
     function animate(){
       if(!isRecording) return;
       analyser.getByteFrequencyData(dataArray);
-      let sum = 0;
-      for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-      const avg = sum / dataArray.length;
-      const level = Math.min(1, avg / 80);
+      let sum = 0; for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+      const avg = sum / dataArray.length; const level = Math.min(1, avg / 80);
       micCircle.style.transform = `scale(${1 + level * 0.35})`;
-      ringStates.forEach((s, i) => {
-        ringStates[i] = Math.min(1, s + 0.03);
-        const ringScale = 1 + ringStates[i] * 0.8;
-        const opacity = Math.max(0, 1 - ringStates[i]);
-        rings[i].style.transform = `scale(${ringScale})`;
-        rings[i].style.opacity = opacity * (0.4 + level * 0.6);
-        if(ringStates[i] >= 1) ringStates[i] = 0;
-      });
+      ringStates.forEach((s, i) => { ringStates[i] = Math.min(1, s + 0.03); const ringScale = 1 + ringStates[i] * 0.8; const opacity = Math.max(0, 1 - ringStates[i]); rings[i].style.transform = `scale(${ringScale})`; rings[i].style.opacity = opacity * (0.4 + level * 0.6); if(ringStates[i] >= 1) ringStates[i] = 0; });
       if(level > 0.3) ringStates[0] = Math.min(1, ringStates[0] + level * 0.1);
       rafId = requestAnimationFrame(animate);
     }
@@ -804,7 +713,7 @@ function stopAudioVisualization(){
 function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
 function stopVoice(){ isRecording=false; $('voiceBtn').classList.remove('recording'); $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition&&recognition.stop(); }catch(e){} }
 
-/* ============ RATE LIMIT ============ */
+/* RATE LIMIT */
 const RATE_MS = 5000;
 function getLastReq(){ return parseInt(localStorage.getItem(KEYS.LAST_REQ)||'0',10); }
 function setLastReq(t){ localStorage.setItem(KEYS.LAST_REQ, String(t)); }
@@ -814,17 +723,11 @@ function startCooldown(){
   if(state.plus) return;
   state.rateLimit=true; clearInterval(state.rateLimitTimer);
   const wrap = $('inputWrap');
-  const tick = () => {
-    const rem = RATE_MS - (Date.now()-getLastReq());
-    if(rem<=0){ clearInterval(state.rateLimitTimer); state.rateLimitTimer=null; state.rateLimit=false; inputEl.placeholder='Спросите что угодно...'; wrap.classList.remove('cooldown'); updateSendBtn(); return; }
-    const sec = Math.ceil(rem/1000);
-    inputEl.placeholder = `Подожди ${sec} сек…`;
-    $('cooldownText').textContent = String(sec);
-  };
+  const tick = () => { const rem = RATE_MS - (Date.now()-getLastReq()); if(rem<=0){ clearInterval(state.rateLimitTimer); state.rateLimitTimer=null; state.rateLimit=false; inputEl.placeholder='Спросите что угодно...'; wrap.classList.remove('cooldown'); updateSendBtn(); return; } const sec = Math.ceil(rem/1000); inputEl.placeholder = `Подожди ${sec} сек…`; $('cooldownText').textContent = String(sec); };
   wrap.classList.add('cooldown'); tick(); state.rateLimitTimer=setInterval(tick,200);
 }
 
-/* ============ PROFANITY ============ */
+/* PROFANITY */
 function normalizeAggressive(raw){
   let s = String(raw).toLowerCase();
   try{ s = s.normalize('NFKD'); }catch(e){}
@@ -836,53 +739,9 @@ function normalizeAggressive(raw){
   s = s.replace(/[^а-яёіa-z]/g,'').replace(/(.)\1{2,}/g,'$1');
   return s;
 }
-const BAD_PATTERNS = [
-  /ху[йеяёюи]/, /ху[йеяёюи]л/, /ху[йеяёюи]н/, /ху[йеяёюи]в/, /хуяк/,
-  /пизд/, /пизж/, /пезд/, /пиздо/, /бля[дт]/, /бляд/, /блят/, /бля[хк]/,
-  /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ебля/, /ебли/, /ебн/, /ебств/, /ебан/, /ебат/,
-  /ёб[аеиуолн]/, /ёбну/, /ёбств/, /сука/, /сучк/, /сучар/, /сучонок/, /мудак/, /мудил/, /мудоз/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /шлюш/,
-  /пидор/, /пидар/, /пидр/, /педик/, /пидорас/, /педераст/, /жоп[аеуы]/, /срач/, /срак/, /сру/, /срал/, /срать/, /перд/, /перну/, /бзд/, /манда/,
-  /уеб/, /уёб/, /уебищ/, /заеб/, /заёб/, /наеб/, /наёб/, /перееб/, /переёб/, /подъеб/, /подъёб/, /приеб/, /приёб/, /доеб/, /доёб/, /въеб/, /въёб/,
-  /отъеб/, /отъёб/, /разъеб/, /разъёб/, /выеб/, /выёб/, /долбоеб/, /долбаеб/, /долбоёб/,
-  /хер[аеуны]/, /хрен[аеуы]/, /херня/, /херов/, /елд/, /елда/, /дроч/, /дрочи/, /гомик/, /гомосек/, /шваль/, /тварь/, /гнид/,
-  /дебил/, /идиот/, /кретин/, /даун/, /олеш/, /долбо/, /чмо/, /козел/, /козёл/, /свинья/, /баран/,
-  /дурак/, /дурацк/, /придурок/, /обалдуй/, /оболтус/, /балбес/, /болван/, /остолоп/, /тупица/, /тупой/, /тупизм/, /бестолочь/, /дегенерат/, /инвалид/, /урод/,
-  /жирн/, /жиробас/, /карлик/, /коротышк/, /косоглаз/, /хромой/, /слепой/, /горбат/,
-  /молокосос/, /сопляк/, /шкет/, /пацан/, /малолетк/, /школот/, /ботан/, /лошар/, /крыса/, /змея/, /гад/, /падл/, /подлец/, /мерзав/, /негодяй/, /злодей/,
-  /изверг/, /садист/, /маньяк/, /педофил/, /зоофил/,
-  /хач/, /чурк/, /чучмек/, /жид/, /хохол/, /москал/, /кацап/, /бульбаш/, /пшек/, /шваб/, /янки/, /пиндос/, /узкоглаз/, /черномаз/, /чёрномаз/,
-  /ниггер/, /нигер/, /nigga/, /nigger/, /армяшк/, /азерб/, /грузин/, /дагестанц/, /чеченц/, /таджик/, /узбек/, /еврейчик/, /немчура/, /полячишк/, /чухонц/, /итальяшк/, /америкос/, /рашка/, /совок/, /мракобес/, /либераст/, /ватник/, /майдаун/, /укроп/,
-  /гей/, /геи/, /гея/, /гею/, /геев/, /лесби/, /лесбиянк/, /трансгенд/, /fag/, /faggot/, /fagot/,
-  /секс/, /сексуал/, /порн/, /порно/, /порнух/, /трах/, /трахну/, /отсос/, /минет/, /куни/, /анус/, /анальн/, /анал/, /оргазм/, /сперм/, /вагин/, /пенис/, /клитор/,
-  /груд[ьи]/, /грудаст/, /сиськ/, /сисек/, /письк/, /писек/, /поп[аеу]/, /голая/, /голый/, /раздева/, /раздет/, /обнажен/, /нагишом/, /эротик/, /интим/, /презерв/, /вибратор/, /дилдо/, /бдсм/, /bdsm/,
-  /мастурбац/, /мастурб/, /онанизм/, /изнасил/, /насильник/, /инцест/,
-  /f+u+c+k+/, /f+u+k+/, /f+ck/, /fck/, /sh+i+t+/, /sh1t/, /b+i+t+c+h+/, /b1tch/, /d+i+c+k+/, /d1ck/, /c+u+n+t+/, /c+nt/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/,
-  /s+l+u+t+/, /b+a+s+t+a+r+d+/, /a+s+s+h+o+l+e+/, /m+o+t+h+e+r+f+u+c+k+/, /r+e+t+a+r+d+/, /f+a+g+g+o+t+/, /bastard/, /crap/, /piss/, /damn/, /dammit/,
-  /bollocks/, /bugger/, /wanker/, /tosser/, /twat/, /arse/, /bullshit/, /dipshit/, /sonofabitch/, /scumbag/, /moron/, /imbecile/, /retard/, /loser/, /pervert/, /rapist/,
-  /убью/, /убей/, /убить/, /убива/, /убийц/, /зареж/, /пристрел/, /взорв/, /теракт/, /террорист/, /сдохни/, /сдохнуть/, /сгинь/, /пропади/, /исчезни/, /kill/, /murder/, /die/, /destroy/,
-  /игил/, /джихад/, /халифат/, /нацист/, /нацизм/, /фашист/, /фашизм/, /гитлер/, /hitler/, /свастик/, /неонаци/, /неофашист/, /скинхед/, /skinhead/, /kkk/, /isis/, /isil/, /taliban/, /хайль/, /heil/,
-  /расизм/, /расист/, /антисемит/, /ксенофоб/, /геноцид/, /холокост/,
-  /героин/, /кокаин/, /кока/, /метамфет/, /мефедрон/, /метадон/, /марихуан/, /гашиш/, /амфетамин/, /экстази/, /мдма/, /mdma/, /лсд/, /lsd/, /нарко/, /наркот/, /наркоман/, /спайс/,
-  /мескалин/, /psilocybin/, /опиум/, /морфин/, /трамадол/, /фентанил/, /cocaine/, /heroin/, /meth/, /закладк/, /барыга/,
-  /суицид/, /самоубийств/, /suicide/, /повеситьс/, /повешусь/, /вскрыть вены/, /спрыгнуть с/, /застрелитьс/, /отравитьс/, /удавитьс/,
-  /богохульств/, /кощунств/, /сатанист/, /сатанизм/, /секта/, /сектант/, /ересь/,
-  /как сделать бомб/, /сделать взрывчатк/, /как отравить/, /как убить/, /как украсть/, /взломать аккаунт/, /детск.*порн/,
-  /быдл/, /хамло/, /наглец/, /подонок/, /отморозок/, /менты/, /легавые/, /фараон/, /полицай/, /чинуш/, /бюрократ/, /коррупционер/, /воров/, /мошенник/, /аферист/, /кидал/, /лохотрон/
-];
+const BAD_PATTERNS = [/ху[йеяёюи]/, /пизд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ёб[аеиуолн]/, /сука/, /сучк/, /мудак/, /мудил/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /перд/, /манда/, /уеб/, /заеб/, /наеб/, /хер[аеуны]/, /хрен[аеуы]/, /хач/, /чурк/, /жид/, /хохол/, /москал/, /кацап/, /ниггер/, /nigga/, /nigger/, /гей/, /лесби/, /fag/, /faggot/, /порн/, /порно/, /трах/, /минет/, /куни/, /анус/, /сперм/, /вагин/, /пенис/, /клитор/, /сиськ/, /письк/, /голая/, /porn/, /pussy/, /dick/, /cock/, /cunt/, /tits/, /nude/, /naked/, /убью/, /убей/, /убить/, /зареж/, /пристрел/, /взорв/, /теракт/, /сдохни/, /kill/, /murder/, /игил/, /джихад/, /халифат/, /нацист/, /фашист/, /гитлер/, /hitler/, /свастик/, /героин/, /кокаин/, /метамфет/, /марихуан/, /амфетамин/, /экстази/, /нарко/, /cocaine/, /heroin/, /f+u+c+k+/, /sh+i+t+/, /b+i+t+c+h+/, /d+i+c+k+/, /c+u+n+t+/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/, /a+s+s+h+o+l+e+/, /n+i+g+g+/, /r+e+t+a+r+d+/];
 const BAD_EXACT = new Set(['еб','ёб','бля','хер','хрен','жопа','срак','перд','бзд','чмо','манда','гей','геи','ass','damn','fag','cock','dick','sex','lsd','die','kill','nude','naked','scum','slut','hate','fuck','shit','bitch','cunt','pedo','rape','isis','kkk']);
-const WHITELIST = new Set([
-  'мандарин','мандаринка','мандарины','хлеб','хлеба','хлебушек','гребень','гребешок',
-  'тебя','себя','себе','тебе','потреб','потребность','потребности','потреблять',
-  'лебедь','лебединый','учебник','учебный','учеба','учёба','мебель','веб','вебка',
-  'стебель','жеребец','треб','требование','хребет','теребить',
-  'секция','сектор','секрет','секретарь','порядок','порог','порода','сексолог',
-  'class','pass','passenger','assistant','massive','asset','bass','grass','glass','cockpit','peacock',
-  'dickens','shirt','shield','shift','situation','mission',
-  'кока','кокос','метро','метка','металл','мари','мария','марина','маринад',
-  'аналог','аналогия','грудь','грудина','попал','попытка','популяр','гололёд','голодный',
-  'член','члены','членство','раздел','разделение','диета','убить','убийство',
-  'уравнение','уравнения','x','y','z','doom','halo','gta','war','warrior','hate','hatred','kykla'
-]);
+const WHITELIST = new Set(['мандарин','мандаринка','мандарины','хлеб','хлеба','хлебушек','гребень','гребешок','тебя','себя','себе','тебе','потреб','потребность','потребности','потреблять','лебедь','лебединый','учебник','учебный','учеба','учёба','мебель','веб','вебка','стебель','жеребец','треб','требование','хребет','теребить','секция','сектор','секрет','секретарь','порядок','порог','порода','сексолог','class','pass','passenger','assistant','massive','asset','bass','grass','glass','cockpit','peacock','dickens','shirt','shield','shift','situation','mission','кока','кокос','метро','метка','металл','мари','мария','марина','маринад','аналог','аналогия','грудь','грудина','попал','попытка','популяр','гололёд','голодный','член','члены','членство','раздел','разделение','диета','убить','убийство','уравнение','уравнения','x','y','z','doom','halo','gta','war','warrior','hate','hatred']);
 function hasProfanity(raw){
   if(!raw || typeof raw !== 'string') return false;
   const lower = raw.toLowerCase();
@@ -890,15 +749,11 @@ function hasProfanity(raw){
   const norm = normalizeAggressive(raw);
   if(norm) for(const re of BAD_PATTERNS) if(re.test(norm)) return true;
   const tokens = raw.toLowerCase().split(/[^а-яёіa-z0-9]+/i).filter(Boolean);
-  for(const tk of tokens){
-    const ntk = normalizeAggressive(tk);
-    if(!ntk || WHITELIST.has(ntk)) continue;
-    if(BAD_EXACT.has(ntk)) return true;
-  }
+  for(const tk of tokens){ const ntk = normalizeAggressive(tk); if(!ntk || WHITELIST.has(ntk)) continue; if(BAD_EXACT.has(ntk)) return true; }
   return false;
 }
 
-/* ============ MARKDOWN ============ */
+/* MARKDOWN */
 function renderText(raw){
   let h = esc(raw);
   h = h.replace(/\$([^$\n]+)\$/g, '$1');
@@ -912,28 +767,15 @@ function renderText(raw){
   return h;
 }
 
-/* ============ EQUATIONS ============ */
-function fmtNum(n){
-  if(Number.isInteger(n)) return String(n);
-  for(let d = 2; d <= 100; d++){
-    if(Math.abs(n*d - Math.round(n*d)) < 1e-9){
-      const num = Math.round(n*d);
-      const g = gcd(Math.abs(num), d);
-      const n1 = num/g, d1 = d/g;
-      if(d1 === 1) return String(n1);
-      return `[${n1}/${d1}]`;
-    }
-  }
-  return String(Math.round(n*1000000)/1000000);
-}
+/* EQUATIONS */
+function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <= 100; d++){ if(Math.abs(n*d - Math.round(n*d)) < 1e-9){ const num = Math.round(n*d); const g = gcd(Math.abs(num), d); const n1 = num/g, d1 = d/g; if(d1 === 1) return String(n1); return `[${n1}/${d1}]`; } } return String(Math.round(n*1000000)/1000000); }
 function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
 function solveEquation(text){
   let t = text.toLowerCase().trim();
   t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение)\s+/i, '');
   t = t.replace(/\s+/g, '').replace(/х/g,'x').replace(/Х/g,'x').replace(/X/g,'x');
   if(!t.includes('=')) return null;
-  const parts = t.split('=');
-  if(parts.length !== 2) return null;
+  const parts = t.split('='); if(parts.length !== 2) return null;
   let left = parts[0], right = parts[1];
   if(!/x/.test(left) && !/x/.test(right)) return null;
   const hasSquare = /x\^2|x2|x²/.test(left) || /x\^2|x2|x²/.test(right);
@@ -943,16 +785,12 @@ function solveEquation(text){
   return solveLinear(text, left, right);
 }
 function parsePoly(expr){
-  expr = expr.replace(/^\+/, '');
-  let a=0, b=0, c=0, m;
-  const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g;
-  while((m = aRe.exec(expr)) !== null){ const sign = m[1]==='-' ? -1 : 1; a += sign * (m[2]==='' ? 1 : parseFloat(m[2])); }
+  expr = expr.replace(/^\+/, ''); let a=0, b=0, c=0, m;
+  const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g; while((m = aRe.exec(expr)) !== null){ const sign = m[1]==='-' ? -1 : 1; a += sign * (m[2]==='' ? 1 : parseFloat(m[2])); }
   expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x\^2/g, '');
-  const bRe = /([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g;
-  while((m = bRe.exec(expr)) !== null){ const sign = m[1]==='-' ? -1 : 1; b += sign * (m[2]==='' ? 1 : parseFloat(m[2])); }
+  const bRe = /([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g; while((m = bRe.exec(expr)) !== null){ const sign = m[1]==='-' ? -1 : 1; b += sign * (m[2]==='' ? 1 : parseFloat(m[2])); }
   expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g, '');
-  const cRe = /([+\-]?)(\d+\.?\d*)/g;
-  while((m = cRe.exec(expr)) !== null){ const sign = m[1]==='-' ? -1 : 1; c += sign * parseFloat(m[2]); }
+  const cRe = /([+\-]?)(\d+\.?\d*)/g; while((m = cRe.exec(expr)) !== null){ const sign = m[1]==='-' ? -1 : 1; c += sign * parseFloat(m[2]); }
   return {a, b, c};
 }
 function polyToStr(a, b, c){
@@ -970,14 +808,10 @@ function solveLinear(original, left, right){
   const x = -c / b;
   const steps = [];
   steps.push(`**Решаю уравнение:** ${original}\n`);
-  steps.push(`**Шаг 1.** Переношу всё в левую часть:`);
-  steps.push(`   ${polyToStr(0, b, c)} = 0\n`);
-  steps.push(`**Шаг 2.** Привожу подобные:`);
-  steps.push(`   ${polyToStr(0, b, c)} = 0\n`);
+  steps.push(`**Шаг 1.** Переношу всё в левую часть:`); steps.push(`   ${polyToStr(0, b, c)} = 0\n`);
+  steps.push(`**Шаг 2.** Привожу подобные:`); steps.push(`   ${polyToStr(0, b, c)} = 0\n`);
   steps.push(`**Шаг 3.** Выражаю x:`);
-  if(b === 1){ steps.push(`   x = ${-c}`); }
-  else if(b === -1){ steps.push(`   -x = ${c}`); steps.push(`   x = ${-c}`); }
-  else { steps.push(`   ${b}x = ${-c}`); steps.push(`   x = ${-c} / ${b}`); }
+  if(b === 1){ steps.push(`   x = ${-c}`); } else if(b === -1){ steps.push(`   -x = ${c}`); steps.push(`   x = ${-c}`); } else { steps.push(`   ${b}x = ${-c}`); steps.push(`   x = ${-c} / ${b}`); }
   steps.push(`\n**Ответ:** x = ${fmtNum(x)}`);
   return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
 }
@@ -988,34 +822,18 @@ function solveQuadratic(original, left, right){
   const D = b*b - 4*a*c;
   const steps = [];
   steps.push(`**Решаю квадратное уравнение:** ${original}\n`);
-  steps.push(`**Шаг 1.** Привожу к виду ax² + bx + c = 0:`);
-  steps.push(`   ${polyToStr(a, b, c)} = 0\n`);
+  steps.push(`**Шаг 1.** Привожу к виду ax² + bx + c = 0:`); steps.push(`   ${polyToStr(a, b, c)} = 0\n`);
   steps.push(`где a = ${fmtNum(a)}, b = ${fmtNum(b)}, c = ${fmtNum(c)}\n`);
-  steps.push(`**Шаг 2.** Нахожу дискриминант:`);
-  steps.push(`   D = b² − 4ac`);
-  steps.push(`   D = ${fmtNum(b)}² − 4·${fmtNum(a)}·${fmtNum(c)}`);
-  steps.push(`   **D = ${fmtNum(D)}**\n`);
+  steps.push(`**Шаг 2.** Нахожу дискриминант:`); steps.push(`   D = ${fmtNum(b)}² − 4·${fmtNum(a)}·${fmtNum(c)}`); steps.push(`   **D = ${fmtNum(D)}**\n`);
   let answer = '';
-  if(D > 0){
-    const x1 = (-b + Math.sqrt(D)) / (2*a), x2 = (-b - Math.sqrt(D)) / (2*a);
-    steps.push(`**Шаг 3.** D > 0 → два корня\n`);
-    steps.push(`x₁ = ${fmtNum(x1)}`);
-    steps.push(`x₂ = ${fmtNum(x2)}`);
-    answer = `x₁ = ${fmtNum(x1)},  x₂ = ${fmtNum(x2)}`;
-  } else if(D === 0){
-    const x = -b / (2*a);
-    steps.push(`**Шаг 3.** D = 0 → один корень`);
-    steps.push(`x = ${fmtNum(x)}`);
-    answer = `x = ${fmtNum(x)}`;
-  } else {
-    steps.push(`**Шаг 3.** D < 0 → **нет действительных корней** ❌`);
-    answer = 'нет действительных корней';
-  }
+  if(D > 0){ const x1 = (-b + Math.sqrt(D)) / (2*a), x2 = (-b - Math.sqrt(D)) / (2*a); steps.push(`**Шаг 3.** D > 0 → два корня\n`); steps.push(`x₁ = ${fmtNum(x1)}`); steps.push(`x₂ = ${fmtNum(x2)}`); answer = `x₁ = ${fmtNum(x1)},  x₂ = ${fmtNum(x2)}`; }
+  else if(D === 0){ const x = -b / (2*a); steps.push(`**Шаг 3.** D = 0 → один корень`); steps.push(`x = ${fmtNum(x)}`); answer = `x = ${fmtNum(x)}`; }
+  else { steps.push(`**Шаг 3.** D < 0 → **нет действительных корней** ❌`); answer = 'нет действительных корней'; }
   steps.push(`\n**Ответ:** ${answer}`);
   return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
 }
 
-/* ============ AUTO-TITLE ============ */
+/* AUTO-TITLE */
 const TOPIC_KEYWORDS = [
   { re:/чёрн\w+дыр|черн\w+дыр|black\s*hole/i, title:'Чёрная дыра' },
   { re:/эйнштейн|einstein/i, title:'Эйнштейн' },
@@ -1028,16 +846,11 @@ const TOPIC_KEYWORDS = [
   { re:/солнц|sun/i, title:'Солнце' },
   { re:/столица\s+(\w+)/i, title:(m)=>`Столица ${m[1]}` },
   { re:/интернет|internet/i, title:'Интернет' },
-  { re:/уравнени|реши\s|solve/i, title:'Уравнение' },
-  { re:/атом|atom/i, title:'Атом' },
-  { re:/квант|quantum/i, title:'Квантовая физика' }
+  { re:/уравнени|реши\s|solve/i, title:'Уравнение' }
 ];
 function smartTitle(text){
   const clean = text.trim().replace(/\s+/g,' ');
-  for(const topic of TOPIC_KEYWORDS){
-    const m = clean.match(topic.re);
-    if(m){ if(typeof topic.title === 'function') return topic.title(m).slice(0,40); return topic.title.slice(0,40); }
-  }
+  for(const topic of TOPIC_KEYWORDS){ const m = clean.match(topic.re); if(m){ if(typeof topic.title === 'function') return topic.title(m).slice(0,40); return topic.title.slice(0,40); } }
   const m = clean.match(/^(?:что\s+такое|кто\s+такой|кто\s+такая|что\s+значит)\s+(.{3,30})/i);
   if(m){ let t = m[1].replace(/[?!.]+$/,'').trim(); return (t.charAt(0).toUpperCase()+t.slice(1)).slice(0,40); }
   let t = clean.replace(/^(расскажи|скажи|найди|поищи|поясни|объясни)\s+/i,'');
@@ -1045,7 +858,7 @@ function smartTitle(text){
   return t.slice(0,40) + (t.length>40?'…':'');
 }
 
-/* ============ CHATS ============ */
+/* CHATS */
 function createChat(){
   const chat = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() };
   state.chats.unshift(chat); state.activeId=chat.id;
@@ -1065,26 +878,16 @@ async function deleteChat(id){
   if(state.activeId === id){ state.activeId = state.chats[0]?.id || null; if(!state.activeId) createChat(); else store.setActive(state.activeId); }
   renderChatsList(); renderActiveChat(); updateLimitUI(); showToast('Чат удалён'); haptic('success');
 }
-function togglePin(id){
-  const c = state.chats.find(x=>x.id===id); if(!c) return;
-  c.pinned = !c.pinned; store.saveChats(state.chats); renderChatsList(); haptic('light');
-}
+function togglePin(id){ const c = state.chats.find(x=>x.id===id); if(!c) return; c.pinned = !c.pinned; store.saveChats(state.chats); renderChatsList(); haptic('light'); }
 function ensureChat(){ if(!state.activeId || !getActiveChat()){ if(state.chats.length>0){ state.activeId=state.chats[0].id; store.setActive(state.activeId); } else createChat(); } }
 function autoTitle(chat, text){ if(chat.title && chat.title !== 'Новый чат') return; chat.title = smartTitle(text) || 'Новый чат'; }
 
 function renderChatsList(){
   const list = $('chatsList'); list.innerHTML='';
   const q = state.searchQuery.toLowerCase().trim();
-  let filtered = state.chats.filter(c => {
-    if(!q) return true;
-    if(c.title.toLowerCase().includes(q)) return true;
-    return c.messages.some(m => m.text.toLowerCase().includes(q));
-  });
+  let filtered = state.chats.filter(c => { if(!q) return true; if(c.title.toLowerCase().includes(q)) return true; return c.messages.some(m => m.text.toLowerCase().includes(q)); });
   $('drawerCount').textContent = `Чатов: ${state.chats.length}`;
-  if(filtered.length === 0){
-    list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">${q ? 'Ничего не найдено' : 'Пока нет чатов'}</div>`;
-    $('clearAllChatsBtn').style.display='none'; return;
-  }
+  if(filtered.length === 0){ list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">${q ? 'Ничего не найдено' : 'Пока нет чатов'}</div>`; $('clearAllChatsBtn').style.display='none'; return; }
   $('clearAllChatsBtn').style.display = state.chats.length > 1 && !q ? 'block' : 'none';
   const sorted = [...filtered].sort((a,b) => { if(a.pinned !== b.pinned) return a.pinned ? -1 : 1; return b.updatedAt - a.updatedAt; });
   for(const c of sorted){
@@ -1106,7 +909,7 @@ function renderActiveChat(){
   if(!chat || chat.messages.length === 0){ renderEmptyState(); updateLimitUI(); return; }
   for(let i = 0; i < chat.messages.length; i++){
     const m = chat.messages[i];
-    if(m.role === 'user') appendUserMessage(m.text, false, i);
+    if(m.role === 'user') appendUserMessage(m.text, false, i, m.attachment);
     else appendAIMessage(m, false, i);
   }
   scrollDown();
@@ -1118,15 +921,107 @@ function renderEmptyState(){
   const hello = name ? `Привет, ${name}!` : 'Привет!';
   const chips = ['Кто ты?', 'Что ты умеешь?', 'Кто тебя создал?', 'Реши 2x + 5 = 15', 'Реши x² - 5x + 6 = 0', 'Столица Исландии'];
   const chipHtml = chips.map(c => `<button class="empty-chip" data-q="${escA(c)}"><span class="dot"></span>${esc(c)}</button>`).join('');
-  chatEl.innerHTML = `<div class="empty"><svg class="empty-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Я ищу ответы в интернете, решаю уравнения и помогаю учиться.</div><div class="empty-chips">${chipHtml}</div></div>`;
+  chatEl.innerHTML = `<div class="empty"><svg class="empty-planet" viewBox="0 0 100 100" fill="none"><ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-20 50 50)" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="50" r="20" fill="#2563eb"/></svg><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Я ищу ответы в интернете, решаю уравнения и работаю с файлами.</div><div class="empty-chips">${chipHtml}</div></div>`;
   chatEl.querySelectorAll('.empty-chip').forEach(btn => btn.addEventListener('click', () => { haptic('light'); handleSend(btn.getAttribute('data-q')); }));
 }
 
-function appendUserMessage(text, animate = true, idx = -1){
+/* FILES */
+async function handleFileUpload(file){
+  if(!file) return;
+  if(file.size > 10 * 1024 * 1024){ showToast('Файл больше 10 МБ'); haptic('error'); return; }
+  const type = file.type || '';
+  const name = file.name || 'файл';
+  const attachBtn = $('attachBtn');
+  attachBtn.classList.add('loading');
+  haptic('light');
+
+  try{
+    let extractedText = '';
+    let previewUrl = null;
+    let previewKind = 'file';
+
+    if(type === 'application/pdf' || name.toLowerCase().endsWith('.pdf')){
+      showToast('Обрабатываю PDF…');
+      extractedText = await extractPdfText(file);
+      previewKind = 'pdf';
+    } else if(type.startsWith('image/')){
+      previewUrl = URL.createObjectURL(file);
+      previewKind = 'image';
+      showToast('Распознаю текст…');
+      try{ extractedText = await extractImageText(file); }catch(e){ extractedText = ''; }
+    } else {
+      showToast('Только PDF и картинки'); attachBtn.classList.remove('loading'); haptic('error'); return;
+    }
+
+    attachBtn.classList.remove('loading');
+
+    ensureChat();
+    const chat = getActiveChat();
+    const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
+    const ts = Date.now();
+
+    const fileMsg = {
+      role: 'user',
+      text: previewKind === 'image' ? '📷 Изображение' : `📄 ${name}`,
+      attachment: { kind: previewKind, name: name, url: previewUrl, extractedText: extractedText || '' },
+      ts
+    };
+    chat.messages.push(fileMsg);
+    chat.updatedAt = ts;
+    if(chat.title === 'Новый чат') chat.title = name.slice(0, 40);
+    store.saveChats(state.chats);
+    appendUserMessage(fileMsg.text, true, chat.messages.length - 1, fileMsg.attachment);
+    renderChatsList();
+
+    if(extractedText && extractedText.trim().length > 10){
+      const question = `Что здесь написано и о чём это?\n\n${extractedText.slice(0, 2000)}`;
+      setTimeout(() => handleSend(question), 400);
+    } else {
+      showToast('Не удалось распознать текст');
+    }
+  }catch(e){
+    attachBtn.classList.remove('loading');
+    console.error('File error:', e);
+    showToast('Ошибка обработки');
+    haptic('error');
+  }
+}
+
+async function extractPdfText(file){
+  if(!window.pdfjsLib) throw new Error('pdf.js не загружен');
+  const buffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+  let full = '';
+  const maxPages = Math.min(pdf.numPages, 20);
+  for(let i = 1; i <= maxPages; i++){
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const pageText = content.items.map(it => it.str).join(' ').replace(/\s+/g, ' ');
+    full += pageText + '\n\n';
+    if(full.length > 4000) break;
+  }
+  return full.trim().slice(0, 4000);
+}
+
+async function extractImageText(file){
+  if(!window.Tesseract) throw new Error('tesseract.js не загружен');
+  const result = await Tesseract.recognize(file, 'rus+eng');
+  return (result?.data?.text || '').trim().slice(0, 3000);
+}
+
+function appendUserMessage(text, animate = true, idx = -1, attachment = null){
   const div = document.createElement('div');
   div.className = 'msg user';
   if(!animate) div.style.animation = 'none';
-  div.innerHTML = `<div class="bubble">${esc(text)}</div><button class="msg-edit-btn" data-idx="${idx}">✎ Изменить</button>`;
+  let attachHtml = '';
+  if(attachment){
+    if(attachment.kind === 'image' && attachment.url){
+      attachHtml = `<div class="file-preview"><img src="${escA(attachment.url)}" alt=""></div>`;
+    } else if(attachment.kind === 'pdf'){
+      attachHtml = `<div class="file-preview"><div class="file-preview-file"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg><span>${esc(attachment.name)}</span></div></div>`;
+    }
+  }
+  div.innerHTML = `${attachHtml}<div class="bubble">${esc(text)}</div><button class="msg-edit-btn" data-idx="${idx}">✎ Изменить</button>`;
   chatEl.appendChild(div);
   div.querySelector('.msg-edit-btn').addEventListener('click', () => { haptic('light'); editUserMessage(idx); });
   scrollDown();
@@ -1214,7 +1109,7 @@ async function typeText(el, text){
   cursor.remove(); scrollDown();
 }
 
-/* ============ SEARCH ============ */
+/* SEARCH */
 function cleanQuery(q){ return q.replace(/^(что такое|что значит|кто такой|кто такая|кто такие|расскажи про|расскажи о|расскажи|поясни|объясни|найди|поищи|где находится|где|когда|почему|зачем|как|what is|who is)\s+/i,'').replace(/^про\s+/i,'').replace(/[?!.]+$/g,'').trim(); }
 async function wikiSearch(query, lang){
   lang = lang || 'ru';
@@ -1258,7 +1153,7 @@ async function searchInternet(query){
   return await wikiSearch(query,'ru');
 }
 
-/* ============ CONTEXT ============ */
+/* CONTEXT */
 function getChatContext(chat, maxMessages){
   maxMessages = maxMessages || 10;
   if(!chat || !chat.messages.length) return null;
@@ -1277,7 +1172,7 @@ function isFollowUp(query){
   return patterns.some(re => re.test(q));
 }
 
-/* ============ DIALOGS ============ */
+/* DIALOGS */
 function matchDialog(q){
   const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
@@ -1285,15 +1180,15 @@ function matchDialog(q){
   if(/как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name?`Всё отлично, ${name}! А у тебя как?`:'Всё отлично! А у тебя как?';
   if(/^(пока|до свидания|до встречи|бай|bye)/i.test(x)) return name?`До встречи, ${name}!`:'До встречи!';
   if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста! Всегда рада помочь.';
-  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое|расскажи\s+о\s+себе|расскажи\s+про\s+себя)/i.test(x)) return `Я **Orbita AI** — умный ассистент от компании **ORT** 🛰️\n\nИщу информацию в интернете, отвечаю на вопросы, решаю уравнения.`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь|твои\s+возможности)/i.test(x)) return `Вот что я умею:\n\n🔍 **Ищу информацию** в интернете\n📚 **Отвечаю на вопросы**\n🧮 **Решаю уравнения** — пошагово\n🕐 **Скажу время и дату**\n🎤 **Распознаю голос**\n🔊 **Читаю ответы** (Plus)\n\nПросто напиши, что тебя интересует!`;
+  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое|расскажи\s+о\s+себе|расскажи\s+про\s+себя)/i.test(x)) return `Я **Orbita AI** — умный ассистент от компании **ORT** 🛰️\n\nИщу информацию в интернете, отвечаю на вопросы, решаю уравнения, работаю с файлами.`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь|твои\s+возможности)/i.test(x)) return `Вот что я умею:\n\n🔍 **Ищу информацию** в интернете\n📚 **Отвечаю на вопросы**\n🧮 **Решаю уравнения** — пошагово\n📄 **Читаю PDF** и извлекаю текст\n📷 **Распознаю текст с картинок** (OCR)\n🕐 **Скажу время и дату**\n🎤 **Распознаю голос**\n🔊 **Читаю ответы** (Plus)\n\nПросто напиши, что тебя интересует!`;
   if(/^(кто\s+тебя\s+создал|кто\s+тебя\s+сделал|кто\s+разработал|кто\s+твой\s+создатель)/i.test(x)) return `Меня создала компания **ORT**`;
   if(/^(расскажи\s+о\s+компании|что\s+такое\s+ort|расскажи\s+про\s+ort)/i.test(x)) return `**ORT** — компания, которая создала меня 🛰️`;
   if(/^(ты\s+человек|ты\s+живой|ты\s+робот|ты\s+бот)/i.test(x)) return `Я **искусственный интеллект**`;
   if(/^(как\s+тебя\s+зовут|твоё\s+имя)/i.test(x)) return 'Меня зовут **Orbita AI**';
   if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
   if(/какой\s+сегодня\s+день|какое\s+сегодня\s+число/i.test(x)) return `Сегодня ${new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
-  if(/что\s+такое\s+plus|что\s+такое\s+плюс|подписк/i.test(x)) return state.plus ? 'У тебя **Plus** активен! 🎉\n\nБез лимитов, голосовые ответы, особый статус.' : `**Orbita Plus** — это:\n\n• Без лимита запросов\n• Без лимита сообщений\n• Голосовые ответы\n• Особый статус\n\nОткрой в **Аккаунт → Orbita Plus**.`;
+  if(/что\s+такое\s+plus|что\s+такое\s+плюс|подписк/i.test(x)) return state.plus ? 'У тебя **Plus** активен! 🎉\n\nБез лимитов, голосовые ответы.' : `**Orbita Plus** — это:\n\n• Без лимита запросов\n• Без лимита сообщений\n• Голосовые ответы\n• Особый статус\n\nОткрой в **Аккаунт → Orbita Plus**.`;
   return null;
 }
 
@@ -1316,7 +1211,7 @@ async function generateAnswer(query, chat){
   return { text: `К сожалению, не нашла ответа на «${query}».\n\nПопробуй переформулировать.` };
 }
 
-/* ============ SEND ============ */
+/* SEND */
 function updateSendBtn(){
   if(state.busy){ sendBtn.disabled=false; sendBtn.classList.add('stop'); sendBtn.classList.remove('cooldown'); sendIcon.innerHTML='<rect x="6" y="6" width="12" height="12" rx="2"/>'; return; }
   if(state.rateLimit && !state.plus){ sendBtn.disabled=true; sendBtn.classList.remove('stop'); sendBtn.classList.add('cooldown'); return; }
@@ -1342,7 +1237,7 @@ async function handleSend(textOverride){
     chat.updatedAt = ts; store.saveChats(state.chats);
     appendUserMessage(text, true, chat.messages.length-1);
     await sleep(300);
-    const refuse = { role:'ai', text:'Извини, на такие вопросы я не отвечаю.', ts:Date.now()+1, _blocked:true };
+    const refuse = { role:'ai', text:'Извини, на такие вопросы я не отвечаю.', ts:Date.now()+1, _isBlocked:true };
     chat.messages.push(refuse); store.saveChats(state.chats);
     appendAIMessage(refuse, false, chat.messages.length-1);
     inputEl.value=''; localStorage.removeItem(KEYS.DRAFT);
@@ -1385,27 +1280,15 @@ async function handleSend(textOverride){
   state.busy=false; state.abortRequested=false; updateSendBtn(); updateLimitUI(); haptic('success');
 }
 
-/* ============ DRAWER ============ */
+/* DRAWER */
 function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); lockScroll(true); showBackButton(closeDrawer); haptic('light'); }
 function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); }
 
-/* ============ ACCOUNT ============ */
+/* ACCOUNT */
 function applyPlusUI(){
-  const badge = $('headerPlusBadge');
-  const bm = $('brandMark');
-  const av = $('drawerAvatar');
-  const avPrev = $('avatarPreview');
-  if(state.plus){
-    badge.style.display = 'inline-flex';
-    bm.classList.add('plus');
-    av.classList.add('plus');
-    avPrev.classList.add('plus');
-  } else {
-    badge.style.display = 'none';
-    bm.classList.remove('plus');
-    av.classList.remove('plus');
-    avPrev.classList.remove('plus');
-  }
+  const badge = $('headerPlusBadge'), bm = $('brandMark'), av = $('drawerAvatar'), avPrev = $('avatarPreview');
+  if(state.plus){ badge.style.display = 'inline-flex'; bm.classList.add('plus'); av.classList.add('plus'); avPrev.classList.add('plus'); }
+  else { badge.style.display = 'none'; bm.classList.remove('plus'); av.classList.remove('plus'); avPrev.classList.remove('plus'); }
 }
 function updateAvatarPreview(){
   const preview = $('avatarPreview'), letter = $('avatarLetter');
@@ -1477,14 +1360,9 @@ function exportChats(){
   showToast('Файл сохранён'); haptic('success');
 }
 
-/* ============ ONBOARDING ============ */
+/* ONBOARDING */
 let onbSlide = 0;
-function onbGoTo(i){
-  onbSlide = Math.max(0, Math.min(2, i));
-  $('onbTrack').style.transform = `translateX(-${onbSlide*100}%)`;
-  document.querySelectorAll('.onb-dot').forEach(d => d.classList.toggle('active', +d.dataset.slide === onbSlide));
-  hapticSel();
-}
+function onbGoTo(i){ onbSlide = Math.max(0, Math.min(2, i)); $('onbTrack').style.transform = `translateX(-${onbSlide*100}%)`; document.querySelectorAll('.onb-dot').forEach(d => d.classList.toggle('active', +d.dataset.slide === onbSlide)); hapticSel(); }
 function finishOnboarding(){
   const name = ($('onbName').value || '').replace(/[<>"'`]/g,'').trim().slice(0,24) || tg?.initDataUnsafe?.user?.first_name || 'User';
   state.user = { name, joinedAt:Date.now() };
@@ -1494,7 +1372,7 @@ function finishOnboarding(){
   lockScroll(false); haptic('success'); initApp();
 }
 
-/* ============ INIT ============ */
+/* INIT */
 function initApp(){
   state.chats = store.getChats();
   state.activeId = store.getActive();
@@ -1507,7 +1385,7 @@ function initApp(){
   initVoice();
 }
 
-/* ============ EVENTS ============ */
+/* EVENTS */
 inputEl.addEventListener('input', () => { updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value); });
 inputEl.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
 sendBtn.addEventListener('click', () => {
@@ -1533,6 +1411,8 @@ $('accountOverlay').addEventListener('click', e => { if(e.target === $('accountO
 $('avatarPreview').addEventListener('click', () => $('avatarInput').click());
 $('avatarInput').addEventListener('change', e => { if(e.target.files[0]) handleAvatarUpload(e.target.files[0]); e.target.value=''; });
 $('removeAvatarBtn').addEventListener('click', () => { if(state.user?.avatar){ state.user.avatar = null; store.saveUser(state.user); updateAvatarPreview(); haptic('light'); } });
+$('attachBtn').addEventListener('click', () => $('fileInput').click());
+$('fileInput').addEventListener('change', e => { if(e.target.files && e.target.files[0]) handleFileUpload(e.target.files[0]); e.target.value = ''; });
 $('voiceBtn').addEventListener('click', startVoice);
 $('voiceCancel').addEventListener('click', () => { stopVoice(); haptic('light'); });
 $('onbSkip').addEventListener('click', () => finishOnboarding());
@@ -1544,7 +1424,7 @@ $('plusCloseBtn').addEventListener('click', closePlusModal);
 $('plusModalBg').addEventListener('click', e => { if(e.target === $('plusModalBg')) closePlusModal(); });
 $('limitBannerBtn').addEventListener('click', () => { haptic('light'); openPlusModal(); });
 
-/* ============ BOOT ============ */
+/* BOOT */
 window.addEventListener('load', async () => {
   const draft = localStorage.getItem(KEYS.DRAFT);
   if(draft){ inputEl.value = draft; updateSendBtn(); }
@@ -1573,11 +1453,8 @@ window.addEventListener('load', async () => {
       const data = await res.json();
       if(data.plus && !state.plus){
         state.plus = true;
-        applyPlusUI();
-        updateLimitUI();
-        renderActiveChat();
-        showToast('Plus активирован!');
-        haptic('success');
+        applyPlusUI(); updateLimitUI(); renderActiveChat();
+        showToast('Plus активирован!'); haptic('success');
       }
     }catch(e){}
   }, 15000);
