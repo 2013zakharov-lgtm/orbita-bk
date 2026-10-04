@@ -20,6 +20,8 @@
   .brand-mark{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
   .brand-mark svg{width:24px;height:24px}
   .brand-mark.plus{background:var(--accent)}
+  .brand-mark.plus svg ellipse{stroke:#fff !important}
+  .brand-mark.plus svg circle{fill:#fff !important}
   .brand-text{display:flex;flex-direction:column;min-width:0}
   .brand-name{font-size:15px;font-weight:800;letter-spacing:-.4px;color:var(--ink);display:flex;align-items:center;gap:6px}
   .brand-sub{font-size:10.5px;color:var(--muted);font-weight:500;margin-top:1px}
@@ -231,7 +233,6 @@
   .bio-icon svg{width:52px;height:52px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .bio-title{font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px}
   .bio-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:280px;line-height:1.5}
-  /* PLUS MODAL */
   .plus-modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:230;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .3s}
   .plus-modal-bg.active{display:flex;opacity:1}
   .plus-modal{width:100%;max-width:380px;background:var(--bg);border-radius:24px;padding:28px 22px 20px;box-shadow:0 20px 60px rgba(15,23,42,.25);transform:scale(.9) translateY(20px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);text-align:center}
@@ -314,22 +315,10 @@
       <span id="plusActiveText">Подписка активна</span>
     </div>
     <div class="plus-list">
-      <div class="plus-item">
-        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
-        <span>Без лимита запросов</span>
-      </div>
-      <div class="plus-item">
-        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        <span>Без лимита сообщений</span>
-      </div>
-      <div class="plus-item">
-        <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/></svg>
-        <span>Голосовые ответы AI</span>
-      </div>
-      <div class="plus-item">
-        <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
-        <span>Особый статус</span>
-      </div>
+      <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg><span>Без лимита запросов</span></div>
+      <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Без лимита сообщений</span></div>
+      <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14"/></svg><span>Голосовые ответы AI</span></div>
+      <div class="plus-item"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg><span>Особый статус</span></div>
     </div>
     <div class="plus-actions">
       <button class="plus-btn-primary" id="plusRequestBtn">Запросить Plus</button>
@@ -436,10 +425,7 @@ function haptic(t='light'){ if(!tg?.HapticFeedback) return; try{ if(['success','
 function hapticSel(){ try{ tg?.HapticFeedback?.selectionChanged(); }catch(e){} }
 function showBackButton(fn){ if(!tg?.BackButton) return; tg.BackButton.offClick(); tg.BackButton.onClick(fn); tg.BackButton.show(); }
 function hideBackButton(){ if(tg?.BackButton){ try{ tg.BackButton.offClick(); tg.BackButton.hide(); }catch(e){} } }
-function showMainBtn(text, fn){
-  if(!tg?.MainButton) return;
-  try{ tg.MainButton.setText(text); tg.MainButton.offClick(); tg.MainButton.onClick(fn); tg.MainButton.show(); document.body.classList.add('has-mainbtn'); }catch(e){}
-}
+function showMainBtn(text, fn){ if(!tg?.MainButton) return; try{ tg.MainButton.setText(text); tg.MainButton.offClick(); tg.MainButton.onClick(fn); tg.MainButton.show(); document.body.classList.add('has-mainbtn'); }catch(e){} }
 function hideMainBtn(){ try{ tg?.MainButton?.hide(); document.body.classList.remove('has-mainbtn'); }catch(e){} }
 
 const state = { user: null, chats: [], activeId: null, busy: false, abortRequested: false, rateLimit: false, rateLimitTimer: null, searchQuery: '', plus: false };
@@ -449,10 +435,7 @@ const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIcon = 
 const KEYS = { USER:'o_u', CHATS:'o_c', ACTIVE:'o_a', LAST_REQ:'o_r', DRAFT:'o_d', ONBOARD:'o_onb' };
 const store = {
   getUser(){ try{ return JSON.parse(localStorage.getItem(KEYS.USER)||'null'); }catch{ return null; } },
-  saveUser(u){
-    localStorage.setItem(KEYS.USER, JSON.stringify(u));
-    if(tg?.CloudStorage){ try{ tg.CloudStorage.setItem('user', JSON.stringify({name:u.name, avatar:u.avatar||null, joinedAt:u.joinedAt, bio:u.bio||false})); }catch(e){} }
-  },
+  saveUser(u){ localStorage.setItem(KEYS.USER, JSON.stringify(u)); if(tg?.CloudStorage){ try{ tg.CloudStorage.setItem('user', JSON.stringify({name:u.name, avatar:u.avatar||null, joinedAt:u.joinedAt, bio:u.bio||false})); }catch(e){} } },
   getChats(){ try{ return JSON.parse(localStorage.getItem(KEYS.CHATS)||'[]'); }catch{ return []; } },
   saveChats(c){
     localStorage.setItem(KEYS.CHATS, JSON.stringify(c));
@@ -497,23 +480,49 @@ function initials(name){ if(!name) return 'A'; const p=name.trim().split(/\s+/);
 function lockScroll(lock){ document.body.classList.toggle('locked',lock); }
 function scrollDown(){ chatEl.scrollTop = chatEl.scrollHeight; }
 
-/* ============ TTS ============ */
+/* ============ TTS с поддержкой iOS ============ */
 let currentSpeakingBtn = null;
 let speakTimeout = null;
+let speechUnlocked = false;
+let voicesCache = [];
+let resumeTimer = null;
 
-function loadVoices(){
+function refreshVoices(){
   if(!window.speechSynthesis) return;
-  try { speechSynthesis.getVoices(); } catch(e) {}
+  try{ const v = speechSynthesis.getVoices(); if(v && v.length) voicesCache = v; }catch(e){}
 }
 if(window.speechSynthesis){
-  loadVoices();
-  speechSynthesis.onvoiceschanged = loadVoices;
+  refreshVoices();
+  speechSynthesis.onvoiceschanged = refreshVoices;
+  setTimeout(refreshVoices, 100);
+  setTimeout(refreshVoices, 500);
+  setTimeout(refreshVoices, 1500);
 }
 
+function unlockSpeech(){
+  if(speechUnlocked) return;
+  if(!window.speechSynthesis) return;
+  try{
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0; u.rate = 1; u.pitch = 1; u.lang = 'ru-RU';
+    speechSynthesis.speak(u);
+    setTimeout(() => { try{ speechSynthesis.cancel(); }catch(e){} }, 50);
+    speechUnlocked = true;
+    refreshVoices();
+  }catch(e){}
+}
+['touchstart','touchend','click','keydown'].forEach(evt => {
+  document.addEventListener(evt, unlockSpeech, { passive: true });
+});
+
 function pickRussianVoice(){
-  if(!window.speechSynthesis) return null;
-  const voices = speechSynthesis.getVoices();
+  if(!voicesCache.length) refreshVoices();
+  const voices = voicesCache;
   if(!voices || !voices.length) return null;
+  const iosRu = voices.find(v => /milena/i.test(v.name));
+  const iosYuri = voices.find(v => /yuri/i.test(v.name));
+  if(iosRu) return iosRu;
+  if(iosYuri) return iosYuri;
   return voices.find(v => v.lang === 'ru-RU')
       || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ru'))
       || voices.find(v => /russian|русск/i.test(v.name))
@@ -522,21 +531,19 @@ function pickRussianVoice(){
 
 function cleanForSpeech(text){
   return String(text)
-    .replace(/\*\*/g, '')
-    .replace(/\*/g, '')
-    .replace(/`/g, '')
+    .replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '')
     .replace(/#+\s/g, '')
     .replace(/\[([^\/\]]+)\/([^\]]+)\]/g, '$1 на $2')
     .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F000}-\u{1F02F}]/gu, '')
     .replace(/https?:\/\/\S+/g, 'ссылка')
-    .replace(/\s+/g, ' ')
-    .trim();
+    .replace(/\s+/g, ' ').trim();
 }
 
 function splitIntoChunks(text, maxLen){
-  maxLen = maxLen || 180;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  maxLen = maxLen || (isIOS ? 120 : 180);
   const chunks = [];
-  const parts = text.split(/(?<=[.!?;:])\s+/);
+  const parts = text.split(/(?<=[.!?;:,])\s+/);
   let buf = '';
   for(const p of parts){
     if((buf + ' ' + p).length > maxLen && buf){ chunks.push(buf.trim()); buf = p; }
@@ -549,66 +556,49 @@ function splitIntoChunks(text, maxLen){
 function stopSpeak(){
   try{ speechSynthesis.cancel(); }catch(e){}
   if(speakTimeout){ clearTimeout(speakTimeout); speakTimeout = null; }
-  if(currentSpeakingBtn){
-    currentSpeakingBtn.classList.remove('speaking');
-    currentSpeakingBtn = null;
-  }
+  if(resumeTimer){ clearInterval(resumeTimer); resumeTimer = null; }
+  if(currentSpeakingBtn){ currentSpeakingBtn.classList.remove('speaking'); currentSpeakingBtn = null; }
+}
+
+function startResumeWatchdog(){
+  if(resumeTimer) clearInterval(resumeTimer);
+  resumeTimer = setInterval(() => {
+    try{ if(speechSynthesis.paused && speechSynthesis.speaking) speechSynthesis.resume(); }catch(e){}
+  }, 200);
 }
 
 function speak(text, btn){
-  if(!window.speechSynthesis){
-    showToast('Озвучка не поддерживается');
-    haptic('error');
-    return;
-  }
-  
-  if(currentSpeakingBtn && currentSpeakingBtn.classList.contains('speaking')){
-    stopSpeak();
-    return;
-  }
-  
+  if(!window.speechSynthesis){ showToast('Озвучка не поддерживается'); haptic('error'); return; }
+  if(currentSpeakingBtn && currentSpeakingBtn.classList.contains('speaking')){ stopSpeak(); return; }
   stopSpeak();
-  
+  if(!speechUnlocked) unlockSpeech();
   const clean = cleanForSpeech(text);
-  if(!clean){
-    showToast('Нечего озвучивать');
-    return;
-  }
-  
-  if(btn){
-    btn.classList.add('speaking');
-    currentSpeakingBtn = btn;
-  }
-  
+  if(!clean){ showToast('Нечего озвучивать'); return; }
+  if(btn){ btn.classList.add('speaking'); currentSpeakingBtn = btn; }
+  refreshVoices();
   const chunks = splitIntoChunks(clean);
   const voice = pickRussianVoice();
   let idx = 0;
-  
   const finish = () => {
-    if(btn && currentSpeakingBtn === btn){
-      btn.classList.remove('speaking');
-      currentSpeakingBtn = null;
-    }
+    if(resumeTimer){ clearInterval(resumeTimer); resumeTimer = null; }
+    if(btn && currentSpeakingBtn === btn){ btn.classList.remove('speaking'); currentSpeakingBtn = null; }
   };
-  
   const speakNext = () => {
     if(idx >= chunks.length){ finish(); return; }
-    
     const utter = new SpeechSynthesisUtterance(chunks[idx]);
-    utter.lang = 'ru-RU';
-    utter.rate = 1;
-    utter.pitch = 1;
-    utter.volume = 1;
+    utter.lang = 'ru-RU'; utter.rate = 0.95; utter.pitch = 1; utter.volume = 1;
     if(voice) utter.voice = voice;
-    
-    utter.onend = () => { idx++; speakNext(); };
-    utter.onerror = () => { finish(); };
-    
-    try{ speechSynthesis.speak(utter); }
-    catch(e){ finish(); }
+    utter.onend = () => { idx++; setTimeout(speakNext, 60); };
+    utter.onerror = (e) => {
+      if(e && (e.error === 'canceled' || e.error === 'interrupted')) return;
+      idx++; setTimeout(speakNext, 60);
+    };
+    try{
+      speechSynthesis.speak(utter);
+      if(speechSynthesis.paused) speechSynthesis.resume();
+    }catch(e){ finish(); showToast('Ошибка озвучки'); haptic('error'); }
   };
-  
-  speakTimeout = setTimeout(speakNext, 80);
+  speakTimeout = setTimeout(() => { startResumeWatchdog(); speakNext(); }, 30);
 }
 
 /* ============ PLUS MODAL ============ */
@@ -629,35 +619,21 @@ function openPlusModal(){
   haptic('light');
 }
 function closePlusModal(){ $('plusModalBg').classList.remove('active'); }
-
 async function requestPlus(){
   const u = tg?.initDataUnsafe?.user;
   if(!u) return;
   try{
-    await fetch(`${API_URL}/request`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: u.id,
-        name: 'PLUS REQUEST: ' + ([u.first_name, u.last_name].filter(Boolean).join(' ') || 'User'),
-        username: u.username || ''
-      })
-    });
-    showToast('Запрос отправлен');
-    haptic('success');
-    closePlusModal();
-  }catch(e){
-    showToast('Ошибка отправки');
-    haptic('error');
-  }
+    await fetch(`${API_URL}/request`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: u.id, name: 'PLUS REQUEST: ' + ([u.first_name, u.last_name].filter(Boolean).join(' ') || 'User'), username: u.username || '' }) });
+    showToast('Запрос отправлен'); haptic('success'); closePlusModal();
+  }catch(e){ showToast('Ошибка отправки'); haptic('error'); }
 }
 
 /* ============ LIMIT ============ */
 function isLimitReached(chat){ return !state.plus && (chat?.messages?.length || 0) >= MSG_LIMIT_FREE; }
-
 function updateLimitUI(){
   const chat = getActiveChat();
-  const reached = isLimitReached(chat);
-  if(reached) $('limitBanner').classList.add('show');
+  if(isLimitReached(chat)) $('limitBanner').classList.add('show');
   else $('limitBanner').classList.remove('show');
   updateSendBtn();
 }
@@ -721,18 +697,8 @@ async function sendAccessRequest(){
 }
 
 /* ============ BIOMETRIC ============ */
-async function initBiometric(){
-  return new Promise(resolve => {
-    if(!tg?.BiometricManager) return resolve(false);
-    try{ tg.BiometricManager.init(() => resolve(!!tg.BiometricManager.isBiometricAvailable)); }catch(e){ resolve(false); }
-  });
-}
-async function requireBiometric(reason){
-  return new Promise(resolve => {
-    if(!tg?.BiometricManager?.isBiometricAvailable) return resolve(true);
-    try{ tg.BiometricManager.authenticate({reason}, (ok) => resolve(!!ok)); }catch(e){ resolve(true); }
-  });
-}
+async function initBiometric(){ return new Promise(resolve => { if(!tg?.BiometricManager) return resolve(false); try{ tg.BiometricManager.init(() => resolve(!!tg.BiometricManager.isBiometricAvailable)); }catch(e){ resolve(false); } }); }
+async function requireBiometric(reason){ return new Promise(resolve => { if(!tg?.BiometricManager?.isBiometricAvailable) return resolve(true); try{ tg.BiometricManager.authenticate({reason}, (ok) => resolve(!!ok)); }catch(e){ resolve(true); } }); }
 async function showBioGate(){
   const overlay = $('bioOverlay'); overlay.classList.add('active');
   return new Promise(resolve => {
@@ -789,10 +755,7 @@ function initVoice(){
       $('voiceBtn').classList.remove('recording');
       $('voiceOverlay').classList.remove('active');
       stopAudioVisualization();
-      if(voiceFinalText.trim()){
-        const text = voiceFinalText.trim(); voiceFinalText='';
-        setTimeout(()=>handleSend(text), 200);
-      }
+      if(voiceFinalText.trim()){ const text = voiceFinalText.trim(); voiceFinalText=''; setTimeout(()=>handleSend(text), 200); }
     }
   };
 }
@@ -1366,7 +1329,6 @@ async function handleSend(textOverride){
   const text = (textOverride ?? inputEl.value).trim();
   if(!text){ if(state.busy){ state.abortRequested=true; haptic('medium'); } return; }
   if(state.busy) return;
-
   const wait = checkLimit();
   if(wait > 0 && !state.plus){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
 
