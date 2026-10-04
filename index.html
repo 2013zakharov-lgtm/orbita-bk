@@ -557,12 +557,10 @@ function startAudioVisualization(){
     analyser.fftSize = 512;
     analyser.smoothingTimeConstant = 0.7;
     source.connect(analyser);
-
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
     const micCircle = $('micCircle');
     const rings = [$('ring1'), $('ring2'), $('ring3')];
     const ringStates = [0, 0, 0];
-
     function animate(){
       if(!isRecording) return;
       analyser.getByteFrequencyData(dataArray);
@@ -570,10 +568,8 @@ function startAudioVisualization(){
       for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
       const avg = sum / dataArray.length;
       const level = Math.min(1, avg / 80);
-
       const scale = 1 + level * 0.35;
       micCircle.style.transform = `scale(${scale})`;
-
       ringStates.forEach((stateVal, i) => {
         ringStates[i] = Math.min(1, stateVal + 0.03);
         const ringScale = 1 + ringStates[i] * 0.8;
@@ -582,11 +578,7 @@ function startAudioVisualization(){
         rings[i].style.opacity = opacity * (0.4 + level * 0.6);
         if(ringStates[i] >= 1) ringStates[i] = 0;
       });
-
-      if(level > 0.3){
-        ringStates[0] = Math.min(1, ringStates[0] + level * 0.1);
-      }
-
+      if(level > 0.3) ringStates[0] = Math.min(1, ringStates[0] + level * 0.1);
       rafId = requestAnimationFrame(animate);
     }
     animate();
@@ -623,7 +615,7 @@ function startCooldown(){
   wrap.classList.add('cooldown'); tick(); state.rateLimitTimer=setInterval(tick,200);
 }
 
-/* PROFANITY */
+/* ============ РАСШИРЕННЫЙ ФИЛЬТР ============ */
 function normalizeAggressive(raw){
   let s = String(raw).toLowerCase();
   try{ s = s.normalize('NFKD'); }catch(e){}
@@ -631,13 +623,176 @@ function normalizeAggressive(raw){
   const hg={'a':'а','e':'е','o':'о','c':'с','p':'р','x':'х','y':'у','k':'к','m':'м','t':'т','h':'н','b':'в','u':'и','n':'п','r':'г','g':'д','q':'й','i':'і','l':'і'};
   s = s.replace(/[a-z]/g, ch => hg[ch]||ch);
   s = s.replace(/0/g,'о').replace(/1/g,'и').replace(/3/g,'е').replace(/4/g,'а').replace(/5/g,'с').replace(/6/g,'б').replace(/7/g,'т').replace(/8/g,'в').replace(/9/g,'д');
-  s = s.replace(/[@]/g,'а').replace(/[$]/g,'с').replace(/[!]/g,'и').replace(/[+]/g,'т');
+  s = s.replace(/[@]/g,'а').replace(/[$]/g,'с').replace(/[!]/g,'и').replace(/[+]/g,'т').replace(/[|]/g,'и').replace(/[\\\/]/g,'');
   s = s.replace(/[^а-яёіa-z]/g,'').replace(/(.)\1{2,}/g,'$1');
   return s;
 }
-const BAD_PATTERNS = [/ху[йеяёюи]/, /пизд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ебля/, /ёб[аеиуолн]/, /сука/, /сучк/, /мудак/, /мудил/, /мраз[ьи]/, /гандон/, /гондон/, /залуп/, /шлюх/, /пидор/, /пидар/, /пидр/, /педик/, /жоп[аеуы]/, /срач/, /срак/, /перд/, /манда/, /уеб/, /заеб/, /наеб/, /хер[аеуны]/, /хрен[аеуы]/, /хач/, /чурк/, /жид/, /хохол/, /москал/, /кацап/, /ниггер/, /nigga/, /nigger/, /гей/, /лесби/, /fag/, /faggot/, /порн/, /порно/, /трах/, /минет/, /куни/, /анус/, /сперм/, /вагин/, /пенис/, /клитор/, /сиськ/, /письк/, /голая/, /porn/, /pussy/, /dick/, /cock/, /cunt/, /tits/, /boobs/, /nude/, /naked/, /убью/, /убей/, /убить/, /зареж/, /пристрел/, /взорв/, /теракт/, /сдохни/, /kill/, /murder/, /игил/, /джихад/, /халифат/, /нацист/, /фашист/, /гитлер/, /hitler/, /свастик/, /героин/, /кокаин/, /метамфет/, /мефедрон/, /марихуан/, /амфетамин/, /экстази/, /нарко/, /cocaine/, /heroin/, /weed/, /f+u+c+k+/, /sh+i+t+/, /b+i+t+c+h+/, /d+i+c+k+/, /c+u+n+t+/, /p+u+s+s+y+/, /c+o+c+k+/, /w+h+o+r+e+/, /a+s+s+h+o+l+e+/, /n+i+g+g+/, /r+e+t+a+r+d+/];
-const BAD_EXACT = new Set(['еб','ёб','бля','хер','хрен','жопа','ass','damn','fag','cock','dick','sex','ss','lsd','die','kill']);
-const WHITELIST = new Set(['мандарин','мандаринка','мандарины','хлеб','хлеба','тебя','себя','себе','тебе','потреб','потребность','лебедь','лебединый','учебник','учебный','учеба','учёба','мебель','веб','вебка','стебель','жеребец','гребень','треб','требование','хребет','теребить','секция','сектор','секрет','секретарь','порядок','порог','порода','class','pass','assistant','massive','asset','bass','grass','glass','cockpit','peacock','dickens','shirt','shield','shift','situation','mission','кока','кокос','метро','метка','металл','мари','мария','марина','маринад','аналог','аналогия','грудь','грудина','попал','попала','попытка','популяр','гололёд','голодный','член','члены','членство','раздел','разделение','диета','убить','убийство','сексолог','уравнение','уравнения','x','y','z']);
+
+const BAD_PATTERNS = [
+  /* РУССКИЙ МАТ */
+  /ху[йеяёюи]/, /ху[йеяёюи]л/, /ху[йеяёюи]н/, /ху[йеяёюи]в/, /хуяк/,
+  /пизд/, /пизж/, /пезд/, /пиздо/,
+  /бля[дт]/, /бляд/, /блят/, /бля[хк]/,
+  /еба[лнтш]/, /еб[аеиуол]/, /ебуч/, /ебля/, /ебли/, /ебн/, /ебств/, /ебан/, /ебат/,
+  /ёб[аеиуолн]/, /ёбну/, /ёбств/,
+  /сука/, /сучк/, /сучар/, /сучонок/, /сучара/,
+  /мудак/, /мудил/, /мудоз/, /мудох/, /мудозвон/,
+  /мраз[ьи]/, /мразот/,
+  /гандон/, /гондон/, /гандо/,
+  /залуп/, /залупа/, /залупка/,
+  /шлюх/, /шлюш/, /шлюнд/, /шлюха/, /шлюшка/,
+  /пидор/, /пидар/, /пидр/, /педик/, /пидорас/, /педераст/,
+  /жоп[аеуы]/, /жопк/, /жопень/,
+  /срач/, /срак/, /сру/, /срал/, /срать/, /срет/, /срака/,
+  /перд/, /перну/, /пердёж/, /пердение/,
+  /бзд/, /бздёх/, /бздеть/,
+  /манда/, /манду/, /манде/, /мандо/, /мандавош/, /мандав/,
+  /уеб/, /уёб/, /уебищ/, /заеб/, /заёб/, /заеба/, /наеб/, /наёб/, /наеба/,
+  /перееб/, /переёб/, /подъеб/, /подъёб/, /приеб/, /приёб/, /доеб/, /доёб/,
+  /въеб/, /въёб/, /отъеб/, /отъёб/, /разъеб/, /разъёб/, /выеб/, /выёб/,
+  /долбоеб/, /долбаеб/, /долбоёб/, /далбаеб/,
+  /хер[аеуны]/, /хрен[аеуы]/, /херня/, /херов/,
+  /елд/, /елда/, /елдак/,
+  /дроч/, /дрочи/, /дрочка/, /дрочер/,
+  /гомик/, /гомосек/,
+  /шваль/, /тварь/, /тварюга/, /гнид/, /гнида/,
+  /дебил/, /дебиль/, /дебилоид/, /идиот/, /кретин/, /даун/, /олеш/, /долбо/, /чмо/,
+  /козел/, /козёл/, /козлина/, /свинья/, /свинтус/, /свинота/, /баран/,
+  /дурак/, /дура/, /дурацк/, /дуреха/, /придурок/, /придурк/,
+  /обалдуй/, /оболтус/, /пентюх/, /балбес/, /болван/, /остолоп/,
+  /тупица/, /тупой/, /тупая/, /тупизм/, /тупость/, /бестолочь/,
+  /дегенерат/, /деградант/, /инвалид/, /урод/, /уродина/, /страшил/,
+  /жирн/, /жиробас/, /жиртрест/, /худой/, /худышка/,
+  /карлик/, /коротышк/, /плеш/, /косоглаз/, /хромой/, /слепой/, /горбат/,
+  /молокосос/, /сопляк/, /шкет/, /пацан/, /малолетк/, /школот/, /ботан/,
+  /лошар/, /крыса/, /змея/, /гад/, /гадина/, /падл/, /подлец/, /мерзав/,
+  /негодяй/, /злодей/, /изверг/, /садист/, /маньяк/, /педофил/, /зоофил/,
+
+  /* НАЦИОНАЛЬНЫЕ */
+  /хач/, /хачик/, /чурк/, /чурка/, /чучмек/, /жид/, /жидов/,
+  /хохол/, /хохл/, /москал/, /кацап/, /бульбаш/, /пшек/, /шваб/,
+  /янки/, /пиндос/, /узкоглаз/, /черномаз/, /чёрномаз/,
+  /ниггер/, /нигер/, /nigga/, /nigger/, /n1gg/,
+  /армяшк/, /азерб/, /грузин/, /дагестанц/, /чеченц/, /таджик/, /узбек/,
+  /еврейчик/, /немчура/, /полячишк/, /чухонц/, /итальяшк/,
+  /америкос/, /рашка/, /совок/, /мракобес/, /либераст/, /ватник/, /майдаун/, /укроп/,
+
+  /* ПО ОРИЕНТАЦИИ */
+  /гей/, /геи/, /гея/, /гею/, /геев/, /лесби/, /лесбиянк/, /трансгенд/,
+  /fag/, /faggot/, /fagot/, /пидорас/, /педик/, /педераст/, /гомосек/,
+
+  /* СЕКСУАЛЬНОЕ */
+  /секс/, /сексуал/, /порн/, /порно/, /порнух/, /трах/, /трахну/,
+  /отсос/, /минет/, /куни/, /анус/, /анальн/, /анал/,
+  /оргазм/, /сперм/, /вагин/, /пенис/, /клитор/,
+  /груд[ьи]/, /грудаст/, /сиськ/, /сисек/, /письк/, /писек/, /поп[аеу]/,
+  /голая/, /голый/, /раздева/, /раздет/, /обнажен/, /нагишом/,
+  /эротик/, /интим/, /презерв/, /вибратор/, /дилдо/, /бдсм/, /bdsm/,
+  /мастурбац/, /мастурб/, /онанизм/, /изнасил/, /насильник/, /педофил/, /инцест/,
+
+  /* АНГЛИЙСКИЙ МАТ */
+  /f+u+c+k+/, /f+u+k+/, /f+ck/, /fck/, /fuq/,
+  /sh+i+t+/, /sh1t/, /shyt/,
+  /b+i+t+c+h+/, /b1tch/, /b!tch/, /biatch/,
+  /d+i+c+k+/, /d1ck/, /d!ck/, /dik/,
+  /c+u+n+t+/, /c+nt/, /kunt/,
+  /p+u+s+s+y+/, /pusi/, /pusy/, /c+o+c+k+/, /w+h+o+r+e+/, /wh0re/, /hoar/,
+  /s+l+u+t+/, /sl00t/, /b+a+s+t+a+r+d+/, /a+s+s+h+o+l+e+/, /asshole/,
+  /m+o+t+h+e+r+f+u+c+k+/, /r+e+t+a+r+d+/, /f+a+g+g+o+t+/, /bastard/, /crap/, /piss/,
+  /damn/, /dammit/, /goddamn/, /wtf/, /stfu/, /ffs/,
+  /bollocks/, /bugger/, /wanker/, /tosser/, /twat/, /arse/,
+  /bullshit/, /horseshit/, /dipshit/, /shithead/, /fuckface/, /fuckboy/,
+  /sonofabitch/, /scumbag/, /moron/, /imbecile/, /retard/,
+  /psycho/, /freak/, /weirdo/, /loser/, /pervert/, /pedo/, /rapist/, /molester/,
+
+  /* УГРОЗЫ / НАСИЛИЕ */
+  /убью/, /убей/, /убить/, /убива/, /убийц/, /зареж/, /зарезать/, /зарежу/,
+  /пристрел/, /задуш/, /взорв/, /взорвать/, /подорв/, /теракт/, /террорист/, /терроризм/,
+  /смерть/, /сдохни/, /сдохнуть/, /сгинь/, /сгинуть/, /пропади/, /исчезни/,
+  /kill/, /murder/, /die/, /destroy/, /slaughter/, /massacre/, /hang/, /lynch/,
+  /behead/, /decapitate/, /torture/, /rape/, /rapist/, /molest/,
+
+  /* ЭКСТРЕМИЗМ */
+  /игил/, /исламск.*государств/, /джихад/, /халифат/,
+  /нацист/, /нацизм/, /нацик/, /фашист/, /фашизм/, /гитлер/, /hitler/, /свастик/,
+  /неонаци/, /неофашист/, /скинхед/, /skinhead/, /ку-клукс-клан/, /kkk/,
+  /isis/, /isil/, /al-qaeda/, /taliban/, /талибан/, /boko haram/, /heil/, /хайль/,
+  /зиг хайль/, /sieg heil/, /расизм/, /расист/, /антисемит/, /ксенофоб/, /геноцид/, /холокост/,
+
+  /* НАРКОТИКИ */
+  /героин/, /кокаин/, /кока/, /метамфет/, /мефедрон/, /метадон/,
+  /марихуан/, /марих/, /ганжа/, /гашиш/, /амфетамин/, /экстази/, /мдма/, /mdma/,
+  /лсд/, /lsd/, /нарко/, /наркот/, /наркоман/, /крэк/, /crack/, /спайс/,
+  /мескалин/, /psilocybin/, /опиум/, /опиат/, /морфин/, /трамадол/, /фентанил/, /fentanyl/,
+  /cocaine/, /heroin/, /meth/, /weed/, /marijuana/, /hashish/,
+  /закладк/, /закладчик/, /варка/, /варщик/, /барыга/,
+
+  /* САМОУБИЙСТВО */
+  /суицид/, /самоубийств/, /suicide/, /kill myself/,
+  /повеситьс/, /повешусь/, /вскрыть вены/, /вскрою вены/,
+  /спрыгнуть с/, /спрыгну с/, /застрелитьс/, /застрелюсь/,
+  /отравитьс/, /отравлюсь/, /удавитьс/, /удавлюсь/,
+
+  /* РЕЛИГИОЗНЫЕ */
+  /богохульств/, /кощунств/, /святотатств/, /христопродавц/, /жидомасон/,
+  /сатанист/, /сатанизм/, /дьяволопоклон/, /секта/, /сектант/, /еретик/, /ересь/,
+
+  /* ВРЕДНЫЕ СОВЕТЫ */
+  /как сделать бомб/, /сделать взрывчатк/, /как отравить/, /как убить/,
+  /как украсть/, /как обмануть/, /взломать аккаунт/, /взломать вайбер/,
+  /детск.*порн/, /child.*porn/,
+
+  /* ПРОЧЕЕ */
+  /быдл/, /быдло/, /быдляк/, /хамло/, /наглец/, /подонок/, /отморозок/, /отброс/,
+  /менты/, /легавые/, /фараон/, /полицай/, /чинуш/, /бюрократ/, /коррупционер/,
+  /вор/, /воров/, /ворюга/, /мошенник/, /аферист/, /кидал/, /лохотрон/
+];
+
+const BAD_EXACT = new Set([
+  'еб','ёб','бля','хер','хрен','жопа','срак','перд','бзд','чмо','манда',
+  'гей','геи','ass','damn','fag','cock','dick','sex','ss','lsd','die','kill',
+  'nude','naked','scum','slut','hate','fuck','shit','bitch','cunt',
+  'gang','drug','bully','creep','freak','pedo','rape','isis','kkk'
+]);
+
+const WHITELIST = new Set([
+  'мандарин','мандаринка','мандарины','мандаринов','мандаринный',
+  'хлеб','хлеба','хлебушек','хлебный','хлебозавод',
+  'гребень','гребешок','гребешки',
+  'тебя','себя','себе','тебе','тебята',
+  'потреб','потребность','потребности','потреблять','потребление','потребитель',
+  'лебедь','лебединый','лебедка','лебёдка','лебёдушка',
+  'учебник','учебный','учеба','учёба','учебники','учебничек',
+  'мебель','мебельный','мебельщик',
+  'веб','вебка','вебкам','вебсайт','вебмастер',
+  'стебель','стебельки','жеребец','жеребёнок','жеребята',
+  'треб','требование','требования','требую','требуется','требовательный',
+  'хребет','хребта','хребты','теребить','тереблю','теребит',
+  'сексуальность','сексуальный','сексуально','сексуал',
+  'секция','сектор','секрет','секретарь','секретный','секвестировать',
+  'порядок','порядком','порядке','порог','порода','порогом','португал',
+  'сексолог','сексология','сексопатолог',
+  'seb','class','pass','passenger','assistant','massive','asset','assemble','assess',
+  'assign','associate','assume','assure','bass','grass','glass','brass','cassette',
+  'harass','embarrass','sexology','sexy',
+  'cockpit','cocker','peacock','woodcock','dickens','dickinson',
+  'shirt','shirts','shield','shift','shipping','ship','shimmer',
+  'situation','possibility','mission','commission',
+  'кока','кокос','кокосы','кокосовый','кока-кола',
+  'метро','метка','метки','меткий','метла','металл',
+  'мари','мария','марина','маринован','мариновать','маринад','марионетка',
+  'тварина','тварюшка','лох','лоховые','баран','бараны','баранка','барашек',
+  'аналог','аналогия','аналогичный','аналоговый','аналогичен',
+  'грудь','грудина','грудинка','грудной',
+  'попал','попала','попали','попало','попытка','попытк','популяр','популярность',
+  'пополн','пополам','попойка','попона','гололёд','голый','голые','голыми','голодный','голодовка',
+  'член','члены','членство','членский','членов','членом',
+  'раздел','разделение','раздевать','раздет','разделенный',
+  'диета','диетический','диетолог','убей','убить','убийство','убийца','убийственный',
+  'уравнение','уравнения','x','y','z',
+  'doom','halo','gta','mortal kombat','war','warrior','warcraft','warhammer','hate','hatred','kykla','kukla'
+]);
+
 function hasProfanity(raw){
   if(!raw || typeof raw !== 'string') return false;
   const lower = raw.toLowerCase();
@@ -742,11 +897,8 @@ function polyToStr(a, b, c){
 }
 
 function solveLinear(original, left, right){
-  const L = parsePoly(left);
-  const R = parsePoly(right);
-  const a = L.a - R.a;
-  const b = L.b - R.b;
-  const c = L.c - R.c;
+  const L = parsePoly(left), R = parsePoly(right);
+  const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
   if(Math.abs(a) > 1e-9) return solveQuadratic(original, left, right);
   if(Math.abs(b) < 1e-9){
     if(Math.abs(c) < 1e-9) return { text: 'Уравнение имеет **бесконечно много решений** ♾️', _isEquation:true, _isDialog:true };
@@ -768,11 +920,8 @@ function solveLinear(original, left, right){
 }
 
 function solveQuadratic(original, left, right){
-  const L = parsePoly(left);
-  const R = parsePoly(right);
-  const a = L.a - R.a;
-  const b = L.b - R.b;
-  const c = L.c - R.c;
+  const L = parsePoly(left), R = parsePoly(right);
+  const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
   if(a === 0) return solveLinear(original, left, right);
   const D = b*b - 4*a*c;
   const steps = [];
@@ -1003,7 +1152,7 @@ async function typeText(el, text){
   cursor.remove(); scrollDown();
 }
 
-/* SEARCH с воркером и fallback */
+/* SEARCH */
 function cleanQuery(q){ return q.replace(/^(что такое|что значит|кто такой|кто такая|кто такие|расскажи про|расскажи о|расскажи|поясни|объясни|найди|поищи|где находится|где|когда|почему|зачем|как|what is|who is)\s+/i,'').replace(/^про\s+/i,'').replace(/[?!.]+$/g,'').trim(); }
 
 async function wikiSearch(query, lang = 'ru'){
@@ -1038,8 +1187,6 @@ async function ddgSearch(query){
 async function searchInternet(query){
   if(!navigator.onLine) throw new Error('OFFLINE');
   const cleaned = cleanQuery(query) || query;
-
-  // ✅ Сначала через воркер (с кэшем)
   try{
     const res = await fetch(`${API_URL}/search`, {
       method: 'POST',
@@ -1048,20 +1195,16 @@ async function searchInternet(query){
     });
     if(res.ok){
       const data = await res.json();
-      if(data.ok && data.text){
-        return { text: data.text, source: data.source };
-      }
+      if(data.ok && data.text) return { text: data.text, source: data.source };
     }
-  }catch(e){ /* fallback ниже */ }
-
-  // Резерв — прямой поиск
+  }catch(e){}
   let r = await wikiSearch(cleaned,'ru'); if(r) return r;
   r = await wikiSearch(cleaned,'en'); if(r){ r.text += '\n\n(из англоязычной Wikipedia)'; return r; }
   r = await ddgSearch(cleaned); if(r) return r;
   return await wikiSearch(query,'ru');
 }
 
-/* ============ КОНТЕКСТ ДИАЛОГА ============ */
+/* КОНТЕКСТ */
 function getChatContext(chat, maxMessages = 10){
   if(!chat || !chat.messages.length) return null;
   const recent = chat.messages.slice(-maxMessages);
@@ -1069,7 +1212,6 @@ function getChatContext(chat, maxMessages = 10){
   const lastAI = [...recent].reverse().find(m => m.role === 'ai' && !m._blocked);
   return { lastUser: lastUser?.text || '', lastAI: lastAI?.text || '', history: recent };
 }
-
 function isFollowUp(query){
   const q = query.trim().toLowerCase();
   if(q.split(/\s+/).length <= 3){
@@ -1083,11 +1225,8 @@ function isFollowUp(query){
     /^почему\s+(так|это|именно)/i,
     /^а\s+как\s+(насчёт|насчет|же)/i,
     /^что[\s-]?(то\s+)?ещё\s+(знаешь|есть)/i,
-    /^продолжай/i,
-    /^и\s+что\s+(дальше|потом)/i,
-    /^а\s+(если|что|как|где|когда|почему)/i,
-    /^то\s+есть/i,
-    /^т\.?е\.?/i,
+    /^продолжай/i, /^и\s+что\s+(дальше|потом)/i, /^а\s+(если|что|как|где|когда|почему)/i,
+    /^то\s+есть/i, /^т\.?е\.?/i,
     /^(да|нет|угу|ага|ок|окей|хорошо|понял|понятно)[\s?!.]*$/i
   ];
   return patterns.some(re => re.test(q));
@@ -1113,21 +1252,15 @@ function matchDialog(q){
   return null;
 }
 
-/* ✅ generateAnswer с контекстом */
 async function generateAnswer(query, chat){
   if(hasProfanity(query)) return { text:'Извини, на такие вопросы я не отвечаю 💙', _isBlocked:true };
-
   const eq = solveEquation(query);
   if(eq) { await sleep(300); return eq; }
-
   const x = query.trim().toLowerCase();
   const mm = x.match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
   if(mm){ const a=parseFloat(mm[1].replace(',','.')),b=parseFloat(mm[3].replace(',','.')),op=mm[2]; let r; switch(op){ case '+':r=a+b;break;case '-':r=a-b;break;case '*':case 'x':case '×':r=a*b;break;case '/':case '÷':if(b===0)return { text:'На ноль делить нельзя 🤔', _isDialog:true };r=a/b;break; } return { text: `${a} ${op} ${b} = **${Math.round(r*1000000)/1000000}**`, _isDialog:true }; }
-
   const dialog = matchDialog(query);
   if(dialog){ await sleep(400); return { text: dialog, _isDialog:true }; }
-
-  // ✅ Контекст: расширяем запрос, если это follow-up
   let searchQuery = query;
   if(isFollowUp(query)){
     const ctx = getChatContext(chat);
@@ -1135,10 +1268,8 @@ async function generateAnswer(query, chat){
       const topic = cleanQuery(ctx.lastUser) || ctx.lastUser;
       const cleaned = query.replace(/^(а|и|но)\s+/i,'').trim();
       searchQuery = `${cleaned} ${topic}`;
-      console.log('[Context]', searchQuery);
     }
   }
-
   const search = await searchInternet(searchQuery);
   if(search){
     if(hasProfanity(search.text)) return { text:'Извини, на такие вопросы я не отвечаю.', _isBlocked:true };
@@ -1222,8 +1353,7 @@ function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay')
 
 /* ACCOUNT */
 function updateAvatarPreview(){
-  const preview = $('avatarPreview');
-  const letter = $('avatarLetter');
+  const preview = $('avatarPreview'), letter = $('avatarLetter');
   const avatar = state.user?.avatar;
   if(avatar){ preview.style.backgroundImage = `url(${avatar})`; letter.style.display = 'none'; }
   else { preview.style.backgroundImage = 'none'; letter.style.display = 'block'; letter.textContent = initials(state.user?.name); }
@@ -1235,14 +1365,9 @@ function openAccount(){
   $('statMsgs').textContent = state.chats.reduce((s,c)=>s+c.messages.length,0);
   updateAvatarPreview();
   $('accountOverlay').classList.add('open'); lockScroll(true);
-  showBackButton(closeAccount);
-  showMainBtn('Сохранить', saveProfile);
-  haptic('light');
+  showBackButton(closeAccount); showMainBtn('Сохранить', saveProfile); haptic('light');
 }
-function closeAccount(){
-  $('accountOverlay').classList.remove('open'); lockScroll(false);
-  hideBackButton(); hideMainBtn();
-}
+function closeAccount(){ $('accountOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); hideMainBtn(); }
 function saveProfile(){
   const name = $('accountNameInput').value.replace(/[<>"'`]/g,'').trim().slice(0,24);
   if(!name){ showToast('Введи имя'); haptic('error'); return; }
@@ -1252,8 +1377,7 @@ function saveProfile(){
   showToast('Сохранено'); haptic('success'); closeAccount();
 }
 function updateAvatarUI(){
-  const av = state.user?.avatar;
-  const drawerAv = $('drawerAvatar');
+  const av = state.user?.avatar, drawerAv = $('drawerAvatar');
   if(av){ drawerAv.style.backgroundImage = `url(${av})`; drawerAv.textContent = ''; }
   else { drawerAv.style.backgroundImage = 'none'; drawerAv.textContent = initials(state.user?.name); }
   $('drawerName').textContent = state.user?.name || '—';
@@ -1271,11 +1395,9 @@ function handleAvatarUpload(file){
       if(w > h){ if(w > maxSize){ h = h * maxSize / w; w = maxSize; } }
       else { if(h > maxSize){ w = w * maxSize / h; h = maxSize; } }
       canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
       state.user.avatar = canvas.toDataURL('image/jpeg', 0.8);
-      updateAvatarPreview();
-      haptic('light');
+      updateAvatarPreview(); haptic('light');
     };
     img.src = e.target.result;
   };
@@ -1312,9 +1434,7 @@ function finishOnboarding(){
   store.saveUser(state.user);
   localStorage.setItem(KEYS.ONBOARD, '1');
   $('onboarding').classList.remove('active');
-  lockScroll(false);
-  haptic('success');
-  initApp();
+  lockScroll(false); haptic('success'); initApp();
 }
 
 /* INIT */
