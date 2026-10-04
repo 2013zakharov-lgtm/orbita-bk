@@ -45,11 +45,9 @@
   .msg.ai .text strong{font-weight:700;color:var(--ink)}
   .msg.ai .text a{color:var(--accent);text-decoration:underline}
   .msg.ai .text code{background:var(--surface);padding:1px 6px;border-radius:4px;font-family:'SF Mono',Monaco,monospace;font-size:13.5px;color:var(--accent-deep)}
-  .msg.ai .text .math{display:inline-block;font-family:'SF Mono',Monaco,monospace;background:var(--accent-soft);color:var(--accent-deep);padding:2px 8px;border-radius:6px;font-size:14px;font-weight:600;letter-spacing:.2px}
   .msg.ai .text .frac{display:inline-block;vertical-align:middle;text-align:center;font-family:'SF Mono',Monaco,monospace;font-size:13px;line-height:1.1;margin:0 3px}
   .msg.ai .text .frac .num{display:block;border-bottom:1.5px solid var(--accent-deep);padding:0 3px}
   .msg.ai .text .frac .den{display:block;padding:0 3px}
-  .msg.ai .text .step{margin:8px 0;padding:10px 12px;background:var(--surface);border-left:3px solid var(--accent);border-radius:0 8px 8px 0}
   .msg.ai .source{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 11px;background:var(--accent-soft);border:1px solid var(--accent-light);border-radius:8px;font-size:12px;font-weight:600;color:var(--accent-deep);text-decoration:none}
   .msg.user .bubble{max-width:82%;padding:10px 14px;background:var(--white);color:var(--accent-deep);border:1.5px solid var(--accent);border-radius:20px;border-bottom-right-radius:6px;font-size:15px;line-height:1.45;word-wrap:break-word;font-weight:500}
   .msg-edit-btn{font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:4px;margin-right:4px;font-family:inherit;padding:3px 8px;border-radius:6px}
@@ -72,10 +70,7 @@
   @keyframes dotWave{0%,60%,100%{transform:translateY(0) scale(.85);opacity:.4}30%{transform:translateY(-5px) scale(1);opacity:1}}
   .cursor{display:inline-block;width:2px;height:15px;background:var(--accent);vertical-align:text-bottom;margin-left:1px;animation:blink 1s steps(2,start) infinite}
   @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-
-  /* FIX #2: Панель ввода теперь внизу */
   .bottom-bar{display:flex;align-items:center;gap:8px;padding:8px 10px calc(10px + env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0}
-
   .menu-fab{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 4px 14px rgba(37,99,235,.28)}
   .menu-fab:active{background:var(--accent-dark);transform:scale(.93)}
   .menu-fab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
@@ -98,13 +93,11 @@
   .send-btn.cooldown svg{display:none}
   .send-btn .cooldown-text{display:none;font-size:11px;font-weight:800;color:#fff}
   .send-btn.cooldown .cooldown-text{display:block}
-
-  /* FIX #3: Голосовой оверлей с реакцией на звук */
   .voice-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
   .voice-overlay.active{display:flex;animation:fadeIn .2s}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   .voice-box{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;text-align:center}
-  .voice-rings{position:relative;width:200px;height:200px;margin-bottom:32px;transition:transform .08s linear}
+  .voice-rings{position:relative;width:200px;height:200px;margin-bottom:32px}
   .voice-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(96,165,250,.6);opacity:0;transition:transform .1s linear, opacity .1s linear}
   .voice-mic-circle{position:absolute;inset:45px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(59,130,246,.6),inset 0 -4px 12px rgba(0,0,0,.15);z-index:2;transition:transform .08s linear}
   .voice-mic-circle svg{width:42px;height:42px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
@@ -113,10 +106,7 @@
   .voice-hint{font-size:12.5px;color:rgba(255,255,255,.5);margin-top:20px;font-weight:500}
   .voice-cancel{margin-top:32px;padding:12px 28px;border-radius:100px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .15s}
   .voice-cancel:active{background:rgba(255,255,255,.18);transform:scale(.96)}
-
-  /* FIX: bottom-bar сдвинут правильно при активном MainButton */
   body.has-mainbtn .bottom-bar{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
-
   .gate{position:fixed;inset:0;background:var(--bg);z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
   .gate.hidden{display:none}
   .gate-icon{width:110px;height:110px;margin-bottom:24px;animation:floatY 5s ease-in-out infinite}
@@ -278,7 +268,6 @@
   <div class="gate-id" id="gateId"></div>
 </div>
 
-<!-- VOICE OVERLAY -->
 <div class="voice-overlay" id="voiceOverlay">
   <div class="voice-box">
     <div class="voice-rings" id="voiceRings">
@@ -508,7 +497,7 @@ async function showBioGate(){
   });
 }
 
-/* ============ VOICE с реакцией на звук ============ */
+/* VOICE с реакцией на звук */
 let recognition = null, isRecording = false, voiceFinalText = '';
 let audioContext = null, analyser = null, mediaStream = null, rafId = null;
 
@@ -573,7 +562,6 @@ function startAudioVisualization(){
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
     const micCircle = $('micCircle');
     const rings = [$('ring1'), $('ring2'), $('ring3')];
-    let ringTimers = [0, 0, 0];
     const ringStates = [0, 0, 0];
 
     function animate(){
@@ -582,13 +570,11 @@ function startAudioVisualization(){
       let sum = 0;
       for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
       const avg = sum / dataArray.length;
-      const level = Math.min(1, avg / 80); // нормализуем
+      const level = Math.min(1, avg / 80);
 
-      // Круг пульсирует
       const scale = 1 + level * 0.35;
       micCircle.style.transform = `scale(${scale})`;
 
-      // Кольца расходятся по уровню звука
       ringStates.forEach((stateVal, i) => {
         ringStates[i] = Math.min(1, stateVal + 0.03);
         const ringScale = 1 + ringStates[i] * 0.8;
@@ -598,7 +584,6 @@ function startAudioVisualization(){
         if(ringStates[i] >= 1) ringStates[i] = 0;
       });
 
-      // Если звук громкий — кольца быстрее
       if(level > 0.3){
         ringStates[0] = Math.min(1, ringStates[0] + level * 0.1);
       }
@@ -606,7 +591,7 @@ function startAudioVisualization(){
       rafId = requestAnimationFrame(animate);
     }
     animate();
-  }).catch(() => { /* нет доступа — просто без визуализации */ });
+  }).catch(() => {});
 }
 
 function stopAudioVisualization(){
@@ -669,14 +654,23 @@ function hasProfanity(raw){
   return false;
 }
 
-/* MARKDOWN с математикой */
+/* MARKDOWN с защитой от старого LaTeX */
 function renderText(raw){
   let h = esc(raw);
+  
+  // 🛡 Защита от остатков старого формата LaTeX
+  h = h.replace(/\$([^$\n]+)\$/g, '$1');
+  h = h.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, (m, n, d) => `(${n})/(${d})`);
+  h = h.replace(/\\cdot/g, '·');
+  h = h.replace(/\\times/g, '×');
+  h = h.replace(/\\sqrt\{([^}]+)\}/g, '√($1)');
+  h = h.replace(/\\/g, '');
+  
   // Дроби вида [a/b] — вертикальные
   h = h.replace(/\[([^\/\]]+)\/([^\]]+)\]/g, (m, n, d) => {
     return `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`;
   });
-  // Формулы в бэктиках — моноширинный блок
+  // Бэктики
   h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
   // Жирный
   h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
@@ -687,40 +681,34 @@ function renderText(raw){
   return h;
 }
 
-/* ============ РЕШЕНИЕ УРАВНЕНИЙ (без LaTeX) ============ */
+/* РЕШЕНИЕ УРАВНЕНИЙ */
 function fmtNum(n){
   if(Number.isInteger(n)) return String(n);
-  // Если дробь "красивая" (знаменатель до 100) — покажем как обыкновенную дробь
   for(let d = 2; d <= 100; d++){
     if(Math.abs(n*d - Math.round(n*d)) < 1e-9){
       const num = Math.round(n*d);
       const g = gcd(Math.abs(num), d);
       const n1 = num/g, d1 = d/g;
       if(d1 === 1) return String(n1);
-      return `[${n1}/${d1}]`; // будет отрисовано как красивая дробь
+      return `[${n1}/${d1}]`;
     }
   }
   return String(Math.round(n*1000000)/1000000);
 }
 function gcd(a,b){ while(b){ [a,b] = [b, a%b]; } return a || 1; }
-function pow(n, p){ return Math.pow(n, p); }
 
 function solveEquation(text){
   let t = text.toLowerCase().trim();
   t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение)\s+/i, '');
   t = t.replace(/\s+/g, '');
-  // Заменяем кириллицу х на латинскую x
   t = t.replace(/х/g,'x').replace(/Х/g,'x').replace(/X/g,'x');
   if(!t.includes('=')) return null;
   const parts = t.split('=');
   if(parts.length !== 2) return null;
   let left = parts[0], right = parts[1];
-  // Проверяем наличие x (в любой степени)
   if(!/x/.test(left) && !/x/.test(right)) return null;
 
-  // Определяем степень: есть ли x^2 / x² / x2
   const hasSquare = /x\^2|x2|x²/.test(left) || /x\^2|x2|x²/.test(right);
-  // Нормализуем степени
   left = left.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
   right = right.replace(/x²/g,'x^2').replace(/x2(?![0-9])/g,'x^2');
 
@@ -729,10 +717,8 @@ function solveEquation(text){
 }
 
 function parsePoly(expr){
-  // Возвращает {a, b, c} для ax² + bx + c
   expr = expr.replace(/^\+/, '');
   let a=0, b=0, c=0;
-  // Сначала x^2-термы
   const aRe = /([+\-]?)(\d*\.?\d*)\*?x\^2/g;
   let m;
   while((m = aRe.exec(expr)) !== null){
@@ -741,7 +727,6 @@ function parsePoly(expr){
     a += sign * coef;
   }
   expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x\^2/g, '');
-  // x-термы
   const bRe = /([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g;
   while((m = bRe.exec(expr)) !== null){
     const sign = m[1]==='-' ? -1 : 1;
@@ -749,7 +734,6 @@ function parsePoly(expr){
     b += sign * coef;
   }
   expr = expr.replace(/([+\-]?)(\d*\.?\d*)\*?x(?![\^2])/g, '');
-  // Свободные числа
   const cRe = /([+\-]?)(\d+\.?\d*)/g;
   while((m = cRe.exec(expr)) !== null){
     const sign = m[1]==='-' ? -1 : 1;
@@ -778,34 +762,43 @@ function polyToStr(a, b, c){
   return parts.join('');
 }
 
+/* ✅ ИСПРАВЛЕНО: solveLinear правильно использует b вместо a */
 function solveLinear(original, left, right){
   const L = parsePoly(left);
   const R = parsePoly(right);
-  const a = L.a - R.a;
-  const b = L.b - R.b;
-  const c = L.c - R.c;
-  
-  // ax + c = 0
-  if(a === 0){
-    if(c === 0) return { text: `Уравнение имеет **бесконечно много решений** ♾️\n\nЛюбое значение x подходит.`, _isEquation:true, _isDialog:true };
+  const a = L.a - R.a;  // коэффициент x²
+  const b = L.b - R.b;  // коэффициент x
+  const c = L.c - R.c;  // свободный член
+
+  // Если x² всё-таки есть — решаем как квадратное
+  if(Math.abs(a) > 1e-9){
+    return solveQuadratic(original, left, right);
+  }
+
+  // Линейное: b·x + c = 0
+  if(Math.abs(b) < 1e-9){
+    if(Math.abs(c) < 1e-9){
+      return { text: 'Уравнение имеет **бесконечно много решений** ♾️\n\nЛюбое значение x подходит.', _isEquation:true, _isDialog:true };
+    }
     return { text: `Уравнение **не имеет решений** ❌\n\nПолучается ${c} = 0, что неверно.`, _isEquation:true, _isDialog:true };
   }
-  
-  const x = -c / a;
+
+  const x = -c / b;
   const steps = [];
   steps.push(`**Решаю уравнение:** ${original}\n`);
   steps.push(`**Шаг 1.** Переношу всё в левую часть:`);
-  steps.push(`   ${polyToStr(a, b, c)} = 0\n`);
+  steps.push(`   ${polyToStr(0, b, c)} = 0\n`);
   steps.push(`**Шаг 2.** Привожу подобные:`);
-  steps.push(`   ${polyToStr(a, 0, c)} = 0\n`);
+  steps.push(`   ${polyToStr(0, b, c)} = 0\n`);
   steps.push(`**Шаг 3.** Выражаю x:`);
-  if(a === 1){
+  if(b === 1){
     steps.push(`   x = ${-c}`);
-  } else if(a === -1){
+  } else if(b === -1){
     steps.push(`   -x = ${c}`);
     steps.push(`   x = ${-c}`);
   } else {
-    steps.push(`   x = ${-c} / ${a}`);
+    steps.push(`   ${b}x = ${-c}`);
+    steps.push(`   x = ${-c} / ${b}`);
   }
   steps.push(`\n**Ответ:** x = ${fmtNum(x)}`);
   return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
@@ -817,11 +810,11 @@ function solveQuadratic(original, left, right){
   const a = L.a - R.a;
   const b = L.b - R.b;
   const c = L.c - R.c;
-  
+
   if(a === 0){
     return solveLinear(original, left, right);
   }
-  
+
   const D = b*b - 4*a*c;
   const steps = [];
   steps.push(`**Решаю квадратное уравнение:** ${original}\n`);
@@ -833,7 +826,7 @@ function solveQuadratic(original, left, right){
   steps.push(`   D = ${fmtNum(b)}² − 4·${fmtNum(a)}·${fmtNum(c)}`);
   steps.push(`   D = ${fmtNum(b*b)} − ${fmtNum(4*a*c)}`);
   steps.push(`   **D = ${fmtNum(D)}**\n`);
-  
+
   let answer = '';
   if(D > 0){
     const x1 = (-b + Math.sqrt(D)) / (2*a);
@@ -860,7 +853,7 @@ function solveQuadratic(original, left, right){
     steps.push(`x₂ = ${fmtNum(re)} − ${fmtNum(Math.abs(im))}i`);
     answer = `x₁ = ${fmtNum(re)} + ${fmtNum(Math.abs(im))}i,  x₂ = ${fmtNum(re)} − ${fmtNum(Math.abs(im))}i`;
   }
-  
+
   steps.push(`\n**Ответ:** ${answer}`);
   return { text: steps.join('\n'), _isEquation:true, _isDialog:true };
 }
