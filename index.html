@@ -675,7 +675,8 @@ let accessPollTimer=null, gateState='checking';
 async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
   if(!uId){ gateState='no_telegram'; showGate('no_telegram'); return; }
-  if(uId === ADMIN_TG_ID){ gateState='approved'; state.plus = true; hideGate(); return; }
+  // Админ проходит гейт без заявки, но БЕЗ автоплюса — лимиты работают и для него
+  if(uId === ADMIN_TG_ID){ gateState='approved'; hideGate(); return; }
   try{
     const res = await fetch(`${API_URL}/status/${uId}`);
     if(!res.ok) throw new Error();
@@ -800,7 +801,6 @@ function drawOrbFrame(){
   const baseR = 88;
   const r = baseR * (1 + orbLevel * 0.12);
 
-  // 1. Внешнее свечение
   const glow = orbCtx.createRadialGradient(cx, cy, r * 0.6, cx, cy, r * 1.9);
   glow.addColorStop(0,   `rgba(96,165,250,${0.28 + orbLevel * 0.25})`);
   glow.addColorStop(0.5, `rgba(59,130,246,${0.12 + orbLevel * 0.1})`);
@@ -810,7 +810,6 @@ function drawOrbFrame(){
   orbCtx.arc(cx, cy, r * 1.9, 0, Math.PI * 2);
   orbCtx.fill();
 
-  // 2. Полупрозрачные слои
   for(let i = 0; i < 3; i++){
     const layerR = r * (0.95 + i * 0.06);
     const alpha  = 0.32 - i * 0.09;
@@ -820,7 +819,6 @@ function drawOrbFrame(){
     drawBlob(orbCtx, cx, cy, layerR, t, orbLevel, i * 2.1, grad);
   }
 
-  // 3. Основная сфера
   const mainGrad = orbCtx.createRadialGradient(
     cx - r * 0.35, cy - r * 0.4, r * 0.1,
     cx, cy, r * 1.05
@@ -832,7 +830,6 @@ function drawOrbFrame(){
   mainGrad.addColorStop(1,    '#1d4ed8');
   drawBlob(orbCtx, cx, cy, r, t * 1.15, orbLevel, 0.5, mainGrad);
 
-  // 4. Блик
   const shine = orbCtx.createRadialGradient(
     cx - r * 0.3, cy - r * 0.45, 0,
     cx - r * 0.2, cy - r * 0.3, r * 0.7
