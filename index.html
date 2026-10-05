@@ -99,9 +99,11 @@
   .limit-banner-title{font-size:13px;font-weight:700;color:var(--accent-deep);margin-bottom:2px}
   .limit-banner-sub{font-size:11.5px;color:var(--muted);line-height:1.35}
   .limit-banner-btn{padding:8px 14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer}
-  .bottom-bar{display:flex;align-items:center;gap:8px;padding:8px 10px calc(10px + env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0}
-  .menu-fab{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 4px 14px rgba(37,99,235,.28)}
-  .menu-fab .ico{width:20px;height:20px}
+  .bottom-bar{display:flex;align-items:center;gap:6px;padding:8px 10px calc(10px + env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0}
+  /* МЕНЬШАЯ КНОПКА МЕНЮ */
+  .menu-fab{width:34px;height:34px;border-radius:11px;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 3px 10px rgba(37,99,235,.25)}
+  .menu-fab .ico{width:16px;height:16px}
+  .menu-fab svg{stroke-width:2.4}
   .menu-fab:active{background:var(--accent-dark);transform:scale(.93)}
   .input-wrap{flex:1;min-width:0;display:flex;align-items:center;gap:2px;background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:3px 3px 3px 14px}
   .input-wrap:focus-within{border-color:var(--accent)}
@@ -172,7 +174,6 @@
   .drawer-foot{padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--border)}
   .user-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;cursor:pointer;color:var(--muted)}
   .user-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center;position:relative}
-  .user-avatar.plus{box-shadow:0 0 0 2px var(--accent-mid)}
   .user-info{flex:1;min-width:0}
   .user-name{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px}
   .user-sub{font-size:11px;color:var(--muted);margin-top:1px}
@@ -280,7 +281,6 @@
   .panel-close .ico{width:16px;height:16px}
   .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
   .topic-btn{padding:14px 12px;background:var(--surface);border:1.5px solid transparent;border-radius:12px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);text-align:left;display:flex;align-items:center;gap:8px}
-  .topic-btn .ico{width:18px;height:18px;color:var(--accent);flex-shrink:0}
   .topic-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
   .difficulty-row{display:flex;gap:6px;margin-bottom:16px}
   .diff-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
@@ -297,7 +297,6 @@
   .trainer-feedback.show{display:flex}
   .trainer-feedback.ok{background:#dcfce7;color:#166534}
   .trainer-feedback.bad{background:#fee2e2;color:#991b1b}
-  .trainer-feedback .ico{width:18px;height:18px;flex-shrink:0}
   .cheat-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
   .cheat-tabs::-webkit-scrollbar{height:0}
   .cheat-tab{flex-shrink:0;padding:8px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg);font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
@@ -306,14 +305,12 @@
   .cheat-body .cheat-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center}
   .cheat-body .cheat-name{font-size:13px;color:var(--muted);flex:1}
   .cheat-body .cheat-formula{font-family:'SF Mono',Monaco,monospace;font-weight:600;color:var(--accent-deep)}
-  .graph-panel{max-width:600px}
   .graph-container{width:100%;height:320px;background:var(--surface);border-radius:14px;overflow:hidden}
   .graph-input-row{display:flex;gap:8px;margin-bottom:12px}
   .exam-timer{font-size:24px;font-weight:800;color:var(--accent);font-family:'SF Mono',Monaco,monospace;text-align:center;padding:12px;background:var(--surface);border-radius:12px;margin-bottom:12px}
   .exam-timer.danger{color:var(--danger);animation:speakPulse 1s infinite}
   .exam-question{padding:16px;background:var(--accent-soft);border-radius:14px;margin-bottom:12px;text-align:center;font-size:16px;font-weight:700;color:var(--accent-deep);font-family:'SF Mono',Monaco,monospace;min-height:60px;display:flex;align-items:center;justify-content:center;white-space:pre-line}
   .exam-progress{font-size:12px;font-weight:600;color:var(--muted);text-align:center;margin-bottom:10px;text-transform:uppercase}
-  /* Camera picker */
   .picker-overlay{position:fixed;inset:0;background:var(--overlay);z-index:220;display:none;align-items:flex-end;justify-content:center;padding:0}
   .picker-overlay.active{display:flex;animation:fadeIn .2s ease-out}
   .picker-sheet{width:100%;max-width:480px;background:var(--bg);border-radius:22px 22px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom));animation:slideUp .28s cubic-bezier(.22,1,.36,1)}
@@ -323,7 +320,6 @@
   .picker-opt{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 12px;background:var(--surface);border:none;border-radius:16px;font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;transition:all .15s}
   .picker-opt:active{background:var(--accent-soft);transform:scale(.97)}
   .picker-opt .ico{width:32px;height:32px;color:var(--accent)}
-  /* Camera modal */
   .camera-overlay{position:fixed;inset:0;z-index:240;display:none;flex-direction:column;background:#000}
   .camera-overlay.active{display:flex;animation:fadeIn .25s ease-out}
   .camera-stage{flex:1;position:relative;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
@@ -339,7 +335,7 @@
   .camera-topbar{position:absolute;top:0;left:0;right:0;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom, rgba(0,0,0,.5) 0%, transparent 100%);z-index:3}
   .camera-close{width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
   .camera-close .ico{width:20px;height:20px}
-  .camera-title{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.2px}
+  .camera-title{font-size:15px;font-weight:800;color:#fff}
   .camera-bottom{position:absolute;bottom:0;left:0;right:0;padding:20px 24px;padding-bottom:calc(24px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 100%);z-index:3}
   .camera-side{width:56px;height:56px;border-radius:50%;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
   .camera-side:active{background:rgba(255,255,255,.28);transform:scale(.93)}
@@ -349,11 +345,7 @@
   .camera-shutter:active{transform:scale(.9)}
   .camera-shutter .inner{width:58px;height:58px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff}
   .camera-shutter .inner .ico{width:28px;height:28px}
-  @media print{
-    .bottom-bar,.header,.drawer,.overlay,.math-kb,.limit-banner,.quick-menu{display:none!important}
-    body,html{overflow:visible;height:auto;position:static}
-    .app{height:auto}.chat{overflow:visible;height:auto;padding:0}
-  }
+  @media print{.bottom-bar,.header,.drawer,.overlay,.math-kb,.limit-banner,.quick-menu{display:none!important}body,html{overflow:visible;height:auto;position:static}.app{height:auto}.chat{overflow:visible;height:auto;padding:0}}
 </style>
 </head>
 <body>
@@ -378,12 +370,11 @@
   <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></symbol>
   <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
-  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a1 1 0 00-1.4.92V9.5c0 .5.37.92.87.98L15 12 2.87 13.52c-.5.06-.87.48-.87.98v4.98a1 1 0 001.4.92z"/></symbol>
   <symbol id="i-stop" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
   <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></symbol>
   <symbol id="i-paperclip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></symbol>
-  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
   <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></symbol>
@@ -413,28 +404,12 @@
 <div class="onboarding" id="onboarding">
   <div class="onb-slides">
     <div class="onb-track" id="onbTrack">
-      <div class="onb-slide">
-        <div class="onb-planet"><svg><use href="#i-planet-ring"/></svg></div>
-        <div class="onb-title">Добро пожаловать!</div>
-        <div class="onb-sub">Orbita AI — твой личный репетитор по математике.</div>
-      </div>
-      <div class="onb-slide">
-        <div class="onb-planet"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="26" stroke="currentColor" stroke-width="3"/><path d="M42 40 L64 50 L42 60 Z" fill="currentColor"/></svg></div>
-        <div class="onb-title">Что можно</div>
-        <div class="onb-sub">Решаю уравнения, строю чертежи и графики, объясняю по шагам.</div>
-      </div>
-      <div class="onb-slide">
-        <div class="onb-planet"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="3"/><circle cx="50" cy="50" r="8" fill="currentColor"/><circle cx="50" cy="20" r="5" fill="currentColor" opacity=".6"/><circle cx="50" cy="80" r="4" fill="currentColor" opacity=".6"/><circle cx="20" cy="50" r="4" fill="currentColor" opacity=".6"/><circle cx="80" cy="50" r="5" fill="currentColor" opacity=".6"/></svg></div>
-        <div class="onb-title">Как тебя зовут?</div>
-        <div class="onb-sub">Чтобы Orbita обращалась к тебе по имени</div>
-        <input type="text" class="field-input" id="onbName" maxlength="24" placeholder="Твоё имя" autocomplete="off" style="margin-top:24px;text-align:center;font-size:16px">
-      </div>
+      <div class="onb-slide"><div class="onb-planet"><svg><use href="#i-planet-ring"/></svg></div><div class="onb-title">Добро пожаловать!</div><div class="onb-sub">Orbita AI — твой личный репетитор по математике.</div></div>
+      <div class="onb-slide"><div class="onb-planet"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="26" stroke="currentColor" stroke-width="3"/><path d="M42 40 L64 50 L42 60 Z" fill="currentColor"/></svg></div><div class="onb-title">Что можно</div><div class="onb-sub">Решаю уравнения, строю чертежи и графики, объясняю по шагам.</div></div>
+      <div class="onb-slide"><div class="onb-planet"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="3"/><circle cx="50" cy="50" r="8" fill="currentColor"/><circle cx="50" cy="20" r="5" fill="currentColor" opacity=".6"/><circle cx="50" cy="80" r="4" fill="currentColor" opacity=".6"/><circle cx="20" cy="50" r="4" fill="currentColor" opacity=".6"/><circle cx="80" cy="50" r="5" fill="currentColor" opacity=".6"/></svg></div><div class="onb-title">Как тебя зовут?</div><div class="onb-sub">Чтобы Orbita обращалась к тебе по имени</div><input type="text" class="field-input" id="onbName" maxlength="24" placeholder="Твоё имя" autocomplete="off" style="margin-top:24px;text-align:center;font-size:16px"></div>
     </div>
   </div>
-  <div class="onb-foot">
-    <div class="onb-dots"><div class="onb-dot active" data-slide="0"></div><div class="onb-dot" data-slide="1"></div><div class="onb-dot" data-slide="2"></div></div>
-    <button class="onb-skip" id="onbSkip">Пропустить</button>
-  </div>
+  <div class="onb-foot"><div class="onb-dots"><div class="onb-dot active" data-slide="0"></div><div class="onb-dot" data-slide="1"></div><div class="onb-dot" data-slide="2"></div></div><button class="onb-skip" id="onbSkip">Пропустить</button></div>
 </div>
 
 <!-- GATE -->
@@ -457,26 +432,15 @@
       <div class="plus-item"><span class="ico"><svg><use href="#i-bolt"/></svg></span><span>Без лимита запросов</span></div>
       <div class="plus-item"><span class="ico"><svg><use href="#i-speak"/></svg></span><span>Голосовые ответы AI</span></div>
       <div class="plus-item"><span class="ico"><svg><use href="#i-chart"/></svg></span><span>Инлайн-графики</span></div>
-      <div class="plus-item"><span class="ico"><svg><use href="#i-crown"/></svg></span><span>Особый статус</span></div>
     </div>
-    <div class="plus-actions">
-      <button class="plus-btn-primary" id="plusRequestBtn">Запросить Plus</button>
-      <button class="plus-btn-ghost" id="plusCloseBtn">Позже</button>
-    </div>
+    <div class="plus-actions"><button class="plus-btn-primary" id="plusRequestBtn">Запросить Plus</button><button class="plus-btn-ghost" id="plusCloseBtn">Позже</button></div>
   </div>
 </div>
 
 <!-- VOICE -->
-<div class="voice-overlay" id="voiceOverlay">
-  <div class="voice-box">
-    <canvas class="voice-canvas" id="voiceCanvas" width="280" height="280"></canvas>
-    <div class="voice-status" id="voiceStatus">Слушаю…</div>
-    <div class="voice-text empty" id="voiceText">Продиктуй пример</div>
-    <button class="voice-cancel" id="voiceCancel">Отмена</button>
-  </div>
-</div>
+<div class="voice-overlay" id="voiceOverlay"><div class="voice-box"><canvas class="voice-canvas" id="voiceCanvas" width="280" height="280"></canvas><div class="voice-status" id="voiceStatus">Слушаю…</div><div class="voice-text empty" id="voiceText">Продиктуй пример</div><button class="voice-cancel" id="voiceCancel">Отмена</button></div></div>
 
-<!-- CAMERA PICKER -->
+<!-- PICKER -->
 <div class="picker-overlay" id="pickerOverlay">
   <div class="picker-sheet">
     <div class="picker-title">Отправить задачу</div>
@@ -494,11 +458,7 @@
     <video class="camera-video" id="cameraVideo" autoplay playsinline muted></video>
     <div class="camera-frame"><div class="camera-frame-box"><span class="c1"></span><span class="c2"></span></div></div>
     <div class="camera-hint">Наведи на задачу и сфотографируй</div>
-    <div class="camera-topbar">
-      <button class="camera-close" id="cameraClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button>
-      <div class="camera-title">Сфотографировать задачу</div>
-      <div style="width:40px"></div>
-    </div>
+    <div class="camera-topbar"><button class="camera-close" id="cameraClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button><div class="camera-title">Сфотографировать задачу</div><div style="width:40px"></div></div>
     <div class="camera-bottom">
       <button class="camera-side" id="cameraFlash" title="Фонарик"><span class="ico"><svg><use href="#i-flashlight"/></svg></span></button>
       <button class="camera-shutter" id="cameraShutter"><div class="inner"><span class="ico"><svg><use href="#i-camera"/></svg></span></div></button>
@@ -510,10 +470,7 @@
 <!-- DRAWER -->
 <div class="overlay" id="drawerOverlay"></div>
 <aside class="drawer" id="drawer">
-  <div class="drawer-head">
-    <div class="drawer-logo"><svg><use href="#i-planet"/></svg></div>
-    <div class="drawer-head-text"><div class="drawer-head-title">Orbita AI</div><div class="drawer-head-sub" id="drawerCount">История чатов</div></div>
-  </div>
+  <div class="drawer-head"><div class="drawer-logo"><svg><use href="#i-planet"/></svg></div><div class="drawer-head-text"><div class="drawer-head-title">Orbita AI</div><div class="drawer-head-sub" id="drawerCount">История чатов</div></div></div>
   <div class="drawer-tools">
     <button class="drawer-tool" id="toolTrainer"><span class="ico"><svg><use href="#i-target"/></svg></span>Тренажёр</button>
     <button class="drawer-tool" id="toolCheat"><span class="ico"><svg><use href="#i-book-open"/></svg></span>Шпаргалка</button>
@@ -532,126 +489,69 @@
   <div class="modal">
     <div class="modal-title"><span class="ico"><svg><use href="#i-crown"/></svg></span>Аккаунт</div>
     <div class="modal-sub">Настрой свой профиль</div>
-    <div class="avatar-section">
-      <div class="avatar-preview" id="avatarPreview"><span id="avatarLetter">A</span></div>
-      <div class="avatar-hint">Нажми чтобы изменить</div>
-      <div class="avatar-action-btn" id="removeAvatarBtn">Удалить</div>
-    </div>
+    <div class="avatar-section"><div class="avatar-preview" id="avatarPreview"><span id="avatarLetter">A</span></div><div class="avatar-hint">Нажми чтобы изменить</div><div class="avatar-action-btn" id="removeAvatarBtn">Удалить</div></div>
     <div class="field"><div class="field-label">Имя</div><input type="text" class="field-input" id="accountNameInput" maxlength="24" placeholder="Твоё имя"></div>
-    <div class="settings-row">
-      <div class="settings-info"><div class="settings-title">Вибрация</div><div class="settings-sub">Тактильный отклик при действиях</div></div>
-      <label class="toggle"><input type="checkbox" id="vibToggle" checked><span class="toggle-slider"></span></label>
-    </div>
-    <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:10px">
-      <div class="settings-info"><div class="settings-title">Размер текста</div><div class="settings-sub">От 12 до 18 px</div></div>
-      <div class="font-slider">
-        <span style="font-size:12px;color:var(--muted);font-weight:700">A</span>
-        <input type="range" id="fontSlider" min="12" max="18" step="1" value="15">
-        <span style="font-size:18px;color:var(--muted);font-weight:700">A</span>
-        <span class="font-val" id="fontVal">15</span>
-      </div>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-value" id="statChats">0</div><div class="stat-label">Чатов</div></div>
-      <div class="stat-card"><div class="stat-value" id="statMsgs">0</div><div class="stat-label">Сообщений</div></div>
-    </div>
+    <div class="settings-row"><div class="settings-info"><div class="settings-title">Вибрация</div><div class="settings-sub">Тактильный отклик</div></div><label class="toggle"><input type="checkbox" id="vibToggle" checked><span class="toggle-slider"></span></label></div>
+    <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:10px"><div class="settings-info"><div class="settings-title">Размер текста</div><div class="settings-sub">От 12 до 18 px</div></div><div class="font-slider"><span style="font-size:12px;color:var(--muted);font-weight:700">A</span><input type="range" id="fontSlider" min="12" max="18" step="1" value="15"><span style="font-size:18px;color:var(--muted);font-weight:700">A</span><span class="font-val" id="fontVal">15</span></div></div>
+    <div class="stats-grid"><div class="stat-card"><div class="stat-value" id="statChats">0</div><div class="stat-label">Чатов</div></div><div class="stat-card"><div class="stat-value" id="statMsgs">0</div><div class="stat-label">Сообщений</div></div></div>
     <button class="btn-primary" id="saveProfileBtn"><span class="ico"><svg><use href="#i-check"/></svg></span>Сохранить</button>
     <button class="btn-ghost" id="plusOpenBtn"><span class="ico"><svg><use href="#i-star"/></svg></span>Orbita Plus</button>
     <button class="btn-ghost" id="notebookBtn"><span class="ico"><svg><use href="#i-notebook"/></svg></span>Печать тетради</button>
-    <button class="btn-ghost" id="printBtn"><span class="ico"><svg><use href="#i-download"/></svg></span>Сохранить чат в PDF</button>
+    <button class="btn-ghost" id="printBtn"><span class="ico"><svg><use href="#i-download"/></svg></span>Сохранить в PDF</button>
     <button class="btn-danger" id="clearDataBtn"><span class="ico"><svg><use href="#i-trash"/></svg></span>Очистить все данные</button>
   </div>
 </div>
 
 <!-- TRAINER -->
-<div class="trainer-overlay" id="trainerOverlay">
-  <div class="trainer-panel">
-    <div class="panel-head"><h2><span class="ico"><svg><use href="#i-target"/></svg></span>Тренажёр</h2><button class="panel-close" id="trainerClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
-    <div class="topic-grid" id="topicGrid">
-      <button class="topic-btn active" data-topic="linear">Линейные</button>
-      <button class="topic-btn" data-topic="quadratic">Квадратные</button>
-      <button class="topic-btn" data-topic="arithmetic">Арифметика</button>
-      <button class="topic-btn" data-topic="derivative">Производные</button>
-      <button class="topic-btn" data-topic="inequality">Неравенства</button>
-      <button class="topic-btn" data-topic="integral">Интегралы</button>
-    </div>
-    <div class="difficulty-row" id="diffRow">
-      <button class="diff-btn active" data-diff="1">Легко</button>
-      <button class="diff-btn" data-diff="2">Средне</button>
-      <button class="diff-btn" data-diff="3">Сложно</button>
-    </div>
-    <div class="trainer-task" id="trainerTask">Выбери тему</div>
-    <div class="trainer-answer-row">
-      <input type="text" class="trainer-input" id="trainerInput" placeholder="Ответ" autocomplete="off">
-      <button class="btn-primary" id="trainerCheck" style="width:auto;margin:0;padding:12px 18px">Проверить</button>
-    </div>
-    <div class="trainer-feedback" id="trainerFeedback"></div>
-    <button class="btn-ghost" id="trainerNext"><span class="ico"><svg><use href="#i-refresh"/></svg></span>Другая задача</button>
-    <div class="trainer-stats">
-      <div class="trainer-stat"><div class="trainer-stat-val" id="tRight">0</div><div class="trainer-stat-lbl">Верно</div></div>
-      <div class="trainer-stat"><div class="trainer-stat-val" id="tWrong">0</div><div class="trainer-stat-lbl">Ошибок</div></div>
-      <div class="trainer-stat"><div class="trainer-stat-val" id="tStreak">0</div><div class="trainer-stat-lbl">Серия</div></div>
-    </div>
+<div class="trainer-overlay" id="trainerOverlay"><div class="trainer-panel">
+  <div class="panel-head"><h2><span class="ico"><svg><use href="#i-target"/></svg></span>Тренажёр</h2><button class="panel-close" id="trainerClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
+  <div class="topic-grid" id="topicGrid">
+    <button class="topic-btn active" data-topic="linear">Линейные</button><button class="topic-btn" data-topic="quadratic">Квадратные</button>
+    <button class="topic-btn" data-topic="arithmetic">Арифметика</button><button class="topic-btn" data-topic="derivative">Производные</button>
+    <button class="topic-btn" data-topic="inequality">Неравенства</button><button class="topic-btn" data-topic="integral">Интегралы</button>
   </div>
-</div>
+  <div class="difficulty-row" id="diffRow"><button class="diff-btn active" data-diff="1">Легко</button><button class="diff-btn" data-diff="2">Средне</button><button class="diff-btn" data-diff="3">Сложно</button></div>
+  <div class="trainer-task" id="trainerTask">Выбери тему</div>
+  <div class="trainer-answer-row"><input type="text" class="trainer-input" id="trainerInput" placeholder="Ответ" autocomplete="off"><button class="btn-primary" id="trainerCheck" style="width:auto;margin:0;padding:12px 18px">Проверить</button></div>
+  <div class="trainer-feedback" id="trainerFeedback"></div>
+  <button class="btn-ghost" id="trainerNext"><span class="ico"><svg><use href="#i-refresh"/></svg></span>Другая задача</button>
+  <div class="trainer-stats"><div class="trainer-stat"><div class="trainer-stat-val" id="tRight">0</div><div class="trainer-stat-lbl">Верно</div></div><div class="trainer-stat"><div class="trainer-stat-val" id="tWrong">0</div><div class="trainer-stat-lbl">Ошибок</div></div><div class="trainer-stat"><div class="trainer-stat-val" id="tStreak">0</div><div class="trainer-stat-lbl">Серия</div></div></div>
+</div></div>
 
 <!-- EXAM -->
-<div class="exam-overlay" id="examOverlay">
-  <div class="exam-panel">
-    <div class="panel-head"><h2><span class="ico"><svg><use href="#i-exam"/></svg></span>Экзамен</h2><button class="panel-close" id="examClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
-    <div class="exam-timer" id="examTimer">20:00</div>
-    <div class="exam-progress" id="examProgress">Задача 0 из 5</div>
-    <div class="exam-question" id="examQuestion">Нажми «Начать»</div>
-    <div class="trainer-answer-row">
-      <input type="text" class="trainer-input" id="examInput" placeholder="Ответ" autocomplete="off">
-      <button class="btn-primary" id="examCheck" style="width:auto;margin:0;padding:12px 18px">Далее</button>
-    </div>
-    <button class="btn-primary" id="examStart"><span class="ico"><svg><use href="#i-bolt"/></svg></span>Начать экзамен</button>
-  </div>
-</div>
+<div class="exam-overlay" id="examOverlay"><div class="exam-panel">
+  <div class="panel-head"><h2><span class="ico"><svg><use href="#i-exam"/></svg></span>Экзамен</h2><button class="panel-close" id="examClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
+  <div class="exam-timer" id="examTimer">20:00</div>
+  <div class="exam-progress" id="examProgress">Задача 0 из 5</div>
+  <div class="exam-question" id="examQuestion">Нажми «Начать»</div>
+  <div class="trainer-answer-row"><input type="text" class="trainer-input" id="examInput" placeholder="Ответ" autocomplete="off"><button class="btn-primary" id="examCheck" style="width:auto;margin:0;padding:12px 18px">Далее</button></div>
+  <button class="btn-primary" id="examStart"><span class="ico"><svg><use href="#i-bolt"/></svg></span>Начать экзамен</button>
+</div></div>
 
 <!-- CHEAT -->
-<div class="cheat-overlay" id="cheatOverlay">
-  <div class="cheat-panel">
-    <div class="panel-head"><h2><span class="ico"><svg><use href="#i-book-open"/></svg></span>Шпаргалка</h2><button class="panel-close" id="cheatClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
-    <div class="cheat-tabs" id="cheatTabs">
-      <button class="cheat-tab active" data-tab="trig">Тригонометрия</button>
-      <button class="cheat-tab" data-tab="der">Производные</button>
-      <button class="cheat-tab" data-tab="int">Интегралы</button>
-      <button class="cheat-tab" data-tab="log">Логарифмы</button>
-      <button class="cheat-tab" data-tab="geo">Геометрия</button>
-    </div>
-    <div class="cheat-body" id="cheatBody"></div>
+<div class="cheat-overlay" id="cheatOverlay"><div class="cheat-panel">
+  <div class="panel-head"><h2><span class="ico"><svg><use href="#i-book-open"/></svg></span>Шпаргалка</h2><button class="panel-close" id="cheatClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
+  <div class="cheat-tabs" id="cheatTabs">
+    <button class="cheat-tab active" data-tab="trig">Тригонометрия</button>
+    <button class="cheat-tab" data-tab="der">Производные</button>
+    <button class="cheat-tab" data-tab="int">Интегралы</button>
+    <button class="cheat-tab" data-tab="log">Логарифмы</button>
+    <button class="cheat-tab" data-tab="geo">Геометрия</button>
   </div>
-</div>
+  <div class="cheat-body" id="cheatBody"></div>
+</div></div>
 
 <!-- GRAPH -->
-<div class="graph-overlay" id="graphOverlay">
-  <div class="graph-panel">
-    <div class="panel-head"><h2><span class="ico"><svg><use href="#i-chart"/></svg></span>График функции</h2><button class="panel-close" id="graphClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
-    <div class="graph-input-row">
-      <input type="text" class="trainer-input" id="graphInput" placeholder="y = x^2 - 4; y = x + 2" autocomplete="off">
-      <button class="btn-primary" id="graphBuild" style="width:auto;margin:0;padding:12px 18px">Построить</button>
-    </div>
-    <div class="graph-container" id="graphContainer"></div>
-  </div>
-</div>
+<div class="graph-overlay" id="graphOverlay"><div class="graph-panel">
+  <div class="panel-head"><h2><span class="ico"><svg><use href="#i-chart"/></svg></span>График</h2><button class="panel-close" id="graphClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
+  <div class="graph-input-row"><input type="text" class="trainer-input" id="graphInput" placeholder="y = x^2 - 4; y = x + 2" autocomplete="off"><button class="btn-primary" id="graphBuild" style="width:auto;margin:0;padding:12px 18px">Построить</button></div>
+  <div class="graph-container" id="graphContainer"></div>
+</div></div>
 
 <div class="app">
-  <header class="header">
-    <div class="header-brand">
-      <div class="brand-mark" id="brandMark"><svg><use href="#i-planet"/></svg></div>
-      <div class="brand-text">
-        <div class="brand-name">Orbita AI <span class="plus-badge" id="headerPlusBadge" style="display:none;"><span class="ico"><svg><use href="#i-crown"/></svg></span>Plus</span></div>
-        <div class="brand-sub">Репетитор по математике</div>
-      </div>
-    </div>
-  </header>
+  <header class="header"><div class="header-brand"><div class="brand-mark" id="brandMark"><svg><use href="#i-planet"/></svg></div><div class="brand-text"><div class="brand-name">Orbita AI <span class="plus-badge" id="headerPlusBadge" style="display:none;"><span class="ico"><svg><use href="#i-crown"/></svg></span>Plus</span></div><div class="brand-sub">Репетитор по математике</div></div></div></header>
   <main class="chat" id="chat"></main>
-  <div class="limit-banner" id="limitBanner">
-    <div class="limit-banner-text"><div class="limit-banner-title">Достигнут лимит 20 сообщений</div><div class="limit-banner-sub">Оформите Plus для безлимитных диалогов</div></div>
-    <button class="limit-banner-btn" id="limitBannerBtn">Открыть</button>
-  </div>
+  <div class="limit-banner" id="limitBanner"><div class="limit-banner-text"><div class="limit-banner-title">Достигнут лимит 20 сообщений</div><div class="limit-banner-sub">Оформите Plus для безлимитных диалогов</div></div><button class="limit-banner-btn" id="limitBannerBtn">Открыть</button></div>
   <div class="math-kb" id="mathKb">
     <button data-ins="^2">x²</button><button data-ins="^3">x³</button><button data-ins="√(">√</button><button data-ins="π">π</button><button data-ins="∫">∫</button><button data-ins="∞">∞</button><button data-ins="×">×</button><button data-ins="÷">÷</button><button data-ins="±">±</button><button data-ins="≤">≤</button><button data-ins="≥">≥</button><button data-ins="≠">≠</button><button data-ins="sin(">sin</button><button data-ins="cos(">cos</button><button data-ins="tan(">tan</button><button data-ins="ln(">ln</button><button data-ins="log(">log</button><button data-ins="e^">e^</button><button data-ins="(">(</button><button data-ins=")">)</button><button data-ins="/">/</button>
   </div>
@@ -679,39 +579,25 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ================================================================
-   ГЛОБАЛЬНЫЕ КОНСТАНТЫ И ИНИЦИАЛИЗАЦИЯ
-   ================================================================ */
 const API_URL = 'https://shiny-flower-cc1aorbita-gate.2013zakharov.workers.dev';
 const ADMIN_TG_ID = 5268787813;
 const MSG_LIMIT_FREE = 20;
 
 function ico(id, cls){ return `<span class="ico ${cls||''}"><svg><use href="#i-${id}"/></svg></span>`; }
-
 const answerCache = new Map();
 function cacheKey(q){ return q.trim().toLowerCase().replace(/\s+/g,' '); }
 
 const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready(); tg.expand();
-  try {
-    if (tg.enableClosingConfirmation) tg.enableClosingConfirmation();
-    if (tg.SettingsButton) { tg.SettingsButton.show(); tg.SettingsButton.onClick(() => openAccount()); }
-  } catch(e) {}
-}
+if (tg) { tg.ready(); tg.expand(); try { if (tg.enableClosingConfirmation) tg.enableClosingConfirmation(); if (tg.SettingsButton) { tg.SettingsButton.show(); tg.SettingsButton.onClick(() => openAccount()); } } catch(e) {} }
 
-function haptic(t='light'){
-  if(!state.vibration) return;
-  if(!tg?.HapticFeedback) return;
-  try{ if(['success','error','warning'].includes(t)) tg.HapticFeedback.notificationOccurred(t); else tg.HapticFeedback.impactOccurred(t); }catch(e){}
-}
+function haptic(t='light'){ if(!state.vibration) return; if(!tg?.HapticFeedback) return; try{ if(['success','error','warning'].includes(t)) tg.HapticFeedback.notificationOccurred(t); else tg.HapticFeedback.impactOccurred(t); }catch(e){} }
 function hapticSel(){ if(!state.vibration) return; try{ tg?.HapticFeedback?.selectionChanged(); }catch(e){} }
 function showBackButton(fn){ if(!tg?.BackButton) return; tg.BackButton.offClick(); tg.BackButton.onClick(fn); tg.BackButton.show(); }
 function hideBackButton(){ if(tg?.BackButton){ try{ tg.BackButton.offClick(); tg.BackButton.hide(); }catch(e){} } }
 function showMainBtn(text, fn){ if(!tg?.MainButton) return; try{ tg.MainButton.setText(text); tg.MainButton.offClick(); tg.MainButton.onClick(fn); tg.MainButton.show(); }catch(e){} }
 function hideMainBtn(){ try{ tg?.MainButton?.hide(); }catch(e){} }
 
-const state = { user:null, chats:[], activeId:null, busy:false, abortRequested:false, rateLimit:false, rateLimitTimer:null, searchQuery:'', plus:false, vibration:true, fontSize:15, stream:null, facing:'environment', flashOn:false, cameraTrack:null, lastAIAnswer:null };
+const state = { user:null, chats:[], activeId:null, busy:false, abortRequested:false, rateLimit:false, rateLimitTimer:null, searchQuery:'', plus:false, vibration:true, fontSize:15, stream:null, facing:'environment', flashOn:false, cameraTrack:null };
 const $ = id => document.getElementById(id);
 const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIconEl = $('sendIcon'), toast = $('toast');
 
@@ -725,26 +611,40 @@ const store = {
   setActive(id){ localStorage.setItem(KEYS.ACTIVE, id); },
   clear(){ [KEYS.USER,KEYS.CHATS,KEYS.ACTIVE,KEYS.DRAFT].forEach(k=>localStorage.removeItem(k)); }
 };
-
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
 const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const escA = s => esc(s).replace(/"/g,'&quot;');
-
 function showToast(text){ toast.textContent=text; toast.classList.add('show'); clearTimeout(showToast._t); showToast._t=setTimeout(()=>toast.classList.remove('show'),2200); }
 function initials(name){ if(!name) return 'A'; const p=name.trim().split(/\s+/); return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():name[0].toUpperCase(); }
 function lockScroll(lock){ document.body.classList.toggle('locked',lock); }
 function scrollDown(){ chatEl.scrollTop = chatEl.scrollHeight; }
+function applyFontSize(px){ state.fontSize = Math.max(12, Math.min(18, px)); document.documentElement.style.setProperty('--fs', state.fontSize + 'px'); localStorage.setItem(KEYS.FONT, String(state.fontSize)); }
 
-function applyFontSize(px){
-  state.fontSize = Math.max(12, Math.min(18, px));
-  document.documentElement.style.setProperty('--fs', state.fontSize + 'px');
-  localStorage.setItem(KEYS.FONT, String(state.fontSize));
+/* ============ БЫСТРЫЕ КОМАНДЫ ============ */
+function expandQuickCommand(text){
+  const m = text.match(/^\/(реши|решить|график|чертёж|построй|начерти|проведи|объясни|теория|решение|экзамен|тренажёр|тренажер|шпаргалка|помощь|help)\b\s*(.*)$/i);
+  if(!m) return text;
+  const cmd = m[1].toLowerCase();
+  const rest = (m[2] || '').trim();
+  switch(cmd){
+    case 'реши': case 'решить': case 'решение': return rest ? 'Реши ' + rest : text;
+    case 'график': return rest ? 'Построй y = ' + rest.replace(/^y\s*=\s*/i,'') : text;
+    case 'чертёж': return rest ? 'Построй ' + rest : text;
+    case 'построй': return rest ? 'Построй ' + rest : text;
+    case 'начерти': return rest ? 'Начерти ' + rest : text;
+    case 'проведи': return rest ? 'Проведи ' + rest : text;
+    case 'объясни': case 'теория': return rest ? 'Объясни ' + rest : text;
+    case 'экзамен': setTimeout(openExam, 100); return text;
+    case 'тренажёр': case 'тренажер': setTimeout(openTrainer, 100); return text;
+    case 'шпаргалка': setTimeout(openCheat, 100); return text;
+    case 'помощь': case 'help':
+      return 'Что умеет бот?';
+    default: return text;
+  }
 }
 
-/* ================================================================
-   МАТЕМАТИЧЕСКИЙ ДВИЖОК
-   ================================================================ */
+/* ============ МАТЕМАТИКА ============ */
 function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <= 100; d++){ if(Math.abs(n*d - Math.round(n*d)) < 1e-9){ const num = Math.round(n*d); const g = gcd(Math.abs(num), d); const n1 = num/g, d1 = d/g; if(d1 === 1) return String(n1); return `[${n1}/${d1}]`; } } return String(Math.round(n*1000000)/1000000); }
 function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
 function lcm(a,b){ return Math.abs(a*b) / gcd(a,b); }
@@ -768,7 +668,6 @@ function polyToStr(a,b,c){
   if(c !== 0 || !p.length){ const s = c>0?(p.length?' + ':''):(p.length?' - ':'-'); p.push(s+fmtNum(Math.abs(c))); }
   return p.join('');
 }
-
 function solveEquation(text){
   let t = text.toLowerCase().trim();
   t = t.replace(/^(реши|решить|вычисли|найди|помоги решить|solve|уравнение|решение)\s+/i,'');
@@ -789,10 +688,8 @@ function solveLinear(original, left, right){
   if(Math.abs(b) < 1e-9){ if(Math.abs(c) < 1e-9) return { text:`${ico('infinity')} **Бесконечно много решений**`, _isDialog:true }; return { text:`${ico('x-circle','inl-err')} **Нет решений**`, _isDialog:true }; }
   const x = -c / b;
   const s = [];
-  s.push(`**Решаю линейное уравнение:**`);
-  s.push(`$$${original}$$`);
-  s.push(`\n**Шаг 1.** Переношу всё в левую часть:`);
-  s.push(`$$${polyToStr(0,b,c)} = 0$$`);
+  s.push(`**Решаю линейное уравнение:**\n$$${original}$$`);
+  s.push(`\n**Шаг 1.** Переношу всё в левую часть: $${polyToStr(0,b,c)} = 0$`);
   s.push(`\n**Шаг 2.** Выражаю x:`);
   if(b === 1) s.push(`$$x = ${-c}$$`);
   else if(b === -1){ s.push(`$$-x = ${c}$$`); s.push(`$$x = ${-c}$$`); }
@@ -806,123 +703,46 @@ function solveQuadratic(original, left, right){
   if(a === 0) return solveLinear(original, left, right);
   const D = b*b - 4*a*c;
   const s = [];
-  s.push(`**Решаю квадратное уравнение:**`);
-  s.push(`$$${original}$$`);
-  s.push(`\n**Шаг 1.** Привожу к виду $ax^2+bx+c=0$:`);
-  s.push(`$$${polyToStr(a,b,c)} = 0$$`);
-  s.push(`\n**Шаг 2.** $D = b^2 - 4ac$:`);
-  s.push(`$$D = ${fmtNum(b)}^2 - 4 \\cdot (${fmtNum(a)}) \\cdot (${fmtNum(c)}) = ${fmtNum(D)}$$`);
-  let ans = '';
-  let roots = [];
-  if(D > 0){
-    const sq = Math.sqrt(D);
-    const x1 = (-b + sq)/(2*a), x2 = (-b - sq)/(2*a);
-    roots = [x1, x2];
-    s.push(`\n**Шаг 3.** $D>0$ — два корня:`);
-    s.push(`$$x_1 = ${fmtNum(x1)}, \\quad x_2 = ${fmtNum(x2)}$$`);
-    ans = `$x_1 = ${fmtNum(x1)}$, $x_2 = ${fmtNum(x2)}$`;
-  } else if(D === 0){
-    const x = -b/(2*a);
-    roots = [x];
-    s.push(`\n**Шаг 3.** $D=0$ — один корень: $x = ${fmtNum(x)}$`);
-    ans = `$x = ${fmtNum(x)}$`;
-  } else {
-    s.push(`\n**Шаг 3.** $D<0$ — действительных корней нет ${ico('x-circle','inl-err')}`);
-    ans = 'нет действительных корней';
-  }
-  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** ${ans}`);
+  s.push(`**Решаю квадратное уравнение:**\n$$${original}$$`);
+  s.push(`\n**Шаг 1.** $${polyToStr(a,b,c)} = 0$`);
+  s.push(`\n**Шаг 2.** $D = ${fmtNum(D)}$`);
+  let ans = '', roots = [];
+  if(D > 0){ const sq = Math.sqrt(D); const x1 = (-b + sq)/(2*a), x2 = (-b - sq)/(2*a); roots = [x1, x2]; ans = `$x_1 = ${fmtNum(x1)}$, $x_2 = ${fmtNum(x2)}$`; s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** ${ans}`); }
+  else if(D === 0){ const x = -b/(2*a); roots = [x]; ans = `$x = ${fmtNum(x)}$`; s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** ${ans}`); }
+  else { ans = 'нет действительных корней'; s.push(`\n${ico('x-circle','inl-err')} **Ответ:** ${ans}`); }
   return { text: s.join('\n'), _isDialog:true, _problem:{ type:'quadratic', roots, original } };
 }
 
-/* ============ СОСТАВЛЕНИЕ УРАВНЕНИЯ ИЗ ТЕКСТА ============ */
+/* ============ ТЕКСТОВЫЕ ЗАДАЧИ ============ */
 function solveWordProblem(query){
   const q = query.trim();
-  if(!/задач|было|стало|осталось|отдал|купил|получил|найти|сколько|скорост|расстоян|время|возраст|старше|младше|больше|меньше/i.test(q)) return null;
-  // Паттерн: "было X, отдал Y, осталось Z"
+  if(!/задач|было|стало|осталось|отдал|купил|получил|сколько|скорост|расстоян|время|возраст|старше|младше|в\s+\d+\s+раз/i.test(q)) return null;
   const amountMatch = q.match(/(\d+)\s*(?:яблок|конфет|руч|карандаш|штук|монет|рубл|гриб|открыт|марк|book|ягод)/i);
   const gaveMatch = q.match(/отдал\w*\s+(\d+)/i);
   const leftMatch = q.match(/осталось\s+(\d+)/i);
   if(amountMatch && gaveMatch && leftMatch){
-    const a = parseInt(amountMatch[1]), b = parseInt(gaveMatch[1]), c = parseInt(leftMatch[1]);
-    const s = [];
-    s.push(`**Задача:** ${q}\n`);
-    s.push(`**Шаг 1.** Обозначаю неизвестное:`);
-    s.push(`Пусть $x$ — сколько было изначально.`);
-    s.push(`\n**Шаг 2.** Составляю уравнение:`);
-    s.push(`Было $x$, отдали $${b}$, осталось $${c}$:`);
-    s.push(`$$x - ${b} = ${c}$$`);
-    s.push(`\n**Шаг 3.** Решаю:`);
-    s.push(`$$x = ${c} + ${b} = ${c + b}$$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** было **${c + b}**`);
-    if(Math.abs(c + b - a) < 1e-9) s.push(`\n_Проверка: в условии уже указано ${a} — сходится._`);
+    const b = parseInt(gaveMatch[1]), c = parseInt(leftMatch[1]);
+    const s = [`**Задача:** ${q}\n`, `**Шаг 1.** Пусть $x$ — сколько было.`, `**Шаг 2.** $x - ${b} = ${c}$`, `**Шаг 3.** $x = ${c + b}$`, `\n${ico('check-circle','inl-ok')} **Ответ:** **${c + b}**`];
     return { text: s.join('\n'), _isDialog:true };
   }
-  // Паттерн: "в X раз больше/меньше"
   const bigMatch = q.match(/в\s+(\d+)\s+раз\w*\s+больше/i);
   const smallMatch = q.match(/в\s+(\d+)\s+раз\w*\s+меньше/i);
   const numMatch = q.match(/(\d+)/);
-  if(bigMatch && numMatch){
-    const k = parseInt(bigMatch[1]), n = parseInt(numMatch[1]);
-    const s = [];
-    s.push(`**Задача:** ${q}\n`);
-    s.push(`**Шаг 1.** Обозначаю: пусть искомое число $x$.`);
-    s.push(`**Шаг 2.** «В ${k} раз больше» → умножаем:`);
-    s.push(`$$x = ${n} \\cdot ${k} = ${n*k}$$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${n*k}$`);
-    return { text: s.join('\n'), _isDialog:true };
-  }
-  if(smallMatch && numMatch){
-    const k = parseInt(smallMatch[1]), n = parseInt(numMatch[1]);
-    const s = [];
-    s.push(`**Задача:** ${q}\n`);
-    s.push(`**Шаг 1.** «В ${k} раз меньше» → делим:`);
-    s.push(`$$x = ${n} / ${k} = ${fmtNum(n/k)}$$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${fmtNum(n/k)}$`);
-    return { text: s.join('\n'), _isDialog:true };
-  }
-  // Паттерн скорости: "скорость X, время Y, найти расстояние"
+  if(bigMatch && numMatch){ const k = parseInt(bigMatch[1]), n = parseInt(numMatch[1]); return { text: `**Задача:** ${q}\n\n$\\text{Ответ} = ${n} \\cdot ${k} = ${n*k}$\n\n${ico('check-circle','inl-ok')} **Ответ:** $${n*k}$`, _isDialog:true }; }
+  if(smallMatch && numMatch){ const k = parseInt(smallMatch[1]), n = parseInt(numMatch[1]); return { text: `**Задача:** ${q}\n\n$\\text{Ответ} = ${n} / ${k} = ${fmtNum(n/k)}$\n\n${ico('check-circle','inl-ok')} **Ответ:** $${fmtNum(n/k)}$`, _isDialog:true }; }
   const speedMatch = q.match(/скорост\w*\s+(\d+)/i);
   const timeMatch = q.match(/врем\w*\s+(\d+)/i);
-  if(speedMatch && timeMatch && /расстоян/i.test(q)){
-    const v = parseInt(speedMatch[1]), t = parseInt(timeMatch[1]);
-    const s = [];
-    s.push(`**Задача:** ${q}\n`);
-    s.push(`**Формула:** $S = v \\cdot t$\n`);
-    s.push(`$$S = ${v} \\cdot ${t} = ${v*t}$$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${v*t}$ км`);
-    return { text: s.join('\n'), _isDialog:true };
-  }
-  // Паттерн возраста
+  if(speedMatch && timeMatch && /расстоян/i.test(q)){ const v = parseInt(speedMatch[1]), t = parseInt(timeMatch[1]); return { text: `**Формула:** $S = v \\cdot t$\n$$S = ${v} \\cdot ${t} = ${v*t}$$\n\n${ico('check-circle','inl-ok')} **Ответ:** $${v*t}$ км`, _isDialog:true }; }
   const ageMatch = q.match(/(\d+)\s*(?:лет|года|год)/i);
   const olderMatch = q.match(/старше\s+на\s+(\d+)/i);
   const youngerMatch = q.match(/младше\s+на\s+(\d+)/i);
-  if(ageMatch && (olderMatch || youngerMatch)){
-    const a = parseInt(ageMatch[1]);
-    const d = olderMatch ? parseInt(olderMatch[1]) : -parseInt(youngerMatch[1]);
-    const s = [];
-    s.push(`**Задача:** ${q}\n`);
-    s.push(`**Шаг 1.** Обозначаю: пусть искомый возраст $x$.`);
-    s.push(`**Шаг 2.** «${d >= 0 ? 'Старше' : 'Младше'} на ${Math.abs(d)}»:`);
-    s.push(`$$x = ${a} ${d >= 0 ? '+' : '−'} ${Math.abs(d)} = ${a + d}$$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${a + d}$ лет`);
-    return { text: s.join('\n'), _isDialog:true };
-  }
-  // Проценты
+  if(ageMatch && (olderMatch || youngerMatch)){ const a = parseInt(ageMatch[1]); const d = olderMatch ? parseInt(olderMatch[1]) : -parseInt(youngerMatch[1]); return { text: `**Задача:** ${q}\n\n$x = ${a} ${d >= 0 ? '+' : '−'} ${Math.abs(d)} = ${a + d}$\n\n${ico('check-circle','inl-ok')} **Ответ:** $${a + d}$ лет`, _isDialog:true }; }
   const percentMatch = q.match(/(\d+)\s*%\s*от\s+(\d+)/i);
-  if(percentMatch){
-    const p = parseInt(percentMatch[1]), a = parseInt(percentMatch[2]);
-    const r = a * p / 100;
-    const s = [];
-    s.push(`**Задача:** ${q}\n`);
-    s.push(`**Формула:** $\\text{Часть} = \\dfrac{p}{100} \\cdot A$\n`);
-    s.push(`$$${p}\\% \\cdot ${a} = \\dfrac{${p}}{100} \\cdot ${a} = ${fmtNum(r)}$$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${fmtNum(r)}$`);
-    return { text: s.join('\n'), _isDialog:true };
-  }
+  if(percentMatch){ const p = parseInt(percentMatch[1]), a = parseInt(percentMatch[2]); const r = a * p / 100; return { text: `**Задача:** ${q}\n\n$${p}\\% \\cdot ${a} = \\dfrac{${p}}{100} \\cdot ${a} = ${fmtNum(r)}$$\n\n${ico('check-circle','inl-ok')} **Ответ:** $${fmtNum(r)}$`, _isDialog:true }; }
   return null;
 }
 
-/* ============ СИСТЕМЫ УРАВНЕНИЙ ============ */
+/* ============ СИСТЕМЫ ============ */
 function solveSystem(query){
   let raw = query.trim();
   raw = raw.replace(/^(реши|решить|система|систему|system)\s*:?\s*/i,'');
@@ -930,10 +750,7 @@ function solveSystem(query){
   const braceMatch = raw.match(/^\{([\s\S]+)\}$/);
   if(braceMatch){ inner = braceMatch[1]; }
   else if(/систем/i.test(query)){ inner = raw; }
-  else if(/[;]/.test(raw) || /\n/.test(raw)){
-    const parts = raw.split(/[;\n]+/).map(s=>s.trim()).filter(Boolean);
-    if(parts.length === 2 && parts.every(p => p.includes('='))) inner = parts.join('; ');
-  }
+  else if(/[;]/.test(raw) || /\n/.test(raw)){ const parts = raw.split(/[;\n]+/).map(s=>s.trim()).filter(Boolean); if(parts.length === 2 && parts.every(p => p.includes('='))) inner = parts.join('; '); }
   if(!inner) return null;
   const eqs = inner.split(/[;]|\},\s*\{|,\s*(?=[a-zA-Zxуy])/).map(s => s.replace(/^[{\s]+|[}\s]+$/g,'').trim()).filter(Boolean);
   if(eqs.length !== 2) return null;
@@ -960,22 +777,13 @@ function parseLinearTwoVar(eq){
   return { a, b, c };
 }
 function solveTwoVarSystem(eqs, s1, s2){
-  const { a: a1, b: b1, c: c1 } = s1;
-  const { a: a2, b: b2, c: c2 } = s2;
+  const { a:a1, b:b1, c:c1 } = s1; const { a:a2, b:b2, c:c2 } = s2;
   const det = a1*b2 - a2*b1;
-  const s = [];
-  s.push(`**Решаю систему уравнений:**`);
-  s.push(`$$\\begin{cases}${eqs[0].replace(/\*/g,'')} \\\\ ${eqs[1].replace(/\*/g,'')} \\end{cases}$$`);
-  if(Math.abs(det) < 1e-12){
-    if(Math.abs(a1*c2 - a2*c1) < 1e-9 && Math.abs(b1*c2 - b2*c1) < 1e-9) return { text: `${ico('infinity')} **Бесконечно много решений**`, _isDialog:true };
-    return { text: `${ico('x-circle','inl-err')} **Нет решений**`, _isDialog:true };
-  }
-  const dx = c1*b2 - c2*b1;
-  const dy = a1*c2 - a2*c1;
+  const s = [`**Система:**`, `$$\\begin{cases}${eqs[0].replace(/\*/g,'')} \\\\ ${eqs[1].replace(/\*/g,'')} \\end{cases}$$`];
+  if(Math.abs(det) < 1e-12){ return { text: `${ico('x-circle','inl-err')} **Решений нет или бесконечно много**`, _isDialog:true }; }
+  const dx = c1*b2 - c2*b1, dy = a1*c2 - a2*c1;
   const x = dx / det, y = dy / det;
-  s.push(`\n${ico('bulb')} **Метод Крамера:**`);
-  s.push(`$$\\Delta = ${fmtNum(det)}, \\quad \\Delta_x = ${fmtNum(dx)}, \\quad \\Delta_y = ${fmtNum(dy)}$$`);
-  s.push(`\n$$x = \\dfrac{${fmtNum(dx)}}{${fmtNum(det)}} = ${fmtNum(x)}, \\quad y = \\dfrac{${fmtNum(dy)}}{${fmtNum(det)}} = ${fmtNum(y)}$$`);
+  s.push(`\n$\\Delta = ${fmtNum(det)}, \\Delta_x = ${fmtNum(dx)}, \\Delta_y = ${fmtNum(dy)}$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x = ${fmtNum(x)}$, $y = ${fmtNum(y)}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
@@ -1007,24 +815,14 @@ function solveLinearInequality(original, left, right, kOp){
   else if(finalOp === '>') interval = `(${fmtNum(threshold)}; +\\infty)`;
   else if(finalOp === '\\le') interval = `(-\\infty; ${fmtNum(threshold)}]`;
   else interval = `[${fmtNum(threshold)}; +\\infty)`;
-  const s = [];
-  s.push(`**Решаю линейное неравенство:**`);
-  s.push(`$$${original}$$`);
-  s.push(`\n**Шаг 1.** $${polyToStr(0,b,c)} ${kOp} 0$`);
-  s.push(`\n**Шаг 2.** $x ${finalOp} ${fmtNum(threshold)}$`);
-  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in ${interval}$`);
-  return { text: s.join('\n'), _isDialog:true };
+  return { text: `**Неравенство:** $${original}$\n\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in ${interval}$`, _isDialog:true };
 }
 function solveQuadInequality(original, left, right, kOp){
   const L = parsePoly(left), R = parsePoly(right);
   const a = L.a - R.a, b = L.b - R.b, c = L.c - R.c;
   if(Math.abs(a) < 1e-12) return solveLinearInequality(original, left, right, kOp);
   const D = b*b - 4*a*c;
-  const s = [];
-  s.push(`**Решаю квадратное неравенство:**`);
-  s.push(`$$${original}$$`);
-  s.push(`\n**Шаг 1.** $${polyToStr(a,b,c)} ${kOp} 0$`);
-  s.push(`**Шаг 2.** $D = ${fmtNum(D)}$`);
+  const s = [`**Квадратное неравенство:** $${original}$`, `**D = ${fmtNum(D)}**`];
   if(D < 0){
     const positive = a > 0;
     if((positive && (kOp === '>' || kOp === '\\ge')) || (!positive && (kOp === '<' || kOp === '\\le'))) s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$`);
@@ -1046,7 +844,7 @@ function solveQuadInequality(original, left, right, kOp){
   let interval;
   if(midSatisfies) interval = kOp === '<' || kOp === '>' ? `(${fmtNum(lo)}; ${fmtNum(hi)})` : `[${fmtNum(lo)}; ${fmtNum(hi)}]`;
   else { const opLo = kOp === '>' || kOp === '<' ? ')' : ']'; const opHi = kOp === '>' || kOp === '<' ? '(' : '['; interval = `(-\\infty; ${fmtNum(lo)}${opLo} \\cup ${opHi}${fmtNum(hi)}; +\\infty)`; }
-  s.push(`\n**Шаг 3.** Корни: $x_1 = ${fmtNum(lo)}$, $x_2 = ${fmtNum(hi)}$`);
+  s.push(`Корни: $x_1 = ${fmtNum(lo)}$, $x_2 = ${fmtNum(hi)}$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in ${interval}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
@@ -1099,12 +897,7 @@ function factorAdvanced(query){
         const gCoef = g, gPow = minPower;
         const inner = poly.terms.map(t => ({ coef: t.coef / gCoef, power: t.power - gPow }));
         const gStr = (gCoef === 1 ? '' : fmtNum(gCoef)) + (gPow === 0 ? '' : gPow === 1 ? 'x' : `x^${gPow}`);
-        const innerStr = polyTermsToStr(inner);
-        const s = [];
-        s.push(`**Разложение на множители:**`);
-        s.push(`$$${polyTermsToStr(poly.terms)}$$`);
-        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${gStr}(${innerStr})$`);
-        return { text: s.join('\n'), _isDialog:true };
+        return { text: `**Разложение:** $${polyTermsToStr(poly.terms)} = ${gStr}(${polyTermsToStr(inner)})$`, _isDialog:true };
       }
     }
   }
@@ -1119,7 +912,7 @@ function factorPolynomial(query){
   if(poly.a !== 0){
     const {a,b,c} = poly;
     const D = b*b - 4*a*c;
-    if(D < 0) return { text:`${ico('x-circle','inl-err')} **$D = ${fmtNum(D)} < 0$** — не разлагается.`, _isDialog:true };
+    if(D < 0) return { text:`${ico('x-circle','inl-err')} Не разлагается на множители.`, _isDialog:true };
     const sq = Math.sqrt(D);
     const r1 = (-b + sq)/(2*a), r2 = (-b - sq)/(2*a);
     const parts = [];
@@ -1127,16 +920,12 @@ function factorPolynomial(query){
     parts.push(r1 >= 0 ? `(x - ${fmtNum(r1)})` : `(x + ${fmtNum(-r1)})`);
     if(Math.abs(r2-r1) > 1e-9) parts.push(r2 >= 0 ? `(x - ${fmtNum(r2)})` : `(x + ${fmtNum(-r2)})`);
     else parts.push(`^2`);
-    const s = [];
-    s.push(`**Разложение:** $${polyToStr(a,b,c)}$`);
-    s.push(`\n$D = ${fmtNum(D)}$, корни $x_1 = ${fmtNum(r1)}$, $x_2 = ${fmtNum(r2)}$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${parts.join(' ')}$`);
-    return { text: s.join('\n'), _isDialog:true };
+    return { text: `**Ответ:** $${parts.join(' ')}$`, _isDialog:true };
   }
   return null;
 }
 
-/* ============ ИНТЕГРАЛЫ ============ */
+/* ============ ИНТЕГРАЛЫ / ПРОИЗВОДНЫЕ ============ */
 function solveIntegral(query){
   const q = query.trim();
   let m = q.match(/∫\s*_?\{?(-?\d+\.?\d*)\}?\^?\{?(-?\d+\.?\d*)\}?\s*(.+?)\s*dx/i);
@@ -1156,7 +945,6 @@ function indefiniteIntegral(expr){
     if((m = part.match(/^(-?\d*\.?\d*)\*?sin\(x\)$/))){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); integrated.push({ coef: -c, fn: 'cos' }); continue; }
     if((m = part.match(/^(-?\d*\.?\d*)\*?cos\(x\)$/))){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); integrated.push({ coef: c, fn: 'sin' }); continue; }
     if((m = part.match(/^(-?\d*\.?\d*)\*?e\^x$/))){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); integrated.push({ coef: c, fn: 'exp' }); continue; }
-    if((m = part.match(/^(-?\d*\.?\d*)\*?1\/x$/)) || (m = part.match(/^(-?\d*\.?\d*)\*?x\^-1$/))){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); integrated.push({ coef: c, fn: 'ln' }); continue; }
     if((m = part.match(/^(-?\d*\.?\d*)\*?x\^(\d+)$/))){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); const n = parseInt(m[2]); integrated.push({ coef: c / (n + 1), power: n + 1 }); continue; }
     if((m = part.match(/^(-?\d*\.?\d*)\*?x$/))){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); integrated.push({ coef: c / 2, power: 2 }); continue; }
     if((m = part.match(/^(-?\d*\.?\d+)$/))){ integrated.push({ coef: parseFloat(m[1]), power: 1 }); continue; }
@@ -1167,15 +955,10 @@ function indefiniteIntegral(expr){
     if(t.fn === 'sin') return (t.coef === 1 ? '' : fmtNum(t.coef)) + '\\sin(x)';
     if(t.fn === 'cos') return (t.coef === 1 ? '' : fmtNum(t.coef)) + '\\cos(x)';
     if(t.fn === 'exp') return (t.coef === 1 ? '' : fmtNum(t.coef)) + 'e^x';
-    if(t.fn === 'ln') return (t.coef === 1 ? '' : fmtNum(t.coef)) + '\\ln|x|';
     if(t.power === 1) return fmtNum(t.coef) + 'x';
     return (t.coef === 1 ? '' : fmtNum(t.coef)) + `x^{${t.power}}`;
   });
-  const s = [];
-  s.push(`**Нахожу интеграл:**`);
-  s.push(`$$\\int ${expr.replace(/\*/g,'')}\\,dx$$`);
-  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${pieces.join(' + ').replace(/\+ -/g,'- ')} + C$`);
-  return { text: s.join('\n'), _isDialog:true };
+  return { text: `**Интеграл:** $\\int ${expr.replace(/\*/g,'')}\\,dx = ${pieces.join(' + ').replace(/\+ -/g,'- ')} + C$`, _isDialog:true };
 }
 function definiteIntegral(a, b, expr){
   expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').toLowerCase();
@@ -1186,15 +969,10 @@ function definiteIntegral(a, b, expr){
   let sum = f(a) + f(b);
   for(let i = 1; i < n; i++) sum += f(a + i*h) * (i % 2 === 0 ? 2 : 4);
   const result = sum * h / 3;
-  const s = [];
-  s.push(`**Определённый интеграл:** $\\int_{${fmtNum(a)}}^{${fmtNum(b)}} ${expr}\\,dx$`);
-  s.push(`\n${ico('check-circle','inl-ok')} **Значение:** $${fmtNum(Math.round(result * 1e6) / 1e6)}$`);
-  return { text: s.join('\n'), _isDialog:true };
+  return { text: `$\\int_{${fmtNum(a)}}^{${fmtNum(b)}} ${expr}\\,dx = ${fmtNum(Math.round(result * 1e6) / 1e6)}$`, _isDialog:true };
 }
-
-/* ============ ПРОИЗВОДНЫЕ ============ */
 function parseGeneralPoly(expr){
-  expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/X/g,'x').replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
+  expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/X/g,'x').replace(/x²/g,'x^2').replace(/x³/g,'x^3');
   const terms = [];
   let s = expr.replace(/-/g,'+-'); if(s.startsWith('+')) s = s.slice(1);
   for(const part of s.split('+')){
@@ -1205,10 +983,8 @@ function parseGeneralPoly(expr){
     if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, power:1, kind:'power'}); continue; }
     m = part.match(/^(-?\d*\.?\d+)$/);
     if(m){ terms.push({coef:parseFloat(m[1]), power:0, kind:'const'}); continue; }
-    m = part.match(/^(-?\d*\.?\d*)\*?(sin|cos|tan|ln)\(x\)$/);
+    m = part.match(/^(-?\d*\.?\d*)\*?(sin|cos)\(x\)$/);
     if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, fn:m[2], kind:'fn'}); continue; }
-    m = part.match(/^(-?\d*\.?\d*)\*?e\^x$/);
-    if(m){ const c = m[1]===''||m[1]==='+'?1:m[1]==='-'?-1:parseFloat(m[1]); terms.push({coef:c, fn:'exp', kind:'fn'}); continue; }
     return null;
   }
   return terms;
@@ -1222,22 +998,12 @@ function termsToStrGen(terms){
     let body = '';
     if(t.kind === 'power'){ if(t.power === 0) body = ''; else if(t.power === 1) body = 'x'; else body = `x^{${t.power}}`; }
     else if(t.kind === 'const') body = '';
-    else if(t.fn === 'exp') body = 'e^{x}';
     else body = `\\${t.fn}(x)`;
     let term = !body ? fmtNum(absC) : (absC === 1 ? body : `${fmtNum(absC)}${body}`);
     if(s === '') s = (t.coef < 0 ? '-' : '') + term;
     else s += (t.coef < 0 ? ' - ' : ' + ') + term;
   }
   return s;
-}
-function derivOfFn(t){
-  switch(t.fn){
-    case 'sin': return {coef: t.coef, fn:'cos', kind:'fn'};
-    case 'cos': return {coef: -t.coef, fn:'sin', kind:'fn'};
-    case 'exp': return {coef: t.coef, fn:'exp', kind:'fn'};
-    case 'ln': return {coef: t.coef, kind:'power', power:-1};
-    default: return null;
-  }
 }
 function solveDerivative(query){
   const q = query.toLowerCase();
@@ -1252,59 +1018,25 @@ function solveDerivative(query){
   const dTerms = [];
   for(const t of terms){
     if(t.kind === 'power'){ if(t.power > 0) dTerms.push({coef:t.coef*t.power, power:t.power-1, kind:'power'}); }
-    else if(t.kind === 'fn'){ const d = derivOfFn(t); if(d) dTerms.push(d); }
+    else if(t.kind === 'fn'){ if(t.fn === 'sin') dTerms.push({coef:t.coef, fn:'cos', kind:'fn'}); else if(t.fn === 'cos') dTerms.push({coef:-t.coef, fn:'sin', kind:'fn'}); }
   }
-  const s = [];
-  s.push(`**Нахожу производную:**`);
-  s.push(`$$f(x) = ${termsToStrGen(terms)}$$`);
-  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $f'(x) = ${termsToStrGen(dTerms)}$`);
-  return { text: s.join('\n'), _isDialog:true };
-}
-
-/* ============ НАЙДИ ОШИБКУ ============ */
-function findError(query){
-  const m = query.toLowerCase().match(/(?:найди|найти)\s+ошибк\w*\s*:?\s*(.+)/i);
-  if(!m) return null;
-  const parts = m[1].trim().split(/\s*(?:→|=>|->|,|;)\s*/);
-  if(parts.length < 2) return null;
-  const [eq, claimed] = parts;
-  const correct = solveEquation(eq);
-  if(!correct) return null;
-  const claimedMatch = claimed.match(/x\s*=\s*(-?\d+\.?\d*)/i);
-  const claimedVal = claimedMatch ? parseFloat(claimedMatch[1]) : null;
-  const correctMatch = correct.text.match(/\$x = (-?\d+\.?\d*)\$/);
-  const correctVal = correctMatch ? parseFloat(correctMatch[1]) : null;
-  if(claimedVal === null || correctVal === null) return null;
-  const s = [];
-  s.push(`**Проверяю решение:**`);
-  s.push(`$${eq}$$`);
-  s.push(`Твой ответ: $x = ${claimedVal}$`);
-  if(Math.abs(claimedVal - correctVal) < 1e-9) s.push(`\n${ico('check-circle','inl-ok')} **Верно!**`);
-  else {
-    s.push(`\n${ico('x-circle','inl-err')} **Нашёл ошибку.** Правильный: $x = ${correctVal}$`);
-    s.push(`\n${ico('bulb')} **Причина:** скорее всего, неверный перенос через знак равенства.`);
-  }
-  return { text: s.join('\n'), _isDialog:true };
+  return { text: `$f(x) = ${termsToStrGen(terms)}$\n\n${ico('check-circle','inl-ok')} **Ответ:** $f'(x) = ${termsToStrGen(dTerms)}$`, _isDialog:true };
 }
 
 /* ============ БАЗА ЗНАНИЙ ============ */
 function matchMathKnowledge(q){
   const x = q.trim().toLowerCase().replace(/[?!.]+$/,'').trim();
-  if(/что\s+такое\s+производн/i.test(x)) return { text: `**Производная** — скорость изменения функции.\n\n$$f'(x_0) = \\lim_{h\\to 0} \\dfrac{f(x_0+h) - f(x_0)}{h}$$`, _isDialog:true };
-  if(/что\s+такое\s+интеграл/i.test(x)) return { text: `**Интеграл** — обратная операция к производной.\n\n$\\int f(x)\\,dx = F(x) + C$`, _isDialog:true };
-  if(/теорема\s+пифагор|пифагор/i.test(x)) return { text: `**Теорема Пифагора:** $a^2 + b^2 = c^2$, где $c$ — гипотенуза.`, _isDialog:true };
-  if(/дискриминант/i.test(x) && !/реши/i.test(x)) return { text: `**Дискриминант:** $D = b^2 - 4ac$\n\n$D>0$ — 2 корня, $D=0$ — 1, $D<0$ — нет.`, _isDialog:true };
-  if(/квадратн\w*\s+уравнени/i.test(x)) return { text: `**Квадратное уравнение:** $x = \\dfrac{-b \\pm \\sqrt{b^2-4ac}}{2a}$`, _isDialog:true };
+  if(/что\s+такое\s+производн/i.test(x)) return { text: `**Производная** — скорость изменения функции.`, _isDialog:true };
+  if(/что\s+такое\s+интеграл/i.test(x)) return { text: `**Интеграл** — обратная операция к производной.`, _isDialog:true };
+  if(/теорема\s+пифагор/i.test(x)) return { text: `**Теорема Пифагора:** $a^2 + b^2 = c^2$`, _isDialog:true };
+  if(/дискриминант/i.test(x) && !/реши/i.test(x)) return { text: `**Дискриминант:** $D = b^2 - 4ac$`, _isDialog:true };
   if(/теорема\s+виета/i.test(x)) return { text: `**Виета:** $x_1+x_2 = -b/a$, $x_1 x_2 = c/a$`, _isDialog:true };
-  if(/логарифм/i.test(x) && /что|объясн/i.test(x)) return { text: `**Логарифм** $\\log_a b = c \\iff a^c = b$`, _isDialog:true };
-  if(/процент/i.test(x) && /что|объясн|формул/i.test(x)) return { text: `**Проценты:** $p\\%$ от $A$: $A \\cdot \\frac{p}{100}$`, _isDialog:true };
   if(/биссектрис/i.test(x) && /что|объясн/i.test(x)) return { text: `**Биссектриса** — луч, делящий угол пополам.`, _isDialog:true };
   if(/медиан/i.test(x) && /что|объясн/i.test(x)) return { text: `**Медиана** — отрезок от вершины к середине противолежащей стороны.`, _isDialog:true };
-  if(/высот/i.test(x) && /что|объясн/i.test(x)) return { text: `**Высота** — перпендикуляр из вершины к прямой, содержащей противолежащую сторону.`, _isDialog:true };
-  if(/окружност/i.test(x) && /что|объясн/i.test(x)) return { text: `**Окружность** — множество точек, равноудалённых от центра.\n\n**Формулы:** $C = 2\\pi r$, $S = \\pi r^2$`, _isDialog:true };
+  if(/высот/i.test(x) && /что|объясн/i.test(x)) return { text: `**Высота** — перпендикуляр из вершины.`, _isDialog:true };
+  if(/окружност/i.test(x) && /что|объясн/i.test(x)) return { text: `**Окружность:** $C = 2\\pi r$, $S = \\pi r^2$`, _isDialog:true };
   return null;
 }
-
 function matchDialog(q){
   const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
@@ -1312,21 +1044,18 @@ function matchDialog(q){
   if(/как\s+(у\s+тебя\s+)?дела/i.test(x)) return name ? `Всё отлично, ${name}!` : 'Всё отлично!';
   if(/^(пока|до свидания|бай)/i.test(x)) return 'До встречи!';
   if(/спасибо|благодарю/i.test(x)) return 'Пожалуйста!';
-  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `${ico('compass')} Я **Orbita AI** — репетитор по математике от **ORT**.`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Умею:** уравнения, системы, неравенства, производные, интегралы, задачи по тексту, чертежи (отрезки, углы, окружности, треугольники), графики, тренажёр, экзамен.`;
+  if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `${ico('compass')} Я **Orbita AI** — репетитор по математике.`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Умею:**\n\n${ico('equals')} Уравнения, системы, неравенства\n${ico('chart')} Производные, графики, чертежи\n${ico('sigma')} Интегралы\n${ico('target')} Тренажёр и экзамен\n${ico('image')} Распознавание фото\n${ico('book-open')} Объяснения по шагам\n\n**Быстрые команды:**\n• \`/реши 2x+5=15\`\n• \`/график x^2-4\`\n• \`/чертёж прямой угол ABC\`\n• \`/экзамен\`, \`/тренажёр\`, \`/шпаргалка\``;
   if(/который\s+час/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${ico('clock')}`;
   return null;
 }
 
-/* ============ ГЛАВНЫЙ ГЕНЕРАТОР ОТВЕТА ============ */
+/* ============ ГЛАВНЫЙ ОТВЕТ ============ */
 async function generateAnswer(query){
   if(hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
 
   const geo = parseGeometry(query);
-  if(geo){
-    const cleanQ = query.replace(/^(начерти|построй|нарисуй|изобрази|проведи|draw)\s+/i,'');
-    return { text: `**Строю чертёж:**\n_${esc(cleanQ)}_\n\n${ico('chart')} Рисунок ниже.`, _geometry: geo, _isDialog: true };
-  }
+  if(geo){ const cleanQ = query.replace(/^(начерти|построй|нарисуй|изобрази|проведи|draw)\s+/i,''); return { text: `**Строю чертёж:**\n_${esc(cleanQ)}_`, _geometry: geo, _isDialog: true }; }
 
   const word = solveWordProblem(query);
   if(word) return word;
@@ -1336,8 +1065,7 @@ async function generateAnswer(query){
   let result = null;
 
   const gm = query.match(/(?:построй|построить|график)[\s:]*(?:график\s+)?(?:функции\s+)?(?:y\s*=\s*)(.+)/i);
-  if(gm){ const expr = gm[1].trim(); result = { text: `**Строю график:** $${expr}$`, _graph: expr, _isDialog: true }; }
-  if(!result) result = findError(query);
+  if(gm){ const expr = gm[1].trim(); result = { text: `**Строю график:** $y = ${expr}$`, _graph: expr, _isDialog: true }; }
   if(!result) result = solveSystem(query);
   if(!result) result = solveInequality(query);
   if(!result) result = solveIntegral(query);
@@ -1349,74 +1077,55 @@ async function generateAnswer(query){
     if(m){
       const a = parseFloat(m[1].replace(',','.')), b = parseFloat(m[3].replace(',','.')), op = m[2];
       let r;
-      switch(op){ case '+': r = a+b; break; case '-': r = a-b; break; case '*': case 'x': case '×': r = a*b; break; case '/': case '÷': if(b === 0){ result = { text: `На ноль делить нельзя ${ico('x-circle','inl-err')}`, _isDialog:true }; break; } r = a/b; break; }
+      switch(op){ case '+': r = a+b; break; case '-': r = a-b; break; case '*': case 'x': case '×': r = a*b; break; case '/': case '÷': if(b === 0){ result = { text: `На ноль делить нельзя`, _isDialog:true }; break; } r = a/b; break; }
       if(!result) result = { text: `$${a} ${op} ${b} = ${Math.round(r*1000000)/1000000}$$`, _isDialog:true };
     }
   }
-  if(!result){ const nm = query.toLowerCase().match(/(?:нод|нок)\s*\(?\s*(\d+)\s*[,;\s]+\s*(\d+)/i); if(nm){ const a = parseInt(nm[1]), b = parseInt(nm[2]); if(/нок/i.test(query)) result = { text: `**НОК(${a}, ${b}) = ${lcm(a,b)}**`, _isDialog:true }; else result = { text: `**НОД(${a}, ${b}) = ${gcd(a,b)}**`, _isDialog:true }; } }
-  if(!result){ const fm = query.toLowerCase().match(/(\d+)\s*!|факториал\s+(\d+)/); if(fm){ const n = parseInt(fm[1] || fm[2]); if(n >= 0 && n <= 20){ let f = 1; for(let i = 2; i <= n; i++) f *= i; result = { text: `**$${n}! = ${f}$**`, _isDialog:true }; } } }
   if(!result) result = matchMathKnowledge(query);
   if(!result){ const d = matchDialog(query); if(d) result = { text: d, _isDialog: true }; }
-  if(!result) result = { text: `${ico('hint')} Не могу разобрать «${query}».\n\n**Попробуй:**\n• _Реши 2x + 5 = 15_\n• _Система: {x+y=7, x-y=1}_\n• _Построй окружность радиуса 3_\n• _Построй прямой угол ABC_\n• _У Маши было 10 яблок, отдала 3, сколько осталось?_\n• _Построй y = x^2 - 4_`, _isDialog: true };
+  if(!result) result = { text: `${ico('hint')} Не могу разобрать «${query}».\n\n**Попробуй:**\n• \`/реши 2x + 5 = 15\`\n• \`/график x^2 - 4\`\n• \`/чертёж прямой угол ABC\`\n• \`/экзамен\` — экзамен\n• \`/шпаргалка\` — формулы`, _isDialog: true };
   if(result && !result._isBlocked) answerCache.set(key, result);
   return result;
 }
 
-/* ============ УМНЫЙ РАЗБОР «НЕ ПОНЯЛ» ============ */
-function smarterExplanation(problem, level){
-  if(!problem) return null;
-  const { type, answer, roots, original } = problem;
-  const levels = ['simple', 'medium', 'student'];
-  const l = levels[level] || 'simple';
-
-  if(type === 'linear'){
-    if(l === 'simple') return `**Объясняю проще 👇**\n\nПредставь, что у тебя есть корзина с яблоками. Ты знаешь, что если к некоторому числу яблок прибавить ещё сколько-то, получится итог.\n\nВ уравнении $${original}$ — это как найти, сколько яблок было сначала.\n\n${ico('bulb')} **Правило на пальцах:**\nКогда число «переезжает» через знак $=$, у него **меняется знак** (плюс на минус, минус на плюс).\n\nПопробуем? Ответ: $x = ${fmtNum(answer)}$`;
-    if(l === 'medium') return `**Попробуем по-другому:**\n\nУравнение $${original}$. Слева от знака $=$ — то, что зависит от $x$. Справа — то, что не зависит.\n\n${ico('bulb')} **Алгоритм:**\n1. Всё, что с $x$ — влево\n2. Всё, что без $x$ — вправо (со сменой знака)\n3. Делим на коэффициент при $x$\n\nОтвет: $x = ${fmtNum(answer)}$`;
-    return `**Академическое объяснение:**\n\nПриводим к виду $ax = b$ путём переноса слагаемых с изменением знака. Затем $x = b/a$.\n\nДля $${original}$: $x = ${fmtNum(answer)}$`;
-  }
-  if(type === 'quadratic'){
-    if(l === 'simple') return `**Совсем просто:**\n\nКвадратное уравнение — это как горка. Она может пересекать землю в 2 точках, 1 точке или ни разу.\n\n${ico('bulb')} **Формула, которую надо знать:**\n$$D = b^2 - 4ac$$\n\nЕсли $D > 0$ — две точки (корня), если $D = 0$ — одна, если $D < 0$ — ни одной.\n\nУ нас ${roots?.length === 2 ? `два ответа: $x_1 = ${fmtNum(roots[0])}$, $x_2 = ${fmtNum(roots[1])}$` : roots?.length === 1 ? `ответ: $x = ${fmtNum(roots[0])}$` : 'корней нет'}`;
-    if(l === 'medium') return `**Через дискриминант:**\n\n$$x = \\dfrac{-b \\pm \\sqrt{D}}{2a}$$\n\n${roots?.length === 2 ? `$x_1 = ${fmtNum(roots[0])}$, $x_2 = ${fmtNum(roots[1])}$` : roots?.length === 1 ? `$x = ${fmtNum(roots[0])}$` : 'корней нет'}`;
-    return `**Разбор:**\n\nКвадратное уравнение $ax^2+bx+c=0$. Дискриминант $D = b^2-4ac$. Корни по формуле $x = \\frac{-b\\pm\\sqrt{D}}{2a}$.\n\n${roots?.length ? `Ответ: ${roots.map(r=>'$x='+fmtNum(r)+'$').join(', ')}` : 'Корней нет'}`;
-  }
-  return `**Попробуем ещё раз:**\n\nРазберём шаг за шагом. Напиши конкретный пример — покажу по-другому.`;
+/* ============ РЕНДЕР ============ */
+function renderText(raw){
+  const mathBlocks = [];
+  let text = String(raw);
+  text = text.replace(/\$\$([^$]+?)\$\$/g, (m, expr) => { const i = mathBlocks.length; mathBlocks.push({expr: expr.trim(), display: true}); return `\u0000M${i}\u0000`; });
+  text = text.replace(/\$([^$\n]+?)\$/g, (m, expr) => { const i = mathBlocks.length; mathBlocks.push({expr: expr.trim(), display: false}); return `\u0000M${i}\u0000`; });
+  const iconBlocks = [];
+  text = text.replace(/<span class="ico[^"]*"><svg><use href="#i-([a-z0-9-]+)"\/><\/svg><\/span>/gi, (m, id) => {
+    const idx = iconBlocks.length;
+    let cls = ''; if(/inl-ok/.test(m)) cls = 'inl-ok'; else if(/inl-err/.test(m)) cls = 'inl-err';
+    iconBlocks.push({id, cls});
+    return `\u0000I${idx}\u0000`;
+  });
+  let h = esc(text);
+  h = h.replace(/```([\s\S]*?)```/g, (m, code) => `<pre style="background:var(--surface);padding:12px;border-radius:10px;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:12.5px;line-height:1.4;margin:8px 0;color:var(--ink)">${code.trim()}</pre>`);
+  h = h.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, (m,n,d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`);
+  h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  h = h.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'<em>$1</em>');
+  h = h.replace(/(^|[^\w_])_([^_\n]+)_(?![_\w])/g, '$1<em>$2</em>');
+  h = h.replace(/\n/g,'<br>');
+  h = h.replace(/\u0000I(\d+)\u0000/g, (m, i) => { const b = iconBlocks[+i]; return `<span class="inl-ico ${b.cls}"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-${b.id}"/></svg></span>`; });
+  h = h.replace(/\u0000M(\d+)\u0000/g, (m, i) => {
+    const b = mathBlocks[+i];
+    if(window.katex){ try{ return katex.renderToString(b.expr, { throwOnError: false, displayMode: b.display }); }catch(e){ return b.display ? `$$${b.expr}$$` : `$${b.expr}$`; } }
+    return b.display ? `$$${b.expr}$$` : `$${b.expr}$`;
+  });
+  return h;
 }
 
-function handleNotUnderstood(msg){
-  const bubble = document.createElement('div');
-  bubble.className = 'msg ai';
-  const lvl = state.explainLevel || 0;
-  const text = smarterExplanation(msg._problem, lvl);
-  if(!text){ showToast('Нет что объяснять'); return; }
-  bubble.innerHTML = `<div class="avatar"><svg><use href="#i-brain"/></svg></div><div class="body"><div class="name"><span class="dot"></span>Разбор ${lvl === 0 ? '🌱 просто' : lvl === 1 ? '📘 средне' : '🎓 строго'}</div><div class="text">${renderText(text)}</div><div class="msg-actions" style="margin-top:10px"><button class="msg-act" id="nextLvlBtn">${ico('refresh')}<span>${lvl < 2 ? 'Ещё проще/строже' : 'Начать сначала'}</span></button></div></div>`;
-  chatEl.appendChild(bubble); scrollDown();
-  haptic('success');
-  bubble.querySelector('#nextLvlBtn').onclick = () => {
-    state.explainLevel = (state.explainLevel || 0) + 1;
-    if(state.explainLevel > 2) state.explainLevel = 0;
-    handleNotUnderstood(msg);
-  };
-  state.explainLevel = lvl;
-}
-
-/* ================================================================
-   ГЕОМЕТРИЯ — расширенная
-   ================================================================ */
+/* ============ ГЕОМЕТРИЯ ============ */
 const GEOM_LAYOUTS = {
-  segment:        { pos:[[80,180],[320,180]] },
-  ray:            { pos:[[80,200],[320,100]] },
-  line:           { pos:[[80,210],[320,90]] },
-  angle:          { pos:[[320,90],[100,220],[360,230]] },
-  triangle:       { pos:[[200,60],[80,240],[320,240]] },
-  rightTriangle:  { pos:[[80,60],[80,240],[320,240]] },
-  square:         { pos:[[90,80],[310,80],[310,230],[90,230]] },
-  rectangle:      { pos:[[70,90],[330,90],[330,230],[70,230]] },
-  parallelogram:  { pos:[[60,90],[300,90],[340,230],[100,230]] },
-  rhombus:        { pos:[[200,60],[320,165],[200,270],[80,165]] },
-  trapezoid:      { pos:[[110,90],[290,90],[350,230],[50,230]] },
-  circle:         { pos:[[200,165]] }
+  segment:{pos:[[80,180],[320,180]]}, ray:{pos:[[80,200],[320,100]]}, line:{pos:[[80,210],[320,90]]},
+  angle:{pos:[[320,90],[100,220],[360,230]]}, triangle:{pos:[[200,60],[80,240],[320,240]]},
+  rightTriangle:{pos:[[80,60],[80,240],[320,240]]}, square:{pos:[[90,80],[310,80],[310,230],[90,230]]},
+  rectangle:{pos:[[70,90],[330,90],[330,230],[70,230]]}, parallelogram:{pos:[[60,90],[300,90],[340,230],[100,230]]},
+  rhombus:{pos:[[200,60],[320,165],[200,270],[80,165]]}, trapezoid:{pos:[[110,90],[290,90],[350,230],[50,230]]}, circle:{pos:[[200,165]]}
 };
-
 function parseGeometry(query){
   const q = query.trim();
   if(!/начерти|построй|нарисуй|изобрази|проведи|draw/i.test(q)) return null;
@@ -1425,65 +1134,47 @@ function parseGeometry(query){
   const shapes = [];
   for(let part of parts){
     let m;
-    // Окружность
     m = part.match(/окружност\w*\s+(?:с\s+)?(?:центром\s+)?([A-ZА-Я])(?:\s+радиус\w*\s+(\d+(?:\.\d+)?))?/i);
     if(m){ shapes.push({type:'circle', center:m[1].toUpperCase(), radius:m[2]?parseFloat(m[2]):3}); continue; }
-    // Прямоугольный треугольник
     m = part.match(/прямоугольн\w*\s+треугольник\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'rightTriangle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase())}); continue; }
-    // Обычный треугольник
     m = part.match(/треугольник\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'triangle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase())}); continue; }
-    // Медиана/высота/биссектриса треугольника
     m = part.match(/(медиан\w*|высот\w*|биссектрис\w*)\s+(?:из\s+)?([A-ZА-Я])\s+(?:в\s+)?треугольник\w*\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ const kind = m[1].toLowerCase().includes('медиан') ? 'median' : m[1].toLowerCase().includes('высот') ? 'altitude' : 'bisectorTri';
       shapes.push({type:'triangle', pts:[m[3],m[4],m[5]].map(x=>x.toUpperCase()), extra:kind, extraFrom:m[2].toUpperCase()}); continue; }
-    // Прямоугольник
-    m = part.match(/прямоугольник\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])(?:\s+(\d+)\s*(?:на|x)\s*(\d+))?/i);
-    if(m){ shapes.push({type:'rectangle', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase()), sides:m[5]&&m[6]?[parseInt(m[5]),parseInt(m[6])]:null}); continue; }
-    // Параллелограмм
+    m = part.match(/прямоугольник\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ shapes.push({type:'rectangle', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
     m = part.match(/параллелограмм\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'parallelogram', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
-    // Ромб
     m = part.match(/ромб\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'rhombus', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
-    // Трапеция
     m = part.match(/трапеци\w*\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'trapezoid', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
-    // Квадрат
-    m = part.match(/квадрат\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])(?:\s+(\d+))?/i);
-    if(m){ shapes.push({type:'square', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase()), side:m[5]?parseInt(m[5]):null}); continue; }
-    // Биссектриса угла
+    m = part.match(/квадрат\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ shapes.push({type:'square', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
     m = part.match(/биссектрис\w*\s+угла\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'angle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase()), degrees:60, bisector:true}); continue; }
-    // Прямой угол
     m = part.match(/прямой\s+угол\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'angle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase()), degrees:90, right:true}); continue; }
-    // Угол с градусами
     m = part.match(/угол\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*=?\s*(\d+)\s*°?/i);
     if(m){ shapes.push({type:'angle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase()), degrees:parseInt(m[4])}); continue; }
-    // Угол без градусов
     m = part.match(/угол\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'angle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase()), degrees:60}); continue; }
-    // Луч
     m = part.match(/луч\s+([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'ray', pts:[m[1],m[2]].map(x=>x.toUpperCase())}); continue; }
-    // Прямая
     m = part.match(/прямую?\s+([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'line', pts:[m[1],m[2]].map(x=>x.toUpperCase())}); continue; }
-    // Перпендикуляр
-    m = part.match(/перпендикуляр\w*\s+(?:из\s+)?([A-ZА-Я])\s+(?:к|на)\s+([A-ZА-Я])\s*([A-ZА-Я])/i);
-    if(m){ shapes.push({type:'perpendicular', from:m[1].toUpperCase(), to:[m[2],m[3]].map(x=>x.toUpperCase())}); continue; }
-    // Параллельные
-    m = part.match(/параллельн\w*\s+прям\w*\s+([A-ZА-Я])\s*([A-ZА-Я])/i);
-    if(m){ shapes.push({type:'parallel', pts:[m[1],m[2]].map(x=>x.toUpperCase())}); continue; }
-    // Отрезок
     m = part.match(/отрезок\s+([A-ZА-Я])\s*([A-ZА-Я])(?:\s+длиной\s+(\d+))?/i);
     if(m){ shapes.push({type:'segment', pts:[m[1],m[2]].map(x=>x.toUpperCase()), length:m[3]?parseInt(m[3]):null}); continue; }
   }
   return shapes.length ? shapes : null;
 }
-
+function extendRay(from, through, len){
+  const dx = through[0] - from[0], dy = through[1] - from[1];
+  const d = Math.hypot(dx, dy) || 1;
+  return [from[0] + (dx/d)*len, from[1] + (dy/d)*len];
+}
 function drawGeometry(container, shapes){
   const W = 400, H = 300;
   const canvas = document.createElement('canvas');
@@ -1491,83 +1182,40 @@ function drawGeometry(container, shapes){
   canvas.width = W * dpr; canvas.height = H * dpr;
   canvas.style.width = '100%'; canvas.style.height = 'auto'; canvas.style.display = 'block'; canvas.style.background = '#f8fafc';
   container.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
   ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, W, H);
-
-  const ACCENT = '#2563eb', TEXT = '#0f172a', DASH = '#dc2626', ARC = '#f59e0b', PERP = '#16a34a';
-
-  // Собираем позиции
+  const ACCENT = '#2563eb', TEXT = '#0f172a', DASH = '#dc2626', ARC = '#f59e0b';
   const positions = {};
-  // Обрабатываем каждый shape: для окружности — своя логика
   shapes.forEach(s => {
-    if(s.type === 'circle'){
-      if(!positions[s.center]) positions[s.center] = [200, 165];
-      return;
-    }
-    const layout = GEOM_LAYOUTS[s.type];
-    if(!layout) return;
+    if(s.type === 'circle'){ if(!positions[s.center]) positions[s.center] = [200, 165]; return; }
+    const layout = GEOM_LAYOUTS[s.type]; if(!layout) return;
     s.pts.forEach((letter, i) => { if(!positions[letter] && layout.pos[i]) positions[letter] = layout.pos[i]; });
   });
-
-  // Рисуем
-  shapes.forEach(s => drawShape(ctx, s, positions, {ACCENT, TEXT, DASH, ARC, PERP}));
-
-  // Метки букв
+  shapes.forEach(s => drawShape(ctx, s, positions, {ACCENT, TEXT, DASH, ARC}));
   for(const letter in positions){
     const [x, y] = positions[letter];
     const cx = 200, cy = 165;
     const vx = x - cx, vy = y - cy;
     const len = Math.hypot(vx, vy) || 1;
     const dx = (vx / len) * 22, dy = (vy / len) * 22;
-    // Точка
-    ctx.fillStyle = ACCENT;
-    ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI*2); ctx.fill();
-    // Буква
-    ctx.fillStyle = TEXT;
-    ctx.font = 'bold 15px -apple-system,sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(letter, x + dx, y + dy);
+    ctx.fillStyle = ACCENT; ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = TEXT; ctx.font = 'bold 15px -apple-system,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(letter, x + dx, y + dy);
   }
-
-  // Информационная панель внизу
   const info = collectFormulas(shapes);
   if(info){
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 11px -apple-system,sans-serif';
+    ctx.fillStyle = '#0f172a'; ctx.font = 'bold 11px -apple-system,sans-serif';
     ctx.textAlign = 'left'; ctx.textBaseline = 'top';
     const lines = info.split('\n');
     lines.forEach((line, i) => ctx.fillText(line, 10, H - 8 - (lines.length - i - 1) * 14));
   }
 }
-
 function collectFormulas(shapes){
   const lines = [];
   shapes.forEach(s => {
-    if(s.type === 'circle'){
-      const r = s.radius;
-      const C = 2 * Math.PI * r, S = Math.PI * r * r;
-      lines.push(`Окружность r=${r}: C = 2πr ≈ ${C.toFixed(2)}, S = πr² ≈ ${S.toFixed(2)}`);
-    }
-    if(s.type === 'square'){
-      if(s.side){
-        lines.push(`Квадрат ${s.side}×${s.side}: S = ${s.side*s.side}, P = ${4*s.side}`);
-      } else {
-        // Примерно из координат
-        const dx = GEOM_LAYOUTS.square.pos[1][0] - GEOM_LAYOUTS.square.pos[0][0];
-        const dy = GEOM_LAYOUTS.square.pos[1][1] - GEOM_LAYOUTS.square.pos[0][1];
-        const side = Math.hypot(dx, dy);
-        lines.push(`Квадрат: S = a², P = 4a`);
-      }
-    }
-    if(s.type === 'rectangle'){
-      if(s.sides){
-        const [w, h] = s.sides;
-        lines.push(`Прямоугольник ${w}×${h}: S = ${w*h}, P = ${2*(w+h)}`);
-      } else {
-        lines.push(`Прямоугольник: S = a·b, P = 2(a+b)`);
-      }
-    }
+    if(s.type === 'circle'){ const r = s.radius; lines.push(`Окружность r=${r}: C = 2πr ≈ ${(2*Math.PI*r).toFixed(2)}, S = πr² ≈ ${(Math.PI*r*r).toFixed(2)}`); }
+    if(s.type === 'square') lines.push(`Квадрат: S = a², P = 4a`);
+    if(s.type === 'rectangle') lines.push(`Прямоугольник: S = a·b, P = 2(a+b)`);
     if(s.type === 'rhombus') lines.push(`Ромб: S = d₁·d₂/2, P = 4a`);
     if(s.type === 'parallelogram') lines.push(`Параллелограмм: S = a·h`);
     if(s.type === 'trapezoid') lines.push(`Трапеция: S = (a+b)/2 · h`);
@@ -1576,28 +1224,10 @@ function collectFormulas(shapes){
   });
   return lines.length ? lines.join('\n') : '';
 }
-
-function extendRay(from, through, len){
-  const dx = through[0] - from[0], dy = through[1] - from[1];
-  const d = Math.hypot(dx, dy) || 1;
-  return [from[0] + (dx/d)*len, from[1] + (dy/d)*len];
-}
-
 function drawShape(ctx, s, positions, C){
   const get = l => positions[l];
   ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-
-  if(s.type === 'segment'){
-    const [a, b] = s.pts.map(get);
-    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
-    if(s.length){
-      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
-      ctx.fillStyle = C.TEXT; ctx.font = '13px -apple-system,sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText(s.length + ' см', mx, my - 12);
-    }
-    return;
-  }
+  if(s.type === 'segment'){ const [a, b] = s.pts.map(get); ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); return; }
   if(s.type === 'ray'){
     const [o, a] = s.pts.map(get);
     const dx = a[0] - o[0], dy = a[1] - o[1];
@@ -1623,45 +1253,30 @@ function drawShape(ctx, s, positions, C){
     const [a, b, c] = s.pts.map(get);
     ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
     ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.lineTo(c[0],c[1]); ctx.closePath(); ctx.stroke();
-    // Прямой угол в вершине a (для rightTriangle)
     if(s.type === 'rightTriangle'){
       const abx = b[0]-a[0], aby = b[1]-a[1], acx = c[0]-a[0], acy = c[1]-a[1];
       const abLen = Math.hypot(abx, aby), acLen = Math.hypot(acx, acy);
       const u1 = [abx/abLen, aby/abLen], u2 = [acx/acLen, acy/acLen];
-      const s1 = 16;
-      const p1 = [a[0]+u1[0]*s1, a[1]+u1[1]*s1];
-      const p2 = [a[0]+u2[0]*s1, a[1]+u2[1]*s1];
-      const p3 = [a[0]+u1[0]*s1+u2[0]*s1, a[1]+u1[1]*s1+u2[1]*s1];
+      const sz = 16;
+      const p1 = [a[0]+u1[0]*sz, a[1]+u1[1]*sz];
+      const p2 = [a[0]+u2[0]*sz, a[1]+u2[1]*sz];
+      const p3 = [a[0]+u1[0]*sz+u2[0]*sz, a[1]+u1[1]*sz+u2[1]*sz];
       ctx.strokeStyle = C.ARC; ctx.lineWidth = 1.8;
       ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p3[0],p3[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
     }
-    // Доп. линия
     if(s.extra){
       const from = s.extraFrom === s.pts[0] ? a : s.extraFrom === s.pts[1] ? b : c;
       const opposite = [s.pts[0],s.pts[1],s.pts[2]].filter(p => p !== s.extraFrom);
       const p1 = get(opposite[0]), p2 = get(opposite[1]);
-      let target, label = '', color = C.DASH;
+      let target, label = '';
       if(s.extra === 'median'){ target = [(p1[0]+p2[0])/2, (p1[1]+p2[1])/2]; label = 'медиана'; }
-      else if(s.extra === 'altitude'){
-        // Перпендикуляр к прямой p1-p2 из точки from
-        const dx = p2[0]-p1[0], dy = p2[1]-p1[1];
-        const t = ((from[0]-p1[0])*dx + (from[1]-p1[1])*dy) / (dx*dx + dy*dy);
-        target = [p1[0]+t*dx, p1[1]+t*dy]; label = 'высота';
-      } else if(s.extra === 'bisectorTri'){
-        // Биссектриса из from к противолежащей стороне
-        const l1 = Math.hypot(p1[0]-from[0], p1[1]-from[1]);
-        const l2 = Math.hypot(p2[0]-from[0], p2[1]-from[1]);
-        const t = l1 / (l1 + l2);
-        target = [p1[0] + t*(p2[0]-p1[0]), p1[1] + t*(p2[1]-p1[1])];
-        label = 'биссектриса';
-      }
+      else if(s.extra === 'altitude'){ const dx = p2[0]-p1[0], dy = p2[1]-p1[1]; const t = ((from[0]-p1[0])*dx + (from[1]-p1[1])*dy) / (dx*dx + dy*dy); target = [p1[0]+t*dx, p1[1]+t*dy]; label = 'высота'; }
+      else if(s.extra === 'bisectorTri'){ const l1 = Math.hypot(p1[0]-from[0], p1[1]-from[1]); const l2 = Math.hypot(p2[0]-from[0], p2[1]-from[1]); const t = l1 / (l1 + l2); target = [p1[0] + t*(p2[0]-p1[0]), p1[1] + t*(p2[1]-p1[1])]; label = 'биссектриса'; }
       if(target){
-        ctx.strokeStyle = color; ctx.lineWidth = 1.8;
-        ctx.setLineDash([6,5]);
+        ctx.strokeStyle = C.DASH; ctx.lineWidth = 1.8; ctx.setLineDash([6,5]);
         ctx.beginPath(); ctx.moveTo(from[0], from[1]); ctx.lineTo(target[0], target[1]); ctx.stroke();
         ctx.setLineDash([]);
-        ctx.fillStyle = color; ctx.font = '11px -apple-system,sans-serif';
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = C.DASH; ctx.font = '11px -apple-system,sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
         ctx.fillText(label, target[0] + 6, target[1] - 10);
       }
     }
@@ -1677,22 +1292,15 @@ function drawShape(ctx, s, positions, C){
   }
   if(s.type === 'circle'){
     const [cx, cy] = get(s.center);
-    const rPix = 30 + (s.radius || 3) * 20;
-    // Окружность
+    const rPix = Math.min(30 + (s.radius || 3) * 20, 120);
     ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.arc(cx, cy, Math.min(rPix, 120), 0, Math.PI*2); ctx.stroke();
-    // Центр
-    ctx.fillStyle = C.ACCENT;
-    ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2); ctx.fill();
-    // Радиус (пунктир)
-    const rr = Math.min(rPix, 120);
+    ctx.beginPath(); ctx.arc(cx, cy, rPix, 0, Math.PI*2); ctx.stroke();
+    ctx.fillStyle = C.ACCENT; ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2); ctx.fill();
     ctx.strokeStyle = C.DASH; ctx.lineWidth = 1.5; ctx.setLineDash([5,4]);
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + rr * Math.cos(-Math.PI/4), cy + rr * Math.sin(-Math.PI/4)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + rPix * Math.cos(-Math.PI/4), cy + rPix * Math.sin(-Math.PI/4)); ctx.stroke();
     ctx.setLineDash([]);
-    // Подпись r
-    ctx.fillStyle = C.DASH; ctx.font = 'bold 12px -apple-system,sans-serif';
-    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-    ctx.fillText('r = ' + (s.radius || 3), cx + rr * Math.cos(-Math.PI/4)/2 + 6, cy + rr * Math.sin(-Math.PI/4)/2 - 6);
+    ctx.fillStyle = C.DASH; ctx.font = 'bold 12px -apple-system,sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('r = ' + (s.radius || 3), cx + rPix * Math.cos(-Math.PI/4)/2 + 6, cy + rPix * Math.sin(-Math.PI/4)/2 - 6);
     return;
   }
   if(s.type === 'angle'){
@@ -1705,14 +1313,13 @@ function drawShape(ctx, s, positions, C){
     const angleC = Math.atan2(c[1]-b[1], c[0]-b[0]);
     const radius = 40;
     if(s.right){
-      const size = 20;
+      const sz = 20;
       const u1 = [Math.cos(angleA), Math.sin(angleA)], u2 = [Math.cos(angleC), Math.sin(angleC)];
-      const p1 = [b[0]+u1[0]*size, b[1]+u1[1]*size];
-      const p2 = [b[0]+u2[0]*size, b[1]+u2[1]*size];
-      const p3 = [b[0]+u1[0]*size+u2[0]*size, b[1]+u1[1]*size+u2[1]*size];
+      const p1 = [b[0]+u1[0]*sz, b[1]+u1[1]*sz], p2 = [b[0]+u2[0]*sz, b[1]+u2[1]*sz];
+      const p3 = [b[0]+u1[0]*sz+u2[0]*sz, b[1]+u1[1]*sz+u2[1]*sz];
       ctx.strokeStyle = C.ARC; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p3[0],p3[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
-      ctx.fillStyle = C.ARC; ctx.font = 'bold 12px -apple-system,sans-serif'; ctx.textAlign = 'center';
+      ctx.fillStyle = C.ARC; ctx.font = 'bold 12px -apple-system,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('90°', b[0] + Math.cos((angleA+angleC)/2) * (radius + 12), b[1] + Math.sin((angleA+angleC)/2) * (radius + 12));
     } else {
       let startA = angleA, endC = angleC;
@@ -1739,73 +1346,10 @@ function drawShape(ctx, s, positions, C){
       ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
       ctx.fillText('биссектриса', bx - 90, by + 14);
     }
-    return;
-  }
-  if(s.type === 'perpendicular'){
-    // Рисуем AB горизонтально и перпендикуляр из точки
-    const [a, b] = s.to;
-    const pA = positions[a] || [80, 200], pB = positions[b] || [320, 200];
-    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.moveTo(pA[0], pA[1]); ctx.lineTo(pB[0], pB[1]); ctx.stroke();
-    // Перпендикуляр из середины
-    const mx = (pA[0] + pB[0]) / 2;
-    const py = pA[1] - 100;
-    ctx.beginPath(); ctx.moveTo(mx, pA[1]); ctx.lineTo(mx, py); ctx.stroke();
-    // Маркер прямого угла
-    ctx.strokeStyle = C.PERP; ctx.lineWidth = 1.8;
-    ctx.beginPath();
-    ctx.moveTo(mx - 12, pA[1]);
-    ctx.lineTo(mx - 12, pA[1] - 12);
-    ctx.lineTo(mx, pA[1] - 12);
-    ctx.stroke();
-    return;
-  }
-  if(s.type === 'parallel'){
-    const [a, b] = s.pts;
-    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.moveTo(40, 100); ctx.lineTo(360, 100); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(40, 200); ctx.lineTo(360, 200); ctx.stroke();
-    // Маркеры параллельности
-    ctx.strokeStyle = C.PERP; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(200, 92); ctx.lineTo(200, 108); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(200, 192); ctx.lineTo(200, 208); ctx.stroke();
-    return;
   }
 }
 
-/* ================================================================
-   РЕНДЕР, ЧАТ, UI
-   ================================================================ */
-function renderText(raw){
-  const mathBlocks = [];
-  let text = String(raw);
-  text = text.replace(/\$\$([^$]+?)\$\$/g, (m, expr) => { const i = mathBlocks.length; mathBlocks.push({expr: expr.trim(), display: true}); return `\u0000M${i}\u0000`; });
-  text = text.replace(/\$([^$\n]+?)\$/g, (m, expr) => { const i = mathBlocks.length; mathBlocks.push({expr: expr.trim(), display: false}); return `\u0000M${i}\u0000`; });
-  const iconBlocks = [];
-  text = text.replace(/<span class="ico[^"]*"><svg><use href="#i-([a-z0-9-]+)"\/><\/svg><\/span>/gi, (m, id) => {
-    const idx = iconBlocks.length;
-    let cls = '';
-    if(/inl-ok/.test(m)) cls = 'inl-ok'; else if(/inl-err/.test(m)) cls = 'inl-err';
-    iconBlocks.push({id, cls});
-    return `\u0000I${idx}\u0000`;
-  });
-  let h = esc(text);
-  h = h.replace(/```([\s\S]*?)```/g, (m, code) => `<pre style="background:var(--surface);padding:12px;border-radius:10px;overflow-x:auto;font-family:'SF Mono',Monaco,monospace;font-size:12.5px;line-height:1.4;margin:8px 0;color:var(--ink)">${code.trim()}</pre>`);
-  h = h.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, (m,n,d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`);
-  h = h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
-  h = h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
-  h = h.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'<em>$1</em>');
-  h = h.replace(/(^|[^\w_])_([^_\n]+)_(?![_\w])/g, '$1<em>$2</em>');
-  h = h.replace(/\n/g,'<br>');
-  h = h.replace(/\u0000I(\d+)\u0000/g, (m, i) => { const b = iconBlocks[+i]; return `<span class="inl-ico ${b.cls}"><svg viewBox="0 0 24 24" width="16" height="16"><use href="#i-${b.id}"/></svg></span>`; });
-  h = h.replace(/\u0000M(\d+)\u0000/g, (m, i) => {
-    const b = mathBlocks[+i];
-    if(window.katex){ try{ return katex.renderToString(b.expr, { throwOnError: false, displayMode: b.display }); }catch(e){ return b.display ? `$$${b.expr}$$` : `$${b.expr}$`; } }
-    return b.display ? `$$${b.expr}$$` : `$${b.expr}$`;
-  });
-  return h;
-}
-
+/* ============ ГРАФИК ============ */
 function parseFnExpr(expr){
   let js = expr.replace(/\^/g,'**').replace(/\bpi\b/gi,'Math.PI').replace(/\be\b/g,'Math.E').replace(/\s+/g,'');
   js = js.replace(/\bsin\(/g,'Math.sin(').replace(/\bcos\(/g,'Math.cos(').replace(/\btan\(/g,'Math.tan(');
@@ -1821,8 +1365,7 @@ function drawInlineGraph(container, funcs){
   canvas.width = W * dpr; canvas.height = H * dpr;
   canvas.style.width = '100%'; canvas.style.height = 'auto'; canvas.style.display = 'block'; canvas.style.background = '#f8fafc';
   container.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
   ctx.fillStyle = '#f8fafc'; ctx.fillRect(0,0,W,H);
   const xMin = -10, xMax = 10, yMin = -10, yMax = 10;
   const sx = x => (x - xMin) / (xMax - xMin) * W;
@@ -1861,22 +1404,15 @@ function drawInlineGraph(container, funcs){
 }
 
 /* ============ ЧАТ ============ */
-function createChat(){
-  const c = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() };
-  state.chats.unshift(c); state.activeId = c.id;
-  store.saveChats(state.chats); store.setActive(c.id);
-  renderChatsList(); renderActiveChat(); updateLimitUI();
-  return c;
-}
+function createChat(){ const c = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() }; state.chats.unshift(c); state.activeId = c.id; store.saveChats(state.chats); store.setActive(c.id); renderChatsList(); renderActiveChat(); updateLimitUI(); return c; }
 function getActiveChat(){ return state.chats.find(c => c.id === state.activeId); }
 function switchChat(id){ if(state.busy) return; state.activeId = id; store.setActive(id); renderChatsList(); renderActiveChat(); closeDrawer(); updateLimitUI(); hapticSel(); }
 async function deleteChat(id){
   if(state.busy) return;
   const chat = state.chats.find(c => c.id === id); if(!chat) return;
-  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm(`Удалить «${chat.title}»?`, res => r(res))) : confirm('Удалить?');
+  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm(`Удалить?`, res => r(res))) : confirm('Удалить?');
   if(!ok) return;
-  state.chats = state.chats.filter(c => c.id !== id);
-  store.saveChats(state.chats);
+  state.chats = state.chats.filter(c => c.id !== id); store.saveChats(state.chats);
   if(state.activeId === id){ state.activeId = state.chats[0]?.id || null; if(!state.activeId) createChat(); else store.setActive(state.activeId); }
   renderChatsList(); renderActiveChat(); updateLimitUI(); showToast('Чат удалён');
 }
@@ -1888,12 +1424,10 @@ function autoTitle(chat, text){
   if(/начерти|построй|нарисуй|проведи/i.test(text)) prefix = '📐 ';
   else if(/реши/i.test(text)) prefix = '= ';
   else if(/производн/i.test(text)) prefix = "f' ";
-  else if(/∫|интеграл/i.test(text)) prefix = '∫ ';
   else if(/график/i.test(text)) prefix = 'f(x) ';
   else if(/было|отдал|осталось|задач/i.test(text)) prefix = '📝 ';
   chat.title = (prefix + text.slice(0,40)).trim() || 'Новый чат';
 }
-
 function renderChatsList(){
   const list = $('chatsList'); list.innerHTML = '';
   const q = state.searchQuery.toLowerCase().trim();
@@ -1907,14 +1441,13 @@ function renderChatsList(){
     item.className = 'chat-item' + (c.id === state.activeId ? ' active' : '');
     const last = c.messages[c.messages.length-1];
     const sub = last ? (last.role === 'user' ? 'Вы: ' : 'AI: ') + last.text.slice(0,45) : 'Пустой чат';
-    item.innerHTML = `<div class="chat-item-icon">${ico('search')}${c.pinned?'<div class="pin-indicator"></div>':''}</div><div class="chat-item-text"><div class="chat-item-title">${esc(c.title)}</div><div class="chat-item-sub">${esc(sub)}</div></div><button class="chat-item-pin ${c.pinned?'pinned':''}">${ico('pin')}</button><button class="chat-item-del">${ico('trash')}</button>`;
+    item.innerHTML = `<div class="chat-item-icon">${ico('search')}</div><div class="chat-item-text"><div class="chat-item-title">${esc(c.title)}</div><div class="chat-item-sub">${esc(sub)}</div></div><button class="chat-item-pin ${c.pinned?'pinned':''}">${ico('pin')}</button><button class="chat-item-del">${ico('trash')}</button>`;
     item.addEventListener('click', e => { if(e.target.closest('button')) return; switchChat(c.id); });
     item.querySelector('.chat-item-del').addEventListener('click', e => { e.stopPropagation(); deleteChat(c.id); });
     item.querySelector('.chat-item-pin').addEventListener('click', e => { e.stopPropagation(); togglePin(c.id); });
     list.appendChild(item);
   }
 }
-
 function renderActiveChat(){
   chatEl.innerHTML = '';
   const chat = getActiveChat();
@@ -1926,25 +1459,19 @@ function renderActiveChat(){
   }
   scrollDown(); updateLimitUI();
 }
-
 function renderEmptyState(){
   const name = state.user?.name?.split(' ')[0] || '';
   const hello = name ? `Привет, ${name}!` : 'Привет!';
   const chips = [
-    {q:'Реши 2x + 5 = 15', i:'equals'},
-    {q:'Построй окружность радиуса 3', i:'chart'},
-    {q:'Построй прямой угол ABC', i:'chart'},
-    {q:'Построй трапецию ABCD', i:'grid'},
-    {q:'У Маши было 10 яблок, отдала 3, сколько осталось?', i:'book-open'},
-    {q:'Медиана из A в треугольнике ABC', i:'chart'},
-    {q:'Построй y = x^2 - 4', i:'chart'},
-    {q:'Производная x^3 + 2x', i:'chart'}
+    {q:'/реши 2x + 5 = 15', i:'equals'}, {q:'/график x^2 - 4', i:'chart'},
+    {q:'/чертёж прямой угол ABC', i:'chart'}, {q:'/чертёж окружность радиуса 3', i:'grid'},
+    {q:'Система: {x+y=7, x-y=1}', i:'function'}, {q:'x^2 - 5x + 6 < 0', i:'sigma'},
+    {q:'У Маши было 10 яблок, отдала 3, сколько осталось?', i:'book-open'}, {q:'/экзамен', i:'exam'}
   ];
   const html = chips.map(c => `<button class="empty-chip" data-q="${escA(c.q)}">${ico(c.i)}${esc(c.q)}</button>`).join('');
   chatEl.innerHTML = `<div class="empty"><div class="empty-planet"><svg><use href="#i-planet-ring"/></svg></div><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Решаю задачи, строю чертежи и графики, объясняю по шагам.</div><div class="empty-chips">${html}</div></div>`;
   chatEl.querySelectorAll('.empty-chip').forEach(b => b.addEventListener('click', () => { haptic('light'); handleSend(b.getAttribute('data-q')); }));
 }
-
 function appendUserMessage(text, animate = true, idx = -1, att = null){
   const div = document.createElement('div'); div.className = 'msg user';
   if(!animate) div.style.animation = 'none';
@@ -1955,7 +1482,6 @@ function appendUserMessage(text, animate = true, idx = -1, att = null){
   div.querySelector('.msg-edit-btn').addEventListener('click', () => editUserMessage(idx));
   scrollDown();
 }
-
 async function editUserMessage(idx){
   const chat = getActiveChat();
   if(!chat || idx < 0 || !chat.messages[idx]) return;
@@ -1963,12 +1489,10 @@ async function editUserMessage(idx){
   const nt = prompt('Изменить сообщение:', m.text);
   if(!nt || !nt.trim()) return;
   if(hasProfanity(nt)){ showToast('Недопустимо'); return; }
-  const wait = checkLimit();
-  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
+  const wait = checkLimit(); if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
   chat.messages = chat.messages.slice(0, idx);
   store.saveChats(state.chats); renderActiveChat(); handleSend(nt.trim());
 }
-
 function appendAIMessage(msg, animate = true, idx = -1){
   const div = document.createElement('div'); div.className = 'msg ai';
   if(!animate) div.style.animation = 'none';
@@ -1993,63 +1517,40 @@ function appendAIMessage(msg, animate = true, idx = -1){
   scrollDown();
   return typed;
 }
-
 function appendActions(body, msg, idx){
   const acts = document.createElement('div'); acts.className = 'msg-actions';
   const sp = state.plus ? `<button class="msg-act speak-act">${ico('speak')}</button>` : '';
   const nu = msg._problem ? `<button class="msg-act notunder-act">${ico('brain')}<span>Не понял</span></button>` : '';
-  acts.innerHTML = sp
-    + `<button class="msg-act copy-act">${ico('copy')}</button>`
-    + nu
-    + `<button class="msg-act regen">${ico('refresh')}</button>`
-    + `<button class="msg-act hint-act">${ico('hint')}<span>Подсказка</span></button>`;
+  acts.innerHTML = sp + `<button class="msg-act copy-act">${ico('copy')}</button>` + nu + `<button class="msg-act regen">${ico('refresh')}</button>` + `<button class="msg-act hint-act">${ico('hint')}<span>Подсказка</span></button>`;
   body.appendChild(acts);
-  const sb = acts.querySelector('.speak-act');
-  if(sb) sb.onclick = () => speak(msg.text, sb);
+  const sb = acts.querySelector('.speak-act'); if(sb) sb.onclick = () => speak(msg.text, sb);
   acts.querySelector('.copy-act').onclick = () => copyText(msg.text);
   acts.querySelector('.regen').onclick = () => regenerate(idx);
   acts.querySelector('.hint-act').onclick = () => showHint(msg);
-  const nuBtn = acts.querySelector('.notunder-act');
-  if(nuBtn) nuBtn.onclick = () => { state.explainLevel = 0; handleNotUnderstood(msg); };
 }
-
 function showHint(msg){
-  const hints = {
-    'линейн': 'Перенеси слагаемые с x в одну сторону, числа — в другую.',
-    'квадратн': 'Найди дискриминант D = b² − 4ac.',
-    'производн': 'Используй (xⁿ)′ = n·xⁿ⁻¹.',
-    'интеграл': 'Используй ∫ xⁿ dx = xⁿ⁺¹/(n+1) + C.',
-    'биссектрис': 'Биссектриса делит угол пополам.',
-    'окружност': 'C = 2πr, S = πr².'
-  };
-  const lower = msg.text.toLowerCase();
-  let key = Object.keys(hints).find(k => lower.includes(k)) || 'линейн';
   showToast('Подсказка');
   const bubble = document.createElement('div');
   bubble.className = 'msg ai';
-  bubble.innerHTML = `<div class="avatar"><svg><use href="#i-bulb"/></svg></div><div class="body"><div class="name"><span class="dot"></span>Подсказка</div><div class="text">${hints[key]}</div></div>`;
+  bubble.innerHTML = `<div class="avatar"><svg><use href="#i-bulb"/></svg></div><div class="body"><div class="name"><span class="dot"></span>Подсказка</div><div class="text">Попробуй разбить задачу на шаги и перенести все неизвестные в одну сторону.</div></div>`;
   chatEl.appendChild(bubble); scrollDown();
   haptic('success');
 }
-
 async function copyText(t){
   try{ await navigator.clipboard.writeText(t); showToast('Скопировано'); }
   catch(e){ const ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); showToast('Скопировано'); }catch(_){} document.body.removeChild(ta); }
 }
-
 async function regenerate(idx){
   if(state.busy) return;
   const chat = getActiveChat(); if(!chat || idx < 0) return;
   let uIdx = -1; for(let i = idx-1; i >= 0; i--) if(chat.messages[i].role === 'user'){ uIdx = i; break; }
   if(uIdx < 0) return;
   if(isLimitReached(chat)){ openPlusModal(); return; }
-  const wait = checkLimit();
-  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
+  const wait = checkLimit(); if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); return; }
   const q = chat.messages[uIdx].text;
   chat.messages = chat.messages.slice(0, uIdx);
   store.saveChats(state.chats); renderActiveChat(); await handleSend(q);
 }
-
 function showTyping(){
   let el = document.querySelector('.typing');
   if(!el){
@@ -2060,7 +1561,6 @@ function showTyping(){
   el.classList.add('active'); scrollDown();
 }
 function hideTyping(){ const el = document.querySelector('.typing'); if(el) el.classList.remove('active'); }
-
 async function typeText(el, text){
   const cur = document.createElement('span'); cur.className = 'cursor'; el.after(cur);
   const delay = Math.min(3200, Math.max(900, text.length*22))/text.length;
@@ -2080,7 +1580,7 @@ function refreshVoices(){ if(!window.speechSynthesis) return; try{ const v = spe
 if(window.speechSynthesis){ refreshVoices(); speechSynthesis.onvoiceschanged = refreshVoices; setTimeout(refreshVoices, 200); }
 function unlockSpeech(){ if(speechUnlocked || !window.speechSynthesis) return; try{ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); setTimeout(() => { try{ speechSynthesis.cancel(); }catch(e){} }, 50); speechUnlocked = true; }catch(e){} }
 ['touchstart','touchend','click','keydown'].forEach(evt => document.addEventListener(evt, unlockSpeech, { passive: true }));
-function pickRussianVoice(){ if(!voicesCache.length) refreshVoices(); const v = voicesCache; if(!v?.length) return null; return v.find(x=>/milena/i.test(x.name)) || v.find(x=>x.lang==='ru-RU') || null; }
+function pickRussianVoice(){ if(!voicesCache.length) refreshVoices(); const v = voicesCache; if(!v?.length) return null; return v.find(x=>x.lang==='ru-RU') || null; }
 function cleanForSpeech(t){
   return String(t).replace(/\$\$([^$]+)\$\$/g, '$1').replace(/\$([^$]+)\$/g, '$1')
     .replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, '$1 делить на $2').replace(/x\^2/g, 'икс в квадрате')
@@ -2107,27 +1607,13 @@ function speak(text, btn){
   speakTimeout = setTimeout(next, 30);
 }
 
-/* ============ PLUS / LIMIT ============ */
-function openPlusModal(){
-  $('plusModalBg').classList.add('active');
-  const b = $('plusActiveBanner'), r = $('plusRequestBtn');
-  if(state.plus){ b.style.display='flex'; $('plusActiveText').textContent='Подписка активна'; r.textContent='Уже активно'; r.disabled=true; }
-  else { b.style.display='none'; r.textContent='Запросить Plus'; r.disabled=false; }
-  haptic('light');
-}
+/* ============ PLUS / LIMIT / GATE ============ */
+function openPlusModal(){ $('plusModalBg').classList.add('active'); const b = $('plusActiveBanner'), r = $('plusRequestBtn'); if(state.plus){ b.style.display='flex'; $('plusActiveText').textContent='Подписка активна'; r.textContent='Уже активно'; r.disabled=true; } else { b.style.display='none'; r.textContent='Запросить Plus'; r.disabled=false; } haptic('light'); }
 function closePlusModal(){ $('plusModalBg').classList.remove('active'); }
-async function requestPlus(){
-  const u = tg?.initDataUnsafe?.user; if(!u) return;
-  try{
-    await fetch(`${API_URL}/request`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: u.id, name: 'PLUS REQUEST: ' + ([u.first_name,u.last_name].filter(Boolean).join(' ') || 'User'), username: u.username || '' }) });
-    showToast('Запрос отправлен'); haptic('success'); closePlusModal();
-  }catch(e){ showToast('Ошибка отправки'); haptic('error'); }
-}
+async function requestPlus(){ const u = tg?.initDataUnsafe?.user; if(!u) return; try{ await fetch(`${API_URL}/request`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: u.id, name: 'PLUS REQUEST: ' + ([u.first_name,u.last_name].filter(Boolean).join(' ') || 'User'), username: u.username || '' }) }); showToast('Запрос отправлен'); haptic('success'); closePlusModal(); }catch(e){ showToast('Ошибка'); haptic('error'); } }
 function isLimitReached(chat){ return !state.plus && (chat?.messages?.length || 0) >= MSG_LIMIT_FREE; }
 function updateLimitUI(){ const chat = getActiveChat(); if(isLimitReached(chat)) $('limitBanner').classList.add('show'); else $('limitBanner').classList.remove('show'); updateSendBtn(); }
 
-/* ============ GATE ============ */
 let accessPollTimer = null, gateState = 'checking';
 async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
@@ -2156,7 +1642,7 @@ function showGate(s){
   else if(s==='pending'){ title.textContent='Заявка отправлена'; sub.textContent='Ожидай одобрения.'; const wait = document.createElement('div'); wait.className='gate-waiting'; wait.innerHTML='<div class="spin"></div><span>Ожидание…</span>'; btn.parentNode.insertBefore(wait, btn); }
   else if(s==='banned'){ title.textContent='Вы забанены'; sub.textContent='Доступ закрыт.'; }
   else if(s==='denied'){ title.textContent='Заявка отклонена'; sub.textContent='Свяжитесь с админом.'; }
-  else if(s==='no_telegram'){ title.textContent='Открой через Telegram'; sub.textContent='Mini App работает только внутри Telegram.'; }
+  else if(s==='no_telegram'){ title.textContent='Открой через Telegram'; sub.textContent='Mini App работает только в Telegram.'; }
   else if(s==='error'){ title.textContent='Сервер недоступен'; sub.textContent='Не удалось проверить доступ.'; btn.style.display='flex'; btnText.textContent='Повторить'; btn.onclick=()=>checkAccess(); }
 }
 function hideGate(){ $('gate').classList.add('hidden'); lockScroll(false); }
@@ -2191,7 +1677,6 @@ async function sendAccessRequest(){
 let recognition = null, isRecording = false, voiceFinalText = '';
 let audioContext = null, analyser = null, mediaStream = null;
 let orbRaf = null, orbCtx = null, orbStartTime = 0, orbLevel = 0, orbDataArray = null;
-
 function normalizeVoiceText(t){
   if(!t) return '';
   let s = ' ' + String(t).toLowerCase() + ' ';
@@ -2202,23 +1687,10 @@ function normalizeVoiceText(t){
   s = s.replace(/(\d)\s+([a-zA-Zа-яёπ])/g, '$1$2');
   return s;
 }
-function initOrbCanvas(){
-  const orbCanvas = document.getElementById('voiceCanvas'); if(!orbCanvas) return;
-  const dpr = Math.min(window.devicePixelRatio || 1, 2), size = 280;
-  orbCanvas.width = size*dpr; orbCanvas.height = size*dpr;
-  orbCanvas.style.width = size+'px'; orbCanvas.style.height = size+'px';
-  orbCtx = orbCanvas.getContext('2d'); orbCtx.setTransform(dpr,0,0,dpr,0,0);
-}
+function initOrbCanvas(){ const c = document.getElementById('voiceCanvas'); if(!c) return; const dpr = Math.min(window.devicePixelRatio || 1, 2), size = 280; c.width = size*dpr; c.height = size*dpr; c.style.width = size+'px'; c.style.height = size+'px'; orbCtx = c.getContext('2d'); orbCtx.setTransform(dpr,0,0,dpr,0,0); }
 function drawBlob(ctx, cx, cy, radius, t, level, seed, fill){
   const points = 60; ctx.beginPath();
-  for(let i = 0; i <= points; i++){
-    const a = (i/points)*Math.PI*2;
-    const w1 = Math.sin(a*3 + t*0.9 + seed)*(2+level*14);
-    const w2 = Math.sin(a*5 - t*1.3 + seed*1.7)*(1.5+level*9);
-    const rr = radius + w1 + w2;
-    const x = cx + Math.cos(a)*rr, y = cy + Math.sin(a)*rr;
-    if(i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-  }
+  for(let i = 0; i <= points; i++){ const a = (i/points)*Math.PI*2; const w1 = Math.sin(a*3 + t*0.9 + seed)*(2+level*14); const w2 = Math.sin(a*5 - t*1.3 + seed*1.7)*(1.5+level*9); const rr = radius + w1 + w2; const x = cx + Math.cos(a)*rr, y = cy + Math.sin(a)*rr; if(i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }
   ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
 }
 function drawOrbFrame(){
@@ -2233,12 +1705,7 @@ function drawOrbFrame(){
   const glow = orbCtx.createRadialGradient(cx,cy,r*0.6,cx,cy,r*1.9);
   glow.addColorStop(0, `rgba(59,130,246,${0.35+orbLevel*0.35})`); glow.addColorStop(1, 'rgba(37,99,235,0)');
   orbCtx.fillStyle = glow; orbCtx.beginPath(); orbCtx.arc(cx,cy,r*1.9,0,Math.PI*2); orbCtx.fill();
-  for(let i=0;i<3;i++){
-    const lr = r*(0.95+i*0.06), alpha=0.32-i*0.09;
-    const g = orbCtx.createRadialGradient(cx,cy,0,cx,cy,lr*1.15);
-    g.addColorStop(0, `rgba(147,197,253,${alpha+0.15})`); g.addColorStop(1, `rgba(37,99,235,${alpha*0.4})`);
-    drawBlob(orbCtx,cx,cy,lr,t,orbLevel,i*2.1,g);
-  }
+  for(let i=0;i<3;i++){ const lr = r*(0.95+i*0.06), alpha=0.32-i*0.09; const g = orbCtx.createRadialGradient(cx,cy,0,cx,cy,lr*1.15); g.addColorStop(0, `rgba(147,197,253,${alpha+0.15})`); g.addColorStop(1, `rgba(37,99,235,${alpha*0.4})`); drawBlob(orbCtx,cx,cy,lr,t,orbLevel,i*2.1,g); }
   const mg = orbCtx.createRadialGradient(cx - r*0.35, cy - r*0.4, r*0.1, cx, cy, r*1.05);
   mg.addColorStop(0,'#ffffff'); mg.addColorStop(0.3,'#e0eaff'); mg.addColorStop(0.6,'#93c5fd'); mg.addColorStop(0.85,'#3b82f6'); mg.addColorStop(1,'#1d4ed8');
   drawBlob(orbCtx,cx,cy,r,t*1.15,orbLevel,0.5,mg);
@@ -2250,84 +1717,39 @@ function startAudioVisualization(){
   startOrb();
   if(!navigator.mediaDevices?.getUserMedia) return;
   navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-    mediaStream = stream;
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    mediaStream = stream; audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const source = audioContext.createMediaStreamSource(stream);
     analyser = audioContext.createAnalyser(); analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.75;
-    source.connect(analyser);
-    orbDataArray = new Uint8Array(analyser.frequencyBinCount);
+    source.connect(analyser); orbDataArray = new Uint8Array(analyser.frequencyBinCount);
   }).catch(()=>{});
 }
-function stopAudioVisualization(){
-  stopOrb();
-  if(mediaStream){ mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
-  if(audioContext){ try{ audioContext.close(); }catch(e){} audioContext = null; analyser = null; }
-}
+function stopAudioVisualization(){ stopOrb(); if(mediaStream){ mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; } if(audioContext){ try{ audioContext.close(); }catch(e){} audioContext = null; analyser = null; } }
 function initVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR){ return; }
-  recognition = new SR();
-  recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'ru-RU';
-  recognition.onstart = () => {
-    isRecording = true; voiceFinalText = '';
-    $('voiceOverlay').classList.add('active');
-    $('voiceStatus').textContent = 'Слушаю…';
-    const vt=$('voiceText'); vt.textContent='Продиктуй пример'; vt.classList.add('empty');
-    haptic('medium'); startAudioVisualization();
-  };
-  recognition.onresult = (e) => {
-    let interim = '', final = '';
-    for(let i = e.resultIndex; i < e.results.length; i++){
-      const t = e.results[i][0].transcript;
-      if(e.results[i].isFinal) final += t; else interim += t;
-    }
-    const finalNorm = final ? normalizeVoiceText(final) : '';
-    const interimNorm = interim ? normalizeVoiceText(interim) : '';
-    if(finalNorm) voiceFinalText = finalNorm;
-    const vt = $('voiceText'); const d = finalNorm || interimNorm;
-    if(d){ vt.textContent = d; vt.classList.remove('empty'); }
-    $('voiceStatus').textContent = final ? 'Готово!' : 'Слушаю…';
-  };
+  recognition = new SR(); recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'ru-RU';
+  recognition.onstart = () => { isRecording = true; voiceFinalText = ''; $('voiceOverlay').classList.add('active'); $('voiceStatus').textContent = 'Слушаю…'; const vt=$('voiceText'); vt.textContent='Продиктуй пример'; vt.classList.add('empty'); haptic('medium'); startAudioVisualization(); };
+  recognition.onresult = (e) => { let interim = '', final = ''; for(let i = e.resultIndex; i < e.results.length; i++){ const t = e.results[i][0].transcript; if(e.results[i].isFinal) final += t; else interim += t; } const finalNorm = final ? normalizeVoiceText(final) : ''; const interimNorm = interim ? normalizeVoiceText(interim) : ''; if(finalNorm) voiceFinalText = finalNorm; const vt = $('voiceText'); const d = finalNorm || interimNorm; if(d){ vt.textContent = d; vt.classList.remove('empty'); } $('voiceStatus').textContent = final ? 'Готово!' : 'Слушаю…'; };
   recognition.onerror = (e) => { stopVoice(); showToast('Ошибка распознавания'); haptic('error'); };
-  recognition.onend = () => {
-    if(isRecording){
-      isRecording = false;
-      $('voiceOverlay').classList.remove('active');
-      stopAudioVisualization();
-      if(voiceFinalText.trim()){ const t = voiceFinalText.trim(); voiceFinalText = ''; setTimeout(() => handleSend(t), 200); }
-    }
-  };
+  recognition.onend = () => { if(isRecording){ isRecording = false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); if(voiceFinalText.trim()){ const t = voiceFinalText.trim(); voiceFinalText = ''; setTimeout(() => handleSend(t), 200); } } };
 }
 function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.start(); }catch(e){ stopVoice(); } }
 function stopVoice(){ isRecording=false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition && recognition.stop(); }catch(e){} }
 
-/* ============ CAMERA ============ */
+/* ============ КАМЕРА + OCR ============ */
 async function openCamera(){
   closePicker();
   try {
-    const constraints = {
-      video: { facingMode: state.facing, width: { ideal: 1920 }, height: { ideal: 1080 } },
-      audio: false
-    };
+    const constraints = { video: { facingMode: state.facing, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false };
     state.stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const video = $('cameraVideo');
-    video.srcObject = state.stream;
+    const video = $('cameraVideo'); video.srcObject = state.stream;
     state.cameraTrack = state.stream.getVideoTracks()[0];
-    state.flashOn = false;
-    $('cameraFlash').classList.remove('on');
+    state.flashOn = false; $('cameraFlash').classList.remove('on');
     $('cameraOverlay').classList.add('active');
     haptic('light');
-  } catch(e){
-    showToast('Нет доступа к камере');
-    haptic('error');
-  }
+  } catch(e){ showToast('Нет доступа к камере'); haptic('error'); }
 }
-function closeCamera(){
-  if(state.stream){ state.stream.getTracks().forEach(t => t.stop()); state.stream = null; }
-  state.cameraTrack = null;
-  state.flashOn = false;
-  $('cameraOverlay').classList.remove('active');
-}
+function closeCamera(){ if(state.stream){ state.stream.getTracks().forEach(t => t.stop()); state.stream = null; } state.cameraTrack = null; state.flashOn = false; $('cameraOverlay').classList.remove('active'); }
 async function toggleFlash(){
   if(!state.cameraTrack) return;
   try {
@@ -2346,8 +1768,7 @@ async function switchCamera(){
     state.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: state.facing }, audio: false });
     $('cameraVideo').srcObject = state.stream;
     state.cameraTrack = state.stream.getVideoTracks()[0];
-    state.flashOn = false;
-    $('cameraFlash').classList.remove('on');
+    state.flashOn = false; $('cameraFlash').classList.remove('on');
     haptic('light');
   } catch(e){ showToast('Не удалось переключить'); }
 }
@@ -2362,34 +1783,40 @@ function takePhoto(){
   ctx.drawImage(video, 0, 0, w, h);
   canvas.toBlob(async (blob) => {
     if(!blob){ showToast('Ошибка фото'); return; }
-    haptic('success');
-    closeCamera();
+    haptic('success'); closeCamera();
     const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
     await handleFileUpload(file);
   }, 'image/jpeg', 0.92);
 }
 
-/* ============ FILE / OCR ============ */
-async function handleFileUpload(file){
-  if(!file) return;
-  if(file.size > 10*1024*1024){ showToast('Файл больше 10 МБ'); return; }
-  if(!file.type.startsWith('image/')){ showToast('Только изображения'); return; }
-  showToast('Распознаю текст…');
-  let text = '';
-  try{ text = await extractImageText(file); }catch(e){ text = ''; }
-  if(!text || text.trim().length < 2){ showToast('Не удалось распознать текст'); return; }
-  const url = URL.createObjectURL(file);
-  ensureChat();
-  const chat = getActiveChat();
-  const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
-  const ts = Date.now();
-  const fm = { role:'user', text:`Распознанный текст:\n${text.slice(0,300)}`, attachment:{ kind:'image', name: 'фото', url }, ts };
-  chat.messages.push(fm); chat.updatedAt = ts;
-  if(chat.title === 'Новый чат') chat.title = 'Фото задачи';
-  store.saveChats(state.chats);
-  appendUserMessage(fm.text, true, chat.messages.length-1, fm.attachment);
-  renderChatsList();
-  setTimeout(() => { handleSend(`Реши задачу:\n\n${text.slice(0,2000)}`); }, 400);
+/* ── OCR: предобработка + распознавание ── */
+function preprocessImage(file){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const maxSize = 1600;
+        let w = img.width, h = img.height;
+        if(w > h && w > maxSize){ h = Math.round(h * maxSize / w); w = maxSize; }
+        else if(h > maxSize){ w = Math.round(w * maxSize / h); h = maxSize; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const imgData = ctx.getImageData(0, 0, w, h);
+        const d = imgData.data;
+        for(let i = 0; i < d.length; i += 4){
+          const gray = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+          const boosted = Math.min(255, Math.max(0, (gray - 128) * 1.5 + 128));
+          d[i] = d[i+1] = d[i+2] = boosted;
+        }
+        ctx.putImageData(imgData, 0, 0);
+        canvas.toBlob(b => resolve(b || file), 'image/jpeg', 0.92);
+      } catch(e){ resolve(file); }
+    };
+    img.onerror = () => resolve(file);
+    img.src = URL.createObjectURL(file);
+  });
 }
 async function extractImageText(file){
   if(!window.Tesseract) throw new Error('tesseract missing');
@@ -2400,14 +1827,55 @@ async function extractImageText(file){
       workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/worker.min.js',
       corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0'
     });
+    try { await w.setParameters({ tessedit_pageseg_mode: '6', preserve_interword_spaces: '1' }); } catch(_){}
     const r = await w.recognize(file);
     const t = (r?.data?.text || '').trim();
     await w.terminate();
     return t.slice(0, 2000);
   }catch(e){ if(w){ try{ await w.terminate(); }catch(_){} } throw e; }
 }
+async function handleFileUpload(file){
+  if(!file) return;
+  if(file.size > 10*1024*1024){ showToast('Файл больше 10 МБ'); return; }
+  if(!file.type.startsWith('image/')){ showToast('Только изображения'); return; }
 
-/* ============ PICKER ============ */
+  showToast('Улучшаю фото…');
+  let processed;
+  try{ processed = await preprocessImage(file); }catch(e){ processed = file; }
+
+  showToast('Распознаю текст…');
+  let text = '';
+  try{ text = await extractImageText(processed); }catch(e){ text = ''; }
+
+  const cleaned = (text || '').replace(/\s+/g,' ').trim();
+  if(!cleaned || cleaned.length < 3){
+    haptic('error');
+    showToast('Ничего не распозналось. Сфотографируй ближе и ровнее');
+    return;
+  }
+  const lettersDigits = (cleaned.match(/[а-яёa-z0-9]/gi) || []).length;
+  const ratio = lettersDigits / cleaned.length;
+  if(ratio < 0.4){
+    haptic('error');
+    showToast('Плохое качество. Наведи на текст ровно, без теней');
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  ensureChat();
+  const chat = getActiveChat();
+  const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
+  const ts = Date.now();
+  const fm = { role:'user', text: `📷 Распознано:\n${cleaned.slice(0,300)}`, attachment:{ kind:'image', name:'фото', url }, ts };
+  chat.messages.push(fm); chat.updatedAt = ts;
+  if(chat.title === 'Новый чат') chat.title = '📷 Фото задачи';
+  store.saveChats(state.chats);
+  appendUserMessage(fm.text, true, chat.messages.length-1, fm.attachment);
+  renderChatsList();
+
+  setTimeout(() => { handleSend(`Реши задачу:\n\n${cleaned.slice(0,2000)}`); }, 400);
+}
+
 function openPicker(){ $('pickerOverlay').classList.add('active'); haptic('light'); }
 function closePicker(){ $('pickerOverlay').classList.remove('active'); }
 
@@ -2443,44 +1911,36 @@ function normalizeAggressive(raw){
   return s;
 }
 const BAD_PATTERNS = [/ху[йеяёюи]/, /пизд/, /бля[дт]/, /бляд/, /еба[лнтш]/, /еб[аеиуол]/, /ёб[аеиуолн]/, /сука/, /сучк/, /мудак/, /мудил/, /мраз[ьи]/, /гандон/, /шлюх/, /пидор/, /пидар/, /жоп[аеуы]/, /уеб/, /заеб/, /наеб/, /хер[аеуны]/, /ниггер/, /nigga/, /nigger/, /fag/, /порн/, /porn/, /pussy/, /dick/, /cock/, /cunt/, /убью/, /убей/, /убить/, /kill/, /murder/, /нацист/, /гитлер/, /hitler/, /нарко/, /f+u+c+k+/, /sh+i+t+/];
-function hasProfanity(raw){
-  if(!raw || typeof raw !== 'string') return false;
-  const lower = raw.toLowerCase();
-  for(const re of BAD_PATTERNS) if(re.test(lower)) return true;
-  const norm = normalizeAggressive(raw);
-  if(norm) for(const re of BAD_PATTERNS) if(re.test(norm)) return true;
-  return false;
-}
+function hasProfanity(raw){ if(!raw || typeof raw !== 'string') return false; const lower = raw.toLowerCase(); for(const re of BAD_PATTERNS) if(re.test(lower)) return true; const norm = normalizeAggressive(raw); if(norm) for(const re of BAD_PATTERNS) if(re.test(norm)) return true; return false; }
 
 /* ============ SEND ============ */
 function updateSendBtn(){
   if(state.busy){ sendBtn.disabled = false; sendBtn.classList.add('stop'); sendBtn.classList.remove('cooldown'); sendIconEl.innerHTML = '<svg><use href="#i-stop"/></svg>'; return; }
   if(state.rateLimit){ sendBtn.disabled = true; sendBtn.classList.remove('stop'); sendBtn.classList.add('cooldown'); return; }
-  sendBtn.classList.remove('stop','cooldown');
-  sendIconEl.innerHTML = '<svg><use href="#i-send"/></svg>';
+  sendBtn.classList.remove('stop','cooldown'); sendIconEl.innerHTML = '<svg><use href="#i-send"/></svg>';
   sendBtn.disabled = inputEl.value.trim().length === 0;
 }
-
 async function handleSend(textOverride){
-  const text = (textOverride ?? inputEl.value).trim();
+  let text = (textOverride ?? inputEl.value).trim();
   if(!text){ if(state.busy){ state.abortRequested = true; haptic('medium'); } return; }
   if(state.busy) return;
-  const wait = checkLimit();
-  if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
+
+  // Разворачиваем быстрые команды
+  const expanded = expandQuickCommand(text);
+  if(expanded !== text) text = expanded;
+
+  const wait = checkLimit(); if(wait > 0){ showToast(`Подожди ${Math.ceil(wait/1000)} сек…`); haptic('warning'); return; }
   if(hasProfanity(text)){
     markReq(); startCooldown();
     ensureChat(); const chat = getActiveChat();
     const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
-    const ts = Date.now();
-    chat.messages.push({ role:'user', text, ts });
-    chat.updatedAt = ts; store.saveChats(state.chats);
+    const ts = Date.now(); chat.messages.push({ role:'user', text, ts }); chat.updatedAt = ts; store.saveChats(state.chats);
     appendUserMessage(text, true, chat.messages.length-1);
     await sleep(300);
     const r = { role:'ai', text:'Извини, на такие вопросы я не отвечаю.', ts: Date.now()+1, _blocked:true };
     chat.messages.push(r); store.saveChats(state.chats);
     appendAIMessage(r, false, chat.messages.length-1);
-    inputEl.value = ''; localStorage.removeItem(KEYS.DRAFT);
-    updateSendBtn(); renderChatsList(); updateLimitUI();
+    inputEl.value = ''; localStorage.removeItem(KEYS.DRAFT); updateSendBtn(); renderChatsList(); updateLimitUI();
     return;
   }
   ensureChat();
@@ -2490,13 +1950,10 @@ async function handleSend(textOverride){
   inputEl.value = ''; localStorage.removeItem(KEYS.DRAFT);
   updateSendBtn(); haptic('light');
   const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
-  const ts = Date.now();
-  chat.messages.push({ role:'user', text, ts });
+  const ts = Date.now(); chat.messages.push({ role:'user', text, ts });
   autoTitle(chat, text); chat.updatedAt = ts; store.saveChats(state.chats);
-  appendUserMessage(text, true, chat.messages.length-1);
-  renderChatsList();
-  showTyping();
-  await sleep(600);
+  appendUserMessage(text, true, chat.messages.length-1); renderChatsList();
+  showTyping(); await sleep(600);
   let result;
   try{ result = await generateAnswer(text); }
   catch(e){ hideTyping(); state.busy = false; updateSendBtn(); showToast('Ошибка'); return; }
@@ -2508,14 +1965,12 @@ async function handleSend(textOverride){
   if(state.abortRequested){ el.innerHTML = renderText(result.text); const c = el.parentElement.querySelector('.cursor'); if(c) c.remove(); }
   else await typeText(el, result.text);
   if(result._graph){
-    const gDiv = document.createElement('div'); gDiv.className = 'graph-inline';
-    el.parentElement.appendChild(gDiv);
+    const gDiv = document.createElement('div'); gDiv.className = 'graph-inline'; el.parentElement.appendChild(gDiv);
     const funcs = String(result._graph).split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean);
     setTimeout(() => { try{ drawInlineGraph(gDiv, funcs); }catch(e){} }, 100);
   }
   if(result._geometry){
-    const gDiv = document.createElement('div'); gDiv.className = 'graph-inline';
-    el.parentElement.appendChild(gDiv);
+    const gDiv = document.createElement('div'); gDiv.className = 'graph-inline'; el.parentElement.appendChild(gDiv);
     setTimeout(() => { try{ drawGeometry(gDiv, result._geometry); }catch(e){} }, 100);
   }
   const lastAi = chatEl.lastElementChild;
@@ -2524,83 +1979,38 @@ async function handleSend(textOverride){
   updateSendBtn(); updateLimitUI(); haptic('success');
 }
 
-/* ============ DRAWER ============ */
+/* ============ DRAWER / ACCOUNT ============ */
 function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); lockScroll(true); showBackButton(closeDrawer); haptic('light'); }
 function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); }
-
-/* ============ ACCOUNT ============ */
-function applyPlusUI(){
-  const b = $('headerPlusBadge'), bm = $('brandMark'), av = $('drawerAvatar'), ap = $('avatarPreview');
-  if(state.plus){ b.style.display = 'inline-flex'; bm.classList.add('plus'); av.classList.add('plus'); ap.classList.add('plus'); }
-  else { b.style.display = 'none'; bm.classList.remove('plus'); av.classList.remove('plus'); ap.classList.remove('plus'); }
-}
-function updateAvatarPreview(){
-  const p = $('avatarPreview'), l = $('avatarLetter');
-  const a = state.user?.avatar;
-  if(a){ p.style.backgroundImage = `url(${a})`; l.style.display = 'none'; }
-  else { p.style.backgroundImage = 'none'; l.style.display = 'block'; l.textContent = initials(state.user?.name); }
-}
+function applyPlusUI(){ const b = $('headerPlusBadge'), bm = $('brandMark'), av = $('drawerAvatar'), ap = $('avatarPreview'); if(state.plus){ b.style.display = 'inline-flex'; bm.classList.add('plus'); } else { b.style.display = 'none'; bm.classList.remove('plus'); } }
+function updateAvatarPreview(){ const p = $('avatarPreview'), l = $('avatarLetter'); const a = state.user?.avatar; if(a){ p.style.backgroundImage = `url(${a})`; l.style.display = 'none'; } else { p.style.backgroundImage = 'none'; l.style.display = 'block'; l.textContent = initials(state.user?.name); } }
 function openAccount(){
   closeDrawer(); if(!state.user) return;
   $('accountNameInput').value = state.user.name || '';
   $('statChats').textContent = state.chats.length;
   $('statMsgs').textContent = state.chats.reduce((s,c)=>s+c.messages.length,0);
-  state.vibration = localStorage.getItem(KEYS.VIB) !== '0';
-  $('vibToggle').checked = state.vibration;
+  state.vibration = localStorage.getItem(KEYS.VIB) !== '0'; $('vibToggle').checked = state.vibration;
   state.fontSize = parseInt(localStorage.getItem(KEYS.FONT) || '15');
-  $('fontSlider').value = state.fontSize;
-  $('fontVal').textContent = state.fontSize;
+  $('fontSlider').value = state.fontSize; $('fontVal').textContent = state.fontSize;
   updateAvatarPreview(); applyPlusUI();
   $('accountOverlay').classList.add('open'); lockScroll(true);
   showBackButton(closeAccount); showMainBtn('Сохранить', saveProfile);
 }
 function closeAccount(){ $('accountOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); hideMainBtn(); }
-function saveProfile(){
-  const name = $('accountNameInput').value.replace(/[<>"'`]/g,'').trim().slice(0,24);
-  if(!name){ showToast('Введи имя'); return; }
-  state.user.name = name; store.saveUser(state.user);
-  updateAvatarUI();
-  if(getActiveChat()?.messages.length === 0) renderEmptyState();
-  showToast('Сохранено'); closeAccount();
-}
-function updateAvatarUI(){
-  const a = state.user?.avatar, d = $('drawerAvatar');
-  if(a){ d.style.backgroundImage = `url(${a})`; d.textContent = ''; }
-  else { d.style.backgroundImage = 'none'; d.textContent = initials(state.user?.name); }
-  $('drawerName').textContent = state.user?.name || '—';
-  applyPlusUI();
-}
+function saveProfile(){ const name = $('accountNameInput').value.replace(/[<>"'`]/g,'').trim().slice(0,24); if(!name){ showToast('Введи имя'); return; } state.user.name = name; store.saveUser(state.user); updateAvatarUI(); if(getActiveChat()?.messages.length === 0) renderEmptyState(); showToast('Сохранено'); closeAccount(); }
+function updateAvatarUI(){ const a = state.user?.avatar, d = $('drawerAvatar'); if(a){ d.style.backgroundImage = `url(${a})`; d.textContent = ''; } else { d.style.backgroundImage = 'none'; d.textContent = initials(state.user?.name); } $('drawerName').textContent = state.user?.name || '—'; applyPlusUI(); }
 function handleAvatarUpload(file){
-  if(!file) return;
-  if(file.size > 2*1024*1024){ showToast('Файл слишком большой'); return; }
+  if(!file) return; if(file.size > 2*1024*1024){ showToast('Файл слишком большой'); return; }
   const r = new FileReader();
-  r.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      const c = document.createElement('canvas');
-      const max = 200; let w = img.width, h = img.height;
-      if(w > h){ if(w > max){ h = h*max/w; w = max; } } else { if(h > max){ w = w*max/h; h = max; } }
-      c.width = w; c.height = h;
-      c.getContext('2d').drawImage(img, 0, 0, w, h);
-      state.user.avatar = c.toDataURL('image/jpeg', 0.8);
-      updateAvatarPreview();
-    };
-    img.src = e.target.result;
-  };
+  r.onload = e => { const img = new Image(); img.onload = () => { const c = document.createElement('canvas'); const max = 200; let w = img.width, h = img.height; if(w > h){ if(w > max){ h = h*max/w; w = max; } } else { if(h > max){ w = w*max/h; h = max; } } c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h); state.user.avatar = c.toDataURL('image/jpeg', 0.8); updateAvatarPreview(); }; img.src = e.target.result; };
   r.readAsDataURL(file);
 }
-async function clearAllData(){
-  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm('Очистить все данные?', res => r(res))) : confirm('Очистить?');
-  if(!ok) return;
-  store.clear(); state.user = null; state.chats = []; state.activeId = null;
-  closeAccount(); location.reload();
-}
+async function clearAllData(){ const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm('Очистить все данные?', res => r(res))) : confirm('Очистить?'); if(!ok) return; store.clear(); state.user = null; state.chats = []; state.activeId = null; closeAccount(); location.reload(); }
 
 /* ============ TRAINER / EXAM / CHEAT / GRAPH ============ */
 let trainer = { topic:'linear', diff:1, task:null, answer:null, right:0, wrong:0, streak:0 };
 function genTrainerTask(){
-  const {topic, diff} = trainer;
-  const R = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+  const {topic, diff} = trainer; const R = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
   if(topic === 'linear'){ const a = R(1, diff*3+2), b = R(-5*diff, 10*diff); const xInt = R(-9, 9); const cAdj = a*xInt + b; return { text: `${a}x ${b>=0?'+':'-'} ${Math.abs(b)} = ${cAdj}`, answer: xInt }; }
   if(topic === 'quadratic'){ const r1 = R(-5*diff, 5*diff), r2 = R(-5*diff, 5*diff); const b = -(r1+r2), c = r1*r2; const eq = `x^2 ${b>=0?'+':'-'} ${Math.abs(b)}x ${c>=0?'+':'-'} ${Math.abs(c)} = 0`; const ans = r1 === r2 ? [r1] : [r1, r2].sort((a,b)=>a-b); return { text: eq, answer: ans }; }
   if(topic === 'arithmetic'){ const a = R(10*diff, 99*diff), b = R(2, 20*diff); const op = ['+','-','×'][R(0,2)]; let ans = op === '+' ? a+b : op === '-' ? a-b : a*b; return { text: `${a} ${op} ${b}`, answer: ans }; }
@@ -2614,9 +2024,7 @@ function checkTrainer(){
   if(!trainer.task) return;
   const inp = $('trainerInput').value.trim().replace(/\s+/g,'').replace(/,/g,'.').toLowerCase();
   if(!inp){ showToast('Введи ответ'); return; }
-  const fb = $('trainerFeedback');
-  const ans = trainer.task.answer;
-  let correct = false;
+  const fb = $('trainerFeedback'); const ans = trainer.task.answer; let correct = false;
   if(Array.isArray(ans)){ const userNums = inp.split(/[;,\s]+/).map(s => parseFloat(s.replace(',','.'))).filter(n => !isNaN(n)); correct = userNums.length === ans.length && ans.every(a => userNums.some(u => Math.abs(u-a) < 1e-6)); }
   else if(typeof ans === 'number'){ const u = parseFloat(inp); correct = !isNaN(u) && Math.abs(u - ans) < 1e-6; }
   else correct = inp.replace(/\^/g,'').replace(/\*/g,'') === String(ans).replace(/\^/g,'').replace(/\*/g,'').toLowerCase();
@@ -2649,27 +2057,20 @@ function checkExamAnswer(){
   if(!exam.active) return;
   const t = exam.tasks[exam.current]; if(!t) return;
   const inp = $('examInput').value.trim().toLowerCase().replace(/\s+/g,'');
-  const ans = t.answer;
-  let correct = false;
+  const ans = t.answer; let correct = false;
   if(Array.isArray(ans)){ const nums = inp.split(/[;,\s]+/).map(s => parseFloat(s.replace(',','.'))).filter(n => !isNaN(n)); correct = nums.length === ans.length && ans.every(a => nums.some(u => Math.abs(u-a) < 1e-6)); }
   else if(typeof ans === 'number'){ const u = parseFloat(inp); correct = !isNaN(u) && Math.abs(u - ans) < 1e-6; }
   else correct = inp.replace(/\^/g,'').replace(/\*/g,'') === String(ans).replace(/\^/g,'').replace(/\*/g,'').toLowerCase();
-  exam.answers.push({ task: t, correct });
-  exam.current++;
+  exam.answers.push({ task: t, correct }); exam.current++;
   if(exam.current >= exam.tasks.length) finishExam(); else updateExamUI();
 }
 function finishExam(){
-  exam.active = false;
-  if(exam.timer){ clearInterval(exam.timer); exam.timer = null; }
-  const correct = exam.answers.filter(a => a.correct).length;
-  const total = exam.tasks.length;
-  const pct = Math.round(correct/total*100);
+  exam.active = false; if(exam.timer){ clearInterval(exam.timer); exam.timer = null; }
+  const correct = exam.answers.filter(a => a.correct).length; const total = exam.tasks.length; const pct = Math.round(correct/total*100);
   let grade = '2'; if(pct >= 90) grade = '5'; else if(pct >= 70) grade = '4'; else if(pct >= 50) grade = '3';
   $('examQuestion').innerHTML = `<div style="text-align:center">Результат: <b>${correct}/${total}</b> (${pct}%)<br><span style="font-size:32px">Оценка: ${grade}</span></div>`;
-  $('examProgress').textContent = 'Завершён';
-  $('examTimer').textContent = '00:00';
-  $('examStart').style.display = 'flex';
-  $('examStart').innerHTML = `${ico('refresh')}Ещё раз`;
+  $('examProgress').textContent = 'Завершён'; $('examTimer').textContent = '00:00';
+  $('examStart').style.display = 'flex'; $('examStart').innerHTML = `${ico('refresh')}Ещё раз`;
   haptic(pct >= 70 ? 'success' : 'error');
 }
 function openExam(){ $('examOverlay').classList.add('active'); haptic('light'); }
@@ -2677,57 +2078,31 @@ function closeExam(){ if(exam.timer){ clearInterval(exam.timer); exam.timer = nu
 
 const CHEATS = {
   trig: [{n:'Основное тождество', f:'sin²α + cos²α = 1'}, {n:'Тангенс', f:'tg α = sin α / cos α'}, {n:'Двойной угол', f:'sin 2α = 2 sin α cos α'}, {n:'30°', f:'sin 30° = 1/2'}, {n:'45°', f:'sin 45° = √2/2'}, {n:'60°', f:'sin 60° = √3/2'}],
-  der: [{n:'Степень', f:'(xⁿ)′ = n·xⁿ⁻¹'}, {n:'Синус', f:'(sin x)′ = cos x'}, {n:'Косинус', f:'(cos x)′ = −sin x'}, {n:'Экспонента', f:'(eˣ)′ = eˣ'}, {n:'Логарифм', f:'(ln x)′ = 1/x'}, {n:'Произведение', f:'(uv)′ = u′v + uv′'}, {n:'Частное', f:'(u/v)′ = (u′v − uv′)/v²'}],
+  der: [{n:'Степень', f:'(xⁿ)′ = n·xⁿ⁻¹'}, {n:'Синус', f:'(sin x)′ = cos x'}, {n:'Косинус', f:'(cos x)′ = −sin x'}, {n:'Экспонента', f:'(eˣ)′ = eˣ'}, {n:'Логарифм', f:'(ln x)′ = 1/x'}],
   int: [{n:'Степень', f:'∫ xⁿ dx = xⁿ⁺¹/(n+1) + C'}, {n:'Обратная', f:'∫ dx/x = ln|x| + C'}, {n:'Экспонента', f:'∫ eˣ dx = eˣ + C'}, {n:'Синус', f:'∫ sin x dx = −cos x + C'}, {n:'Косинус', f:'∫ cos x dx = sin x + C'}],
-  log: [{n:'Определение', f:'logₐ b = c ⟺ aᶜ = b'}, {n:'Произведение', f:'logₐ(xy) = logₐx + logₐy'}, {n:'Степень', f:'logₐ(xⁿ) = n·logₐx'}, {n:'Переход', f:'logₐ b = log꜀b / log꜀a'}],
+  log: [{n:'Определение', f:'logₐ b = c ⟺ aᶜ = b'}, {n:'Произведение', f:'logₐ(xy) = logₐx + logₐy'}, {n:'Степень', f:'logₐ(xⁿ) = n·logₐx'}],
   geo: [{n:'Окружность', f:'C = 2πr, S = πr²'}, {n:'Треугольник', f:'S = ½·a·h'}, {n:'Прямоугольный Δ', f:'S = ½·a·b, c² = a² + b²'}, {n:'Квадрат', f:'S = a², P = 4a'}, {n:'Прямоугольник', f:'S = a·b, P = 2(a+b)'}, {n:'Параллелограмм', f:'S = a·h'}, {n:'Ромб', f:'S = d₁·d₂/2'}, {n:'Трапеция', f:'S = (a+b)/2 · h'}, {n:'Теорема Пифагора', f:'a² + b² = c²'}]
 };
-function renderCheat(tab){
-  document.querySelectorAll('.cheat-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-  const body = $('cheatBody');
-  const rows = CHEATS[tab] || [];
-  body.innerHTML = rows.map(r => `<div class="cheat-row"><span class="cheat-name">${esc(r.n)}</span><span class="cheat-formula">${esc(r.f)}</span></div>`).join('');
-}
+function renderCheat(tab){ document.querySelectorAll('.cheat-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab)); const body = $('cheatBody'); const rows = CHEATS[tab] || []; body.innerHTML = rows.map(r => `<div class="cheat-row"><span class="cheat-name">${esc(r.n)}</span><span class="cheat-formula">${esc(r.f)}</span></div>`).join(''); }
 function openCheat(){ $('cheatOverlay').classList.add('active'); renderCheat('trig'); haptic('light'); }
 function closeCheat(){ $('cheatOverlay').classList.remove('active'); }
 
 function openGraph(expr){ $('graphOverlay').classList.add('active'); if(expr) $('graphInput').value = 'y = ' + expr; setTimeout(buildGraph, 100); }
 function closeGraph(){ $('graphOverlay').classList.remove('active'); }
-function buildGraph(){
-  const raw = $('graphInput').value.trim();
-  if(!raw){ showToast('Введи функцию'); return; }
-  const exprs = raw.split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean);
-  const container = $('graphContainer');
-  container.innerHTML = '';
-  const wrapper = document.createElement('div'); wrapper.style.width = '100%';
-  container.appendChild(wrapper);
-  try{ drawInlineGraph(wrapper, exprs); } catch(e){ showToast('Ошибка'); }
-}
+function buildGraph(){ const raw = $('graphInput').value.trim(); if(!raw){ showToast('Введи функцию'); return; } const exprs = raw.split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean); const container = $('graphContainer'); container.innerHTML = ''; const wrapper = document.createElement('div'); wrapper.style.width = '100%'; container.appendChild(wrapper); try{ drawInlineGraph(wrapper, exprs); } catch(e){ showToast('Ошибка'); } }
 
 /* ============ ONBOARDING / INIT ============ */
 let onbSlide = 0;
 function onbGoTo(i){ onbSlide = Math.max(0, Math.min(2, i)); $('onbTrack').style.transform = `translateX(-${onbSlide*100}%)`; document.querySelectorAll('.onb-dot').forEach(d => d.classList.toggle('active', +d.dataset.slide === onbSlide)); }
-function finishOnboarding(){
-  const name = ($('onbName').value || '').replace(/[<>"'`]/g,'').trim().slice(0,24) || tg?.initDataUnsafe?.user?.first_name || 'User';
-  state.user = { name, joinedAt: Date.now() };
-  store.saveUser(state.user);
-  localStorage.setItem(KEYS.ONBOARD, '1');
-  $('onboarding').classList.remove('active');
-  lockScroll(false); initApp();
-}
+function finishOnboarding(){ const name = ($('onbName').value || '').replace(/[<>"'`]/g,'').trim().slice(0,24) || tg?.initDataUnsafe?.user?.first_name || 'User'; state.user = { name, joinedAt: Date.now() }; store.saveUser(state.user); localStorage.setItem(KEYS.ONBOARD, '1'); $('onboarding').classList.remove('active'); lockScroll(false); initApp(); }
 function initApp(){
-  state.chats = store.getChats();
-  state.activeId = store.getActive();
+  state.chats = store.getChats(); state.activeId = store.getActive();
   state.vibration = localStorage.getItem(KEYS.VIB) !== '0';
-  state.fontSize = parseInt(localStorage.getItem(KEYS.FONT) || '15');
-  applyFontSize(state.fontSize);
-  ensureChat();
-  renderChatsList(); renderActiveChat(); updateSendBtn(); updateLimitUI();
-  const elapsed = Date.now() - getLastReq();
-  if(elapsed < RATE_MS) startCooldown();
+  state.fontSize = parseInt(localStorage.getItem(KEYS.FONT) || '15'); applyFontSize(state.fontSize);
+  ensureChat(); renderChatsList(); renderActiveChat(); updateSendBtn(); updateLimitUI();
+  const elapsed = Date.now() - getLastReq(); if(elapsed < RATE_MS) startCooldown();
   if(!state.user){ state.user = { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() }; store.saveUser(state.user); }
-  updateAvatarUI(); applyPlusUI();
-  initVoice();
+  updateAvatarUI(); applyPlusUI(); initVoice();
 }
 function openQuickMenu(){ $('quickMenu').classList.add('open'); $('fsquaresBtn').classList.add('open'); $('qmBackdrop').classList.add('show'); haptic('light'); }
 function closeQuickMenu(){ $('quickMenu').classList.remove('open'); $('fsquaresBtn').classList.remove('open'); $('qmBackdrop').classList.remove('show'); }
@@ -2735,20 +2110,10 @@ function closeQuickMenu(){ $('quickMenu').classList.remove('open'); $('fsquaresB
 /* ============ EVENTS ============ */
 inputEl.addEventListener('input', () => { updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value); });
 inputEl.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
-sendBtn.addEventListener('click', () => {
-  const chat = getActiveChat();
-  if(isLimitReached(chat)){ openPlusModal(); return; }
-  if(state.busy){ state.abortRequested = true; return; }
-  handleSend();
-});
+sendBtn.addEventListener('click', () => { const chat = getActiveChat(); if(isLimitReached(chat)){ openPlusModal(); return; } if(state.busy){ state.abortRequested = true; return; } handleSend(); });
 $('menuBtn').addEventListener('click', openDrawer);
 $('newChatBtn').addEventListener('click', () => { if(!state.busy){ createChat(); closeDrawer(); } });
-$('clearAllChatsBtn').addEventListener('click', async () => {
-  const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm('Удалить все чаты?', res => r(res))) : confirm('Удалить?');
-  if(!ok) return;
-  state.chats = []; state.activeId = null;
-  store.saveChats(state.chats); store.setActive(''); createChat();
-});
+$('clearAllChatsBtn').addEventListener('click', async () => { const ok = tg?.showConfirm ? await new Promise(r => tg.showConfirm('Удалить все чаты?', res => r(res))) : confirm('Удалить?'); if(!ok) return; state.chats = []; state.activeId = null; store.saveChats(state.chats); store.setActive(''); createChat(); });
 $('chatSearch').addEventListener('input', e => { state.searchQuery = e.target.value; renderChatsList(); });
 $('drawerOverlay').addEventListener('click', closeDrawer);
 $('userCard').addEventListener('click', openAccount);
@@ -2774,35 +2139,23 @@ $('notebookBtn').addEventListener('click', () => { closeAccount(); setTimeout(pr
 $('fsquaresBtn').addEventListener('click', () => { if($('quickMenu').classList.contains('open')) closeQuickMenu(); else openQuickMenu(); });
 $('qmBackdrop').addEventListener('click', closeQuickMenu);
 $('quickMenu').addEventListener('click', e => {
-  const btn = e.target.closest('button[data-action]');
-  if(!btn) return;
-  const action = btn.dataset.action;
-  closeQuickMenu();
-  setTimeout(() => {
-    if(action === 'voice'){ startVoice(); }
-    else if(action === 'keyboard'){ $('mathKb').classList.toggle('show'); setTimeout(() => inputEl.focus(), 100); hapticSel(); }
-    else if(action === 'attach'){ openPicker(); }
-  }, 200);
+  const btn = e.target.closest('button[data-action]'); if(!btn) return;
+  const action = btn.dataset.action; closeQuickMenu();
+  setTimeout(() => { if(action === 'voice'){ startVoice(); } else if(action === 'keyboard'){ $('mathKb').classList.toggle('show'); setTimeout(() => inputEl.focus(), 100); hapticSel(); } else if(action === 'attach'){ openPicker(); } }, 200);
 });
-/* Picker */
 $('pickCamera').addEventListener('click', openCamera);
 $('pickGallery').addEventListener('click', () => { closePicker(); $('galleryInput').click(); });
 $('pickCancel').addEventListener('click', closePicker);
 $('pickerOverlay').addEventListener('click', e => { if(e.target === $('pickerOverlay')) closePicker(); });
 $('galleryInput').addEventListener('change', e => { if(e.target.files[0]) handleFileUpload(e.target.files[0]); e.target.value = ''; });
-/* Camera */
 $('cameraClose').addEventListener('click', closeCamera);
 $('cameraShutter').addEventListener('click', takePhoto);
 $('cameraFlash').addEventListener('click', toggleFlash);
 $('cameraSwitch').addEventListener('click', switchCamera);
 document.querySelectorAll('#mathKb button').forEach(b => b.addEventListener('click', () => {
-  const ins = b.dataset.ins;
-  const start = inputEl.selectionStart ?? inputEl.value.length;
-  const end = inputEl.selectionEnd ?? inputEl.value.length;
-  inputEl.value = inputEl.value.slice(0,start) + ins + inputEl.value.slice(end);
-  inputEl.focus();
-  const pos = start + ins.length;
-  try{ inputEl.setSelectionRange(pos, pos); }catch(e){}
+  const ins = b.dataset.ins; const start = inputEl.selectionStart ?? inputEl.value.length; const end = inputEl.selectionEnd ?? inputEl.value.length;
+  inputEl.value = inputEl.value.slice(0,start) + ins + inputEl.value.slice(end); inputEl.focus();
+  const pos = start + ins.length; try{ inputEl.setSelectionRange(pos, pos); }catch(e){}
   updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value);
 }));
 $('toolTrainer').addEventListener('click', () => { closeDrawer(); setTimeout(openTrainer, 200); });
@@ -2811,14 +2164,8 @@ $('toolGraph').addEventListener('click', () => { closeDrawer(); setTimeout(() =>
 $('toolExam').addEventListener('click', () => { closeDrawer(); setTimeout(openExam, 200); });
 $('trainerClose').addEventListener('click', closeTrainer);
 $('trainerOverlay').addEventListener('click', e => { if(e.target === $('trainerOverlay')) closeTrainer(); });
-document.querySelectorAll('#topicGrid .topic-btn').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('#topicGrid .topic-btn').forEach(x => x.classList.remove('active'));
-  b.classList.add('active'); trainer.topic = b.dataset.topic; startTrainerTask(); hapticSel();
-}));
-document.querySelectorAll('#diffRow .diff-btn').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('#diffRow .diff-btn').forEach(x => x.classList.remove('active'));
-  b.classList.add('active'); trainer.diff = +b.dataset.diff; startTrainerTask(); hapticSel();
-}));
+document.querySelectorAll('#topicGrid .topic-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('#topicGrid .topic-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); trainer.topic = b.dataset.topic; startTrainerTask(); hapticSel(); }));
+document.querySelectorAll('#diffRow .diff-btn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('#diffRow .diff-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); trainer.diff = +b.dataset.diff; startTrainerTask(); hapticSel(); }));
 $('trainerCheck').addEventListener('click', checkTrainer);
 $('trainerNext').addEventListener('click', startTrainerTask);
 $('trainerInput').addEventListener('keydown', e => { if(e.key === 'Enter') checkTrainer(); });
@@ -2839,40 +2186,29 @@ function printNotebook(){
   const chat = getActiveChat(); if(!chat || !chat.messages.length){ showToast('Чат пустой'); return; }
   const userQs = chat.messages.filter(m => m.role === 'user').map(m => m.text);
   const html = `<html><head><title>Тетрадь</title><style>body{font-family:Arial;padding:20px;color:#0f172a}h1{font-size:20px}div.task{margin-bottom:40px;padding:12px;border-left:3px solid #2563eb;background:#f8fafc}div.task h3{margin:0 0 8px 0;font-size:16px}div.lines{height:80px;background:repeating-linear-gradient(#fff 0 25px, #cbd5e1 25px 26px);margin-top:8px}@media print{body{padding:0}}</style></head><body><h1>Рабочая тетрадь</h1><p>${new Date().toLocaleDateString('ru-RU')}</p>${userQs.map((q,i)=>`<div class="task"><h3>${i+1}. ${esc(q)}</h3><div class="lines"></div></div>`).join('')}</body></html>`;
-  const w = window.open('', '_blank');
-  if(!w){ showToast('Разреши попапы'); return; }
-  w.document.write(html); w.document.close();
-  setTimeout(() => { w.print(); }, 300);
+  const w = window.open('', '_blank'); if(!w){ showToast('Разреши попапы'); return; }
+  w.document.write(html); w.document.close(); setTimeout(() => { w.print(); }, 300);
 }
 
 /* ============ BOOT ============ */
 window.addEventListener('load', async () => {
-  const draft = localStorage.getItem(KEYS.DRAFT);
-  if(draft){ inputEl.value = draft; updateSendBtn(); }
+  const draft = localStorage.getItem(KEYS.DRAFT); if(draft){ inputEl.value = draft; updateSendBtn(); }
   state.vibration = localStorage.getItem(KEYS.VIB) !== '0';
-  state.fontSize = parseInt(localStorage.getItem(KEYS.FONT) || '15');
-  applyFontSize(state.fontSize);
+  state.fontSize = parseInt(localStorage.getItem(KEYS.FONT) || '15'); applyFontSize(state.fontSize);
   await checkAccess();
   if(gateState === 'approved'){
     state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() };
-    store.saveUser(state.user);
-    applyPlusUI();
+    store.saveUser(state.user); applyPlusUI();
     if(!localStorage.getItem(KEYS.ONBOARD) && !state.chats.length){
-      $('onboarding').classList.add('active');
-      lockScroll(true);
-      const tgName = tg?.initDataUnsafe?.user?.first_name;
-      if(tgName) $('onbName').value = tgName;
-      onbGoTo(0);
-      return;
+      $('onboarding').classList.add('active'); lockScroll(true);
+      const tgName = tg?.initDataUnsafe?.user?.first_name; if(tgName) $('onbName').value = tgName;
+      onbGoTo(0); return;
     }
     initApp();
   }
   setInterval(async () => {
-    const uId = tg?.initDataUnsafe?.user?.id;
-    if(!uId || uId === ADMIN_TG_ID) return;
-    try{
-      const res = await fetch(`${API_URL}/status/${uId}`);
-      const data = await res.json();
+    const uId = tg?.initDataUnsafe?.user?.id; if(!uId || uId === ADMIN_TG_ID) return;
+    try{ const res = await fetch(`${API_URL}/status/${uId}`); const data = await res.json();
       if(data.plus && !state.plus){ state.plus = true; applyPlusUI(); updateLimitUI(); renderActiveChat(); showToast('Plus активирован!'); haptic('success'); }
     }catch(e){}
   }, 15000);
