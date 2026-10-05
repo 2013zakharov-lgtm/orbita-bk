@@ -2,146 +2,131 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Песочница</title>
 <style>
 :root{--blue:#007AFF;--blue-hover:#0071E3;--blue-soft:#F0F6FF;--bg:#F5F5F7;
   --text:#1D1D1F;--text-2:#6E6E73;--text-3:#A1A1A6;--border:rgba(0,0,0,.08);--danger:#FF3B30;}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Roboto,sans-serif;
-  color:var(--text);user-select:none;-webkit-user-select:none}
+  color:var(--text);user-select:none;-webkit-user-select:none;touch-action:none;
+  overscroll-behavior:none}
+
 #hud{position:fixed;inset:0;pointer-events:none;z-index:10}
-#cross{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;opacity:.85}
-#cross::before,#cross::after{content:'';position:absolute;background:#fff;
-  box-shadow:0 0 6px rgba(0,122,255,.5),0 0 1px rgba(0,0,0,.35)}
-#cross::before{left:50%;top:0;width:1.5px;height:100%;margin-left:-.75px}
-#cross::after{top:50%;left:0;height:1.5px;width:100%;margin-top:-.75px}
-.hud-card{background:rgba(255,255,255,.5);
-  -webkit-backdrop-filter:blur(30px) saturate(180%);
-  backdrop-filter:blur(30px) saturate(180%);
-  border:1px solid rgba(255,255,255,.55);border-radius:14px;
-  box-shadow:0 4px 24px rgba(0,40,100,.1);color:var(--text)}
-#stats{position:absolute;right:16px;top:16px;padding:12px 16px;
-  font-size:12px;line-height:1.7;min-width:190px}
-#stats .row{display:flex;justify-content:space-between;gap:16px}
-#stats .label{color:var(--text-2)}
-#stats b{font-weight:600;color:var(--blue)}
-#coords{position:absolute;left:16px;bottom:16px;padding:8px 14px;
-  font-size:11.5px;font-family:ui-monospace,monospace;color:var(--text)}
-#coords b{color:var(--blue);font-weight:600}
-#timeBadge{position:absolute;left:16px;top:16px;padding:10px 14px;
-  font-size:12px;display:flex;align-items:center;gap:10px}
-#timeBadge .t-icon{font-size:16px}
-#timeBadge b{color:var(--blue);font-weight:600}
-#hotbar{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
-  display:flex;gap:6px;padding:8px;pointer-events:auto;
-  background:rgba(255,255,255,.42);
-  -webkit-backdrop-filter:blur(28px) saturate(180%);
-  backdrop-filter:blur(28px) saturate(180%);
-  border:1px solid rgba(255,255,255,.5);border-radius:18px;
-  box-shadow:0 8px 32px rgba(0,40,100,.15)}
-.slot{width:54px;height:54px;border-radius:12px;position:relative;
-  background:rgba(255,255,255,.55);border:1.5px solid rgba(255,255,255,.35);
-  cursor:pointer;overflow:hidden;
-  transition:transform .18s, border-color .15s, box-shadow .15s, background .15s}
-.slot:hover{transform:translateY(-3px);background:rgba(255,255,255,.75)}
-.slot .num{position:absolute;top:3px;left:7px;font-size:10px;
-  font-weight:700;color:var(--text-3);z-index:3}
-.slot .count{position:absolute;bottom:2px;right:5px;font-size:10px;
-  font-weight:700;color:#fff;z-index:3;text-shadow:1px 1px 2px #000,0 0 3px #000}
-.slot .ico{position:absolute;inset:0;display:flex;align-items:center;
-  justify-content:center;font-size:26px;z-index:2}
-.slot .sw{position:absolute;inset:7px;background-size:cover;
-  border-radius:5px;image-rendering:pixelated}
+
+/* ═══ ХОТБАР — сверху, скролл ═══ */
+#hotbar{
+  position:absolute;left:0;right:0;top:0;
+  display:flex;gap:6px;padding:8px 10px 10px;
+  overflow-x:auto;overflow-y:hidden;
+  pointer-events:auto;
+  background:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.15) 70%,rgba(255,255,255,0) 100%);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);
+  backdrop-filter:blur(18px) saturate(180%);
+  scrollbar-width:none;touch-action:pan-x}
+#hotbar::-webkit-scrollbar{display:none}
+.slot{width:48px;height:48px;flex-shrink:0;border-radius:11px;position:relative;
+  background:rgba(255,255,255,.6);border:1.5px solid rgba(255,255,255,.4);
+  overflow:hidden;transition:transform .12s, border-color .15s, box-shadow .15s, background .15s;
+  touch-action:manipulation}
 .slot.active{border-color:var(--blue);
-  box-shadow:0 0 0 3px rgba(0,122,255,.2),0 6px 18px rgba(0,122,255,.3);
-  background:rgba(255,255,255,.9)}
+  box-shadow:0 0 0 2px rgba(0,122,255,.22),0 4px 14px rgba(0,122,255,.3);
+  background:rgba(255,255,255,.95);transform:translateY(-2px)}
+.slot .num{position:absolute;top:2px;left:5px;font-size:9px;font-weight:700;
+  color:var(--text-3);z-index:3}
 .slot.active .num{color:var(--blue)}
-#toast{position:absolute;left:50%;top:24px;transform:translateX(-50%) translateY(-8px);
-  padding:10px 20px;font-size:13px;font-weight:600;
+.slot .count{position:absolute;bottom:1px;right:4px;font-size:9px;font-weight:700;
+  color:#fff;z-index:3;text-shadow:1px 1px 2px #000,0 0 3px #000}
+.slot .ico{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;font-size:22px;z-index:2}
+.slot .sw{position:absolute;inset:6px;background-size:cover;border-radius:4px;
+  image-rendering:pixelated}
+
+/* ═══ МИНИКАРТА ═══ */
+#minimap{position:absolute;right:10px;top:74px;width:108px;height:108px;
+  border-radius:12px;overflow:hidden;
+  background:rgba(255,255,255,.5);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 4px 18px rgba(0,40,100,.15);
+  pointer-events:auto;touch-action:manipulation}
+#minimap canvas{width:100%;height:100%;display:block}
+#minimap .n{position:absolute;top:2px;left:50%;transform:translateX(-50%);
+  font-size:9px;font-weight:700;color:#fff;text-shadow:0 0 4px #000,0 0 2px #000;
+  pointer-events:none}
+
+/* ═══ КНОПКА ПАУЗЫ ═══ */
+#pauseBtn{position:absolute;left:10px;top:10px;width:42px;height:42px;
+  border-radius:11px;border:1.5px solid rgba(255,255,255,.55);
+  background:rgba(255,255,255,.6);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  backdrop-filter:blur(20px) saturate(180%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:19px;color:var(--text);cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,40,100,.15);
+  pointer-events:auto;touch-action:manipulation;font-family:inherit;z-index:22}
+#pauseBtn:active{transform:scale(.93)}
+
+/* ═══ ДЖОЙСТИК ═══ */
+#joystick{position:absolute;left:16px;bottom:16px;width:132px;height:132px;
+  z-index:20;pointer-events:auto;touch-action:none;display:none}
+#joystick.visible{display:block}
+#joyBase{position:absolute;inset:0;border-radius:50%;
+  background:rgba(255,255,255,.14);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  backdrop-filter:blur(22px) saturate(180%);
+  border:1.5px solid rgba(255,255,255,.35);
+  box-shadow:0 6px 22px rgba(0,40,100,.18)}
+#joyKnob{position:absolute;left:50%;top:50%;width:56px;height:56px;
+  border-radius:50%;
+  background:rgba(255,255,255,.78);
+  border:1.5px solid rgba(255,255,255,.9);
+  transform:translate(-50%,-50%);
+  box-shadow:0 3px 12px rgba(0,40,100,.28);
+  pointer-events:none;will-change:transform}
+
+/* ═══ КНОПКИ ДЕЙСТВИЙ ═══ */
+#actionBtns{position:absolute;right:16px;bottom:16px;
+  display:flex;flex-direction:column-reverse;gap:10px;align-items:flex-end;
+  z-index:20;pointer-events:auto}
+.act-btn{width:62px;height:62px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.6);
+  background:rgba(255,255,255,.55);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  backdrop-filter:blur(20px) saturate(180%);
+  font-size:24px;color:var(--text);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 5px 20px rgba(0,40,100,.2);
+  transition:transform .1s, background .15s;font-family:inherit;
+  touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.act-btn:active{transform:scale(.9);background:rgba(255,255,255,.85)}
+.act-btn.primary{background:rgba(0,122,255,.82);color:#fff;
+  border-color:rgba(255,255,255,.5)}
+.act-btn.primary:active{background:rgba(0,100,220,.95)}
+.act-btn.small{width:48px;height:48px;font-size:18px;align-self:flex-end}
+
+/* ═══ TOAST ═══ */
+#toast{position:absolute;left:50%;top:74px;
+  transform:translateX(-50%) translateY(-8px);
+  padding:8px 16px;font-size:12.5px;font-weight:600;
   background:rgba(255,255,255,.85);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  backdrop-filter:blur(24px) saturate(180%);
-  border:1px solid rgba(255,255,255,.7);border-radius:14px;
-  color:var(--blue);box-shadow:0 12px 40px rgba(0,40,100,.2);
-  opacity:0;transition:opacity .25s, transform .25s;pointer-events:none}
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  backdrop-filter:blur(22px) saturate(180%);
+  border:1px solid rgba(255,255,255,.7);border-radius:12px;
+  color:var(--blue);box-shadow:0 8px 28px rgba(0,40,100,.2);
+  opacity:0;transition:opacity .22s, transform .22s;
+  pointer-events:none;white-space:nowrap;max-width:80vw;overflow:hidden;
+  text-overflow:ellipsis}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══ ЭФФЕКТЫ ═══ */
 #dmgFlash{position:fixed;inset:0;
   background:radial-gradient(ellipse at 50% 50%,
     rgba(255,59,48,0) 30%, rgba(255,59,48,.6) 100%);
   opacity:0;pointer-events:none;z-index:40;transition:opacity .12s}
-#hearts{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);
-  display:flex;gap:2px;font-size:22px;line-height:1;
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
-.heart-full{color:#FF3B30}
-.heart-half{color:#FF3B30;opacity:.4}
-.heart-empty{color:rgba(255,255,255,.5)}
-#hunger{position:absolute;left:50%;bottom:130px;transform:translateX(-50%);
-  display:flex;gap:2px;font-size:18px;line-height:1;
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
-.food-full{color:#FFB340}
-.food-empty{color:rgba(255,255,255,.4)}
-
-#minimap{position:absolute;right:16px;bottom:16px;width:180px;height:180px;
-  border-radius:14px;overflow:hidden;
-  background:rgba(255,255,255,.5);
-  -webkit-backdrop-filter:blur(30px) saturate(180%);
-  backdrop-filter:blur(30px) saturate(180%);
-  border:1px solid rgba(255,255,255,.55);
-  box-shadow:0 4px 24px rgba(0,40,100,.1)}
-#minimap canvas{width:100%;height:100%;display:block}
-#minimap .n{position:absolute;top:4px;left:50%;transform:translateX(-50%);
-  font-size:10px;font-weight:700;color:#fff;text-shadow:0 0 4px #000,0 0 2px #000}
-
-#compass{position:absolute;left:50%;top:16px;transform:translateX(-50%);
-  width:340px;height:26px;border-radius:13px;
-  background:rgba(255,255,255,.5);
-  -webkit-backdrop-filter:blur(30px) saturate(180%);
-  backdrop-filter:blur(30px) saturate(180%);
-  border:1px solid rgba(255,255,255,.55);
-  overflow:hidden;font-size:11px;font-weight:700;
-  box-shadow:0 4px 24px rgba(0,40,100,.1);color:var(--text)}
-#compass .strip{position:absolute;top:0;left:0;height:100%;display:flex;
-  align-items:center;gap:0;transition:transform .05s;will-change:transform}
-#compass .mark{min-width:40px;text-align:center;color:var(--text-2)}
-#compass .mark.card{color:var(--blue);font-weight:800;font-size:12px}
-#compass .center-line{position:absolute;left:50%;top:0;bottom:0;width:1.5px;
-  background:var(--blue);transform:translateX(-50%);box-shadow:0 0 6px rgba(0,122,255,.7)}
-
-#mapScreen{position:fixed;inset:0;z-index:55;display:flex;
-  align-items:center;justify-content:center;padding:24px;
-  background:rgba(20,40,80,.55);
-  -webkit-backdrop-filter:blur(20px) saturate(140%);
-  backdrop-filter:blur(20px) saturate(140%);animation:fadeIn .25s ease}
-#mapScreen.hidden{display:none}
-#mapScreen .panel{max-width:min(90vmin,860px);width:100%;padding:20px}
-#mapCanvas{width:100%;aspect-ratio:1;border-radius:14px;
-  background:#4a7a4a;display:block;cursor:crosshair;
-  image-rendering:pixelated;
-  box-shadow:0 4px 24px rgba(0,40,100,.15)}
-#mapLegend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-2);
-  justify-content:center;margin-top:12px}
-#mapLegend span{display:flex;align-items:center;gap:5px}
-#mapLegend .dot{width:10px;height:10px;border-radius:3px}
-
-#chatBox{position:absolute;left:16px;bottom:60px;width:440px;max-width:70vw;
-  pointer-events:none;display:flex;flex-direction:column;gap:2px;
-  font-size:12.5px;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.9)}
-#chatBox .msg{background:rgba(0,0,0,.45);padding:4px 10px;border-radius:6px;
-  align-self:flex-start;max-width:100%;word-wrap:break-word;
-  animation:chatMsg 5s forwards}
-#chatBox .msg.err{color:#ffb0b0}
-#chatBox .msg.sys{color:#a0e0ff}
-@keyframes chatMsg{0%{opacity:0;transform:translateY(4px)}
-  10%{opacity:1;transform:none}90%{opacity:1}100%{opacity:0}}
-#chatInput{position:absolute;left:16px;bottom:32px;width:440px;max-width:70vw;
-  pointer-events:auto;padding:8px 14px;border-radius:10px;
-  background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.3);
-  color:#fff;font-family:inherit;font-size:13px;outline:none;
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-#chatInput::placeholder{color:rgba(255,255,255,.5)}
-
 #underwater{position:fixed;inset:0;pointer-events:none;z-index:35;
   background:radial-gradient(ellipse at 50% 50%,
     rgba(30,90,180,.25) 0%, rgba(10,50,120,.55) 100%);
@@ -160,154 +145,138 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
 #rainCanvas{position:fixed;inset:0;pointer-events:none;z-index:37;opacity:0;
   transition:opacity .8s}
 
+/* ═══ МЕНЮ / ОВЕРЛЕИ ═══ */
 .overlay{position:fixed;inset:0;display:flex;align-items:center;
-  justify-content:center;z-index:50;padding:24px;
+  justify-content:center;z-index:50;padding:14px;
   background:radial-gradient(ellipse 90% 70% at 50% 0%,
     rgba(220,234,255,.55) 0%, rgba(245,245,247,.6) 100%);
   -webkit-backdrop-filter:blur(22px) saturate(140%);
   backdrop-filter:blur(22px) saturate(140%);
-  animation:fadeIn .3s ease}
+  animation:fadeIn .25s ease;touch-action:auto}
 .overlay.hidden{display:none}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.panel{background:rgba(255,255,255,.75);
+.panel{background:rgba(255,255,255,.78);
   -webkit-backdrop-filter:blur(30px) saturate(180%);
   backdrop-filter:blur(30px) saturate(180%);
-  border:1px solid rgba(255,255,255,.75);border-radius:24px;
-  box-shadow:0 24px 70px rgba(0,40,100,.2);padding:28px;width:100%;
-  max-width:540px;max-height:86vh;display:flex;flex-direction:column;gap:22px;
-  animation:panelIn .35s cubic-bezier(.2,.9,.3,1.05)}
-.panel.wide{max-width:720px}
-.panel.narrow{max-width:420px}
-@keyframes panelIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
-.panel-header{display:flex;align-items:center;gap:14px}
-.panel-header h2{font-size:24px;font-weight:700;letter-spacing:-.5px}
-.btn-icon{width:38px;height:38px;border-radius:11px;border:none;
-  background:rgba(245,245,247,.7);color:var(--text);font-size:17px;
+  border:1px solid rgba(255,255,255,.75);border-radius:20px;
+  box-shadow:0 20px 56px rgba(0,40,100,.2);padding:18px;width:100%;
+  max-width:440px;max-height:88vh;display:flex;flex-direction:column;gap:14px;
+  animation:panelIn .3s cubic-bezier(.2,.9,.3,1.05);overflow-y:auto}
+.panel.wide{max-width:520px}
+.panel.narrow{max-width:360px}
+@keyframes panelIn{from{opacity:0;transform:translateY(12px) scale(.98)}
+  to{opacity:1;transform:none}}
+.panel-header{display:flex;align-items:center;gap:10px}
+.panel-header h2{font-size:19px;font-weight:700;letter-spacing:-.4px}
+.btn-icon{width:34px;height:34px;border-radius:10px;border:none;
+  background:rgba(245,245,247,.7);color:var(--text);font-size:16px;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:background .15s;flex-shrink:0;font-family:inherit}
-.btn-icon:hover{background:rgba(235,235,240,.9)}
+  transition:background .15s;flex-shrink:0;font-family:inherit;
+  touch-action:manipulation}
+.btn-icon:active{background:rgba(225,225,232,.95)}
 .menu-content{display:flex;flex-direction:column;align-items:center;
-  gap:14px;text-align:center;max-width:520px}
-.menu-logo{width:88px;height:88px;border-radius:24px;
+  gap:12px;text-align:center;max-width:440px;width:100%}
+.menu-logo{width:68px;height:68px;border-radius:20px;
   background:linear-gradient(145deg,#0A84FF 0%,#0062CC 100%);
-  box-shadow:0 16px 40px rgba(0,98,204,.35);
-  display:flex;align-items:center;justify-content:center;margin-bottom:8px}
-.menu-logo::after{content:'';width:34px;height:34px;border-radius:9px;background:#fff}
-.menu-content h1{font-size:58px;font-weight:700;letter-spacing:-2px;line-height:1;
+  box-shadow:0 14px 32px rgba(0,98,204,.35);
+  display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.menu-logo::after{content:'';width:26px;height:26px;border-radius:7px;background:#fff}
+.menu-content h1{font-size:42px;font-weight:700;letter-spacing:-1.6px;line-height:1;
   background:linear-gradient(180deg,#1D1D1F 0%,#007AFF 130%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.tagline{color:var(--text-2);font-size:17px}
-.btn{padding:14px 28px;border-radius:12px;font-size:16px;font-weight:600;
+.tagline{color:var(--text-2);font-size:14px}
+.btn{padding:13px 24px;border-radius:12px;font-size:15px;font-weight:600;
   font-family:inherit;border:none;cursor:pointer;
   transition:background .15s, transform .15s;letter-spacing:-.2px;
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
-.btn.primary{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(0,122,255,.35)}
-.btn.primary:hover{background:var(--blue-hover);transform:translateY(-1px)}
-.btn.secondary{background:rgba(245,245,247,.7);color:var(--text);border:1px solid var(--border)}
-.btn.secondary:hover{background:rgba(235,235,240,.9)}
-.form{display:flex;flex-direction:column;gap:14px}
-.form label{display:flex;flex-direction:column;gap:7px}
-.form label span{font-size:13px;font-weight:500;color:var(--text-2)}
-.form input,.form select{padding:13px 15px;border-radius:11px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  white-space:nowrap;touch-action:manipulation;width:100%}
+.btn.primary{background:var(--blue);color:#fff;
+  box-shadow:0 3px 14px rgba(0,122,255,.35)}
+.btn.primary:active{background:var(--blue-hover);transform:scale(.98)}
+.btn.secondary{background:rgba(245,245,247,.7);color:var(--text);
+  border:1px solid var(--border)}
+.btn.secondary:active{background:rgba(232,232,238,.95)}
+.form{display:flex;flex-direction:column;gap:12px}
+.form label{display:flex;flex-direction:column;gap:6px}
+.form label span{font-size:12px;font-weight:500;color:var(--text-2)}
+.form input,.form select{padding:12px 14px;border-radius:11px;
   border:1.5px solid transparent;background:rgba(245,245,247,.7);
   font-size:15px;font-family:inherit;color:var(--text);outline:none;
-  transition:border-color .15s, background .15s, box-shadow .15s}
-.form input:focus,.form select:focus{background:rgba(255,255,255,.9);
+  transition:border-color .15s, background .15s, box-shadow .15s;
+  -webkit-appearance:none;appearance:none;touch-action:auto}
+.form input:focus,.form select:focus{background:rgba(255,255,255,.95);
   border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,122,255,.12)}
-.worlds-list{display:flex;flex-direction:column;gap:10px;
-  overflow-y:auto;max-height:52vh;padding:3px}
-.worlds-list::-webkit-scrollbar{width:8px}
-.worlds-list::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:4px}
-.world-card{display:flex;align-items:center;gap:14px;
-  padding:12px 14px;background:rgba(245,245,247,.6);border-radius:14px;
-  cursor:pointer;transition:background .15s;border:1.5px solid transparent}
-.world-card:hover{background:rgba(232,241,255,.85);border-color:rgba(0,122,255,.18)}
-.world-thumb{width:52px;height:52px;border-radius:13px;flex-shrink:0;
+.worlds-list{display:flex;flex-direction:column;gap:8px;
+  overflow-y:auto;max-height:50vh;padding:2px}
+.worlds-list::-webkit-scrollbar{width:6px}
+.worlds-list::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:3px}
+.world-card{display:flex;align-items:center;gap:12px;
+  padding:11px 12px;background:rgba(245,245,247,.6);border-radius:14px;
+  cursor:pointer;transition:background .15s;border:1.5px solid transparent;
+  touch-action:manipulation}
+.world-card:active{background:rgba(232,241,255,.9);border-color:rgba(0,122,255,.18)}
+.world-thumb{width:46px;height:46px;border-radius:12px;flex-shrink:0;
   background:linear-gradient(145deg,#5AC8FA 0%,#007AFF 100%);
   display:flex;align-items:center;justify-content:center}
-.world-thumb::after{content:'';width:18px;height:18px;border-radius:5px;background:#fff}
+.world-thumb::after{content:'';width:16px;height:16px;border-radius:5px;background:#fff}
 .world-info{flex:1;min-width:0}
-.world-name{font-size:15px;font-weight:600;margin-bottom:3px;
+.world-name{font-size:14px;font-weight:600;margin-bottom:3px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.world-meta{font-size:12px;color:var(--text-2)}
-.world-delete{width:34px;height:34px;border-radius:9px;border:none;
+.world-meta{font-size:11px;color:var(--text-2)}
+.world-delete{width:32px;height:32px;border-radius:9px;border:none;
   background:transparent;color:var(--text-3);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:17px}
-.world-delete:hover{background:rgba(255,59,48,.12);color:var(--danger)}
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  touch-action:manipulation}
+.world-delete:active{background:rgba(255,59,48,.12);color:var(--danger)}
 .empty-state{display:flex;flex-direction:column;align-items:center;gap:6px;
-  padding:36px 20px;text-align:center}
-.empty-icon{width:56px;height:56px;border-radius:16px;background:var(--blue-soft);
-  color:var(--blue);font-size:26px;display:flex;align-items:center;
-  justify-content:center;margin-bottom:8px}
-.empty-state p{font-size:15px;font-weight:600}
-.empty-state .sub{color:var(--text-2);font-size:13px;font-weight:400}
-.pause-actions{display:flex;flex-direction:column;gap:10px}
-.pause-actions .btn{width:100%}
-#invGrid,#chestGrid,#invGridChest{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;
-  max-height:34vh;overflow-y:auto;padding:3px}
-#invGrid::-webkit-scrollbar,#chestGrid::-webkit-scrollbar,#invGridChest::-webkit-scrollbar{width:8px}
-#invGrid::-webkit-scrollbar-thumb,#chestGrid::-webkit-scrollbar-thumb,#invGridChest::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:4px}
-.inv-cell{aspect-ratio:1;border-radius:10px;cursor:pointer;position:relative;
-  background:rgba(245,245,247,.55);border:1.5px solid transparent;
-  transition:background .15s, border-color .15s;display:flex;
-  align-items:center;justify-content:center;overflow:hidden}
-.inv-cell:hover{background:rgba(232,241,255,.85);border-color:rgba(0,122,255,.2)}
-.inv-cell.active{background:rgba(255,255,255,.85);border-color:var(--blue);
-  box-shadow:0 0 0 3px rgba(0,122,255,.15)}
-.inv-cell .ic{width:80%;height:80%;background-size:cover;
-  image-rendering:pixelated;display:flex;align-items:center;
-  justify-content:center;font-size:22px}
-.inv-cell .ct{position:absolute;bottom:2px;right:4px;font-size:10px;
-  font-weight:700;color:#fff;text-shadow:1px 1px 2px #000,0 0 2px #000}
-.inv-cell.empty{background:rgba(0,0,0,.05);cursor:default}
-.inv-cell.empty:hover{background:rgba(0,0,0,.05);border-color:transparent}
-.panel-hint{font-size:12px;color:var(--text-3);text-align:center;margin-top:-6px}
-.sec-title{font-size:11px;font-weight:600;color:var(--text-3);
-  text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
-
+  padding:26px 16px;text-align:center}
+.empty-icon{width:50px;height:50px;border-radius:14px;background:var(--blue-soft);
+  color:var(--blue);font-size:22px;display:flex;align-items:center;
+  justify-content:center;margin-bottom:6px}
+.empty-state p{font-size:14px;font-weight:600}
+.empty-state .sub{color:var(--text-2);font-size:12px;font-weight:400}
+.pause-actions{display:flex;flex-direction:column;gap:9px}
 .setting{display:flex;justify-content:space-between;align-items:center;gap:12px;
-  padding:10px 14px;background:rgba(245,245,247,.55);border-radius:10px}
-.setting label{font-size:13.5px;font-weight:500;color:var(--text)}
-.setting .val{font-size:12px;color:var(--text-2);font-family:ui-monospace,monospace;
-  min-width:40px;text-align:right}
-.setting input[type=range]{width:140px;accent-color:var(--blue)}
-.setting input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);
+  padding:10px 12px;background:rgba(245,245,247,.55);border-radius:10px}
+.setting label{font-size:13px;font-weight:500;color:var(--text)}
+.setting .val{font-size:12px;color:var(--text-2);
+  font-family:ui-monospace,monospace;min-width:36px;text-align:right}
+.setting input[type=range]{width:110px;accent-color:var(--blue)}
+.setting input[type=checkbox]{width:20px;height:20px;accent-color:var(--blue);
   cursor:pointer}
+.sec-title{font-size:10.5px;font-weight:600;color:var(--text-3);
+  text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
 
-/* ═══ МЕНЮ ЭМОЦИЙ (исправлено) ═══ */
-#emoteMenu{
-  position:fixed;inset:0;z-index:56;display:flex;align-items:center;
+/* ═══ МЕНЮ ЭМОЦИЙ ═══ */
+#emoteMenu{position:fixed;inset:0;z-index:56;display:flex;align-items:center;
   justify-content:center;
   background:radial-gradient(ellipse at 50% 50%,
     rgba(10,40,90,.28) 0%, rgba(10,40,90,.42) 100%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
   backdrop-filter:blur(14px) saturate(150%);
-  animation:fadeIn .22s ease}
+  animation:fadeIn .2s ease}
 #emoteMenu.hidden{display:none !important}
-.radial-wheel{
-  position:relative;width:min(420px,90vmin);height:min(420px,90vmin);
+.radial-wheel{position:relative;width:min(340px,86vmin);height:min(340px,86vmin);
   border-radius:50%;
   background:radial-gradient(circle at 50% 40%,
     rgba(255,255,255,.16) 0%, rgba(255,255,255,.06) 60%, transparent 100%);
   border:1px solid rgba(255,255,255,.28);
-  box-shadow:0 24px 70px rgba(0,30,80,.35);
-  animation:wheelIn .32s cubic-bezier(.2,.9,.3,1.05)}
+  box-shadow:0 20px 60px rgba(0,30,80,.35);
+  animation:wheelIn .28s cubic-bezier(.2,.9,.3,1.05)}
 @keyframes wheelIn{from{opacity:0;transform:scale(.92) rotate(-6deg)}
-                   to{opacity:1;transform:none}}
-.radial-center{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:110px;height:110px;border-radius:50%;
+  to{opacity:1;transform:none}}
+.radial-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:96px;height:96px;border-radius:50%;
   background:rgba(255,255,255,.85);
   -webkit-backdrop-filter:blur(24px) saturate(180%);
   backdrop-filter:blur(24px) saturate(180%);
   border:1px solid rgba(255,255,255,.7);
   box-shadow:0 6px 22px rgba(0,40,100,.22);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:2px;font-size:13px;font-weight:700;color:var(--blue);
+  gap:2px;font-size:12px;font-weight:700;color:var(--blue);
   letter-spacing:-.2px;pointer-events:none}
-.radial-center small{font-size:10px;font-weight:500;color:var(--text-2)}
-.emote-btn{
-  position:absolute;width:84px;height:84px;border-radius:50%;
+.radial-center small{font-size:9.5px;font-weight:500;color:var(--text-2)}
+.emote-btn{position:absolute;width:72px;height:72px;border-radius:50%;
   background:rgba(255,255,255,.85);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   backdrop-filter:blur(20px) saturate(180%);
@@ -315,56 +284,66 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
   box-shadow:0 6px 22px rgba(0,40,100,.22);
   cursor:pointer;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:2px;font-family:inherit;
-  transition:transform .18s cubic-bezier(.2,.9,.3,1.4),
+  transition:transform .16s cubic-bezier(.2,.9,.3,1.4),
              background .15s, box-shadow .15s;
-  animation:emoteIn .35s cubic-bezier(.2,.9,.3,1.05) backwards}
+  animation:emoteIn .32s cubic-bezier(.2,.9,.3,1.05) backwards;
+  touch-action:manipulation}
 @keyframes emoteIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:none}}
-.emote-btn:hover{background:rgba(255,255,255,.98);transform:scale(1.12);
+.emote-btn:active{background:rgba(255,255,255,.98);transform:scale(1.08);
   box-shadow:0 10px 30px rgba(0,122,255,.35)}
-.emote-btn:active{transform:scale(1.02)}
-.emote-btn .e-ico{font-size:26px;line-height:1}
-.emote-btn .e-name{font-size:9.5px;font-weight:600;color:var(--text);line-height:1}
+.emote-btn .e-ico{font-size:22px;line-height:1}
+.emote-btn .e-name{font-size:9px;font-weight:600;color:var(--text);line-height:1}
+
+/* ═══ ИНВЕНТАРЬ / СУНДУК ═══ */
+#invGrid,#chestGrid,#invGridChest{display:grid;grid-template-columns:repeat(6,1fr);
+  gap:6px;max-height:32vh;overflow-y:auto;padding:2px}
+#invGrid::-webkit-scrollbar,#chestGrid::-webkit-scrollbar,
+#invGridChest::-webkit-scrollbar{width:5px}
+#invGrid::-webkit-scrollbar-thumb,#chestGrid::-webkit-scrollbar-thumb,
+#invGridChest::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:3px}
+.inv-cell{aspect-ratio:1;border-radius:10px;cursor:pointer;position:relative;
+  background:rgba(245,245,247,.55);border:1.5px solid transparent;
+  transition:background .15s, border-color .15s;display:flex;
+  align-items:center;justify-content:center;overflow:hidden;
+  touch-action:manipulation}
+.inv-cell:active{background:rgba(232,241,255,.9);
+  border-color:rgba(0,122,255,.2)}
+.inv-cell.active{background:rgba(255,255,255,.9);border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(0,122,255,.15)}
+.inv-cell .ic{width:78%;height:78%;background-size:cover;
+  image-rendering:pixelated;display:flex;align-items:center;
+  justify-content:center;font-size:20px}
+.inv-cell .ct{position:absolute;bottom:2px;right:4px;font-size:9.5px;
+  font-weight:700;color:#fff;text-shadow:1px 1px 2px #000,0 0 2px #000}
+.inv-cell.empty{background:rgba(0,0,0,.05);cursor:default}
+.panel-hint{font-size:11px;color:var(--text-3);text-align:center;margin-top:-4px}
+
+/* Компас — убран, но оставлены стили если понадобится */
+#cross{display:none}
 </style>
 </head>
 <body>
 
 <div id="hud">
-  <div id="cross"></div>
   <div id="toast"></div>
-  <div id="chatBox"></div>
-  <input id="chatInput" type="text" placeholder="Нажмите T чтобы открыть чат"
-         maxlength="120" autocomplete="off" spellcheck="false" style="display:none">
-
-  <div id="timeBadge" class="hud-card">
-    <span class="t-icon" id="tIcon">☀️</span>
-    <span><b id="tTime">День</b></span>
-    <span style="color:var(--text-3)">·</span>
-    <span id="tSeason" style="color:var(--text-2)">лето</span>
-  </div>
-
-  <div id="compass" class="hud-card">
-    <div class="strip" id="compassStrip"></div>
-    <div class="center-line"></div>
-  </div>
-
-  <div id="stats" class="hud-card">
-    <div class="row"><span class="label">Режим</span><b id="stMode">Покой</b></div>
-    <div class="row"><span class="label">Блоков</span><b id="stBlocks">0</b></div>
-    <div class="row"><span class="label">В руке</span><b id="stType">Трава</b></div>
-    <div class="row"><span class="label">Животных</span><b id="stAnimals">0</b></div>
-    <div class="row"><span class="label">Мобов</span><b id="stMobs">0</b></div>
-  </div>
-
-  <div id="coords" class="hud-card">
-    X: <b id="cx">0.0</b> · Y: <b id="cy">0.0</b> · Z: <b id="cz">0.0</b>
-  </div>
-
-  <div id="hearts"></div>
-  <div id="hunger"></div>
   <div id="hotbar"></div>
+
   <div id="minimap">
     <canvas id="minimapCanvas" width="180" height="180"></canvas>
     <div class="n">N</div>
+  </div>
+
+  <button id="pauseBtn" title="Пауза">☰</button>
+
+  <div id="joystick">
+    <div id="joyBase"></div>
+    <div id="joyKnob"></div>
+  </div>
+
+  <div id="actionBtns">
+    <button class="act-btn primary" id="btnJump" title="Прыжок">↑</button>
+    <button class="act-btn" id="btnBreak" title="Сломать блок">⛏</button>
+    <button class="act-btn small" id="btnView" title="Смена вида">👁</button>
   </div>
 </div>
 
@@ -375,6 +354,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
 <div id="rainOverlay"></div>
 <canvas id="rainCanvas"></canvas>
 
+<!-- ═══════════ МЕНЮ ═══════════ -->
 <div id="mainMenu" class="overlay">
   <div class="menu-content">
     <div class="menu-logo"></div>
@@ -426,7 +406,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
     </div>
     <div class="sec-title">Инвентарь</div>
     <div id="invGrid"></div>
-    <p class="panel-hint">ЛКМ по предмету — выбрать · Shift+ЛКМ — переместить в начало · E или Esc — закрыть</p>
+    <p class="panel-hint">Нажмите — выбрать · Долгое нажатие — переместить в начало</p>
   </div>
 </div>
 
@@ -438,9 +418,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
     </div>
     <div class="sec-title">Содержимое</div>
     <div id="chestGrid"></div>
-    <div class="sec-title" style="margin-top:8px">Инвентарь</div>
+    <div class="sec-title" style="margin-top:6px">Инвентарь</div>
     <div id="invGridChest"></div>
-    <p class="panel-hint">Кликните чтобы положить/забрать</p>
+    <p class="panel-hint">Нажмите чтобы положить / забрать</p>
   </div>
 </div>
 
@@ -472,7 +452,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
       </div>
       <div class="sec-title">Звук</div>
       <div class="setting">
-        <label>Общая громкость</label>
+        <label>Громкость</label>
         <input type="range" id="setVolMaster" min="0" max="100" step="5" value="60">
         <span class="val" id="setVolMasterV">60</span>
       </div>
@@ -482,7 +462,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
         <span class="val" id="setVolAmbV">100</span>
       </div>
     </div>
-    <button class="btn primary" id="btnSaveSettings" style="width:100%">Сохранить</button>
+    <button class="btn primary" id="btnSaveSettings">Сохранить</button>
   </div>
 </div>
 
@@ -501,9 +481,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
 
 <div id="deadScreen" class="overlay hidden">
   <div class="panel narrow">
-    <h2 style="font-size:36px;font-weight:700;color:var(--danger);
+    <h2 style="font-size:30px;font-weight:700;color:var(--danger);
       letter-spacing:-1px;text-align:center">Вы погибли</h2>
-    <p style="color:var(--text-2);font-size:14px;text-align:center;margin-top:-10px">
+    <p style="color:var(--text-2);font-size:13px;text-align:center;margin-top:-8px">
       Возродиться на точке спавна?</p>
     <div class="pause-actions">
       <button class="btn primary" id="btnRespawn">Возродиться</button>
@@ -512,31 +492,39 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
   </div>
 </div>
 
-<div id="mapScreen" class="hidden">
+<div id="mapScreen" class="overlay hidden">
   <div class="panel">
     <div class="panel-header">
       <button class="btn-icon" id="btnCloseMap">✕</button>
       <h2>Карта мира</h2>
     </div>
-    <canvas id="mapCanvas" width="700" height="700"></canvas>
-    <div id="mapLegend">
-      <span><span class="dot" style="background:#7ac36a"></span>игрок</span>
-      <span><span class="dot" style="background:#ffd166"></span>постройки</span>
-      <span><span class="dot" style="background:#ff5555"></span>метка</span>
-      <span><span class="dot" style="background:#e08a3a"></span>животные</span>
-      <span><span class="dot" style="background:#3a5a2a"></span>мобы</span>
+    <canvas id="mapCanvas" width="700" height="700"
+      style="width:100%;aspect-ratio:1;border-radius:12px;background:#4a7a4a;display:block;
+      image-rendering:pixelated;box-shadow:0 4px 24px rgba(0,40,100,.15)"></canvas>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:10.5px;color:var(--text-2);
+      justify-content:center;margin-top:8px">
+      <span style="display:flex;align-items:center;gap:4px">
+        <span style="width:9px;height:9px;border-radius:2px;background:#7ac36a"></span>игрок</span>
+      <span style="display:flex;align-items:center;gap:4px">
+        <span style="width:9px;height:9px;border-radius:2px;background:#ffd166"></span>постройки</span>
+      <span style="display:flex;align-items:center;gap:4px">
+        <span style="width:9px;height:9px;border-radius:2px;background:#ff5555"></span>метка</span>
+      <span style="display:flex;align-items:center;gap:4px">
+        <span style="width:9px;height:9px;border-radius:2px;background:#e08a3a"></span>животные</span>
+      <span style="display:flex;align-items:center;gap:4px">
+        <span style="width:9px;height:9px;border-radius:2px;background:#3a5a2a"></span>мобы</span>
     </div>
-    <p class="panel-hint">Клик по карте — поставить метку · ПКМ по метке — удалить</p>
+    <p class="panel-hint">Нажмите по карте — метка · Долгое нажатие — удалить</p>
   </div>
 </div>
 
-<!-- ═══ МЕНЮ ЭМОЦИЙ (исправлено: один div, class hidden) ═══ -->
 <div id="emoteMenu" class="hidden">
   <div class="radial-wheel" id="radialWheel">
-    <div class="radial-center">Эмоции<small>/ — закрыть</small></div>
+    <div class="radial-center">Эмоции<small>закрыть — ✕</small></div>
   </div>
 </div>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}
 </script>
@@ -544,7 +532,21 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);
 <script type="module">
 import * as THREE from 'three';
 
+/* ═══════════ TELEGRAM MINI APP ═══════════ */
+try{
+  if(window.Telegram && Telegram.WebApp){
+    const tg = Telegram.WebApp;
+    tg.ready();
+    try{ tg.expand(); }catch(e){}
+    try{ tg.disableVerticalSwipes && tg.disableVerticalSwipes(); }catch(e){}
+    try{ tg.setHeaderColor && tg.setHeaderColor('#F5F5F7'); }catch(e){}
+    try{ tg.setBackgroundColor && tg.setBackgroundColor('#F5F5F7'); }catch(e){}
+    try{ tg.lockOrientation && tg.lockOrientation(); }catch(e){}
+  }
+}catch(e){ console.warn('Telegram init failed', e); }
+
 /* ═══════════ УТИЛИТЫ ═══════════ */
+const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
@@ -777,13 +779,14 @@ const camera = new THREE.PerspectiveCamera(settings.fov, innerWidth/innerHeight,
 scene.add(camera);
 
 const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = settings.shadows;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
+renderer.domElement.style.touchAction = 'none';
 document.body.appendChild(renderer.domElement);
 
 addEventListener('resize', ()=>{
@@ -798,7 +801,7 @@ const hemi = new THREE.HemisphereLight(0xcfe9ff, 0x5c7a44, 1.15);
 scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff4e0, 2.1);
 sun.castShadow = settings.shadows;
-sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.mapSize.set(1024, 1024);
 sun.shadow.bias = -0.0006;
 sun.shadow.normalBias = 0.02;
 const SD = 40;
@@ -1514,7 +1517,6 @@ function addBlock(x, y, z, typeIdx, instant, rotation){
   }
   scene.add(m); blocks.push(m); blockIndex.set(k, m);
   if(t === CHEST_IDX && !chests.has(k)) chests.set(k, new Array(27).fill(null));
-  markStatsDirty();
   return true;
 }
 function spawnDebris(pos, material, count){
@@ -1561,7 +1563,6 @@ function removeBlock(root, spawnFx){
     AUDIO.breakBlock(t ? t.kind : 'cube');
     if(settings.particles && t) particlesBlockBreak(root.position.clone(), t);
   }
-  markStatsDirty();
 }
 function updateSpawning(dt){
   for(let i=spawning.length-1;i>=0;i--){
@@ -1596,7 +1597,7 @@ function updateDebris(dt){
 }
 
 /* Факелы */
-const TORCH_LIGHTS_MAX = 8;
+const TORCH_LIGHTS_MAX = 6;
 const torchLights = [];
 for(let i=0;i<TORCH_LIGHTS_MAX;i++){
   const l = new THREE.PointLight(0xffaa55, 0, 14, 2);
@@ -2016,7 +2017,6 @@ function spawnAnimalAt(kind, x, z){
     fleeTimer:0, dead:false, hitFlash:0, mooTimer:3+Math.random()*8,
   });
   animals.push(a);
-  markStatsDirty();
   return a;
 }
 function spawnAnimal(kind){
@@ -2041,7 +2041,6 @@ function hitAnimal(animal, dmg){
     scene.remove(animal.root);
     toast(`${animal.type==='cow'?'Корова':animal.type==='pig'?'Свинья':'Собака'} побеждена`);
   }
-  markStatsDirty();
 }
 function updateAnimals(dt){
   const alive = animals.filter(a => !a.dead).length;
@@ -2208,7 +2207,6 @@ function spawnMob(type){
     phase:0, hitFlash:0, dead:false, burnTimer:0,
   };
   mobs.push(mob);
-  markStatsDirty();
   return mob;
 }
 function damageMob(mob, dmg){
@@ -2223,7 +2221,6 @@ function damageMob(mob, dmg){
     scene.remove(mob.root);
     toast(mob.type === 'zombie' ? 'Зомби повержен' : 'Скелет повержен');
   }
-  markStatsDirty();
 }
 function spawnArrow(fromPos, targetPos, damage){
   const dir = targetPos.clone().sub(fromPos).normalize();
@@ -2402,7 +2399,7 @@ function updateFishing(dt){
   if(fishing.waitT <= 0){
     fishing.biting = true;
     fishing.biteT = 1.5;
-    toast('Клюёт! Кликните ЛКМ');
+    toast('Клюёт! Кликните по экрану');
   }
 }
 function catchFish(){
@@ -2429,18 +2426,13 @@ const PITCH_MIN = -1.45, PITCH_MAX = 1.45;
 let camDist = 5.4;
 const CAM_DIST_MIN = 2.0, CAM_DIST_MAX = 12.0;
 let pointerLocked = false;
-let inventoryOpen = false, emoteMenuOpen = false, chatOpen = false, mapOpen = false;
+let inventoryOpen = false, emoteMenuOpen = false, mapOpen = false;
 let stepTimer = 0, footTimer = 0;
+let jumpRequested = false;
 
 addEventListener('keydown', e => {
-  if(chatOpen){
-    if(e.code === 'Escape'){ closeChat(); e.preventDefault(); }
-    return;
-  }
   keys[e.code] = true;
   if(e.code === 'Space' || e.code.startsWith('Arrow')) e.preventDefault();
-
-  if(e.code === 'KeyT' && state === 'playing'){ openChat(); return; }
   if(e.code === 'KeyM' && state === 'playing'){ openMap(); return; }
   if(e.code === 'KeyO'){ openSettings(); return; }
   if(e.code === 'KeyE'){
@@ -2452,12 +2444,7 @@ addEventListener('keydown', e => {
     if(state === 'emotes'){ closeEmotes(); return; }
   }
   if(state !== 'playing') return;
-  if(e.code === 'KeyV'){
-    player.firstPerson = !player.firstPerson;
-    updateWeaponVisibility();
-    setCharacterColorWrite(!player.firstPerson);
-    toast(player.firstPerson ? 'Вид от 1-го лица' : 'Вид от 3-го лица');
-  }
+  if(e.code === 'KeyV'){ toggleView(); }
   if(e.code === 'KeyC'){ player.crouchToggle = !player.crouchToggle; }
   if(e.code === 'KeyF'){
     player.flying = !player.flying;
@@ -2470,11 +2457,12 @@ addEventListener('keydown', e => {
     if(slotIdx >= 0 && slotIdx < Math.min(SLOTS.length, HOTBAR_SIZE)) selectSlot(slotIdx);
   }
 });
-addEventListener('keyup', e => { if(!chatOpen) keys[e.code] = false; });
+addEventListener('keyup', e => { keys[e.code] = false; });
 
 document.addEventListener('pointerlockchange', () => {
+  if(isTouch) return;
   pointerLocked = document.pointerLockElement === renderer.domElement;
-  if(!pointerLocked && state === 'playing' && !inventoryOpen && !emoteMenuOpen && !chatOpen && !mapOpen){
+  if(!pointerLocked && state === 'playing' && !inventoryOpen && !emoteMenuOpen && !mapOpen){
     setState('paused');
   }
 });
@@ -2490,6 +2478,175 @@ addEventListener('wheel', e => {
   if(player.firstPerson) return;
   camDist += e.deltaY*0.0055;
   camDist = Math.max(CAM_DIST_MIN, Math.min(CAM_DIST_MAX, camDist));
+}, {passive:false});
+
+function toggleView(){
+  player.firstPerson = !player.firstPerson;
+  updateWeaponVisibility();
+  setCharacterColorWrite(!player.firstPerson);
+  toast(player.firstPerson ? 'Вид от 1-го лица' : 'Вид от 3-го лица');
+}
+
+/* ═══ МОБИЛЬНЫЕ КОНТРОЛЫ ═══ */
+const touchControls = { joyX:0, joyY:0, joyId:null, joyCenterX:0, joyCenterY:0 };
+const joystickEl = document.getElementById('joystick');
+const joyKnob = document.getElementById('joyKnob');
+const JOY_RADIUS = 48;
+
+if(isTouch){
+  joystickEl.classList.add('visible');
+}
+
+function updateJoy(cx, cy){
+  const dx = cx - touchControls.joyCenterX;
+  const dy = cy - touchControls.joyCenterY;
+  const d = Math.hypot(dx, dy);
+  const maxR = JOY_RADIUS;
+  const clampedD = Math.min(d, maxR);
+  const nx = d > 0.01 ? dx/d : 0;
+  const ny = d > 0.01 ? dy/d : 0;
+  touchControls.joyX = nx * (clampedD/maxR);
+  touchControls.joyY = ny * (clampedD/maxR);
+  joyKnob.style.transform = `translate(calc(-50% + ${nx*clampedD}px), calc(-50% + ${ny*clampedD}px))`;
+}
+
+joystickEl.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if(touchControls.joyId !== null) return;
+  const t = e.changedTouches[0];
+  touchControls.joyId = t.identifier;
+  const rect = joystickEl.getBoundingClientRect();
+  touchControls.joyCenterX = rect.left + rect.width/2;
+  touchControls.joyCenterY = rect.top + rect.height/2;
+  updateJoy(t.clientX, t.clientY);
+}, {passive:false});
+
+document.addEventListener('touchmove', e => {
+  if(touchControls.joyId === null) return;
+  for(const t of e.changedTouches){
+    if(t.identifier === touchControls.joyId){
+      e.preventDefault();
+      updateJoy(t.clientX, t.clientY);
+      return;
+    }
+  }
+}, {passive:false});
+
+document.addEventListener('touchend', e => {
+  for(const t of e.changedTouches){
+    if(t.identifier === touchControls.joyId){
+      touchControls.joyId = null;
+      touchControls.joyX = 0;
+      touchControls.joyY = 0;
+      joyKnob.style.transform = 'translate(-50%,-50%)';
+    }
+  }
+});
+document.addEventListener('touchcancel', e => {
+  for(const t of e.changedTouches){
+    if(t.identifier === touchControls.joyId){
+      touchControls.joyId = null;
+      touchControls.joyX = 0;
+      touchControls.joyY = 0;
+      joyKnob.style.transform = 'translate(-50%,-50%)';
+    }
+  }
+});
+
+/* ═══ СВАЙП ДЛЯ КАМЕРЫ ═══ */
+const canvasEl = renderer.domElement;
+let lookId = null, lookLastX = 0, lookLastY = 0;
+let lookStartX = 0, lookStartY = 0, lookStartTime = 0, lookMoved = false;
+
+canvasEl.addEventListener('touchstart', e => {
+  if(state !== 'playing' || !player.alive) return;
+  if(lookId !== null) return;
+  const t = e.changedTouches[0];
+  lookId = t.identifier;
+  lookLastX = t.clientX; lookLastY = t.clientY;
+  lookStartX = t.clientX; lookStartY = t.clientY;
+  lookStartTime = performance.now();
+  lookMoved = false;
+}, {passive:false});
+
+canvasEl.addEventListener('touchmove', e => {
+  if(state !== 'playing') return;
+  for(const t of e.changedTouches){
+    if(t.identifier !== lookId) continue;
+    e.preventDefault();
+    const dx = t.clientX - lookLastX;
+    const dy = t.clientY - lookLastY;
+    if(Math.abs(t.clientX - lookStartX) + Math.abs(t.clientY - lookStartY) > 12){
+      lookMoved = true;
+    }
+    yaw -= dx * 0.0055;
+    pitch -= dy * 0.0055;
+    pitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, pitch));
+    lookLastX = t.clientX; lookLastY = t.clientY;
+    return;
+  }
+}, {passive:false});
+
+canvasEl.addEventListener('touchend', e => {
+  for(const t of e.changedTouches){
+    if(t.identifier === lookId){
+      const dur = performance.now() - lookStartTime;
+      lookId = null;
+      if(!lookMoved && dur < 260 && state === 'playing' && player.alive){
+        if(fishing.active && fishing.biting) catchFish();
+        else if(fishing.active) cancelFishing();
+        else tryPlaceOrAttack();
+      }
+    }
+  }
+});
+canvasEl.addEventListener('touchcancel', e => {
+  for(const t of e.changedTouches){
+    if(t.identifier === lookId) lookId = null;
+  }
+});
+
+/* ═══ КНОПКИ ═══ */
+document.getElementById('btnJump').addEventListener('touchstart', e => {
+  e.preventDefault();
+  jumpRequested = true;
+}, {passive:false});
+document.getElementById('btnJump').addEventListener('mousedown', e => {
+  e.preventDefault();
+  jumpRequested = true;
+});
+
+let breakInterval = null;
+function startBreak(){
+  if(state !== 'playing') return;
+  tryRemoveBlock();
+  if(breakInterval) clearInterval(breakInterval);
+  breakInterval = setInterval(() => {
+    if(state === 'playing') tryRemoveBlock();
+  }, 240);
+}
+function stopBreak(){
+  if(breakInterval){ clearInterval(breakInterval); breakInterval = null; }
+}
+const btnBreak = document.getElementById('btnBreak');
+btnBreak.addEventListener('touchstart', e => { e.preventDefault(); startBreak(); }, {passive:false});
+btnBreak.addEventListener('touchend', e => { e.preventDefault(); stopBreak(); }, {passive:false});
+btnBreak.addEventListener('touchcancel', stopBreak);
+btnBreak.addEventListener('mousedown', e => { e.preventDefault(); startBreak(); });
+btnBreak.addEventListener('mouseup', stopBreak);
+btnBreak.addEventListener('mouseleave', stopBreak);
+
+document.getElementById('btnView').addEventListener('click', e => {
+  e.preventDefault();
+  if(state === 'playing') toggleView();
+});
+
+document.getElementById('pauseBtn').addEventListener('click', e => {
+  e.preventDefault();
+  if(state === 'playing'){
+    if(fishing.active) cancelFishing();
+    setState('paused');
+  }
 });
 
 /* Слоты */
@@ -2542,7 +2699,7 @@ function currentSlot(){ return SLOTS[selectedSlot]; }
 const hotbarEl = document.getElementById('hotbar');
 function buildHotbar(){
   hotbarEl.innerHTML = '';
-  for(let i=0;i<Math.min(SLOTS.length, HOTBAR_SIZE);i++){
+  for(let i=0;i<SLOTS.length;i++){
     const slot = SLOTS[i];
     const d = document.createElement('div');
     d.className = 'slot';
@@ -2553,7 +2710,10 @@ function buildHotbar(){
     } else {
       d.innerHTML = `<div class="ico">${slot.icon}</div><span class="num">${i+1}</span>`;
     }
-    d.addEventListener('click', () => selectSlot(i));
+    d.addEventListener('click', (e) => {
+      e.preventDefault();
+      selectSlot(i);
+    });
     hotbarEl.appendChild(d);
   }
   selectSlot(0);
@@ -2561,8 +2721,6 @@ function buildHotbar(){
 function selectSlot(i){
   selectedSlot = i;
   [...hotbarEl.children].forEach((el, k) => el.classList.toggle('active', k === i));
-  const el = document.getElementById('stType');
-  if(el) el.textContent = currentSlot().name;
   updateWeaponVisibility();
 }
 function updateWeaponVisibility(){
@@ -2598,14 +2756,7 @@ function renderInventory(){
     }
     if(i === selectedSlot) cell.classList.add('active');
     cell.title = slot.name;
-    cell.addEventListener('click', (e) => {
-      if(e.shiftKey){
-        const s = SLOTS.splice(i,1)[0];
-        SLOTS.unshift(s);
-        buildHotbar();
-        renderInventory();
-        return;
-      }
+    cell.addEventListener('click', () => {
       selectSlot(i); closeInventory();
     });
     invGridEl.appendChild(cell);
@@ -2620,7 +2771,7 @@ function openInventory(){
 }
 function closeInventory(){
   inventoryOpen = false;
-  if(state === 'inventory'){ setState('playing'); lockPointer(); }
+  if(state === 'inventory'){ setState('playing'); if(!isTouch) lockPointer(); }
 }
 document.getElementById('btnCloseInventory').addEventListener('click', closeInventory);
 
@@ -2681,7 +2832,7 @@ function openChest(key){
 }
 function closeChest(){
   currentChestKey = null;
-  if(state === 'chest'){ setState('playing'); lockPointer(); }
+  if(state === 'chest'){ setState('playing'); if(!isTouch) lockPointer(); }
 }
 document.getElementById('btnCloseChest').addEventListener('click', closeChest);
 
@@ -2699,7 +2850,7 @@ function closeMap(){
   mapScreenEl.classList.add('hidden');
   mapOpen = false;
   setState('playing');
-  lockPointer();
+  if(!isTouch) lockPointer();
 }
 document.getElementById('btnCloseMap').addEventListener('click', closeMap);
 mapCanvas.addEventListener('click', e => {
@@ -2749,8 +2900,6 @@ function drawMap(){
       ctx.fillRect(gx, gy, 4, 4);
     }
   }
-  ctx.fillStyle = 'rgba(30,90,180,.3)';
-  ctx.fillRect(0, OCEAN_START_Z * scale + H/2, W, H);
   ctx.fillStyle = '#ffd166';
   for(const b of blocks){
     const sx = b.position.x * scale + W/2;
@@ -2791,12 +2940,6 @@ function drawMap(){
   ctx.closePath(); ctx.fill();
   ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
   ctx.restore();
-  ctx.strokeStyle = 'rgba(255,255,255,.1)';
-  ctx.lineWidth = 1;
-  for(let g=0; g<=W; g+=scale*10){
-    ctx.beginPath(); ctx.moveTo(g,0); ctx.lineTo(g,H); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0,g); ctx.lineTo(W,g); ctx.stroke();
-  }
 }
 
 /* Мини-карта */
@@ -2808,8 +2951,8 @@ function drawMinimap(){
   const scale = W / (range*2);
   ctx.fillStyle = 'rgba(40,60,40,.85)';
   ctx.fillRect(0, 0, W, H);
-  for(let gx=0; gx<W; gx+=4){
-    for(let gy=0; gy<H; gy+=4){
+  for(let gx=0; gx<W; gx+=6){
+    for(let gy=0; gy<H; gy+=6){
       const wx = player.x + (gx - W/2) / scale;
       const wz = player.z + (gy - H/2) / scale;
       const b = biomeAt(wx, wz, 0);
@@ -2820,7 +2963,7 @@ function drawMinimap(){
       else if(b === 'forest') color = '#3f7a3f';
       else color = '#6a9a5a';
       ctx.fillStyle = color;
-      ctx.fillRect(gx, gy, 4, 4);
+      ctx.fillRect(gx, gy, 6, 6);
     }
   }
   ctx.fillStyle = 'rgba(255,210,100,.85)';
@@ -2835,14 +2978,14 @@ function drawMinimap(){
     if(a.dead) continue;
     const dx = a.x - player.x, dz = a.z - player.z;
     if(Math.abs(dx) > range || Math.abs(dz) > range) continue;
-    ctx.fillRect(dx*scale+W/2-1.5, dz*scale+H/2-1.5, 3, 3);
+    ctx.fillRect(dx*scale+W/2-2, dz*scale+H/2-2, 4, 4);
   }
   ctx.fillStyle = '#ff3030';
   for(const m of mobs){
     if(m.dead) continue;
     const dx = m.x - player.x, dz = m.z - player.z;
     if(Math.abs(dx) > range || Math.abs(dz) > range) continue;
-    ctx.fillRect(dx*scale+W/2-2, dz*scale+H/2-2, 4, 4);
+    ctx.fillRect(dx*scale+W/2-2.5, dz*scale+H/2-2.5, 5, 5);
   }
   for(const mk of mapMarkers){
     const dx = mk.x - player.x, dz = mk.z - player.z;
@@ -2857,9 +3000,9 @@ function drawMinimap(){
   ctx.rotate(-player.facing);
   ctx.fillStyle = '#7ac36a';
   ctx.beginPath();
-  ctx.moveTo(0, -7); ctx.lineTo(5, 5); ctx.lineTo(0, 2); ctx.lineTo(-5, 5);
+  ctx.moveTo(0, -8); ctx.lineTo(6, 7); ctx.lineTo(0, 3); ctx.lineTo(-6, 7);
   ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.stroke();
   ctx.restore();
 }
 let minimapAcc = 0;
@@ -2869,28 +3012,10 @@ function updateMinimap(dt){
   minimapAcc = 0;
   drawMinimap();
 }
-
-/* Компас */
-const compassStripEl = document.getElementById('compassStrip');
-function buildCompass(){
-  let html = '';
-  const dirs = ['С','СВ','В','ЮВ','Ю','ЮЗ','З','СЗ'];
-  for(let i=0; i<32; i++){
-    const d = (i * 22.5) % 360;
-    const isCardinal = d % 90 === 0;
-    const label = isCardinal
-      ? dirs[Math.round(d/45) % 8]
-      : (Math.round(d/45) % 2 === 0 ? '' : '·');
-    html += `<span class="mark${isCardinal ? ' card' : ''}">${label}</span>`;
-  }
-  compassStripEl.innerHTML = html;
-}
-buildCompass();
-function updateCompass(){
-  const headingDeg = (-yaw * 180 / Math.PI) % 360;
-  const offset = -headingDeg / 360 * (40 * 32);
-  compassStripEl.style.transform = `translateX(${-offset + 170}px)`;
-}
+document.getElementById('minimap').addEventListener('click', e => {
+  e.preventDefault();
+  if(state === 'playing') openMap();
+});
 
 /* Эмоции */
 const BASE_HIP_Y = 0.92;
@@ -2955,16 +3080,16 @@ const radialWheel = document.getElementById('radialWheel');
 const emoteKeys = ['wave','salute','point','dance','bow'];
 function buildRadialMenu(){
   [...radialWheel.querySelectorAll('.emote-btn')].forEach(el => el.remove());
-  const W = radialWheel.clientWidth || 400;
-  const R = W*0.31;
+  const W = radialWheel.clientWidth || 340;
+  const R = W*0.32;
   emoteKeys.forEach((id, i) => {
     const def = EMOTES[id];
     const angle = -Math.PI/2 + (i*2*Math.PI/emoteKeys.length);
     const x = Math.cos(angle)*R, y = Math.sin(angle)*R;
     const btn = document.createElement('button');
     btn.className = 'emote-btn';
-    btn.style.left = `calc(50% + ${x}px - 42px)`;
-    btn.style.top = `calc(50% + ${y}px - 42px)`;
+    btn.style.left = `calc(50% + ${x}px - 36px)`;
+    btn.style.top = `calc(50% + ${y}px - 36px)`;
     btn.style.animationDelay = (i*40)+'ms';
     btn.innerHTML = `<div class="e-ico">${def.icon}</div><div class="e-name">${def.name}</div>`;
     btn.addEventListener('click', () => { startEmote(id); closeEmotes(); });
@@ -2984,91 +3109,11 @@ function openEmotes(){
 function closeEmotes(){
   emoteMenuOpen = false;
   emoteMenuEl.classList.add('hidden');
-  if(state === 'emotes'){ setState('playing'); lockPointer(); }
+  if(state === 'emotes'){ setState('playing'); if(!isTouch) lockPointer(); }
 }
-
-/* Чат */
-const chatBoxEl = document.getElementById('chatBox');
-const chatInputEl = document.getElementById('chatInput');
-function openChat(){
-  chatOpen = true;
-  chatInputEl.style.display = 'block';
-  chatInputEl.value = '';
-  chatInputEl.focus();
-  if(document.pointerLockElement) document.exitPointerLock();
-}
-function closeChat(){
-  chatOpen = false;
-  chatInputEl.style.display = 'none';
-  chatInputEl.blur();
-  if(state === 'playing') lockPointer();
-}
-function chatMsg(text, cls){
-  const d = document.createElement('div');
-  d.className = 'msg ' + (cls || '');
-  d.textContent = text;
-  chatBoxEl.appendChild(d);
-  setTimeout(() => d.remove(), 5000);
-  while(chatBoxEl.children.length > 8) chatBoxEl.firstChild.remove();
-}
-chatInputEl.addEventListener('keydown', e => {
-  if(e.key === 'Enter'){
-    const text = chatInputEl.value.trim();
-    if(text) handleCommand(text);
-    closeChat();
-  } else if(e.key === 'Escape'){ closeChat(); }
+emoteMenuEl.addEventListener('click', e => {
+  if(e.target === emoteMenuEl) closeEmotes();
 });
-function handleCommand(text){
-  if(!text.startsWith('/')){ chatMsg('<Игрок> ' + text); return; }
-  const parts = text.slice(1).split(/\s+/);
-  const cmd = parts[0].toLowerCase();
-  const args = parts.slice(1);
-  if(cmd === 'help'){
-    chatMsg('/help — справка', 'sys');
-    chatMsg('/time day|night|noon — время', 'sys');
-    chatMsg('/tp x y z — телепорт', 'sys');
-    chatMsg('/give <block> [count] — выдать блок', 'sys');
-    chatMsg('/gamemode survival|creative', 'sys');
-    chatMsg('/weather clear|rain|thunder', 'sys');
-  }
-  else if(cmd === 'time'){
-    if(args[0] === 'day'){ worldTime = 0.25; chatMsg('Установлено: день', 'sys'); }
-    else if(args[0] === 'night'){ worldTime = 0.75; chatMsg('Установлено: ночь', 'sys'); }
-    else if(args[0] === 'noon'){ worldTime = 0.25; }
-    else chatMsg('Использование: /time day|night|noon', 'err');
-  }
-  else if(cmd === 'tp'){
-    const x = parseFloat(args[0]), y = parseFloat(args[1]), z = parseFloat(args[2]);
-    if(isNaN(x)||isNaN(y)||isNaN(z)){ chatMsg('Использование: /tp x y z', 'err'); return; }
-    player.x = x; player.y = y; player.z = z;
-    chatMsg(`Телепорт в ${x} ${y} ${z}`, 'sys');
-  }
-  else if(cmd === 'give'){
-    const q = args.join(' ').toLowerCase();
-    let idx = -1;
-    for(let i=0;i<SLOTS.length;i++){
-      if(SLOTS[i].name.toLowerCase().includes(q)){ idx = i; break; }
-    }
-    if(idx < 0){ chatMsg('Блок не найден: ' + args.join(' '), 'err'); return; }
-    itemCounts[idx] = 999;
-    selectSlot(idx);
-    chatMsg('Выдан: ' + SLOTS[idx].name, 'sys');
-  }
-  else if(cmd === 'gamemode'){
-    const m = (args[0] || '').toLowerCase();
-    if(m === 'creative' || m === '1'){ gameMode = 'creative'; chatMsg('Творческий режим', 'sys'); updateHP(); }
-    else if(m === 'survival' || m === '0'){ gameMode = 'survival'; chatMsg('Выживание', 'sys'); updateHP(); }
-    else chatMsg('Использование: /gamemode creative|survival', 'err');
-  }
-  else if(cmd === 'weather'){
-    const w = (args[0] || '').toLowerCase();
-    if(['clear','rain','thunder'].includes(w)){
-      setWeather(w);
-      chatMsg('Погода: ' + w, 'sys');
-    } else chatMsg('Использование: /weather clear|rain|thunder', 'err');
-  }
-  else chatMsg('Неизвестная команда: /' + cmd, 'err');
-}
 
 /* Погода */
 const weatherState = { type:'clear', intensity:0, targetIntensity:0, timer:60 };
@@ -3081,7 +3126,7 @@ function resizeRainCanvas(){
   rainCanvasEl.height = innerHeight;
 }
 resizeRainCanvas();
-for(let i=0;i<180;i++){
+for(let i=0;i<140;i++){
   rainDrops.push({
     x: Math.random()*innerWidth,
     y: Math.random()*innerHeight,
@@ -3115,7 +3160,7 @@ function updateWeather(dt){
   rainCanvasEl.style.opacity = wInt > 0.05 ? '1' : '0';
   AUDIO.setRainVolume(wInt*0.08);
   if(wInt > 0.1){
-    const showDrops = Math.floor(wInt * 150);
+    const showDrops = Math.floor(wInt * 120);
     rainCtx.clearRect(0,0,innerWidth,innerHeight);
     rainCtx.strokeStyle = 'rgba(200,220,255,.55)';
     rainCtx.lineWidth = 1.2;
@@ -3305,45 +3350,19 @@ function setCharacterColorWrite(visible){
   });
 }
 
-/* HP/голод */
-const heartsEl = document.getElementById('hearts');
-const hungerEl = document.getElementById('hunger');
+/* HP/голод — HUD убран, функции no-op */
 const dmgFlash = document.getElementById('dmgFlash');
-const HEARTS_COUNT = 10;
-function updateHP(){
-  if(gameMode === 'creative'){ heartsEl.innerHTML = ''; hungerEl.innerHTML = ''; return; }
-  const perHeart = player.hpMax/HEARTS_COUNT;
-  const hp = Math.max(0, player.hp);
-  let html = '';
-  for(let i=0;i<HEARTS_COUNT;i++){
-    const filled = hp/perHeart;
-    let cls;
-    if(filled >= i+1) cls = 'heart-full';
-    else if(filled >= i+0.5) cls = 'heart-half';
-    else cls = 'heart-empty';
-    html += `<span class="${cls}">\u2665</span>`;
-  }
-  heartsEl.innerHTML = html;
-  let hHtml = '';
-  const perFood = hungerMax/10;
-  for(let i=0;i<10;i++){
-    const filled = hunger/perFood;
-    hHtml += `<span class="${filled >= i+1 ? 'food-full' : 'food-empty'}">\u25CF</span>`;
-  }
-  hungerEl.innerHTML = hHtml;
-}
+function updateHP(){ /* HUD отключён */ }
 function damagePlayer(amount){
   if(!player.alive || player.hurtCooldown > 0 || gameMode === 'creative') return;
   player.hp -= amount;
   player.hurtCooldown = 0.35;
   player.painK = 1;
-  updateHP();
   AUDIO.hurt();
   dmgFlash.style.opacity = '1';
   setTimeout(() => { dmgFlash.style.opacity = '0'; }, 110);
   if(player.hp <= 0){
     player.hp = 0; player.alive = false;
-    updateHP();
     if(document.pointerLockElement) document.exitPointerLock();
     setState('dead');
   }
@@ -3354,8 +3373,7 @@ function respawn(){
   player.alive = true;
   player.x = player.spawnX; player.y = player.spawnY; player.z = player.spawnZ;
   player.vy = 0; player.facing = 0;
-  updateHP();
-  setState('playing'); lockPointer();
+  setState('playing'); if(!isTouch) lockPointer();
 }
 
 /* Поза */
@@ -3690,8 +3708,6 @@ function loadWorld(id){
     seedBridgeAndIsland();
   }
   updateHP();
-  markStatsDirty();
-  updateStats();
   return true;
 }
 function deleteWorld(id){ putWorlds(getWorlds().filter(w => w.id !== id)); }
@@ -3707,6 +3723,9 @@ const overlays = {
   pause: document.getElementById('pauseMenu'),
   dead: document.getElementById('deadScreen'),
 };
+const hudEl = document.getElementById('hud');
+const actionBtnsEl = document.getElementById('actionBtns');
+const joystickElVis = document.getElementById('joystick');
 function setState(s){
   state = s;
   for(const k of Object.keys(overlays)) overlays[k].classList.add('hidden');
@@ -3717,6 +3736,9 @@ function setState(s){
   if(s === 'chest') overlays.chest.classList.remove('hidden');
   if(s === 'paused') overlays.pause.classList.remove('hidden');
   if(s === 'dead') overlays.dead.classList.remove('hidden');
+  const playVisible = (s === 'playing');
+  hudEl.style.display = playVisible ? 'block' : 'none';
+  if(mapOpen && !playVisible){ mapScreenEl.classList.add('hidden'); mapOpen = false; }
 }
 function renderWorlds(){
   const listEl = document.getElementById('worldsList');
@@ -3760,6 +3782,7 @@ function escapeHTML(s){
   }[c]));
 }
 function lockPointer(){
+  if(isTouch) return;
   if(!document.pointerLockElement){
     try{
       const p = renderer.domElement.requestPointerLock();
@@ -3768,7 +3791,7 @@ function lockPointer(){
   }
 }
 function startWorld(id){
-  if(loadWorld(id)){ setState('playing'); lockPointer(); }
+  if(loadWorld(id)){ setState('playing'); if(!isTouch) lockPointer(); }
 }
 document.getElementById('btnPlay').addEventListener('click', () => {
   AUDIO.init();
@@ -3799,7 +3822,9 @@ for(const id of ['worldNameInput','worldSeedInput']){
     if(e.key === 'Enter') document.getElementById('btnCreateWorld').click();
   });
 }
-document.getElementById('btnResume').addEventListener('click', () => { setState('playing'); lockPointer(); });
+document.getElementById('btnResume').addEventListener('click', () => {
+  setState('playing'); if(!isTouch) lockPointer();
+});
 document.getElementById('btnSaveExit').addEventListener('click', () => {
   saveCurrentWorld(); currentWorldId = null;
   if(document.pointerLockElement) document.exitPointerLock();
@@ -3830,27 +3855,9 @@ function toast(msg){
   toastEl.textContent = msg;
   toastEl.classList.add('show');
   clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 1600);
+  toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 1500);
 }
 
-let statsDirty = true, statsAcc = 0;
-function markStatsDirty(){ statsDirty = true; }
-function updateStats(){
-  const b = document.getElementById('stBlocks');
-  const t = document.getElementById('stType');
-  const a = document.getElementById('stAnimals');
-  const m = document.getElementById('stMobs');
-  if(b) b.textContent = blocks.length;
-  if(t) t.textContent = currentSlot().name;
-  if(a) a.textContent = animals.filter(x => !x.dead).length;
-  if(m) m.textContent = mobs.filter(x => !x.dead).length;
-}
-function updateStatsThrottled(dt){
-  statsAcc += dt;
-  if(statsAcc < 0.25 && !statsDirty) return;
-  statsAcc = 0; statsDirty = false;
-  updateStats();
-}
 function tickAutosave(dt){
   if(state !== 'playing' || !currentWorldId) return;
   autosaveAcc += dt;
@@ -3932,16 +3939,6 @@ function updateDayNight(dt){
   const torchNear = torchLights.some(l => l.visible && l.intensity > 0.5);
   bloomEl.style.opacity = String(torchNear ? bloomStrength + 0.1 : bloomStrength*0.5);
   underwaterEl.style.opacity = player.inWater ? '1' : '0';
-
-  const tIconEl = document.getElementById('tIcon');
-  const tTimeEl = document.getElementById('tTime');
-  const tSeasonEl = document.getElementById('tSeason');
-  if(tIconEl && tTimeEl){
-    if(dayLight > 0.65){ tIconEl.textContent = '☀️'; tTimeEl.textContent = 'День'; }
-    else if(dayLight > 0.2){ tIconEl.textContent = '🌅'; tTimeEl.textContent = sinA > 0 ? 'Рассвет' : 'Закат'; }
-    else { tIconEl.textContent = '🌙'; tTimeEl.textContent = 'Ночь'; }
-  }
-  if(tSeasonEl) tSeasonEl.textContent = SEASONS[seasonIdx];
 }
 function updateSeasonParticles(dt){
   if(!settings.particles) return;
@@ -3962,7 +3959,7 @@ function updateSeasonParticles(dt){
   if(seasonIdx === 3){
     snowTimer -= dt;
     if(snowTimer <= 0){
-      snowTimer = 0.05;
+      snowTimer = 0.06;
       for(let i=0;i<2;i++){
         const px = player.x + (Math.random()-0.5)*30;
         const pz = player.z + (Math.random()-0.5)*30;
@@ -3973,7 +3970,7 @@ function updateSeasonParticles(dt){
   }
   smokeTimer -= dt;
   if(smokeTimer <= 0){
-    smokeTimer = 0.15;
+    smokeTimer = 0.18;
     for(const b of blocks){
       if(b.userData.typeIdx !== TORCH_IDX) continue;
       if(b.position.distanceToSquared(player.root.position) > 400) continue;
@@ -3994,11 +3991,15 @@ const clock = new THREE.Clock();
 function update(dt){
   clockTime += dt;
   let ix = 0, iz = 0;
-  if(pointerLocked && player.alive && state === 'playing'){
-    if(keys['KeyW'] || keys['ArrowUp']) iz += 1;
-    if(keys['KeyS'] || keys['ArrowDown']) iz -= 1;
-    if(keys['KeyD'] || keys['ArrowRight']) ix += 1;
-    if(keys['KeyA'] || keys['ArrowLeft']) ix -= 1;
+  if(state === 'playing' && player.alive){
+    if(pointerLocked || !isTouch){
+      if(keys['KeyW'] || keys['ArrowUp']) iz += 1;
+      if(keys['KeyS'] || keys['ArrowDown']) iz -= 1;
+      if(keys['KeyD'] || keys['ArrowRight']) ix += 1;
+      if(keys['KeyA'] || keys['ArrowLeft']) ix -= 1;
+    }
+    ix += touchControls.joyX;
+    iz -= touchControls.joyY;
   }
   if(activeEmote && (ix !== 0 || iz !== 0)) activeEmote = null;
   updateEmote(dt);
@@ -4051,7 +4052,9 @@ function update(dt){
     player.doubleJumpCd = Math.max(0, player.doubleJumpCd-dt);
     const spacePressed = keys['Space'];
     const prevSpace = player._prevSpace;
-    if(spacePressed && !prevSpace && state === 'playing'){
+    const jumpNow = (spacePressed && !prevSpace) || jumpRequested;
+    jumpRequested = false;
+    if(jumpNow && state === 'playing'){
       if(player.onGround && player.jumpCooldown <= 0 && player.crouch < 0.5){
         if(inWater) player.vy = 3;
         else { player.vy = JUMP_POWER; AUDIO.jump(); }
@@ -4123,7 +4126,6 @@ function update(dt){
     if(foodTimer > 6){
       foodTimer = 0;
       hunger = Math.max(0, hunger - (player.speed > WALK_SPEED ? 1.5 : 0.6));
-      updateHP();
       if(hunger <= 0){ if(Math.random() < 0.5) damagePlayer(1); }
     }
   }
@@ -4173,13 +4175,9 @@ function update(dt){
   updateTorchLights(dt);
   updateWeather(dt);
   updateSeasonParticles(dt);
-  updateStatsThrottled(dt);
   tickAutosave(dt);
   updateDayNight(dt);
   updateMinimap(dt);
-  updateCompass();
-  const cx = document.getElementById('cx'), cy = document.getElementById('cy'), cz = document.getElementById('cz');
-  if(cx){ cx.textContent = player.x.toFixed(1); cy.textContent = player.y.toFixed(1); cz.textContent = player.z.toFixed(1); }
   const crouchOffset = player.crouch*0.42;
   if(player.firstPerson){
     const eyeY = player.y+EYE_HEIGHT-crouchOffset;
@@ -4212,17 +4210,6 @@ function update(dt){
     camera.position.lerp(desired, 1-Math.exp(-dt*18));
     camera.lookAt(camTarget);
   }
-  const stModeEl = document.getElementById('stMode');
-  if(stModeEl){
-    if(!player.alive) stModeEl.textContent = 'Мёртв';
-    else if(player.flying) stModeEl.textContent = 'Полёт';
-    else if(activeEmote) stModeEl.textContent = 'Эмоция';
-    else if(player.crouch > 0.5) stModeEl.textContent = 'Крадётся';
-    else if(player.inWater) stModeEl.textContent = 'Плывёт';
-    else if(player.speed > WALK_SPEED+0.6) stModeEl.textContent = 'Бег';
-    else if(player.speed > 0.25) stModeEl.textContent = 'Ходьба';
-    else stModeEl.textContent = 'Покой';
-  }
   if(mapOpen) drawMap();
 }
 
@@ -4250,9 +4237,9 @@ try{
   loop();
 }catch(e){
   console.error('Init error:', e);
-  document.body.innerHTML = '<div style="padding:40px;font-family:sans-serif">'+
-    '<h2>Ошибка запуска</h2><pre style="background:#f5f5f7;padding:16px;'+
-    'border-radius:8px;overflow:auto">'+escapeHTML(e.message+'\n'+e.stack)+'</pre></div>';
+  document.body.innerHTML = '<div style="padding:24px;font-family:sans-serif;color:#fff;background:#1a1a1a">'+
+    '<h2>Ошибка запуска</h2><pre style="background:#333;padding:14px;'+
+    'border-radius:8px;overflow:auto;white-space:pre-wrap">'+escapeHTML(e.message+'\n'+e.stack)+'</pre></div>';
 }
 </script>
 </body>
