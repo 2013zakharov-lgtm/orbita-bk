@@ -16,7 +16,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
 
 #hud{position:fixed;inset:0;pointer-events:none;z-index:10}
 
-/* ═══ ХОТБАР — сверху, скролл ═══ */
+/* ═══ ХОТБАР ═══ */
 #hotbar{
   position:absolute;left:0;right:0;top:0;
   display:flex;gap:6px;padding:8px 10px 10px;
@@ -45,8 +45,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
   image-rendering:pixelated}
 
 /* ═══ МИНИКАРТА ═══ */
-#minimap{position:absolute;right:10px;top:74px;width:108px;height:108px;
-  border-radius:12px;overflow:hidden;
+#minimap{position:absolute;right:10px;top:178px;width:96px;height:96px;
+  border-radius:11px;overflow:hidden;
   background:rgba(255,255,255,.5);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   backdrop-filter:blur(20px) saturate(180%);
@@ -69,6 +69,36 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
   box-shadow:0 4px 18px rgba(0,40,100,.15);
   pointer-events:auto;touch-action:manipulation;font-family:inherit;z-index:22}
 #pauseBtn:active{transform:scale(.93)}
+
+/* ═══ БЫСТРЫЕ КНОПКИ ═══ */
+.q-btn{position:absolute;width:42px;height:42px;border-radius:11px;
+  border:1.5px solid rgba(255,255,255,.55);
+  background:rgba(255,255,255,.6);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  backdrop-filter:blur(20px) saturate(180%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--text);cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,40,100,.15);
+  pointer-events:auto;touch-action:manipulation;font-family:inherit;z-index:22;
+  transition:transform .1s, background .15s}
+.q-btn:active{transform:scale(.9);background:rgba(255,255,255,.95)}
+.q-btn.active{background:rgba(0,122,255,.88);color:#fff;
+  border-color:rgba(255,255,255,.7)}
+.q-btn.dragging{opacity:.7;transform:scale(1.15) !important;z-index:99;
+  box-shadow:0 8px 30px rgba(0,122,255,.5)}
+
+/* ═══ КНОПКА «ИСПОЛЬЗОВАТЬ» ═══ */
+#btnUse{position:absolute;right:20px;bottom:230px;width:66px;height:66px;
+  border-radius:50%;border:1.5px solid rgba(255,255,255,.7);
+  background:rgba(0,122,255,.85);color:#fff;
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  backdrop-filter:blur(20px) saturate(180%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;cursor:pointer;font-family:inherit;
+  box-shadow:0 6px 24px rgba(0,122,255,.45);
+  pointer-events:auto;touch-action:manipulation;user-select:none;z-index:21;
+  transition:transform .1s, background .15s}
+#btnUse:active{transform:scale(.9);background:rgba(0,100,220,.98)}
 
 /* ═══ ДЖОЙСТИК ═══ */
 #joystick{position:absolute;left:16px;bottom:16px;width:132px;height:132px;
@@ -112,14 +142,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
 #toast{position:absolute;left:50%;top:74px;
   transform:translateX(-50%) translateY(-8px);
   padding:8px 16px;font-size:12.5px;font-weight:600;
-  background:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.88);
   -webkit-backdrop-filter:blur(22px) saturate(180%);
   backdrop-filter:blur(22px) saturate(180%);
   border:1px solid rgba(255,255,255,.7);border-radius:12px;
   color:var(--blue);box-shadow:0 8px 28px rgba(0,40,100,.2);
   opacity:0;transition:opacity .22s, transform .22s;
   pointer-events:none;white-space:nowrap;max-width:80vw;overflow:hidden;
-  text-overflow:ellipsis}
+  text-overflow:ellipsis;z-index:30}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ═══ ЭФФЕКТЫ ═══ */
@@ -145,7 +175,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
 #rainCanvas{position:fixed;inset:0;pointer-events:none;z-index:37;opacity:0;
   transition:opacity .8s}
 
-/* ═══ МЕНЮ / ОВЕРЛЕИ ═══ */
+/* ═══ DRAG HINT ═══ */
+#dragHint{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+  padding:10px 18px;background:rgba(0,0,0,.78);color:#fff;border-radius:12px;
+  font-size:13px;font-weight:600;z-index:100;pointer-events:none;opacity:0;
+  transition:opacity .2s}
+#dragHint.show{opacity:1}
+
+/* ═══ ОВЕРЛЕИ ═══ */
 .overlay{position:fixed;inset:0;display:flex;align-items:center;
   justify-content:center;z-index:50;padding:14px;
   background:radial-gradient(ellipse 90% 70% at 50% 0%,
@@ -244,6 +281,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
 .setting input[type=range]{width:110px;accent-color:var(--blue)}
 .setting input[type=checkbox]{width:20px;height:20px;accent-color:var(--blue);
   cursor:pointer}
+.setting select{padding:6px 10px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.85);font-family:inherit;font-size:13px;
+  outline:none;color:var(--text)}
 .sec-title{font-size:10.5px;font-weight:600;color:var(--text-3);
   text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
 
@@ -318,8 +358,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
 .inv-cell.empty{background:rgba(0,0,0,.05);cursor:default}
 .panel-hint{font-size:11px;color:var(--text-3);text-align:center;margin-top:-4px}
 
-/* Компас — убран, но оставлены стили если понадобится */
-#cross{display:none}
+/* ═══ МАЛЕНЬКИЕ ЭКРАНЫ ═══ */
+@media (max-width:400px){
+  #joystick{width:110px;height:110px}
+  #joyKnob{width:46px;height:46px}
+  .q-btn{width:38px;height:38px;font-size:16px}
+  .act-btn{width:54px;height:54px;font-size:20px}
+  .act-btn.small{width:42px;height:42px;font-size:16px}
+  #btnUse{width:58px;height:58px;font-size:22px;bottom:200px}
+  #minimap{width:82px;height:82px;top:162px}
+}
 </style>
 </head>
 <body>
@@ -335,10 +383,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
 
   <button id="pauseBtn" title="Пауза">☰</button>
 
+  <button class="q-btn" id="qInventory" style="right:10px;top:10px" title="Инвентарь">🎒</button>
+  <button class="q-btn" id="qMap"       style="right:58px;top:10px" title="Карта">🗺</button>
+  <button class="q-btn" id="qEmotes"    style="right:106px;top:10px" title="Эмоции">😀</button>
+  <button class="q-btn" id="qCrouch"    style="right:10px;top:58px" title="Присесть">⬇</button>
+  <button class="q-btn" id="qSprint"    style="right:58px;top:58px" title="Спринт">⚡</button>
+
   <div id="joystick">
     <div id="joyBase"></div>
     <div id="joyKnob"></div>
   </div>
+
+  <button id="btnUse" title="Использовать">✋</button>
 
   <div id="actionBtns">
     <button class="act-btn primary" id="btnJump" title="Прыжок">↑</button>
@@ -346,6 +402,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
     <button class="act-btn small" id="btnView" title="Смена вида">👁</button>
   </div>
 </div>
+
+<div id="dragHint">Перетащите кнопку</div>
 
 <div id="dmgFlash"></div>
 <div id="underwater"></div>
@@ -406,7 +464,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
     </div>
     <div class="sec-title">Инвентарь</div>
     <div id="invGrid"></div>
-    <p class="panel-hint">Нажмите — выбрать · Долгое нажатие — переместить в начало</p>
+    <p class="panel-hint">Нажмите — выбрать · Долгое нажатие — в начало</p>
   </div>
 </div>
 
@@ -450,6 +508,29 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
         <label>Частицы</label>
         <input type="checkbox" id="setParticles" checked>
       </div>
+      <div class="setting">
+        <label>Качество</label>
+        <select id="setQuality">
+          <option value="auto">Авто (по FPS)</option>
+          <option value="low">Низкое</option>
+          <option value="medium">Среднее</option>
+          <option value="high">Высокое</option>
+        </select>
+      </div>
+      <div class="sec-title">Управление</div>
+      <div class="setting">
+        <label>Чувствительность</label>
+        <input type="range" id="setSens" min="0.3" max="3" step="0.1" value="1">
+        <span class="val" id="setSensV">1.0</span>
+      </div>
+      <div class="setting">
+        <label>Инверсия X</label>
+        <input type="checkbox" id="setInvX">
+      </div>
+      <div class="setting">
+        <label>Инверсия Y</label>
+        <input type="checkbox" id="setInvY">
+      </div>
       <div class="sec-title">Звук</div>
       <div class="setting">
         <label>Громкость</label>
@@ -463,6 +544,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
       </div>
     </div>
     <button class="btn primary" id="btnSaveSettings">Сохранить</button>
+    <button class="btn secondary" id="btnResetBtnLayout">Сбросить расположение кнопок</button>
   </div>
 </div>
 
@@ -541,7 +623,6 @@ try{
     try{ tg.disableVerticalSwipes && tg.disableVerticalSwipes(); }catch(e){}
     try{ tg.setHeaderColor && tg.setHeaderColor('#F5F5F7'); }catch(e){}
     try{ tg.setBackgroundColor && tg.setBackgroundColor('#F5F5F7'); }catch(e){}
-    try{ tg.lockOrientation && tg.lockOrientation(); }catch(e){}
   }
 }catch(e){ console.warn('Telegram init failed', e); }
 
@@ -579,12 +660,21 @@ let activeEmote=null, worldTime=0.22, isNight=false, gameMode='survival';
 let seasonIdx=1, seasonTime=0;
 const SEASONS = ['весна','лето','осень','зима'];
 let hunger = 100, hungerMax = 100, foodTimer = 0;
+let sprintButtonHeld = false;
 
 /* ═══════════ НАСТРОЙКИ ═══════════ */
-const SETTINGS_KEY = 'sandbox3d_settings_v1';
+const SETTINGS_KEY = 'sandbox3d_settings_v2';
 const settings = {
   fov:72, far:220, shadows:true, particles:true, volMaster:60, volAmb:100,
-  load(){ try{ const raw=localStorage.getItem(SETTINGS_KEY); if(raw) Object.assign(this,JSON.parse(raw)); }catch(e){} },
+  sensitivity:1.0, invertX:false, invertY:false,
+  quality:'auto',
+  btnLayout: {},
+  load(){
+    try{
+      const raw=localStorage.getItem(SETTINGS_KEY);
+      if(raw) Object.assign(this,JSON.parse(raw));
+    }catch(e){}
+  },
   save(){ try{ localStorage.setItem(SETTINGS_KEY,JSON.stringify(this)); }catch(e){} }
 };
 settings.load();
@@ -778,8 +868,15 @@ scene.fog = new THREE.Fog(0x9fd8ff, 55, 145);
 const camera = new THREE.PerspectiveCamera(settings.fov, innerWidth/innerHeight, 0.05, 700);
 scene.add(camera);
 
+/* Pixel ratio в зависимости от устройства */
+function pickPixelRatio(){
+  const dpr = devicePixelRatio || 1;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  return isMobile ? Math.min(dpr, 1.25) : Math.min(dpr, 1.5);
+}
+
 const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
+renderer.setPixelRatio(pickPixelRatio());
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = settings.shadows;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -918,16 +1015,17 @@ function biomeAt(x, z, seed){
 }
 function makeDetailedTree(x,z,s,rng){
   const g = new THREE.Group();
-  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.13*s,0.28*s,3.2*s,8), barkMat);
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.13*s,0.28*s,3.2*s,7), barkMat);
   trunk.position.y = 1.6*s; trunk.castShadow=trunk.receiveShadow=true; g.add(trunk);
-  for(let i=0;i<4;i++){
-    const a=(i/4)*Math.PI*2+rng()*0.4;
-    const root=new THREE.Mesh(new THREE.CylinderGeometry(0.05*s,0.11*s,0.42*s,5),barkDark);
+  for(let i=0;i<3;i++){
+    const a=(i/3)*Math.PI*2+rng()*0.4;
+    const root=new THREE.Mesh(new THREE.CylinderGeometry(0.05*s,0.11*s,0.42*s,4),barkDark);
     root.position.set(Math.cos(a)*0.20*s,0.16*s,Math.sin(a)*0.20*s);
     root.rotation.z=-Math.cos(a)*0.75; root.rotation.x=Math.sin(a)*0.75;
     root.castShadow=true; g.add(root);
   }
-  const n=6+Math.floor(rng()*3);
+  /* меньше блобов для производительности */
+  const n=4+Math.floor(rng()*2);
   for(let i=0;i<n;i++){
     const a=rng()*Math.PI*2, rr=rng()*1.0*s, yy=3.3*s+rng()*1.4*s;
     const rad=(0.65+rng()*0.45)*s;
@@ -936,8 +1034,7 @@ function makeDetailedTree(x,z,s,rng){
     blob.position.set(Math.cos(a)*rr, yy, Math.sin(a)*rr);
     blob.scale.y=0.82+rng()*0.2;
     blob.rotation.set(rng(),rng(),rng());
-    blob.castShadow=blob.receiveShadow=true;
-    blob.userData.isLeaf = true;
+    blob.castShadow=true; blob.receiveShadow=true;
     allLeafMeshes.push({mesh:blob, baseColor:mat.color.getHex()});
     g.add(blob);
   }
@@ -951,7 +1048,7 @@ function makePineTree(x,z,s,rng){
   for(let i=0;i<4;i++){
     const cone=new THREE.Mesh(new THREE.ConeGeometry((1.1-i*0.22)*s, 1.5*s, 7), pineLeaf);
     cone.position.y=(1.0+i*0.9)*s;
-    cone.castShadow=cone.receiveShadow=true;
+    cone.castShadow=true; cone.receiveShadow=true;
     g.add(cone);
   }
   g.position.set(x,0,z); g.rotation.y=rng()*6.283;
@@ -960,7 +1057,7 @@ function makePineTree(x,z,s,rng){
 function makeCactus(x,z,s,rng){
   const g = new THREE.Group();
   const main = new THREE.Mesh(new THREE.BoxGeometry(0.45*s,1.8*s,0.45*s), cactusMat);
-  main.position.y=0.9*s; main.castShadow=main.receiveShadow=true; g.add(main);
+  main.position.y=0.9*s; main.castShadow=true; main.receiveShadow=true; g.add(main);
   for(let i=0;i<3;i++){
     const a=rng()*6.283;
     const arm=new THREE.Mesh(new THREE.BoxGeometry(0.28*s,0.8*s,0.28*s), cactusMat);
@@ -976,7 +1073,7 @@ function makeRock(x,z,s,rng,snowy){
   main.position.y=s*0.55;
   main.rotation.set(rng(),rng()*6.283,rng());
   main.scale.set(1,0.72,1);
-  main.castShadow=main.receiveShadow=true; grp.add(main);
+  main.castShadow=true; main.receiveShadow=true; grp.add(main);
   if(snowy){
     const cap=new THREE.Mesh(new THREE.DodecahedronGeometry(s*0.92,0), snowMat);
     cap.position.y=s*0.85; cap.scale.set(1,0.35,1); cap.castShadow=true; grp.add(cap);
@@ -1088,10 +1185,10 @@ function createCharacter(){
   chest.position.y = 0.30; torso.add(chest);
   const shoulders = boxMesh(0.52,0.16,0.26,MAT.shirt);
   shoulders.position.y = 0.475; torso.add(shoulders);
-  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.098,0.105,0.055,12), MAT.shirtDark);
-  collar.position.y = 0.548; collar.castShadow = collar.receiveShadow = true; torso.add(collar);
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.056,0.064,0.105,12), MAT.skin);
-  neck.position.y = 0.575; neck.castShadow = neck.receiveShadow = true; torso.add(neck);
+  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.098,0.105,0.055,10), MAT.shirtDark);
+  collar.position.y = 0.548; collar.castShadow = true; torso.add(collar);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.056,0.064,0.105,10), MAT.skin);
+  neck.position.y = 0.575; neck.castShadow = true; torso.add(neck);
   const head = new THREE.Group();
   head.position.y = 0.725; torso.add(head); rig.head = head;
   head.add(boxMesh(0.245,0.265,0.245,MAT.skin));
@@ -1157,7 +1254,7 @@ const MAT_WEAPON = {
 function makeSword(){
   const g = new THREE.Group();
   const h = new THREE.Mesh(new THREE.BoxGeometry(0.045,0.18,0.045), MAT_WEAPON.handle);
-  h.castShadow = true; g.add(h);
+  g.add(h);
   const gu = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.04,0.06), MAT_WEAPON.guard);
   gu.position.y = 0.11; g.add(gu);
   const b = new THREE.Mesh(new THREE.BoxGeometry(0.07,0.62,0.025), MAT_WEAPON.blade);
@@ -1252,7 +1349,7 @@ const player = {
   _prevSpace:false,
 };
 
-/* Блоки */
+/* Блоки — текстуры */
 function makeBlockTexture(baseColor, variance, opts){
   opts = opts || {};
   const S=64, c=document.createElement('canvas'); c.width=c.height=S;
@@ -1407,10 +1504,10 @@ function buildBlockGroup(typeIdx, rotation){
   } else if(t.kind === 'torch'){
     const stick = new THREE.Mesh(new THREE.BoxGeometry(0.12,0.7,0.12), t.material);
     stick.position.y = -0.15;
-    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.13,8,6),
+    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.13,6,5),
       new THREE.MeshBasicMaterial({color:0xffcc44}));
     flame.position.y = 0.28;
-    const glow = new THREE.Mesh(new THREE.SphereGeometry(0.19,8,6),
+    const glow = new THREE.Mesh(new THREE.SphereGeometry(0.19,6,5),
       new THREE.MeshBasicMaterial({color:0xffaa00, transparent:true, opacity:0.4}));
     glow.position.y = 0.28;
     g.add(stick, flame, glow);
@@ -1531,7 +1628,7 @@ function spawnDebris(pos, material, count){
     const m = new THREE.Mesh(DEBRIS_GEO, material);
     m.scale.setScalar(0.5+Math.random()*0.5);
     m.position.copy(pos).addScaledVector(dir, 0.25);
-    m.castShadow = m.receiveShadow = true;
+    m.castShadow = true; m.receiveShadow = true;
     debris.push({
       mesh:m, vx:dir.x*speed, vy:dir.y*speed+2, vz:dir.z*speed,
       ax:(Math.random()-.5)*18, ay:(Math.random()-.5)*18, az:(Math.random()-.5)*18,
@@ -1889,9 +1986,12 @@ const ANIMAL_MAT = {
   dogEye:   new THREE.MeshStandardMaterial({color:0x101010, roughness:.35}),
   eyeBlk:   new THREE.MeshStandardMaterial({color:0x101010, roughness:.4}),
 };
+/* Упрощено: у мелких частей нет теней */
 function animalBox(w,h,d,mat){
   const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat);
-  m.castShadow = m.receiveShadow = true; return m;
+  m.castShadow = false;
+  m.receiveShadow = true;
+  return m;
 }
 function buildLegAnimal(mB, mH, len, w){
   const g = new THREE.Group();
@@ -1902,7 +2002,7 @@ function buildLegAnimal(mB, mH, len, w){
 function createCow(){
   const root = new THREE.Group(); const parts = {};
   const body = animalBox(0.72,0.62,1.30,ANIMAL_MAT.cowBody);
-  body.position.y = 0.95; root.add(body);
+  body.position.y = 0.95; body.castShadow = true; root.add(body);
   for(let i=0;i<4;i++){
     const spot = new THREE.Mesh(
       new THREE.BoxGeometry(0.02, 0.30+Math.random()*0.15, 0.35+Math.random()*0.2),
@@ -1913,7 +2013,7 @@ function createCow(){
   }
   const head = new THREE.Group();
   head.position.set(0,1.10,0.75); root.add(head);
-  head.add(animalBox(0.42,0.42,0.48,ANIMAL_MAT.cowBody));
+  const hb = animalBox(0.42,0.42,0.48,ANIMAL_MAT.cowBody); hb.castShadow = true; head.add(hb);
   const muzzle = animalBox(0.32,0.26,0.18,ANIMAL_MAT.cowMuzzle);
   muzzle.position.set(0,-0.08,0.30); head.add(muzzle);
   for(const s of [-1,1]){
@@ -1923,7 +2023,7 @@ function createCow(){
   for(const s of [-1,1]){
     const h = new THREE.Mesh(new THREE.ConeGeometry(0.055,0.18,5), ANIMAL_MAT.cowHorn);
     h.position.set(s*0.22, 0.24, -0.02); h.rotation.z = -s*0.6;
-    h.castShadow = true; head.add(h);
+    head.add(h);
   }
   parts.head = head;
   parts.legFL = buildLegAnimal(ANIMAL_MAT.cowBody, ANIMAL_MAT.cowSpot, 0.55, 0.17);
@@ -1943,9 +2043,9 @@ function createCow(){
 function createPig(){
   const root = new THREE.Group(); const parts = {};
   const body = animalBox(0.62,0.55,1.05,ANIMAL_MAT.pigBody);
-  body.position.y = 0.82; root.add(body);
+  body.position.y = 0.82; body.castShadow = true; root.add(body);
   const head = new THREE.Group(); head.position.set(0,0.92,0.60); root.add(head);
-  head.add(animalBox(0.40,0.40,0.40,ANIMAL_MAT.pigBody));
+  const hb = animalBox(0.40,0.40,0.40,ANIMAL_MAT.pigBody); hb.castShadow = true; head.add(hb);
   const snout = animalBox(0.24,0.20,0.12,ANIMAL_MAT.pigSnout);
   snout.position.set(0,-0.04,0.26); head.add(snout);
   for(const s of [-1,1]){
@@ -1955,7 +2055,7 @@ function createPig(){
   for(const s of [-1,1]){
     const ear = new THREE.Mesh(new THREE.ConeGeometry(0.10,0.14,4), ANIMAL_MAT.pigBody);
     ear.position.set(s*0.15,0.24,0.02); ear.rotation.z = -s*0.3;
-    ear.castShadow = true; head.add(ear);
+    head.add(ear);
   }
   parts.head = head;
   parts.legFL = buildLegAnimal(ANIMAL_MAT.pigBody, ANIMAL_MAT.pigHoof, 0.42, 0.15);
@@ -1974,11 +2074,11 @@ function createPig(){
 function createDog(){
   const root = new THREE.Group(); const parts = {};
   const body = animalBox(0.52,0.50,0.95,ANIMAL_MAT.dogBody);
-  body.position.y = 0.72; root.add(body);
+  body.position.y = 0.72; body.castShadow = true; root.add(body);
   const belly = animalBox(0.52,0.20,0.90,ANIMAL_MAT.dogBelly);
   belly.position.y = 0.52; root.add(belly);
   const head = new THREE.Group(); head.position.set(0,0.92,0.55); root.add(head);
-  head.add(animalBox(0.36,0.36,0.36,ANIMAL_MAT.dogBody));
+  const hb = animalBox(0.36,0.36,0.36,ANIMAL_MAT.dogBody); hb.castShadow = true; head.add(hb);
   const muzzle = animalBox(0.22,0.18,0.22,ANIMAL_MAT.dogBody);
   muzzle.position.set(0,-0.08,0.24); head.add(muzzle);
   for(const s of [-1,1]){
@@ -2153,9 +2253,9 @@ const SKELETON_MAT = {
 function createZombie(){
   const root = new THREE.Group(); const parts = {};
   const torso = animalBox(0.5,0.75,0.28,ZOMBIE_MAT.body);
-  torso.position.y = 1.15; root.add(torso);
+  torso.position.y = 1.15; torso.castShadow = true; root.add(torso);
   const head = new THREE.Group(); head.position.y = 1.7; root.add(head);
-  head.add(animalBox(0.42,0.42,0.42,ZOMBIE_MAT.head));
+  const hb = animalBox(0.42,0.42,0.42,ZOMBIE_MAT.head); hb.castShadow = true; head.add(hb);
   head.add(Object.assign(animalBox(0.06,0.06,0.02,ZOMBIE_MAT.eye),{position:new THREE.Vector3(-0.1,0.05,0.22)}));
   head.add(Object.assign(animalBox(0.06,0.06,0.02,ZOMBIE_MAT.eye),{position:new THREE.Vector3(0.1,0.05,0.22)}));
   parts.head = head;
@@ -2173,9 +2273,9 @@ function createZombie(){
 function createSkeleton(){
   const root = new THREE.Group(); const parts = {};
   const torso = animalBox(0.4,0.7,0.22,SKELETON_MAT.body);
-  torso.position.y = 1.1; root.add(torso);
+  torso.position.y = 1.1; torso.castShadow = true; root.add(torso);
   const head = new THREE.Group(); head.position.y = 1.65; root.add(head);
-  head.add(animalBox(0.36,0.36,0.36,SKELETON_MAT.head));
+  const hb = animalBox(0.36,0.36,0.36,SKELETON_MAT.head); hb.castShadow = true; head.add(hb);
   head.add(Object.assign(animalBox(0.06,0.06,0.02,SKELETON_MAT.eye),{position:new THREE.Vector3(-0.09,0.05,0.19)}));
   head.add(Object.assign(animalBox(0.06,0.06,0.02,SKELETON_MAT.eye),{position:new THREE.Vector3(0.09,0.05,0.19)}));
   parts.head = head;
@@ -2399,7 +2499,7 @@ function updateFishing(dt){
   if(fishing.waitT <= 0){
     fishing.biting = true;
     fishing.biteT = 1.5;
-    toast('Клюёт! Кликните по экрану');
+    toast('Клюёт! Нажмите ✋');
   }
 }
 function catchFish(){
@@ -2468,8 +2568,10 @@ document.addEventListener('pointerlockchange', () => {
 });
 addEventListener('mousemove', e => {
   if(!pointerLocked) return;
-  yaw -= e.movementX*0.0024;
-  pitch -= e.movementY*0.0024;
+  const sx = settings.sensitivity * (settings.invertX ? -1 : 1);
+  const sy = settings.sensitivity * (settings.invertY ? -1 : 1);
+  yaw   -= e.movementX*0.0024*sx;
+  pitch -= e.movementY*0.0024*sy;
   pitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, pitch));
 });
 addEventListener('wheel', e => {
@@ -2493,9 +2595,7 @@ const joystickEl = document.getElementById('joystick');
 const joyKnob = document.getElementById('joyKnob');
 const JOY_RADIUS = 48;
 
-if(isTouch){
-  joystickEl.classList.add('visible');
-}
+if(isTouch) joystickEl.classList.add('visible');
 
 function updateJoy(cx, cy){
   const dx = cx - touchControls.joyCenterX;
@@ -2532,24 +2632,20 @@ document.addEventListener('touchmove', e => {
   }
 }, {passive:false});
 
+function resetJoy(){
+  touchControls.joyId = null;
+  touchControls.joyX = 0;
+  touchControls.joyY = 0;
+  joyKnob.style.transform = 'translate(-50%,-50%)';
+}
 document.addEventListener('touchend', e => {
   for(const t of e.changedTouches){
-    if(t.identifier === touchControls.joyId){
-      touchControls.joyId = null;
-      touchControls.joyX = 0;
-      touchControls.joyY = 0;
-      joyKnob.style.transform = 'translate(-50%,-50%)';
-    }
+    if(t.identifier === touchControls.joyId) resetJoy();
   }
 });
 document.addEventListener('touchcancel', e => {
   for(const t of e.changedTouches){
-    if(t.identifier === touchControls.joyId){
-      touchControls.joyId = null;
-      touchControls.joyX = 0;
-      touchControls.joyY = 0;
-      joyKnob.style.transform = 'translate(-50%,-50%)';
-    }
+    if(t.identifier === touchControls.joyId) resetJoy();
   }
 });
 
@@ -2576,11 +2672,13 @@ canvasEl.addEventListener('touchmove', e => {
     e.preventDefault();
     const dx = t.clientX - lookLastX;
     const dy = t.clientY - lookLastY;
-    if(Math.abs(t.clientX - lookStartX) + Math.abs(t.clientY - lookStartY) > 12){
+    if(Math.abs(t.clientX - lookStartX) + Math.abs(t.clientY - lookStartY) > 25){
       lookMoved = true;
     }
-    yaw -= dx * 0.0055;
-    pitch -= dy * 0.0055;
+    const sx = settings.sensitivity * (settings.invertX ? -1 : 1);
+    const sy = settings.sensitivity * (settings.invertY ? -1 : 1);
+    yaw   -= dx * 0.0055 * sx;
+    pitch -= dy * 0.0055 * sy;
     pitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, pitch));
     lookLastX = t.clientX; lookLastY = t.clientY;
     return;
@@ -2593,9 +2691,10 @@ canvasEl.addEventListener('touchend', e => {
       const dur = performance.now() - lookStartTime;
       lookId = null;
       if(!lookMoved && dur < 260 && state === 'playing' && player.alive){
+        /* короткий тап по экрану = использовать (если не конфликтует) */
         if(fishing.active && fishing.biting) catchFish();
         else if(fishing.active) cancelFishing();
-        else tryPlaceOrAttack();
+        /* Не ставим блок на тап — для этого есть кнопка ✋ */
       }
     }
   }
@@ -2649,7 +2748,7 @@ document.getElementById('pauseBtn').addEventListener('click', e => {
   }
 });
 
-/* Слоты */
+/* ═══ Слоты ═══ */
 const SLOTS = [
   {type:'block', idx:0,  name:'Трава',    dataURL: BLOCK_TYPES[0].dataURL},
   {type:'block', idx:1,  name:'Земля',    dataURL: BLOCK_TYPES[1].dataURL},
@@ -2710,10 +2809,7 @@ function buildHotbar(){
     } else {
       d.innerHTML = `<div class="ico">${slot.icon}</div><span class="num">${i+1}</span>`;
     }
-    d.addEventListener('click', (e) => {
-      e.preventDefault();
-      selectSlot(i);
-    });
+    d.addEventListener('click', (e) => { e.preventDefault(); selectSlot(i); });
     hotbarEl.appendChild(d);
   }
   selectSlot(0);
@@ -2741,7 +2837,178 @@ function updateWeaponVisibility(){
 }
 buildHotbar();
 
-/* Инвентарь */
+/* ═══ БЫСТРЫЕ КНОПКИ ═══ */
+document.getElementById('qInventory').addEventListener('click', e => {
+  e.preventDefault();
+  if(suppressClick) return;
+  if(state === 'playing') openInventory();
+  else if(state === 'inventory') closeInventory();
+});
+document.getElementById('qMap').addEventListener('click', e => {
+  e.preventDefault();
+  if(suppressClick) return;
+  if(state === 'playing') openMap();
+});
+document.getElementById('qEmotes').addEventListener('click', e => {
+  e.preventDefault();
+  if(suppressClick) return;
+  if(state === 'playing') openEmotes();
+  else if(state === 'emotes') closeEmotes();
+});
+
+const qCrouch = document.getElementById('qCrouch');
+qCrouch.addEventListener('click', e => {
+  e.preventDefault();
+  if(suppressClick) return;
+  player.crouchToggle = !player.crouchToggle;
+  qCrouch.classList.toggle('active', player.crouchToggle);
+});
+
+const qSprint = document.getElementById('qSprint');
+function setSprint(on){
+  sprintButtonHeld = on;
+  qSprint.classList.toggle('active', on);
+}
+qSprint.addEventListener('touchstart', e => { e.preventDefault(); setSprint(true); }, {passive:false});
+qSprint.addEventListener('touchend',   e => { e.preventDefault(); setSprint(false); }, {passive:false});
+qSprint.addEventListener('touchcancel', () => setSprint(false));
+qSprint.addEventListener('mousedown', e => { e.preventDefault(); setSprint(true); });
+qSprint.addEventListener('mouseup',   () => setSprint(false));
+qSprint.addEventListener('mouseleave',() => setSprint(false));
+
+/* ═══ КНОПКА «ИСПОЛЬЗОВАТЬ» ═══ */
+document.getElementById('btnUse').addEventListener('click', e => {
+  e.preventDefault();
+  if(suppressClick) return;
+  if(state !== 'playing' || !player.alive) return;
+  if(fishing.active && fishing.biting){ catchFish(); return; }
+  if(fishing.active){ cancelFishing(); return; }
+  tryPlaceOrAttack();
+});
+document.getElementById('btnUse').addEventListener('touchstart', e => {
+  e.preventDefault();
+  if(state !== 'playing' || !player.alive) return;
+  if(fishing.active && fishing.biting){ catchFish(); return; }
+  if(fishing.active){ cancelFishing(); return; }
+  tryPlaceOrAttack();
+}, {passive:false});
+
+/* ═══ ПЕРЕТАСКИВАНИЕ КНОПОК ═══ */
+let suppressClick = false;
+const dragState = {id:null, startX:0, startY:0, el:null, moved:false};
+const dragHint = document.getElementById('dragHint');
+const hudEl = document.getElementById('hud');
+
+function applyBtnLayout(){
+  const layout = settings.btnLayout || {};
+  for(const [id, pos] of Object.entries(layout)){
+    const el = document.getElementById(id);
+    if(!el) continue;
+    el.style.left = pos.x + 'px';
+    el.style.top  = pos.y + 'px';
+    el.style.right = 'auto';
+    el.style.bottom = 'auto';
+  }
+}
+
+function beginDrag(el, clientX, clientY){
+  const rect = el.getBoundingClientRect();
+  const hudRect = hudEl.getBoundingClientRect();
+  el.style.left = (rect.left - hudRect.left) + 'px';
+  el.style.top  = (rect.top  - hudRect.top)  + 'px';
+  el.style.right = 'auto';
+  el.style.bottom = 'auto';
+  dragState.el = el;
+  dragState.id = el.id;
+  dragState.startX = clientX - rect.left;
+  dragState.startY = clientY - rect.top;
+  dragState.moved = false;
+  el.classList.add('dragging');
+  dragHint.textContent = 'Перетащите кнопку';
+  dragHint.classList.add('show');
+}
+
+function moveDrag(clientX, clientY){
+  if(!dragState.el) return;
+  const hudRect = hudEl.getBoundingClientRect();
+  const nx = clientX - hudRect.left - dragState.startX;
+  const ny = clientY - hudRect.top  - dragState.startY;
+  dragState.moved = true;
+  dragState.el.style.left = nx + 'px';
+  dragState.el.style.top  = ny + 'px';
+}
+
+function endDrag(){
+  if(!dragState.el) return;
+  const el = dragState.el;
+  el.classList.remove('dragging');
+  dragHint.classList.remove('show');
+  if(dragState.moved){
+    settings.btnLayout[dragState.id] = { x: el.offsetLeft, y: el.offsetTop };
+    settings.save();
+    suppressClick = true;
+    setTimeout(() => { suppressClick = false; }, 250);
+  }
+  dragState.el = null;
+  dragState.id = null;
+  dragState.moved = false;
+}
+
+document.querySelectorAll('.q-btn').forEach(el => {
+  let pressTimer = null;
+  let startX = 0, startY = 0;
+  let dragging = false;
+
+  const onStart = (x, y) => {
+    startX = x; startY = y;
+    pressTimer = setTimeout(() => {
+      dragging = true;
+      beginDrag(el, x, y);
+    }, 450);
+  };
+  const onMove = (x, y) => {
+    if(dragging){ moveDrag(x, y); return; }
+    if(Math.hypot(x - startX, y - startY) > 15){
+      clearTimeout(pressTimer);
+      pressTimer = null;
+    }
+  };
+  const onEnd = () => {
+    clearTimeout(pressTimer);
+    pressTimer = null;
+    if(dragging){ endDrag(); dragging = false; }
+  };
+
+  el.addEventListener('touchstart', e => {
+    const t = e.changedTouches[0];
+    onStart(t.clientX, t.clientY);
+  }, {passive:true});
+
+  el.addEventListener('touchmove', e => {
+    const t = e.changedTouches[0];
+    if(dragging) e.preventDefault();
+    onMove(t.clientX, t.clientY);
+  }, {passive:false});
+
+  el.addEventListener('touchend', onEnd);
+  el.addEventListener('touchcancel', onEnd);
+
+  el.addEventListener('mousedown', e => {
+    e.preventDefault();
+    onStart(e.clientX, e.clientY);
+    const m = (ev) => onMove(ev.clientX, ev.clientY);
+    const u = () => {
+      onEnd();
+      document.removeEventListener('mousemove', m);
+      document.removeEventListener('mouseup', u);
+    };
+    document.addEventListener('mousemove', m);
+    document.addEventListener('mouseup', u);
+  });
+});
+applyBtnLayout();
+
+/* ═══ Инвентарь ═══ */
 const invGridEl = document.getElementById('invGrid');
 function renderInventory(){
   invGridEl.innerHTML = '';
@@ -2756,9 +3023,7 @@ function renderInventory(){
     }
     if(i === selectedSlot) cell.classList.add('active');
     cell.title = slot.name;
-    cell.addEventListener('click', () => {
-      selectSlot(i); closeInventory();
-    });
+    cell.addEventListener('click', () => { selectSlot(i); closeInventory(); });
     invGridEl.appendChild(cell);
   });
 }
@@ -2775,7 +3040,7 @@ function closeInventory(){
 }
 document.getElementById('btnCloseInventory').addEventListener('click', closeInventory);
 
-/* Сундук */
+/* ═══ Сундук ═══ */
 const chestGridEl = document.getElementById('chestGrid');
 const invGridChestEl = document.getElementById('invGridChest');
 let currentChestKey = null;
@@ -2836,11 +3101,12 @@ function closeChest(){
 }
 document.getElementById('btnCloseChest').addEventListener('click', closeChest);
 
-/* Карта */
+/* ═══ Карта ═══ */
 let mapMarkers = [];
 const mapCanvas = document.getElementById('mapCanvas');
 const mapScreenEl = document.getElementById('mapScreen');
 function openMap(){
+  if(state !== 'playing') return;
   mapScreenEl.classList.remove('hidden');
   mapOpen = true;
   if(document.pointerLockElement) document.exitPointerLock();
@@ -2942,7 +3208,7 @@ function drawMap(){
   ctx.restore();
 }
 
-/* Мини-карта */
+/* ═══ Мини-карта ═══ */
 const mmCanvas = document.getElementById('minimapCanvas');
 function drawMinimap(){
   const ctx = mmCanvas.getContext('2d');
@@ -3008,7 +3274,7 @@ function drawMinimap(){
 let minimapAcc = 0;
 function updateMinimap(dt){
   minimapAcc += dt;
-  if(minimapAcc < 0.25) return;
+  if(minimapAcc < 0.3) return;
   minimapAcc = 0;
   drawMinimap();
 }
@@ -3017,7 +3283,7 @@ document.getElementById('minimap').addEventListener('click', e => {
   if(state === 'playing') openMap();
 });
 
-/* Эмоции */
+/* ═══ Эмоции ═══ */
 const BASE_HIP_Y = 0.92;
 const EMOTES = {
   wave: {name:'Помахать', icon:'👋', duration:2.4, apply(rig,t){
@@ -3115,7 +3381,7 @@ emoteMenuEl.addEventListener('click', e => {
   if(e.target === emoteMenuEl) closeEmotes();
 });
 
-/* Погода */
+/* ═══ Погода ═══ */
 const weatherState = { type:'clear', intensity:0, targetIntensity:0, timer:60 };
 const rainCanvasEl = document.getElementById('rainCanvas');
 const rainOverlayEl = document.getElementById('rainOverlay');
@@ -3191,7 +3457,7 @@ function updateWeather(dt){
   }
 }
 
-/* Настройки */
+/* ═══ Настройки UI ═══ */
 const settingsEl = document.getElementById('settingsScreen');
 function openSettings(){
   settingsEl.classList.remove('hidden');
@@ -3201,6 +3467,11 @@ function openSettings(){
   document.getElementById('setFarV').textContent = settings.far;
   document.getElementById('setShadows').checked = settings.shadows;
   document.getElementById('setParticles').checked = settings.particles;
+  document.getElementById('setQuality').value = settings.quality || 'auto';
+  document.getElementById('setSens').value = settings.sensitivity;
+  document.getElementById('setSensV').textContent = settings.sensitivity.toFixed(1);
+  document.getElementById('setInvX').checked = settings.invertX;
+  document.getElementById('setInvY').checked = settings.invertY;
   document.getElementById('setVolMaster').value = settings.volMaster;
   document.getElementById('setVolMasterV').textContent = settings.volMaster;
   document.getElementById('setVolAmb').value = settings.volAmb;
@@ -3215,6 +3486,9 @@ document.getElementById('setFov').addEventListener('input', e => {
 document.getElementById('setFar').addEventListener('input', e => {
   document.getElementById('setFarV').textContent = e.target.value;
 });
+document.getElementById('setSens').addEventListener('input', e => {
+  document.getElementById('setSensV').textContent = parseFloat(e.target.value).toFixed(1);
+});
 document.getElementById('setVolMaster').addEventListener('input', e => {
   document.getElementById('setVolMasterV').textContent = e.target.value;
 });
@@ -3226,8 +3500,13 @@ document.getElementById('btnSaveSettings').addEventListener('click', () => {
   settings.far = parseInt(document.getElementById('setFar').value);
   settings.shadows = document.getElementById('setShadows').checked;
   settings.particles = document.getElementById('setParticles').checked;
+  settings.sensitivity = parseFloat(document.getElementById('setSens').value);
+  settings.invertX = document.getElementById('setInvX').checked;
+  settings.invertY = document.getElementById('setInvY').checked;
   settings.volMaster = parseInt(document.getElementById('setVolMaster').value);
   settings.volAmb = parseInt(document.getElementById('setVolAmb').value);
+  const q = document.getElementById('setQuality').value;
+  settings.quality = q;
   settings.save();
   camera.fov = settings.fov; camera.updateProjectionMatrix();
   camera.far = settings.far; camera.updateProjectionMatrix();
@@ -3235,11 +3514,33 @@ document.getElementById('btnSaveSettings').addEventListener('click', () => {
   sun.castShadow = settings.shadows;
   AUDIO.setMaster(settings.volMaster);
   AUDIO.setAmbient(settings.volAmb);
+  if(q !== 'auto') qualityMgr.apply(q);
   toast('Настройки сохранены');
   closeSettings();
 });
+document.getElementById('btnResetBtnLayout').addEventListener('click', () => {
+  settings.btnLayout = {};
+  settings.save();
+  /* Вернуть кнопки на исходные позиции */
+  const defaults = {
+    qInventory:{right:'10px', top:'10px'},
+    qMap:{right:'58px', top:'10px'},
+    qEmotes:{right:'106px', top:'10px'},
+    qCrouch:{right:'10px', top:'58px'},
+    qSprint:{right:'58px', top:'58px'},
+  };
+  for(const [id, pos] of Object.entries(defaults)){
+    const el = document.getElementById(id);
+    if(!el) continue;
+    el.style.left = '';
+    el.style.top = '';
+    el.style.right = pos.right;
+    el.style.top = pos.top;
+  }
+  toast('Расположение сброшено');
+});
 
-/* Действия */
+/* ═══ Действия ═══ */
 const raycaster = new THREE.Raycaster();
 const CENTER = new THREE.Vector2(0,0);
 function snapRotation(){ return Math.round(player.facing/(Math.PI/2))*(Math.PI/2); }
@@ -3328,16 +3629,6 @@ function tryAttack(){
     const hits = raycaster.intersectObjects(blocks, true);
     if(hits.length){
       particlesSpark(hits[0].point);
-      const root = findBlockRoot(hits[0].object);
-      if(root){
-        const t = BLOCK_TYPES[root.userData.typeIdx];
-        if(t && (t.name === 'Камень' || t.name.includes('руда') || t.name === 'Булыжник')){
-          for(let i=0;i<6;i++){
-            particlesSpark(hits[0].point.clone().add(
-              new THREE.Vector3((Math.random()-0.5)*0.4, (Math.random()-0.5)*0.4, (Math.random()-0.5)*0.4)));
-          }
-        }
-      }
     }
   }
 }
@@ -3350,7 +3641,7 @@ function setCharacterColorWrite(visible){
   });
 }
 
-/* HP/голод — HUD убран, функции no-op */
+/* ═══ HP (HUD отключён) ═══ */
 const dmgFlash = document.getElementById('dmgFlash');
 function updateHP(){ /* HUD отключён */ }
 function damagePlayer(amount){
@@ -3376,7 +3667,7 @@ function respawn(){
   setState('playing'); if(!isTouch) lockPointer();
 }
 
-/* Поза */
+/* ═══ Поза ═══ */
 function lerpAngle(a, b, t){
   let d = (b-a) % (Math.PI*2);
   if(d > Math.PI) d -= Math.PI*2;
@@ -3545,7 +3836,7 @@ function updatePose(dt, speed, grounded){
   }
 }
 
-/* Сохранение */
+/* ═══ Сохранение ═══ */
 const WORLDS_KEY = 'sandbox3d_worlds_v4';
 let memoryFallbackWorlds = null;
 function getWorlds(){
@@ -3671,6 +3962,8 @@ function loadWorld(id){
   activeEmote = null;
   player.spawnX = SPAWN_X; player.spawnY = 0; player.spawnZ = SPAWN_Z;
   setCharacterColorWrite(true);
+  qCrouch.classList.remove('active');
+  player.crouchToggle = false;
   const d = w.data;
   if(d){
     player.x = (d.player && d.player.x != null) ? d.player.x : SPAWN_X;
@@ -3712,7 +4005,7 @@ function loadWorld(id){
 }
 function deleteWorld(id){ putWorlds(getWorlds().filter(w => w.id !== id)); }
 
-/* UI */
+/* ═══ UI ═══ */
 const overlays = {
   menu: document.getElementById('mainMenu'),
   worlds: document.getElementById('worldList'),
@@ -3723,9 +4016,6 @@ const overlays = {
   pause: document.getElementById('pauseMenu'),
   dead: document.getElementById('deadScreen'),
 };
-const hudEl = document.getElementById('hud');
-const actionBtnsEl = document.getElementById('actionBtns');
-const joystickElVis = document.getElementById('joystick');
 function setState(s){
   state = s;
   for(const k of Object.keys(overlays)) overlays[k].classList.add('hidden');
@@ -3866,7 +4156,7 @@ function tickAutosave(dt){
 addEventListener('beforeunload', () => { saveCurrentWorld(); });
 document.addEventListener('visibilitychange', () => { if(document.hidden) saveCurrentWorld(); });
 
-/* День/ночь + сезоны */
+/* ═══ День/ночь + сезоны ═══ */
 const DAY_SKY = new THREE.Color(0x9fd8ff);
 const NIGHT_SKY = new THREE.Color(0x0a1428);
 const DUSK_SKY = new THREE.Color(0xff8844);
@@ -3946,7 +4236,7 @@ function updateSeasonParticles(dt){
   if(seasonIdx === 2 && allLeafMeshes.length > 0){
     leafTimer -= dt;
     if(leafTimer <= 0){
-      leafTimer = 0.3 + Math.random()*0.5;
+      leafTimer = 0.4 + Math.random()*0.6;
       const l = allLeafMeshes[Math.floor(Math.random()*allLeafMeshes.length)];
       const wp = new THREE.Vector3();
       l.mesh.getWorldPosition(wp);
@@ -3959,7 +4249,7 @@ function updateSeasonParticles(dt){
   if(seasonIdx === 3){
     snowTimer -= dt;
     if(snowTimer <= 0){
-      snowTimer = 0.06;
+      snowTimer = 0.08;
       for(let i=0;i<2;i++){
         const px = player.x + (Math.random()-0.5)*30;
         const pz = player.z + (Math.random()-0.5)*30;
@@ -3970,7 +4260,7 @@ function updateSeasonParticles(dt){
   }
   smokeTimer -= dt;
   if(smokeTimer <= 0){
-    smokeTimer = 0.18;
+    smokeTimer = 0.22;
     for(const b of blocks){
       if(b.userData.typeIdx !== TORCH_IDX) continue;
       if(b.position.distanceToSquared(player.root.position) > 400) continue;
@@ -3985,7 +4275,61 @@ function updateSeasonParticles(dt){
   }
 }
 
-/* Главный цикл */
+/* ═══ ДИНАМИЧЕСКОЕ КАЧЕСТВО ═══ */
+const qualityMgr = {
+  fpsSamples: [],
+  lowFpsStreak: 0,
+  highFpsStreak: 0,
+  appliedLevel: settings.quality || 'auto',
+  presets: {
+    low:    { shadows:false, particles:false, far:120, pixelRatio:1.0 },
+    medium: { shadows:true,  particles:true,  far:180, pixelRatio:1.15 },
+    high:   { shadows:true,  particles:true,  far:260, pixelRatio:1.4 },
+  },
+  apply(level){
+    const p = this.presets[level];
+    if(!p) return;
+    settings.shadows  = p.shadows;
+    settings.particles= p.particles;
+    settings.far      = p.far;
+    renderer.shadowMap.enabled = p.shadows;
+    sun.castShadow = p.shadows;
+    camera.far = p.far;
+    camera.updateProjectionMatrix();
+    renderer.setPixelRatio(Math.min(devicePixelRatio, p.pixelRatio));
+    settings.save();
+    this.appliedLevel = level;
+  },
+  tick(dt){
+    if(settings.quality !== 'auto') return;
+    this.fpsSamples.push(dt);
+    if(this.fpsSamples.length > 60) this.fpsSamples.shift();
+    if(this.fpsSamples.length < 40) return;
+    const avg = this.fpsSamples.reduce((a,b)=>a+b,0) / this.fpsSamples.length;
+    const fps = 1 / avg;
+    if(fps < 26){
+      this.lowFpsStreak++;
+      this.highFpsStreak = 0;
+      if(this.lowFpsStreak > 4 && this.appliedLevel !== 'low'){
+        this.apply('low');
+        this.lowFpsStreak = 0;
+        toast('Графика: низкая');
+      }
+    } else if(fps > 52){
+      this.highFpsStreak++;
+      this.lowFpsStreak = 0;
+      if(this.highFpsStreak > 6 && this.appliedLevel !== 'high'){
+        this.apply('high');
+        this.highFpsStreak = 0;
+      }
+    } else {
+      this.lowFpsStreak = 0;
+      this.highFpsStreak = 0;
+    }
+  }
+};
+
+/* ═══ Главный цикл ═══ */
 const clock = new THREE.Clock();
 
 function update(dt){
@@ -4001,13 +4345,22 @@ function update(dt){
     ix += touchControls.joyX;
     iz -= touchControls.joyY;
   }
-  if(activeEmote && (ix !== 0 || iz !== 0)) activeEmote = null;
+  if(activeEmote && (Math.abs(ix) > 0.05 || Math.abs(iz) > 0.05)) activeEmote = null;
   updateEmote(dt);
-  const running = !!(keys['ShiftLeft'] || keys['ShiftRight']);
-  const wantCrouch = (keys['ControlLeft'] || keys['ControlRight'] || player.crouchToggle) &&
+
+  /* Спринт: клавиша Shift || кнопка || авто по джойстику */
+  const joyMag = Math.hypot(touchControls.joyX, touchControls.joyY);
+  const autoSprint = joyMag > 0.85;
+  const running = !!(keys['ShiftLeft'] || keys['ShiftRight']) ||
+                  sprintButtonHeld || autoSprint;
+
+  /* Приседание: клавиша || кнопка qCrouch (через crouchToggle) */
+  const wantCrouch = (keys['ControlLeft'] || keys['ControlRight'] ||
+                      player.crouchToggle) &&
                      player.onGround && state === 'playing';
   player.crouchTarget = wantCrouch ? 1 : 0;
   player.crouch += (player.crouchTarget-player.crouch)*Math.min(1, dt*12);
+
   const fx = -Math.sin(yaw), fz = -Math.cos(yaw);
   const rx = Math.cos(yaw), rz = -Math.sin(yaw);
   let dx = fx*iz+rx*ix, dz = fz*iz+rz*ix;
@@ -4030,10 +4383,11 @@ function update(dt){
       player.facing = lerpAngle(player.facing, tf, Math.min(1, dt*13));
     }
     let vy = 0;
-    if(keys['Space']) vy += 1;
+    if(keys['Space'] || jumpRequested) vy += 1;
     if(keys['ShiftLeft'] || keys['ControlLeft']) vy -= 1;
     player.vy = vy*FLY_SPEED;
     player.y += player.vy*dt;
+    jumpRequested = false;
   } else {
     const baseSpeed = running && player.crouch < 0.3 ? RUN_SPEED : WALK_SPEED;
     let targetSpeed = len > 0.001 ? lerp(baseSpeed, CROUCH_SPEED, player.crouch) : 0;
@@ -4178,6 +4532,7 @@ function update(dt){
   tickAutosave(dt);
   updateDayNight(dt);
   updateMinimap(dt);
+
   const crouchOffset = player.crouch*0.42;
   if(player.firstPerson){
     const eyeY = player.y+EYE_HEIGHT-crouchOffset;
@@ -4216,6 +4571,7 @@ function update(dt){
 function loop(){
   requestAnimationFrame(loop);
   const dt = Math.min(clock.getDelta(), 0.05);
+  qualityMgr.tick(dt);
   if(state === 'playing' || state === 'paused' || state === 'inventory' ||
      state === 'chest' || state === 'emotes' || state === 'dead' || mapOpen){
     try{ update(dt); }catch(e){ console.error('Update:', e); }
@@ -4228,7 +4584,7 @@ function loop(){
   try{ renderer.render(scene, camera); }catch(e){ console.error('Render:', e); }
 }
 
-/* Инициализация */
+/* ═══ Инициализация ═══ */
 try{
   generateDecor(123456);
   applySeasonColors();
