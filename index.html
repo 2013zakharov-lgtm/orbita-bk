@@ -10,9 +10,9 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--success:#16a34a;--warn:#f59e0b;--white:#fff;--overlay:rgba(15,23,42,.45)}
-  html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
-  body{position:fixed;inset:0}
+  :root{--accent:#2563eb;--accent-dark:#1d4ed8;--accent-deep:#1e40af;--accent-light:#dbeafe;--accent-soft:#eff6ff;--accent-mid:#93c5fd;--ink:#0f172a;--ink-soft:#334155;--bg:#fff;--surface:#f8fafc;--border:#e2e8f0;--muted:#64748b;--danger:#ef4444;--danger-soft:#fef2f2;--success:#16a34a;--warn:#f59e0b;--white:#fff;--overlay:rgba(15,23,42,.45);--fs:15px}
+  html{font-size:var(--fs)}
+  body{position:fixed;inset:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Inter','SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:1rem;-webkit-font-smoothing:antialiased}
   body.locked{overflow:hidden}
   .ico{display:inline-block;vertical-align:middle;width:1em;height:1em;flex-shrink:0}
   .ico svg{display:block;width:100%;height:100%}
@@ -59,16 +59,12 @@
   .msg.ai .text .inl-ico{display:inline-block;vertical-align:-3px;width:16px;height:16px;margin-right:5px;color:var(--accent);flex-shrink:0}
   .msg.ai .text .inl-ico svg{display:block;width:100%;height:100%}
   .msg.ai .text .inl-ok{color:var(--success)}
-  .msg.ai .text .inl-warn{color:var(--warn)}
   .msg.ai .text .inl-err{color:var(--danger)}
   .msg.ai .graph-inline{margin-top:10px;border-radius:12px;overflow:hidden;background:var(--surface);border:1px solid var(--border)}
   .msg.ai .graph-inline canvas{display:block;width:100%;height:auto}
   .msg.user .bubble{max-width:82%;padding:10px 14px;background:var(--white);color:var(--accent-deep);border:1.5px solid var(--accent);border-radius:20px;border-bottom-right-radius:6px;font-size:15px;line-height:1.45;word-wrap:break-word;font-weight:500}
   .msg.user .file-preview{margin-bottom:6px;max-width:82%}
   .msg.user .file-preview img{max-width:220px;max-height:220px;border-radius:12px;border:1px solid var(--border);display:block}
-  .msg.user .file-preview-file{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:12.5px;font-weight:600;color:var(--ink-soft);max-width:220px}
-  .msg.user .file-preview-file .ico{color:var(--accent)}
-  .msg.user .file-preview-file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .msg-edit-btn{font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:4px;margin-right:4px;font-family:inherit;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px}
   .msg-edit-btn .ico{width:11px;height:11px}
   .msg-edit-btn:active{background:var(--accent-soft);color:var(--accent)}
@@ -112,14 +108,9 @@
   .input-wrap.cooldown{border-color:var(--accent-mid);background:var(--accent-soft)}
   .input-wrap input{flex:1;min-width:0;padding:7px 0;border:none;outline:none;font-size:14.5px;background:transparent;color:var(--ink);font-family:inherit}
   .input-wrap input::placeholder{color:var(--muted)}
-  .icb{width:32px;height:32px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);transition:all .15s}
-  .icb:active{background:var(--accent-soft);color:var(--accent)}
-  .icb .ico{width:18px;height:18px}
-  .icb.loading{color:var(--accent);animation:thinkSpin 1s linear infinite}
   .fsquares{width:34px;height:34px;border-radius:50%;border:0;outline:none;-webkit-appearance:none;appearance:none;background:var(--accent);cursor:pointer;flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;padding:9px;transition:background .15s,transform .12s}
   .fsquares:active{background:var(--accent-dark);transform:scale(.92)}
   .fsquares.open{background:var(--accent-dark)}
-  .fsquares.open span{transform:scale(.9)}
   .fsquares span{background:#fff;border-radius:1.5px;display:block;width:100%;height:100%;transition:transform .15s}
   .send-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;color:#fff}
   .send-btn .ico{width:15px;height:15px}
@@ -130,7 +121,7 @@
   .send-btn.cooldown .ico{display:none}
   .send-btn .cooldown-text{display:none;font-size:11px;font-weight:800;color:#fff}
   .send-btn.cooldown .cooldown-text{display:block}
-  .quick-menu{position:fixed;right:12px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:45;background:var(--bg);border-radius:18px;padding:6px;box-shadow:0 12px 40px rgba(15,23,42,.28);border:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:200px;opacity:0;transform:translateY(12px) scale(.92);pointer-events:none;transform-origin:bottom right;transition:opacity .22s ease,transform .22s cubic-bezier(.34,1.56,.64,1)}
+  .quick-menu{position:fixed;right:12px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:45;background:var(--bg);border-radius:18px;padding:6px;box-shadow:0 12px 40px rgba(15,23,42,.28);border:1px solid var(--border);display:flex;flex-direction:column;gap:2px;min-width:220px;opacity:0;transform:translateY(12px) scale(.92);pointer-events:none;transform-origin:bottom right;transition:opacity .22s ease,transform .22s cubic-bezier(.34,1.56,.64,1)}
   .quick-menu.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
   .quick-menu button{display:flex;align-items:center;gap:12px;padding:11px 14px;background:transparent;border:none;border-radius:12px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit;white-space:nowrap;text-align:left;transition:background .12s}
   .quick-menu button:active{background:var(--accent-soft);color:var(--accent)}
@@ -169,21 +160,17 @@
   .drawer-chats::-webkit-scrollbar{width:0}
   .chat-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:var(--bg);margin-bottom:2px;position:relative}
   .chat-item.active{background:var(--accent-soft)}
-  .chat-item:active{background:var(--surface)}
   .chat-item-icon{width:32px;height:32px;border-radius:9px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;color:var(--accent)}
   .chat-item.active .chat-item-icon{background:var(--accent-light)}
   .chat-item-icon .ico{width:16px;height:16px}
-  .pin-indicator{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
   .chat-item-text{flex:1;min-width:0}
   .chat-item-title{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .chat-item-sub{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .chat-item-pin,.chat-item-del{width:24px;height:24px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.5;flex-shrink:0;color:var(--muted)}
   .chat-item-pin .ico,.chat-item-del .ico{width:13px;height:13px}
-  .chat-item-pin:active,.chat-item-del:active{background:var(--accent-soft);opacity:1}
   .chat-item-pin.pinned{opacity:1;color:var(--accent)}
   .drawer-foot{padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--border)}
   .user-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;cursor:pointer;color:var(--muted)}
-  .user-card:active{background:var(--surface)}
   .user-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center;position:relative}
   .user-avatar.plus{box-shadow:0 0 0 2px var(--accent-mid)}
   .user-info{flex:1;min-width:0}
@@ -198,7 +185,6 @@
   .modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
   .avatar-section{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
   .avatar-preview{width:88px;height:88px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;overflow:hidden;background-size:cover;background-position:center;position:relative;cursor:pointer;border:3px solid var(--bg);box-shadow:0 4px 14px rgba(37,99,235,.25)}
-  .avatar-preview.plus{box-shadow:0 0 0 3px var(--accent-mid)}
   .avatar-hint{font-size:11.5px;color:var(--muted);margin-top:8px;text-align:center}
   .avatar-action-btn{padding:6px 12px;border:1px solid var(--border);border-radius:100px;background:var(--bg);font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit;margin-top:8px}
   .field{margin-bottom:14px}
@@ -225,6 +211,11 @@
   .toggle-slider:before{content:'';position:absolute;height:22px;width:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 2px 4px rgba(0,0,0,.2)}
   .toggle input:checked + .toggle-slider{background:var(--accent)}
   .toggle input:checked + .toggle-slider:before{transform:translateX(20px)}
+  .font-slider{display:flex;align-items:center;gap:10px}
+  .font-slider input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--border);outline:none}
+  .font-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 6px rgba(37,99,235,.35)}
+  .font-slider input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:none}
+  .font-val{font-size:13px;font-weight:700;color:var(--accent);min-width:36px;text-align:right}
   .toast{position:fixed;bottom:calc(90px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);padding:10px 18px;background:var(--accent);color:#fff;border-radius:100px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:200;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .onboarding{position:fixed;inset:0;background:var(--bg);z-index:250;display:none;flex-direction:column}
@@ -237,10 +228,6 @@
   .onb-planet svg{width:100%;height:100%}
   .onb-title{font-size:26px;font-weight:800;letter-spacing:-.8px;color:var(--ink);margin-bottom:10px}
   .onb-sub{font-size:15px;color:var(--muted);line-height:1.55;max-width:320px}
-  .onb-examples{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px;margin-top:24px}
-  .onb-ex{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border-radius:12px;font-size:13.5px;color:var(--ink);text-align:left;font-weight:500}
-  .onb-ex-ico{width:28px;height:28px;border-radius:8px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent)}
-  .onb-ex-ico .ico{width:16px;height:16px}
   .onb-foot{padding:16px 24px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
   .onb-dots{display:flex;gap:6px;justify-content:center;margin-bottom:4px}
   .onb-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .2s}
@@ -254,8 +241,6 @@
   .gate-sub{font-size:14.5px;color:var(--muted);line-height:1.55;max-width:320px;margin-bottom:24px}
   .gate-btn{width:100%;max-width:320px;padding:16px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px}
   .gate-btn .ico{width:18px;height:18px}
-  .gate-btn:active{background:var(--accent-dark);transform:scale(.98)}
-  .gate-btn:disabled{opacity:.5}
   .gate-id{font-size:12px;color:var(--muted);margin-top:12px}
   .gate-waiting{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--surface);border-radius:100px;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:12px}
   .gate-waiting .spin{width:18px;height:18px;border:2.5px solid var(--accent-light);border-top-color:var(--accent);border-radius:50%;animation:thinkSpin .8s linear infinite}
@@ -275,17 +260,16 @@
   .plus-btn-primary{width:100%;padding:15px;border:none;border-radius:14px;background:var(--accent);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
   .plus-btn-ghost{width:100%;padding:13px;border:none;border-radius:14px;background:transparent;color:var(--muted);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
   .plus-active-badge{padding:10px 14px;background:var(--accent-soft);border-radius:12px;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:6px}
-  .plus-active-badge .ico{width:16px;height:16px}
   .voice-overlay{position:fixed;inset:0;z-index:180;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(165deg,#ffffff 0%,#eff6ff 40%,#dbeafe 100%);overflow:hidden}
   .voice-overlay.active{display:flex;animation:fadeIn .28s ease-out}
   .voice-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 42%, rgba(37,99,235,.18) 0%, transparent 55%);pointer-events:none}
   .voice-box{position:relative;z-index:2;width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;text-align:center}
   .voice-canvas{width:280px;height:280px;display:block;margin-bottom:24px;filter:drop-shadow(0 12px 60px rgba(37,99,235,.35))}
-  .voice-status{font-size:22px;font-weight:800;color:var(--accent-deep);margin-bottom:14px;letter-spacing:-.3px}
-  .voice-text{font-size:15px;color:var(--ink-soft);line-height:1.5;max-width:340px;min-height:52px;font-weight:600;padding:14px 22px;background:rgba(255,255,255,.85);border:1.5px solid rgba(37,99,235,.2);border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(37,99,235,.1);transition:min-height .2s,color .2s,background .2s}
+  .voice-status{font-size:22px;font-weight:800;color:var(--accent-deep);margin-bottom:14px}
+  .voice-text{font-size:15px;color:var(--ink-soft);line-height:1.5;max-width:340px;min-height:52px;font-weight:600;padding:14px 22px;background:rgba(255,255,255,.85);border:1.5px solid rgba(37,99,235,.2);border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(37,99,235,.1)}
   .voice-text.empty{color:var(--muted);font-style:italic;font-weight:500}
-  .voice-cancel{margin-top:36px;padding:13px 36px;border-radius:100px;border:1.5px solid rgba(37,99,235,.35);background:rgba(255,255,255,.9);color:var(--accent-deep);font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .15s;box-shadow:0 4px 14px rgba(37,99,235,.15)}
-  .voice-cancel:active{background:var(--accent);color:#fff;transform:scale(.96);box-shadow:0 6px 20px rgba(37,99,235,.4)}
+  .voice-cancel{margin-top:36px;padding:13px 36px;border-radius:100px;border:1.5px solid rgba(37,99,235,.35);background:rgba(255,255,255,.9);color:var(--accent-deep);font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.15)}
+  .voice-cancel:active{background:var(--accent);color:#fff;transform:scale(.96)}
   .trainer-overlay,.cheat-overlay,.graph-overlay,.exam-overlay{position:fixed;inset:0;background:var(--overlay);z-index:210;display:none;align-items:center;justify-content:center;padding:16px}
   .trainer-overlay.active,.cheat-overlay.active,.graph-overlay.active,.exam-overlay.active{display:flex;animation:fadeIn .25s ease-out}
   .trainer-panel,.cheat-panel,.graph-panel,.exam-panel{width:100%;max-width:520px;max-height:90vh;background:var(--bg);border-radius:20px;padding:20px 18px;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.3)}
@@ -297,7 +281,6 @@
   .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
   .topic-btn{padding:14px 12px;background:var(--surface);border:1.5px solid transparent;border-radius:12px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);text-align:left;display:flex;align-items:center;gap:8px}
   .topic-btn .ico{width:18px;height:18px;color:var(--accent);flex-shrink:0}
-  .topic-btn:active{background:var(--accent-soft)}
   .topic-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
   .difficulty-row{display:flex;gap:6px;margin-bottom:16px}
   .diff-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
@@ -309,7 +292,7 @@
   .trainer-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
   .trainer-stat{padding:10px;background:var(--surface);border-radius:10px;text-align:center}
   .trainer-stat-val{font-size:18px;font-weight:800;color:var(--accent)}
-  .trainer-stat-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+  .trainer-stat-lbl{font-size:10px;color:var(--muted);font-weight:600;margin-top:2px;text-transform:uppercase}
   .trainer-feedback{padding:12px;border-radius:12px;font-size:14px;font-weight:600;margin-bottom:12px;display:none;align-items:center;gap:8px}
   .trainer-feedback.show{display:flex}
   .trainer-feedback.ok{background:#dcfce7;color:#166534}
@@ -321,7 +304,6 @@
   .cheat-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
   .cheat-body{font-size:14px;line-height:1.8;color:var(--ink-soft)}
   .cheat-body .cheat-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center}
-  .cheat-body .cheat-row:last-child{border-bottom:none}
   .cheat-body .cheat-name{font-size:13px;color:var(--muted);flex:1}
   .cheat-body .cheat-formula{font-family:'SF Mono',Monaco,monospace;font-weight:600;color:var(--accent-deep)}
   .graph-panel{max-width:600px}
@@ -330,12 +312,47 @@
   .exam-timer{font-size:24px;font-weight:800;color:var(--accent);font-family:'SF Mono',Monaco,monospace;text-align:center;padding:12px;background:var(--surface);border-radius:12px;margin-bottom:12px}
   .exam-timer.danger{color:var(--danger);animation:speakPulse 1s infinite}
   .exam-question{padding:16px;background:var(--accent-soft);border-radius:14px;margin-bottom:12px;text-align:center;font-size:16px;font-weight:700;color:var(--accent-deep);font-family:'SF Mono',Monaco,monospace;min-height:60px;display:flex;align-items:center;justify-content:center;white-space:pre-line}
-  .exam-progress{font-size:12px;font-weight:600;color:var(--muted);text-align:center;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+  .exam-progress{font-size:12px;font-weight:600;color:var(--muted);text-align:center;margin-bottom:10px;text-transform:uppercase}
+  /* Camera picker */
+  .picker-overlay{position:fixed;inset:0;background:var(--overlay);z-index:220;display:none;align-items:flex-end;justify-content:center;padding:0}
+  .picker-overlay.active{display:flex;animation:fadeIn .2s ease-out}
+  .picker-sheet{width:100%;max-width:480px;background:var(--bg);border-radius:22px 22px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom));animation:slideUp .28s cubic-bezier(.22,1,.36,1)}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .picker-title{font-size:18px;font-weight:800;color:var(--ink);text-align:center;margin-bottom:16px}
+  .picker-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+  .picker-opt{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 12px;background:var(--surface);border:none;border-radius:16px;font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;transition:all .15s}
+  .picker-opt:active{background:var(--accent-soft);transform:scale(.97)}
+  .picker-opt .ico{width:32px;height:32px;color:var(--accent)}
+  /* Camera modal */
+  .camera-overlay{position:fixed;inset:0;z-index:240;display:none;flex-direction:column;background:#000}
+  .camera-overlay.active{display:flex;animation:fadeIn .25s ease-out}
+  .camera-stage{flex:1;position:relative;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+  .camera-video{width:100%;height:100%;object-fit:cover;display:block}
+  .camera-frame{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center}
+  .camera-frame-box{width:85%;height:60%;max-width:520px;border:2px solid rgba(255,255,255,.65);border-radius:18px;position:relative;box-shadow:0 0 0 9999px rgba(0,0,0,.25)}
+  .camera-frame-box::before,.camera-frame-box::after,.camera-frame-box>.c1,.camera-frame-box>.c2{content:'';position:absolute;width:26px;height:26px;border-color:#fff;border-style:solid}
+  .camera-frame-box::before{top:-2px;left:-2px;border-width:3px 0 0 3px;border-top-left-radius:18px}
+  .camera-frame-box::after{top:-2px;right:-2px;border-width:3px 3px 0 0;border-top-right-radius:18px}
+  .camera-frame-box>.c1{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-bottom-left-radius:18px}
+  .camera-frame-box>.c2{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-bottom-right-radius:18px}
+  .camera-hint{position:absolute;bottom:calc(140px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);font-size:13px;color:rgba(255,255,255,.9);background:rgba(37,99,235,.85);padding:8px 16px;border-radius:100px;font-weight:600;pointer-events:none;white-space:nowrap;backdrop-filter:blur(6px)}
+  .camera-topbar{position:absolute;top:0;left:0;right:0;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom, rgba(0,0,0,.5) 0%, transparent 100%);z-index:3}
+  .camera-close{width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .camera-close .ico{width:20px;height:20px}
+  .camera-title{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.2px}
+  .camera-bottom{position:absolute;bottom:0;left:0;right:0;padding:20px 24px;padding-bottom:calc(24px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 100%);z-index:3}
+  .camera-side{width:56px;height:56px;border-radius:50%;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+  .camera-side:active{background:rgba(255,255,255,.28);transform:scale(.93)}
+  .camera-side.on{background:var(--accent);box-shadow:0 0 20px rgba(37,99,235,.6)}
+  .camera-side .ico{width:24px;height:24px}
+  .camera-shutter{width:76px;height:76px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
+  .camera-shutter:active{transform:scale(.9)}
+  .camera-shutter .inner{width:58px;height:58px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff}
+  .camera-shutter .inner .ico{width:28px;height:28px}
   @media print{
     .bottom-bar,.header,.drawer,.overlay,.math-kb,.limit-banner,.quick-menu{display:none!important}
     body,html{overflow:visible;height:auto;position:static}
-    .app{height:auto}
-    .chat{overflow:visible;height:auto;padding:0}
+    .app{height:auto}.chat{overflow:visible;height:auto;padding:0}
   }
 </style>
 </head>
@@ -378,17 +395,18 @@
   <symbol id="i-function" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5v18M15 3h4v18M5 12h14"/></symbol>
   <symbol id="i-sigma" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4H6l6 8-6 8h12"/></symbol>
   <symbol id="i-equals" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 9h14M5 15h14"/></symbol>
-  <symbol id="i-pi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M9 8v10M15 8v10"/></symbol>
-  <symbol id="i-sqrt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l3 8 5-16h10"/></symbol>
   <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></symbol>
   <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></symbol>
   <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></symbol>
   <symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18M4 7l4 4 4-7 4 7 4-4v9H4z"/></symbol>
   <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z"/></symbol>
   <symbol id="i-hint" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h1v4h1"/></symbol>
-  <symbol id="i-laTeX" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6M4 4v16h6M20 4h-4l-4 8 4 8h4"/></symbol>
   <symbol id="i-exam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></symbol>
   <symbol id="i-notebook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 2v20M12 8h4M12 12h4M12 16h4"/></symbol>
+  <symbol id="i-flashlight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L8 7h8l-5 5M8 12v8a1 1 0 001 1h6a1 1 0 001-1v-8"/></symbol>
+  <symbol id="i-switch-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5H8a4 4 0 00-4 4v6"/><path d="M4 19h12a4 4 0 004-4V9"/><path d="M9 22l-3-3 3-3M15 2l3 3-3 3"/></symbol>
+  <symbol id="i-gallery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></symbol>
+  <symbol id="i-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 007 4.5v15A2.5 2.5 0 009.5 22h5a2.5 2.5 0 002.5-2.5v-15A2.5 2.5 0 0014.5 2z"/><path d="M12 6v14"/></symbol>
 </svg>
 
 <!-- ONBOARDING -->
@@ -403,12 +421,7 @@
       <div class="onb-slide">
         <div class="onb-planet"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="26" stroke="currentColor" stroke-width="3"/><path d="M42 40 L64 50 L42 60 Z" fill="currentColor"/></svg></div>
         <div class="onb-title">Что можно</div>
-        <div class="onb-examples">
-          <div class="onb-ex"><div class="onb-ex-ico"><span class="ico"><svg><use href="#i-equals"/></svg></span></div><span>Реши 2x + 5 = 15</span></div>
-          <div class="onb-ex"><div class="onb-ex-ico"><span class="ico"><svg><use href="#i-chart"/></svg></span></div><span>Построй прямой угол ABC</span></div>
-          <div class="onb-ex"><div class="onb-ex-ico"><span class="ico"><svg><use href="#i-function"/></svg></span></div><span>Производная x³ + 2x</span></div>
-          <div class="onb-ex"><div class="onb-ex-ico"><span class="ico"><svg><use href="#i-book-open"/></svg></span></div><span>Теорема Пифагора</span></div>
-        </div>
+        <div class="onb-sub">Решаю уравнения, строю чертежи и графики, объясняю по шагам.</div>
       </div>
       <div class="onb-slide">
         <div class="onb-planet"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="3"/><circle cx="50" cy="50" r="8" fill="currentColor"/><circle cx="50" cy="20" r="5" fill="currentColor" opacity=".6"/><circle cx="50" cy="80" r="4" fill="currentColor" opacity=".6"/><circle cx="20" cy="50" r="4" fill="currentColor" opacity=".6"/><circle cx="80" cy="50" r="5" fill="currentColor" opacity=".6"/></svg></div>
@@ -463,6 +476,37 @@
   </div>
 </div>
 
+<!-- CAMERA PICKER -->
+<div class="picker-overlay" id="pickerOverlay">
+  <div class="picker-sheet">
+    <div class="picker-title">Отправить задачу</div>
+    <div class="picker-options">
+      <button class="picker-opt" id="pickCamera"><span class="ico"><svg><use href="#i-camera"/></svg></span><span>Сфотографировать</span></button>
+      <button class="picker-opt" id="pickGallery"><span class="ico"><svg><use href="#i-gallery"/></svg></span><span>Из галереи</span></button>
+    </div>
+    <button class="btn-ghost" id="pickCancel" style="margin-top:8px;"><span class="ico"><svg><use href="#i-x"/></svg></span>Отмена</button>
+  </div>
+</div>
+
+<!-- CAMERA -->
+<div class="camera-overlay" id="cameraOverlay">
+  <div class="camera-stage">
+    <video class="camera-video" id="cameraVideo" autoplay playsinline muted></video>
+    <div class="camera-frame"><div class="camera-frame-box"><span class="c1"></span><span class="c2"></span></div></div>
+    <div class="camera-hint">Наведи на задачу и сфотографируй</div>
+    <div class="camera-topbar">
+      <button class="camera-close" id="cameraClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button>
+      <div class="camera-title">Сфотографировать задачу</div>
+      <div style="width:40px"></div>
+    </div>
+    <div class="camera-bottom">
+      <button class="camera-side" id="cameraFlash" title="Фонарик"><span class="ico"><svg><use href="#i-flashlight"/></svg></span></button>
+      <button class="camera-shutter" id="cameraShutter"><div class="inner"><span class="ico"><svg><use href="#i-camera"/></svg></span></div></button>
+      <button class="camera-side" id="cameraSwitch" title="Сменить камеру"><span class="ico"><svg><use href="#i-switch-cam"/></svg></span></button>
+    </div>
+  </div>
+</div>
+
 <!-- DRAWER -->
 <div class="overlay" id="drawerOverlay"></div>
 <aside class="drawer" id="drawer">
@@ -495,11 +539,17 @@
     </div>
     <div class="field"><div class="field-label">Имя</div><input type="text" class="field-input" id="accountNameInput" maxlength="24" placeholder="Твоё имя"></div>
     <div class="settings-row">
-      <div class="settings-info">
-        <div class="settings-title">Вибрация</div>
-        <div class="settings-sub">Тактильный отклик при действиях</div>
-      </div>
+      <div class="settings-info"><div class="settings-title">Вибрация</div><div class="settings-sub">Тактильный отклик при действиях</div></div>
       <label class="toggle"><input type="checkbox" id="vibToggle" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:10px">
+      <div class="settings-info"><div class="settings-title">Размер текста</div><div class="settings-sub">От 12 до 18 px</div></div>
+      <div class="font-slider">
+        <span style="font-size:12px;color:var(--muted);font-weight:700">A</span>
+        <input type="range" id="fontSlider" min="12" max="18" step="1" value="15">
+        <span style="font-size:18px;color:var(--muted);font-weight:700">A</span>
+        <span class="font-val" id="fontVal">15</span>
+      </div>
     </div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-value" id="statChats">0</div><div class="stat-label">Чатов</div></div>
@@ -517,22 +567,20 @@
 <div class="trainer-overlay" id="trainerOverlay">
   <div class="trainer-panel">
     <div class="panel-head"><h2><span class="ico"><svg><use href="#i-target"/></svg></span>Тренажёр</h2><button class="panel-close" id="trainerClose"><span class="ico"><svg><use href="#i-x"/></svg></span></button></div>
-    <div style="font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Тема</div>
     <div class="topic-grid" id="topicGrid">
-      <button class="topic-btn active" data-topic="linear"><span class="ico"><svg><use href="#i-equals"/></svg></span>Линейные</button>
-      <button class="topic-btn" data-topic="quadratic"><span class="ico"><svg><use href="#i-function"/></svg></span>Квадратные</button>
-      <button class="topic-btn" data-topic="arithmetic"><span class="ico"><svg><use href="#i-calc"/></svg></span>Арифметика</button>
-      <button class="topic-btn" data-topic="derivative"><span class="ico"><svg><use href="#i-chart"/></svg></span>Производные</button>
-      <button class="topic-btn" data-topic="inequality"><span class="ico"><svg><use href="#i-sigma"/></svg></span>Неравенства</button>
-      <button class="topic-btn" data-topic="integral"><span class="ico"><svg><use href="#i-sigma"/></svg></span>Интегралы</button>
+      <button class="topic-btn active" data-topic="linear">Линейные</button>
+      <button class="topic-btn" data-topic="quadratic">Квадратные</button>
+      <button class="topic-btn" data-topic="arithmetic">Арифметика</button>
+      <button class="topic-btn" data-topic="derivative">Производные</button>
+      <button class="topic-btn" data-topic="inequality">Неравенства</button>
+      <button class="topic-btn" data-topic="integral">Интегралы</button>
     </div>
-    <div style="font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Сложность</div>
     <div class="difficulty-row" id="diffRow">
       <button class="diff-btn active" data-diff="1">Легко</button>
       <button class="diff-btn" data-diff="2">Средне</button>
       <button class="diff-btn" data-diff="3">Сложно</button>
     </div>
-    <div class="trainer-task" id="trainerTask">Выбери тему и нажми «Начать»</div>
+    <div class="trainer-task" id="trainerTask">Выбери тему</div>
     <div class="trainer-answer-row">
       <input type="text" class="trainer-input" id="trainerInput" placeholder="Ответ" autocomplete="off">
       <button class="btn-primary" id="trainerCheck" style="width:auto;margin:0;padding:12px 18px">Проверить</button>
@@ -558,7 +606,6 @@
       <input type="text" class="trainer-input" id="examInput" placeholder="Ответ" autocomplete="off">
       <button class="btn-primary" id="examCheck" style="width:auto;margin:0;padding:12px 18px">Далее</button>
     </div>
-    <div class="trainer-feedback" id="examFeedback"></div>
     <button class="btn-primary" id="examStart"><span class="ico"><svg><use href="#i-bolt"/></svg></span>Начать экзамен</button>
   </div>
 </div>
@@ -572,7 +619,7 @@
       <button class="cheat-tab" data-tab="der">Производные</button>
       <button class="cheat-tab" data-tab="int">Интегралы</button>
       <button class="cheat-tab" data-tab="log">Логарифмы</button>
-      <button class="cheat-tab" data-tab="short">Сокр. умножение</button>
+      <button class="cheat-tab" data-tab="geo">Геометрия</button>
     </div>
     <div class="cheat-body" id="cheatBody"></div>
   </div>
@@ -612,7 +659,7 @@
     <button class="menu-fab" id="menuBtn"><span class="ico"><svg><use href="#i-menu"/></svg></span></button>
     <div class="input-wrap" id="inputWrap">
       <input type="text" id="input" placeholder="Введите уравнение или вопрос..." autocomplete="off">
-      <button class="fsquares" id="fsquaresBtn" title="Ещё" aria-label="Ещё"><span></span><span></span><span></span><span></span></button>
+      <button class="fsquares" id="fsquaresBtn" title="Ещё"><span></span><span></span><span></span><span></span></button>
       <button class="send-btn" id="send" disabled><span class="ico" id="sendIcon"><svg><use href="#i-send"/></svg></span><span class="cooldown-text" id="cooldownText">5</span></button>
     </div>
   </div>
@@ -627,9 +674,14 @@
 
 <input type="file" id="avatarInput" accept="image/*" style="display:none">
 <input type="file" id="fileInput" accept="image/*" style="display:none">
+<input type="file" id="galleryInput" accept="image/*" style="display:none">
+<canvas id="cameraCanvas" style="display:none"></canvas>
 <div class="toast" id="toast"></div>
 
 <script>
+/* ================================================================
+   ГЛОБАЛЬНЫЕ КОНСТАНТЫ И ИНИЦИАЛИЗАЦИЯ
+   ================================================================ */
 const API_URL = 'https://shiny-flower-cc1aorbita-gate.2013zakharov.workers.dev';
 const ADMIN_TG_ID = 5268787813;
 const MSG_LIMIT_FREE = 20;
@@ -656,14 +708,14 @@ function haptic(t='light'){
 function hapticSel(){ if(!state.vibration) return; try{ tg?.HapticFeedback?.selectionChanged(); }catch(e){} }
 function showBackButton(fn){ if(!tg?.BackButton) return; tg.BackButton.offClick(); tg.BackButton.onClick(fn); tg.BackButton.show(); }
 function hideBackButton(){ if(tg?.BackButton){ try{ tg.BackButton.offClick(); tg.BackButton.hide(); }catch(e){} } }
-function showMainBtn(text, fn){ if(!tg?.MainButton) return; try{ tg.MainButton.setText(text); tg.MainButton.offClick(); tg.MainButton.onClick(fn); tg.MainButton.show(); document.body.classList.add('has-mainbtn'); }catch(e){} }
-function hideMainBtn(){ try{ tg?.MainButton?.hide(); document.body.classList.remove('has-mainbtn'); }catch(e){} }
+function showMainBtn(text, fn){ if(!tg?.MainButton) return; try{ tg.MainButton.setText(text); tg.MainButton.offClick(); tg.MainButton.onClick(fn); tg.MainButton.show(); }catch(e){} }
+function hideMainBtn(){ try{ tg?.MainButton?.hide(); }catch(e){} }
 
-const state = { user:null, chats:[], activeId:null, busy:false, abortRequested:false, rateLimit:false, rateLimitTimer:null, searchQuery:'', plus:false, vibration:true };
+const state = { user:null, chats:[], activeId:null, busy:false, abortRequested:false, rateLimit:false, rateLimitTimer:null, searchQuery:'', plus:false, vibration:true, fontSize:15, stream:null, facing:'environment', flashOn:false, cameraTrack:null, lastAIAnswer:null };
 const $ = id => document.getElementById(id);
 const chatEl = $('chat'), inputEl = $('input'), sendBtn = $('send'), sendIconEl = $('sendIcon'), toast = $('toast');
 
-const KEYS = { USER:'o_u', CHATS:'o_c', ACTIVE:'o_a', LAST_REQ:'o_r', DRAFT:'o_d', ONBOARD:'o_onb' };
+const KEYS = { USER:'o_u', CHATS:'o_c', ACTIVE:'o_a', LAST_REQ:'o_r', DRAFT:'o_d', ONBOARD:'o_onb', FONT:'o_font', VIB:'o_vib' };
 const store = {
   getUser(){ try{ return JSON.parse(localStorage.getItem(KEYS.USER)||'null'); }catch{ return null; } },
   saveUser(u){ localStorage.setItem(KEYS.USER, JSON.stringify(u)); },
@@ -684,7 +736,15 @@ function initials(name){ if(!name) return 'A'; const p=name.trim().split(/\s+/);
 function lockScroll(lock){ document.body.classList.toggle('locked',lock); }
 function scrollDown(){ chatEl.scrollTop = chatEl.scrollHeight; }
 
-/* ============== MATH ENGINE ============== */
+function applyFontSize(px){
+  state.fontSize = Math.max(12, Math.min(18, px));
+  document.documentElement.style.setProperty('--fs', state.fontSize + 'px');
+  localStorage.setItem(KEYS.FONT, String(state.fontSize));
+}
+
+/* ================================================================
+   МАТЕМАТИЧЕСКИЙ ДВИЖОК
+   ================================================================ */
 function fmtNum(n){ if(Number.isInteger(n)) return String(n); for(let d = 2; d <= 100; d++){ if(Math.abs(n*d - Math.round(n*d)) < 1e-9){ const num = Math.round(n*d); const g = gcd(Math.abs(num), d); const n1 = num/g, d1 = d/g; if(d1 === 1) return String(n1); return `[${n1}/${d1}]`; } } return String(Math.round(n*1000000)/1000000); }
 function gcd(a,b){ while(b){ const t = b; b = a % b; a = t; } return a || 1; }
 function lcm(a,b){ return Math.abs(a*b) / gcd(a,b); }
@@ -731,7 +791,6 @@ function solveLinear(original, left, right){
   const s = [];
   s.push(`**Решаю линейное уравнение:**`);
   s.push(`$$${original}$$`);
-  s.push(`\n${ico('bulb')} **Метод:** слагаемые с x — в одну сторону, числа — в другую.`);
   s.push(`\n**Шаг 1.** Переношу всё в левую часть:`);
   s.push(`$$${polyToStr(0,b,c)} = 0$$`);
   s.push(`\n**Шаг 2.** Выражаю x:`);
@@ -739,7 +798,7 @@ function solveLinear(original, left, right){
   else if(b === -1){ s.push(`$$-x = ${c}$$`); s.push(`$$x = ${-c}$$`); }
   else { s.push(`$$${fmtNum(b)}\\cdot x = ${fmtNum(-c)}$$`); s.push(`$$x = \\dfrac{${fmtNum(-c)}}{${fmtNum(b)}}$$`); }
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x = ${fmtNum(x)}$`);
-  return { text: s.join('\n'), _isDialog:true };
+  return { text: s.join('\n'), _isDialog:true, _problem:{ type:'linear', answer:x, original } };
 }
 function solveQuadratic(original, left, right){
   const L = parsePoly(left), R = parsePoly(right);
@@ -751,19 +810,20 @@ function solveQuadratic(original, left, right){
   s.push(`$$${original}$$`);
   s.push(`\n**Шаг 1.** Привожу к виду $ax^2+bx+c=0$:`);
   s.push(`$$${polyToStr(a,b,c)} = 0$$`);
-  s.push(`Коэффициенты: $a=${fmtNum(a)}, b=${fmtNum(b)}, c=${fmtNum(c)}$`);
-  s.push(`\n**Шаг 2.** Дискриминант $D = b^2 - 4ac$:`);
+  s.push(`\n**Шаг 2.** $D = b^2 - 4ac$:`);
   s.push(`$$D = ${fmtNum(b)}^2 - 4 \\cdot (${fmtNum(a)}) \\cdot (${fmtNum(c)}) = ${fmtNum(D)}$$`);
   let ans = '';
+  let roots = [];
   if(D > 0){
     const sq = Math.sqrt(D);
     const x1 = (-b + sq)/(2*a), x2 = (-b - sq)/(2*a);
+    roots = [x1, x2];
     s.push(`\n**Шаг 3.** $D>0$ — два корня:`);
-    s.push(`$$x_1 = \\dfrac{${fmtNum(-b)} + ${fmtNum(sq)}}{${fmtNum(2*a)}} = ${fmtNum(x1)}$$`);
-    s.push(`$$x_2 = \\dfrac{${fmtNum(-b)} - ${fmtNum(sq)}}{${fmtNum(2*a)}} = ${fmtNum(x2)}$$`);
+    s.push(`$$x_1 = ${fmtNum(x1)}, \\quad x_2 = ${fmtNum(x2)}$$`);
     ans = `$x_1 = ${fmtNum(x1)}$, $x_2 = ${fmtNum(x2)}$`;
   } else if(D === 0){
     const x = -b/(2*a);
+    roots = [x];
     s.push(`\n**Шаг 3.** $D=0$ — один корень: $x = ${fmtNum(x)}$`);
     ans = `$x = ${fmtNum(x)}$`;
   } else {
@@ -771,10 +831,98 @@ function solveQuadratic(original, left, right){
     ans = 'нет действительных корней';
   }
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** ${ans}`);
-  s.push(`\n${ico('hint')} **Виета:** $x_1+x_2 = ${fmtNum(-b/a)}$, $x_1 x_2 = ${fmtNum(c/a)}$`);
-  return { text: s.join('\n'), _isDialog:true };
+  return { text: s.join('\n'), _isDialog:true, _problem:{ type:'quadratic', roots, original } };
 }
 
+/* ============ СОСТАВЛЕНИЕ УРАВНЕНИЯ ИЗ ТЕКСТА ============ */
+function solveWordProblem(query){
+  const q = query.trim();
+  if(!/задач|было|стало|осталось|отдал|купил|получил|найти|сколько|скорост|расстоян|время|возраст|старше|младше|больше|меньше/i.test(q)) return null;
+  // Паттерн: "было X, отдал Y, осталось Z"
+  const amountMatch = q.match(/(\d+)\s*(?:яблок|конфет|руч|карандаш|штук|монет|рубл|гриб|открыт|марк|book|ягод)/i);
+  const gaveMatch = q.match(/отдал\w*\s+(\d+)/i);
+  const leftMatch = q.match(/осталось\s+(\d+)/i);
+  if(amountMatch && gaveMatch && leftMatch){
+    const a = parseInt(amountMatch[1]), b = parseInt(gaveMatch[1]), c = parseInt(leftMatch[1]);
+    const s = [];
+    s.push(`**Задача:** ${q}\n`);
+    s.push(`**Шаг 1.** Обозначаю неизвестное:`);
+    s.push(`Пусть $x$ — сколько было изначально.`);
+    s.push(`\n**Шаг 2.** Составляю уравнение:`);
+    s.push(`Было $x$, отдали $${b}$, осталось $${c}$:`);
+    s.push(`$$x - ${b} = ${c}$$`);
+    s.push(`\n**Шаг 3.** Решаю:`);
+    s.push(`$$x = ${c} + ${b} = ${c + b}$$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** было **${c + b}**`);
+    if(Math.abs(c + b - a) < 1e-9) s.push(`\n_Проверка: в условии уже указано ${a} — сходится._`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  // Паттерн: "в X раз больше/меньше"
+  const bigMatch = q.match(/в\s+(\d+)\s+раз\w*\s+больше/i);
+  const smallMatch = q.match(/в\s+(\d+)\s+раз\w*\s+меньше/i);
+  const numMatch = q.match(/(\d+)/);
+  if(bigMatch && numMatch){
+    const k = parseInt(bigMatch[1]), n = parseInt(numMatch[1]);
+    const s = [];
+    s.push(`**Задача:** ${q}\n`);
+    s.push(`**Шаг 1.** Обозначаю: пусть искомое число $x$.`);
+    s.push(`**Шаг 2.** «В ${k} раз больше» → умножаем:`);
+    s.push(`$$x = ${n} \\cdot ${k} = ${n*k}$$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${n*k}$`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  if(smallMatch && numMatch){
+    const k = parseInt(smallMatch[1]), n = parseInt(numMatch[1]);
+    const s = [];
+    s.push(`**Задача:** ${q}\n`);
+    s.push(`**Шаг 1.** «В ${k} раз меньше» → делим:`);
+    s.push(`$$x = ${n} / ${k} = ${fmtNum(n/k)}$$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${fmtNum(n/k)}$`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  // Паттерн скорости: "скорость X, время Y, найти расстояние"
+  const speedMatch = q.match(/скорост\w*\s+(\d+)/i);
+  const timeMatch = q.match(/врем\w*\s+(\d+)/i);
+  if(speedMatch && timeMatch && /расстоян/i.test(q)){
+    const v = parseInt(speedMatch[1]), t = parseInt(timeMatch[1]);
+    const s = [];
+    s.push(`**Задача:** ${q}\n`);
+    s.push(`**Формула:** $S = v \\cdot t$\n`);
+    s.push(`$$S = ${v} \\cdot ${t} = ${v*t}$$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${v*t}$ км`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  // Паттерн возраста
+  const ageMatch = q.match(/(\d+)\s*(?:лет|года|год)/i);
+  const olderMatch = q.match(/старше\s+на\s+(\d+)/i);
+  const youngerMatch = q.match(/младше\s+на\s+(\d+)/i);
+  if(ageMatch && (olderMatch || youngerMatch)){
+    const a = parseInt(ageMatch[1]);
+    const d = olderMatch ? parseInt(olderMatch[1]) : -parseInt(youngerMatch[1]);
+    const s = [];
+    s.push(`**Задача:** ${q}\n`);
+    s.push(`**Шаг 1.** Обозначаю: пусть искомый возраст $x$.`);
+    s.push(`**Шаг 2.** «${d >= 0 ? 'Старше' : 'Младше'} на ${Math.abs(d)}»:`);
+    s.push(`$$x = ${a} ${d >= 0 ? '+' : '−'} ${Math.abs(d)} = ${a + d}$$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${a + d}$ лет`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  // Проценты
+  const percentMatch = q.match(/(\d+)\s*%\s*от\s+(\d+)/i);
+  if(percentMatch){
+    const p = parseInt(percentMatch[1]), a = parseInt(percentMatch[2]);
+    const r = a * p / 100;
+    const s = [];
+    s.push(`**Задача:** ${q}\n`);
+    s.push(`**Формула:** $\\text{Часть} = \\dfrac{p}{100} \\cdot A$\n`);
+    s.push(`$$${p}\\% \\cdot ${a} = \\dfrac{${p}}{100} \\cdot ${a} = ${fmtNum(r)}$$`);
+    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${fmtNum(r)}$`);
+    return { text: s.join('\n'), _isDialog:true };
+  }
+  return null;
+}
+
+/* ============ СИСТЕМЫ УРАВНЕНИЙ ============ */
 function solveSystem(query){
   let raw = query.trim();
   raw = raw.replace(/^(реши|решить|система|систему|system)\s*:?\s*/i,'');
@@ -804,19 +952,10 @@ function parseLinearTwoVar(eq){
   if(str.startsWith('+')) str = str.slice(1);
   for(const term of str.split('+')){
     if(!term) continue;
-    if(/x$/.test(term)){
-      const cf = term.slice(0,-1);
-      if(cf === '' || cf === '+') a += 1;
-      else if(cf === '-') a -= 1;
-      else { const v = parseFloat(cf); if(isNaN(v)) return null; a += v; }
-    } else if(/y$/.test(term)){
-      const cf = term.slice(0,-1);
-      if(cf === '' || cf === '+') b += 1;
-      else if(cf === '-') b -= 1;
-      else { const v = parseFloat(cf); if(isNaN(v)) return null; b += v; }
-    } else if(/^[+\-]?\d*\.?\d+$/.test(term)){
-      c += parseFloat(term);
-    } else return null;
+    if(/x$/.test(term)){ const cf = term.slice(0,-1); if(cf === '' || cf === '+') a += 1; else if(cf === '-') a -= 1; else { const v = parseFloat(cf); if(isNaN(v)) return null; a += v; } }
+    else if(/y$/.test(term)){ const cf = term.slice(0,-1); if(cf === '' || cf === '+') b += 1; else if(cf === '-') b -= 1; else { const v = parseFloat(cf); if(isNaN(v)) return null; b += v; } }
+    else if(/^[+\-]?\d*\.?\d+$/.test(term)){ c += parseFloat(term); }
+    else return null;
   }
   return { a, b, c };
 }
@@ -828,27 +967,20 @@ function solveTwoVarSystem(eqs, s1, s2){
   s.push(`**Решаю систему уравнений:**`);
   s.push(`$$\\begin{cases}${eqs[0].replace(/\*/g,'')} \\\\ ${eqs[1].replace(/\*/g,'')} \\end{cases}$$`);
   if(Math.abs(det) < 1e-12){
-    if(Math.abs(a1*c2 - a2*c1) < 1e-9 && Math.abs(b1*c2 - b2*c1) < 1e-9){
-      return { text: `${ico('infinity')} **Бесконечно много решений** — прямые совпадают.`, _isDialog:true };
-    }
-    return { text: `${ico('x-circle','inl-err')} **Нет решений** — прямые параллельны.`, _isDialog:true };
+    if(Math.abs(a1*c2 - a2*c1) < 1e-9 && Math.abs(b1*c2 - b2*c1) < 1e-9) return { text: `${ico('infinity')} **Бесконечно много решений**`, _isDialog:true };
+    return { text: `${ico('x-circle','inl-err')} **Нет решений**`, _isDialog:true };
   }
-  s.push(`\n${ico('bulb')} **Метод Крамера:**`);
-  s.push(`$a_1=${fmtNum(a1)}, b_1=${fmtNum(b1)}, c_1=${fmtNum(c1)}$`);
-  s.push(`$a_2=${fmtNum(a2)}, b_2=${fmtNum(b2)}, c_2=${fmtNum(c2)}$`);
-  s.push(`\n**Шаг 1.** $\\Delta = a_1 b_2 - a_2 b_1$:`);
-  s.push(`$$\\Delta = ${fmtNum(a1)} \\cdot ${fmtNum(b2)} - ${fmtNum(a2)} \\cdot ${fmtNum(b1)} = ${fmtNum(det)}$$`);
   const dx = c1*b2 - c2*b1;
   const dy = a1*c2 - a2*c1;
-  s.push(`\n**Шаг 2.** $\\Delta_x = ${fmtNum(dx)}$, $\\Delta_y = ${fmtNum(dy)}$`);
   const x = dx / det, y = dy / det;
-  s.push(`\n**Шаг 3.** Находим корни:`);
-  s.push(`$$x = \\dfrac{${fmtNum(dx)}}{${fmtNum(det)}} = ${fmtNum(x)}$$`);
-  s.push(`$$y = \\dfrac{${fmtNum(dy)}}{${fmtNum(det)}} = ${fmtNum(y)}$$`);
+  s.push(`\n${ico('bulb')} **Метод Крамера:**`);
+  s.push(`$$\\Delta = ${fmtNum(det)}, \\quad \\Delta_x = ${fmtNum(dx)}, \\quad \\Delta_y = ${fmtNum(dy)}$$`);
+  s.push(`\n$$x = \\dfrac{${fmtNum(dx)}}{${fmtNum(det)}} = ${fmtNum(x)}, \\quad y = \\dfrac{${fmtNum(dy)}}{${fmtNum(det)}} = ${fmtNum(y)}$$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x = ${fmtNum(x)}$, $y = ${fmtNum(y)}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
 
+/* ============ НЕРАВЕНСТВА ============ */
 function solveInequality(query){
   const q = query.trim();
   const m = q.match(/^(.+?)(<=|>=|≤|≥|<|>)(.+)$/);
@@ -870,17 +1002,16 @@ function solveLinearInequality(original, left, right, kOp){
   if(Math.abs(b) < 1e-12) return { text: `Неравенство вырождается.`, _isDialog:true };
   let finalOp = kOp, threshold = -c/b;
   if(b < 0){ const flip = { '\\le':'\\ge', '\\ge':'\\le', '<':'>', '>':'<' }; finalOp = flip[kOp]; }
-  const s = [];
-  s.push(`**Решаю линейное неравенство:**`);
-  s.push(`$$${original}$$`);
-  s.push(`\n**Шаг 1.** Переношу в левую часть:`);
-  s.push(`$$${polyToStr(0,b,c)} ${kOp} 0$$`);
-  s.push(`\n**Шаг 2.** ${b < 0 ? 'Знак меняю:' : 'Выражаю x:'} $x ${finalOp} ${fmtNum(threshold)}$`);
   let interval;
   if(finalOp === '<') interval = `(-\\infty; ${fmtNum(threshold)})`;
   else if(finalOp === '>') interval = `(${fmtNum(threshold)}; +\\infty)`;
   else if(finalOp === '\\le') interval = `(-\\infty; ${fmtNum(threshold)}]`;
   else interval = `[${fmtNum(threshold)}; +\\infty)`;
+  const s = [];
+  s.push(`**Решаю линейное неравенство:**`);
+  s.push(`$$${original}$$`);
+  s.push(`\n**Шаг 1.** $${polyToStr(0,b,c)} ${kOp} 0$`);
+  s.push(`\n**Шаг 2.** $x ${finalOp} ${fmtNum(threshold)}$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in ${interval}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
@@ -893,17 +1024,15 @@ function solveQuadInequality(original, left, right, kOp){
   s.push(`**Решаю квадратное неравенство:**`);
   s.push(`$$${original}$$`);
   s.push(`\n**Шаг 1.** $${polyToStr(a,b,c)} ${kOp} 0$`);
-  s.push(`\n**Шаг 2.** $D = ${fmtNum(D)}$`);
+  s.push(`**Шаг 2.** $D = ${fmtNum(D)}$`);
   if(D < 0){
     const positive = a > 0;
-    if(positive && (kOp === '>' || kOp === '\\ge')) s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$`);
-    else if(!positive && (kOp === '<' || kOp === '\\le')) s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$`);
+    if((positive && (kOp === '>' || kOp === '\\ge')) || (!positive && (kOp === '<' || kOp === '\\le'))) s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$`);
     else s.push(`\n${ico('x-circle','inl-err')} **Ответ:** нет решений`);
     return { text: s.join('\n'), _isDialog:true };
   }
   if(D === 0){
     const x0 = -b/(2*a);
-    s.push(`\n**Шаг 3.** $D=0$, $x_0 = ${fmtNum(x0)}$`);
     if(kOp === '>' || kOp === '<') s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; ${fmtNum(x0)}) \\cup (${fmtNum(x0)}; +\\infty)$`);
     else s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in (-\\infty; +\\infty)$`);
     return { text: s.join('\n'), _isDialog:true };
@@ -911,17 +1040,18 @@ function solveQuadInequality(original, left, right, kOp){
   const sq = Math.sqrt(D);
   const r1 = (-b - sq)/(2*a), r2 = (-b + sq)/(2*a);
   const lo = Math.min(r1, r2), hi = Math.max(r1, r2);
-  s.push(`\n**Шаг 3.** Корни: $x_1 = ${fmtNum(lo)}$, $x_2 = ${fmtNum(hi)}$`);
   const testX = (lo + hi) / 2;
   const valAtMid = a*testX*testX + b*testX + c;
   const midSatisfies = (kOp === '>' || kOp === '\\ge') ? valAtMid > 0 : valAtMid < 0;
   let interval;
-  if(midSatisfies){ interval = kOp === '<' || kOp === '>' ? `(${fmtNum(lo)}; ${fmtNum(hi)})` : `[${fmtNum(lo)}; ${fmtNum(hi)}]`; }
+  if(midSatisfies) interval = kOp === '<' || kOp === '>' ? `(${fmtNum(lo)}; ${fmtNum(hi)})` : `[${fmtNum(lo)}; ${fmtNum(hi)}]`;
   else { const opLo = kOp === '>' || kOp === '<' ? ')' : ']'; const opHi = kOp === '>' || kOp === '<' ? '(' : '['; interval = `(-\\infty; ${fmtNum(lo)}${opLo} \\cup ${opHi}${fmtNum(hi)}; +\\infty)`; }
+  s.push(`\n**Шаг 3.** Корни: $x_1 = ${fmtNum(lo)}$, $x_2 = ${fmtNum(hi)}$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x \\in ${interval}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
 
+/* ============ ПОЛИНОМЫ ============ */
 function parseAnyPoly(expr){
   expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
   const terms = [];
@@ -973,26 +1103,7 @@ function factorAdvanced(query){
         const s = [];
         s.push(`**Разложение на множители:**`);
         s.push(`$$${polyTermsToStr(poly.terms)}$$`);
-        s.push(`\n${ico('bulb')} **Общий множитель:** $${gStr}$`);
         s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${gStr}(${innerStr})$`);
-        return { text: s.join('\n'), _isDialog:true };
-      }
-    }
-    if(poly.terms.length === 4){
-      const t = [...poly.terms].sort((a,b) => b.power - a.power);
-      const g1 = gcd(Math.abs(Math.round(t[0].coef)), Math.abs(Math.round(t[1].coef)));
-      const g2 = gcd(Math.abs(Math.round(t[2].coef)), Math.abs(Math.round(t[3].coef)));
-      const i1 = [{coef: t[0].coef/g1, power: t[0].power - Math.min(t[0].power, t[1].power)}, {coef: t[1].coef/g1, power: t[1].power - Math.min(t[0].power, t[1].power)}];
-      const i2 = [{coef: t[2].coef/g2, power: t[2].power - Math.min(t[2].power, t[3].power)}, {coef: t[3].coef/g2, power: t[3].power - Math.min(t[2].power, t[3].power)}];
-      const s1 = polyTermsToStr(i1), s2 = polyTermsToStr(i2);
-      if(s1.replace(/\s/g,'') === s2.replace(/\s/g,'')){
-        const g1Str = (g1 === 1 ? '' : fmtNum(g1)) + (Math.min(t[0].power, t[1].power) === 0 ? '' : `x^${Math.min(t[0].power, t[1].power)}`);
-        const g2Str = (g2 === 1 ? '' : fmtNum(g2)) + (Math.min(t[2].power, t[3].power) === 0 ? '' : `x^${Math.min(t[2].power, t[3].power)}`);
-        const s = [];
-        s.push(`**Разложение группировкой:**`);
-        s.push(`$$${polyTermsToStr(poly.terms)}$$`);
-        s.push(`\n**Шаг 1.** Группирую попарно: $(${polyTermsToStr([t[0],t[1]])}) + (${polyTermsToStr([t[2],t[3]])})$`);
-        s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $(${s1})(${g1Str} + ${g2Str})$`);
         return { text: s.join('\n'), _isDialog:true };
       }
     }
@@ -1011,45 +1122,26 @@ function factorPolynomial(query){
     if(D < 0) return { text:`${ico('x-circle','inl-err')} **$D = ${fmtNum(D)} < 0$** — не разлагается.`, _isDialog:true };
     const sq = Math.sqrt(D);
     const r1 = (-b + sq)/(2*a), r2 = (-b - sq)/(2*a);
-    const s = [];
-    s.push(`**Разложение на множители:**`);
-    s.push(`$$${polyToStr(a,b,c)}$$`);
-    s.push(`\n**Шаг 1.** $D = ${fmtNum(D)}$, $\\sqrt{D} = ${fmtNum(sq)}$`);
-    s.push(`**Шаг 2.** Корни: $x_1 = ${fmtNum(r1)}$, $x_2 = ${fmtNum(r2)}$`);
     const parts = [];
     if(Math.abs(a-1) > 1e-9) parts.push(fmtNum(a));
     parts.push(r1 >= 0 ? `(x - ${fmtNum(r1)})` : `(x + ${fmtNum(-r1)})`);
     if(Math.abs(r2-r1) > 1e-9) parts.push(r2 >= 0 ? `(x - ${fmtNum(r2)})` : `(x + ${fmtNum(-r2)})`);
     else parts.push(`^2`);
+    const s = [];
+    s.push(`**Разложение:** $${polyToStr(a,b,c)}$`);
+    s.push(`\n$D = ${fmtNum(D)}$, корни $x_1 = ${fmtNum(r1)}$, $x_2 = ${fmtNum(r2)}$`);
     s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${parts.join(' ')}$`);
     return { text: s.join('\n'), _isDialog:true };
   }
   return null;
 }
 
-function simplifyExpression(query){
-  const m = query.toLowerCase().match(/(?:упрости|упростить)[:]?\s*(.+)/i);
-  if(!m) return null;
-  let expr = m[1].replace(/[?!.]+$/,'').replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/x²/g,'x^2').replace(/x³/g,'x^3');
-  const bino = expr.match(/^\(x([+\-]\d+)\)\(x([+\-]\d+)\)$/);
-  if(bino){
-    const a = parseInt(bino[1]), b = parseInt(bino[2]);
-    const s = [];
-    s.push(`**Упрощение:** $${expr}$`);
-    s.push(`\n**Шаг 1.** Раскрываю скобки: $= x^2 + ${b}x + ${a}x + ${a*b}$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $x^2 ${a+b>=0?'+':'-'} ${Math.abs(a+b)}x ${a*b>=0?'+':'-'} ${Math.abs(a*b)}$`);
-    return { text: s.join('\n'), _isDialog:true };
-  }
-  return null;
-}
-
+/* ============ ИНТЕГРАЛЫ ============ */
 function solveIntegral(query){
   const q = query.trim();
   let m = q.match(/∫\s*_?\{?(-?\d+\.?\d*)\}?\^?\{?(-?\d+\.?\d*)\}?\s*(.+?)\s*dx/i);
-  if(!m) m = q.match(/(?:определ[ёе]нный\s+)?интеграл\s+от\s+(-?\d+\.?\d*)\s+до\s+(-?\d+\.?\d*)\s+(.+?)\s*dx/i);
   if(m) return definiteIntegral(parseFloat(m[1]), parseFloat(m[2]), m[3]);
   m = q.match(/∫\s*(.+?)\s*dx/i);
-  if(!m) m = q.match(/(?:неопредел[ёе]нный\s+)?интеграл\s+(?:от\s+)?(.+?)\s*dx/i);
   if(!m) return null;
   return indefiniteIntegral(m[1]);
 }
@@ -1082,8 +1174,7 @@ function indefiniteIntegral(expr){
   const s = [];
   s.push(`**Нахожу интеграл:**`);
   s.push(`$$\\int ${expr.replace(/\*/g,'')}\\,dx$$`);
-  s.push(`\n${ico('bulb')} **Правила:** $\\int x^n dx = \\dfrac{x^{n+1}}{n+1} + C$`);
-  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $\\int ${expr.replace(/\*/g,'')}\\,dx = ${pieces.join(' + ').replace(/\+ -/g,'- ')} + C$`);
+  s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${pieces.join(' + ').replace(/\+ -/g,'- ')} + C$`);
   return { text: s.join('\n'), _isDialog:true };
 }
 function definiteIntegral(a, b, expr){
@@ -1096,74 +1187,12 @@ function definiteIntegral(a, b, expr){
   for(let i = 1; i < n; i++) sum += f(a + i*h) * (i % 2 === 0 ? 2 : 4);
   const result = sum * h / 3;
   const s = [];
-  s.push(`**Определённый интеграл:**`);
-  s.push(`$$\\int_{${fmtNum(a)}}^{${fmtNum(b)}} ${expr} \\,dx$$`);
+  s.push(`**Определённый интеграл:** $\\int_{${fmtNum(a)}}^{${fmtNum(b)}} ${expr}\\,dx$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Значение:** $${fmtNum(Math.round(result * 1e6) / 1e6)}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
 
-function solveLimit(query){
-  const m = query.match(/lim\s*_?\{?x\s*[→>-]+\s*(-?\d+\.?\d*|[+-]?∞)\}?\s*\(?(.+?)\)?$/i);
-  if(!m) return null;
-  const to = m[1] === '∞' ? Infinity : m[1] === '-∞' ? -Infinity : parseFloat(m[1]);
-  const expr = m[2].trim().replace(/\s+/g,'').replace(/[хХ]/g,'x');
-  const s = [];
-  s.push(`**Предел:**`);
-  s.push(`$$\\lim_{x \\to ${m[1]}} ${expr}$$`);
-  if(/sin\(x\)\/x/i.test(expr) && to === 0){
-    s.push(`\n${ico('bulb')} Первый замечательный предел: $\\lim_{x\\to 0} \\dfrac{\\sin x}{x} = 1$`);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $1$`);
-    return { text: s.join('\n'), _isDialog:true };
-  }
-  const poly = parseAnyPoly(expr);
-  if(poly){
-    if(to === Infinity || to === -Infinity){
-      const maxPow = Math.max(...poly.terms.map(t => t.power));
-      const lead = poly.terms.find(t => t.power === maxPow).coef;
-      const sign = to > 0 ? (lead > 0 ? '+\\infty' : '-\\infty') : (maxPow % 2 === 0 ? (lead > 0 ? '+\\infty' : '-\\infty') : (lead > 0 ? '-\\infty' : '+\\infty'));
-      s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${sign}$`);
-      return { text: s.join('\n'), _isDialog:true };
-    }
-    const val = poly.terms.reduce((s,t) => s + t.coef * Math.pow(to, t.power), 0);
-    s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $${fmtNum(Math.round(val*1e6)/1e6)}$`);
-    return { text: s.join('\n'), _isDialog:true };
-  }
-  return null;
-}
-
-function columnArithmetic(query){
-  const m = query.trim().match(/^(\d+)\s*([×*])\s*(\d+)$/);
-  if(m){
-    const a = m[1], b = m[3];
-    if(a.length > 8 || b.length > 8) return null;
-    const A = [...a].reverse().map(Number), B = [...b].reverse().map(Number);
-    const res = new Array(A.length + B.length).fill(0);
-    for(let i=0;i<A.length;i++) for(let j=0;j<B.length;j++) res[i+j] += A[i]*B[j];
-    for(let i=0;i<res.length-1;i++){ res[i+1] += Math.floor(res[i]/10); res[i] %= 10; }
-    while(res.length > 1 && res[res.length-1] === 0) res.pop();
-    const product = res.reverse().join('');
-    const width = Math.max(a.length, b.length, product.length) + 2;
-    let out = '';
-    out += '  ' + ' '.repeat(width - a.length) + a + '\n';
-    out += '× ' + ' '.repeat(width - b.length) + b + '\n';
-    out += '  ' + '─'.repeat(width) + '\n';
-    for(let j=0;j<B.length;j++){ const partial = (parseInt(a) * B[j]).toString(); out += '  ' + (partial.padStart(width - j, ' ') + ' '.repeat(j)) + '\n'; }
-    if(B.length > 1){ out += '  ' + '─'.repeat(width) + '\n'; out += '  ' + product.padStart(width) + '\n'; }
-    return { text: `**Умножение столбиком:**\n\`\`\`\n${out}\`\`\`\n\n${ico('check-circle','inl-ok')} **Ответ:** $${a} \\times ${b} = ${product}$`, _isDialog:true };
-  }
-  const md = query.trim().match(/^(\d+)\s*[÷/]\s*(\d+)$/);
-  if(md){
-    const a = parseInt(md[1]), b = parseInt(md[2]);
-    if(b === 0) return { text: `На ноль делить нельзя ${ico('x-circle','inl-err')}`, _isDialog:true };
-    const q = Math.floor(a/b), r = a % b;
-    let out = `${md[1]} | ${md[2]}\n`;
-    out += '─'.repeat(md[1].length + md[2].length + 3) + '\n';
-    out += `    | ${q}` + (r ? ` (ост. ${r})` : '') + '\n';
-    return { text: `**Деление:**\n\`\`\`\n${out}\`\`\`\n\n${ico('check-circle','inl-ok')} **Ответ:** $${a} = ${b} \\cdot ${q}${r?` + ${r}`:''}$`, _isDialog:true };
-  }
-  return null;
-}
-
+/* ============ ПРОИЗВОДНЫЕ ============ */
 function parseGeneralPoly(expr){
   expr = expr.replace(/\s+/g,'').replace(/[хХ]/g,'x').replace(/X/g,'x').replace(/x²/g,'x^2').replace(/x³/g,'x^3').replace(/x⁴/g,'x^4');
   const terms = [];
@@ -1212,7 +1241,7 @@ function derivOfFn(t){
 }
 function solveDerivative(query){
   const q = query.toLowerCase();
-  if(!/производн|d\/dx|найди\s+производную/i.test(q)) return null;
+  if(!/производн|d\/dx/i.test(q)) return null;
   const m = query.match(/(?:d\/dx\s*\(?|производн\w*\s*(?:от\s*|функции\s*)?)(.+)/i);
   if(!m) return null;
   let expr = m[1].trim().replace(/[?!.]+$/,'').replace(/\s+/g,'').replace(/^f\(x\)=/i,'').replace(/^y=/i,'').replace(/^\(/,'').replace(/\)$/,'');
@@ -1228,11 +1257,11 @@ function solveDerivative(query){
   const s = [];
   s.push(`**Нахожу производную:**`);
   s.push(`$$f(x) = ${termsToStrGen(terms)}$$`);
-  s.push(`\n${ico('bulb')} **Правила:** $(x^n)' = n x^{n-1}$, $(\\sin x)' = \\cos x$, $(\\cos x)' = -\\sin x$`);
   s.push(`\n${ico('check-circle','inl-ok')} **Ответ:** $f'(x) = ${termsToStrGen(dTerms)}$`);
   return { text: s.join('\n'), _isDialog:true };
 }
 
+/* ============ НАЙДИ ОШИБКУ ============ */
 function findError(query){
   const m = query.toLowerCase().match(/(?:найди|найти)\s+ошибк\w*\s*:?\s*(.+)/i);
   if(!m) return null;
@@ -1249,30 +1278,30 @@ function findError(query){
   const s = [];
   s.push(`**Проверяю решение:**`);
   s.push(`$${eq}$$`);
-  s.push(`\nТвой ответ: $x = ${claimedVal}$`);
+  s.push(`Твой ответ: $x = ${claimedVal}$`);
   if(Math.abs(claimedVal - correctVal) < 1e-9) s.push(`\n${ico('check-circle','inl-ok')} **Верно!**`);
   else {
-    s.push(`\n${ico('x-circle','inl-err')} **Нашёл ошибку.** Правильный ответ: $x = ${correctVal}$`);
+    s.push(`\n${ico('x-circle','inl-err')} **Нашёл ошибку.** Правильный: $x = ${correctVal}$`);
     s.push(`\n${ico('bulb')} **Причина:** скорее всего, неверный перенос через знак равенства.`);
   }
   return { text: s.join('\n'), _isDialog:true };
 }
 
+/* ============ БАЗА ЗНАНИЙ ============ */
 function matchMathKnowledge(q){
   const x = q.trim().toLowerCase().replace(/[?!.]+$/,'').trim();
-  if(/что\s+такое\s+производн/i.test(x)) return { text: `**Производная** — скорость изменения функции.\n\n$f'(x_0) = \\lim_{h\\to 0} \\dfrac{f(x_0+h) - f(x_0)}{h}$`, _isDialog:true };
+  if(/что\s+такое\s+производн/i.test(x)) return { text: `**Производная** — скорость изменения функции.\n\n$$f'(x_0) = \\lim_{h\\to 0} \\dfrac{f(x_0+h) - f(x_0)}{h}$$`, _isDialog:true };
   if(/что\s+такое\s+интеграл/i.test(x)) return { text: `**Интеграл** — обратная операция к производной.\n\n$\\int f(x)\\,dx = F(x) + C$`, _isDialog:true };
-  if(/теорема\s+пифагор|пифагор/i.test(x)) return { text: `**Теорема Пифагора**\n\n$$a^2 + b^2 = c^2$$\n\nгде $c$ — гипотенуза.`, _isDialog:true };
-  if(/дискриминант/i.test(x) && !/реши/i.test(x)) return { text: `**Дискриминант** $ax^2+bx+c=0$:\n\n$$D = b^2 - 4ac$$\n\n$D>0$ — 2 корня, $D=0$ — 1, $D<0$ — нет.`, _isDialog:true };
-  if(/квадратн\w*\s+уравнени/i.test(x)) return { text: `**Квадратное уравнение** $ax^2+bx+c=0$.\n\n$$x = \\dfrac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$`, _isDialog:true };
+  if(/теорема\s+пифагор|пифагор/i.test(x)) return { text: `**Теорема Пифагора:** $a^2 + b^2 = c^2$, где $c$ — гипотенуза.`, _isDialog:true };
+  if(/дискриминант/i.test(x) && !/реши/i.test(x)) return { text: `**Дискриминант:** $D = b^2 - 4ac$\n\n$D>0$ — 2 корня, $D=0$ — 1, $D<0$ — нет.`, _isDialog:true };
+  if(/квадратн\w*\s+уравнени/i.test(x)) return { text: `**Квадратное уравнение:** $x = \\dfrac{-b \\pm \\sqrt{b^2-4ac}}{2a}$`, _isDialog:true };
   if(/теорема\s+виета/i.test(x)) return { text: `**Виета:** $x_1+x_2 = -b/a$, $x_1 x_2 = c/a$`, _isDialog:true };
-  if(/логарифм/i.test(x)) return { text: `**Логарифм** $\\log_a b = c \\iff a^c = b$\n\n• $\\log_a(xy) = \\log_a x + \\log_a y$`, _isDialog:true };
-  if(/процент/i.test(x)) return { text: `**Проценты:** $p\\%$ от $A$: $A \\cdot p/100$`, _isDialog:true };
-  if(/модул/i.test(x)) return { text: `**Модуль** $|a|$ — расстояние от $a$ до нуля.`, _isDialog:true };
-  if(/биссектрис/i.test(x) && /что|объясн/i.test(x)) return { text: `**Биссектриса** — луч из вершины угла, делящий угол пополам. Каждая точка биссектрисы равноудалена от сторон угла.`, _isDialog:true };
-  if(/отрезок/i.test(x) && /что|объясн/i.test(x)) return { text: `**Отрезок** — часть прямой, ограниченная двумя точками (концами).`, _isDialog:true };
-  if(/луч/i.test(x) && /что|объясн/i.test(x)) return { text: `**Луч** — часть прямой, имеющая начало (одну точку), но не имеющая конца.`, _isDialog:true };
-  if(/угол/i.test(x) && /что|объясн/i.test(x)) return { text: `**Угол** — фигура из двух лучей с общим началом (вершиной).\n\nВиды: острый (< 90°), прямой (= 90°), тупой (> 90°), развёрнутый (= 180°).`, _isDialog:true };
+  if(/логарифм/i.test(x) && /что|объясн/i.test(x)) return { text: `**Логарифм** $\\log_a b = c \\iff a^c = b$`, _isDialog:true };
+  if(/процент/i.test(x) && /что|объясн|формул/i.test(x)) return { text: `**Проценты:** $p\\%$ от $A$: $A \\cdot \\frac{p}{100}$`, _isDialog:true };
+  if(/биссектрис/i.test(x) && /что|объясн/i.test(x)) return { text: `**Биссектриса** — луч, делящий угол пополам.`, _isDialog:true };
+  if(/медиан/i.test(x) && /что|объясн/i.test(x)) return { text: `**Медиана** — отрезок от вершины к середине противолежащей стороны.`, _isDialog:true };
+  if(/высот/i.test(x) && /что|объясн/i.test(x)) return { text: `**Высота** — перпендикуляр из вершины к прямой, содержащей противолежащую сторону.`, _isDialog:true };
+  if(/окружност/i.test(x) && /что|объясн/i.test(x)) return { text: `**Окружность** — множество точек, равноудалённых от центра.\n\n**Формулы:** $C = 2\\pi r$, $S = \\pi r^2$`, _isDialog:true };
   return null;
 }
 
@@ -1280,41 +1309,41 @@ function matchDialog(q){
   const x = q.trim().toLowerCase().replace(/[?!.,]/g,'').trim();
   const name = state.user?.name?.split(' ')[0] || '';
   if(/^(привет|прив|здравствуй|хай|hi|hello|hey)/i.test(x)) return name ? `Привет, ${name}! Что решаем?` : 'Привет! Что решаем?';
-  if(/^как\s+(у\s+тебя\s+)?дела|как\s+ты/i.test(x)) return name ? `Всё отлично, ${name}!` : 'Всё отлично!';
-  if(/^(пока|до свидания|бай|bye)/i.test(x)) return 'До встречи!';
-  if(/спасибо|благодарю|thanks/i.test(x)) return 'Пожалуйста!';
+  if(/как\s+(у\s+тебя\s+)?дела/i.test(x)) return name ? `Всё отлично, ${name}!` : 'Всё отлично!';
+  if(/^(пока|до свидания|бай)/i.test(x)) return 'До встречи!';
+  if(/спасибо|благодарю/i.test(x)) return 'Пожалуйста!';
   if(/^(кто\s+ты|ты\s+кто|что\s+ты\s+такое)/i.test(x)) return `${ico('compass')} Я **Orbita AI** — репетитор по математике от **ORT**.`;
-  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Умею:**\n\n${ico('equals')} Уравнения\n${ico('sigma')} Неравенства и системы\n${ico('chart')} Производные, графики, чертежи\n${ico('sigma')} Интегралы\n${ico('target')} Тренажёр и экзамен\n${ico('image')} Распознавание фото\n\n📐 Геометрия:\n• _Начерти отрезок AB_\n• _Построй луч OA_\n• _Построй угол ABC = 60°_\n• _Построй прямой угол ABC_\n• _Проведи биссектрису угла ABC_\n• _Построй треугольник ABC_`;
-  if(/который\s+час|сколько\s+времени/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${ico('clock')}`;
+  if(/^(что\s+ты\s+умеешь|что\s+умеешь)/i.test(x)) return `${ico('grid')} **Умею:** уравнения, системы, неравенства, производные, интегралы, задачи по тексту, чертежи (отрезки, углы, окружности, треугольники), графики, тренажёр, экзамен.`;
+  if(/который\s+час/i.test(x)) return `Сейчас ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${ico('clock')}`;
   return null;
 }
 
+/* ============ ГЛАВНЫЙ ГЕНЕРАТОР ОТВЕТА ============ */
 async function generateAnswer(query){
   if(hasProfanity(query)) return { text: 'Извини, на такие вопросы я не отвечаю.', _isBlocked: true };
 
-  // ГЕОМЕТРИЯ
   const geo = parseGeometry(query);
   if(geo){
     const cleanQ = query.replace(/^(начерти|построй|нарисуй|изобрази|проведи|draw)\s+/i,'');
     return { text: `**Строю чертёж:**\n_${esc(cleanQ)}_\n\n${ico('chart')} Рисунок ниже.`, _geometry: geo, _isDialog: true };
   }
 
+  const word = solveWordProblem(query);
+  if(word) return word;
+
   const key = cacheKey(query);
   if(answerCache.has(key)){ await sleep(120); return answerCache.get(key); }
   let result = null;
 
   const gm = query.match(/(?:построй|построить|график)[\s:]*(?:график\s+)?(?:функции\s+)?(?:y\s*=\s*)(.+)/i);
-  if(gm){ const expr = gm[1].trim(); result = { text: `**Строю график:**\n$${expr}$\n\n${ico('chart')} График ниже.`, _graph: expr, _isDialog: true }; }
+  if(gm){ const expr = gm[1].trim(); result = { text: `**Строю график:** $${expr}$`, _graph: expr, _isDialog: true }; }
   if(!result) result = findError(query);
   if(!result) result = solveSystem(query);
   if(!result) result = solveInequality(query);
   if(!result) result = solveIntegral(query);
-  if(!result) result = solveLimit(query);
   if(!result) result = factorAdvanced(query);
-  if(!result) result = simplifyExpression(query);
   if(!result){ const eq = solveEquation(query); if(eq) result = eq; }
   if(!result){ const d = solveDerivative(query); if(d) result = d; }
-  if(!result) result = columnArithmetic(query);
   if(!result){
     const m = query.trim().toLowerCase().match(/^(-?\d+(?:[.,]\d+)?)\s*([+\-*/x×÷])\s*(-?\d+(?:[.,]\d+)?)$/);
     if(m){
@@ -1328,21 +1357,64 @@ async function generateAnswer(query){
   if(!result){ const fm = query.toLowerCase().match(/(\d+)\s*!|факториал\s+(\d+)/); if(fm){ const n = parseInt(fm[1] || fm[2]); if(n >= 0 && n <= 20){ let f = 1; for(let i = 2; i <= n; i++) f *= i; result = { text: `**$${n}! = ${f}$**`, _isDialog:true }; } } }
   if(!result) result = matchMathKnowledge(query);
   if(!result){ const d = matchDialog(query); if(d) result = { text: d, _isDialog: true }; }
-  if(!result){
-    result = { text: `${ico('hint')} Не могу разобрать «${query}».\n\n**Попробуй:**\n• _Реши 2x + 5 = 15_\n• _Система: {x+y=7, x-y=1}_\n• _x^2 - 5x + 6 < 0_\n• _Производная x^3 + 2x_\n• _∫ x^3 dx_\n• _Построй прямой угол ABC_\n• _Проведи биссектрису угла ABC_\n• _Построй y = x^2 - 4_`, _isDialog: true };
-  }
+  if(!result) result = { text: `${ico('hint')} Не могу разобрать «${query}».\n\n**Попробуй:**\n• _Реши 2x + 5 = 15_\n• _Система: {x+y=7, x-y=1}_\n• _Построй окружность радиуса 3_\n• _Построй прямой угол ABC_\n• _У Маши было 10 яблок, отдала 3, сколько осталось?_\n• _Построй y = x^2 - 4_`, _isDialog: true };
   if(result && !result._isBlocked) answerCache.set(key, result);
   return result;
 }
 
-/* ============== GEOMETRY ENGINE ============== */
+/* ============ УМНЫЙ РАЗБОР «НЕ ПОНЯЛ» ============ */
+function smarterExplanation(problem, level){
+  if(!problem) return null;
+  const { type, answer, roots, original } = problem;
+  const levels = ['simple', 'medium', 'student'];
+  const l = levels[level] || 'simple';
+
+  if(type === 'linear'){
+    if(l === 'simple') return `**Объясняю проще 👇**\n\nПредставь, что у тебя есть корзина с яблоками. Ты знаешь, что если к некоторому числу яблок прибавить ещё сколько-то, получится итог.\n\nВ уравнении $${original}$ — это как найти, сколько яблок было сначала.\n\n${ico('bulb')} **Правило на пальцах:**\nКогда число «переезжает» через знак $=$, у него **меняется знак** (плюс на минус, минус на плюс).\n\nПопробуем? Ответ: $x = ${fmtNum(answer)}$`;
+    if(l === 'medium') return `**Попробуем по-другому:**\n\nУравнение $${original}$. Слева от знака $=$ — то, что зависит от $x$. Справа — то, что не зависит.\n\n${ico('bulb')} **Алгоритм:**\n1. Всё, что с $x$ — влево\n2. Всё, что без $x$ — вправо (со сменой знака)\n3. Делим на коэффициент при $x$\n\nОтвет: $x = ${fmtNum(answer)}$`;
+    return `**Академическое объяснение:**\n\nПриводим к виду $ax = b$ путём переноса слагаемых с изменением знака. Затем $x = b/a$.\n\nДля $${original}$: $x = ${fmtNum(answer)}$`;
+  }
+  if(type === 'quadratic'){
+    if(l === 'simple') return `**Совсем просто:**\n\nКвадратное уравнение — это как горка. Она может пересекать землю в 2 точках, 1 точке или ни разу.\n\n${ico('bulb')} **Формула, которую надо знать:**\n$$D = b^2 - 4ac$$\n\nЕсли $D > 0$ — две точки (корня), если $D = 0$ — одна, если $D < 0$ — ни одной.\n\nУ нас ${roots?.length === 2 ? `два ответа: $x_1 = ${fmtNum(roots[0])}$, $x_2 = ${fmtNum(roots[1])}$` : roots?.length === 1 ? `ответ: $x = ${fmtNum(roots[0])}$` : 'корней нет'}`;
+    if(l === 'medium') return `**Через дискриминант:**\n\n$$x = \\dfrac{-b \\pm \\sqrt{D}}{2a}$$\n\n${roots?.length === 2 ? `$x_1 = ${fmtNum(roots[0])}$, $x_2 = ${fmtNum(roots[1])}$` : roots?.length === 1 ? `$x = ${fmtNum(roots[0])}$` : 'корней нет'}`;
+    return `**Разбор:**\n\nКвадратное уравнение $ax^2+bx+c=0$. Дискриминант $D = b^2-4ac$. Корни по формуле $x = \\frac{-b\\pm\\sqrt{D}}{2a}$.\n\n${roots?.length ? `Ответ: ${roots.map(r=>'$x='+fmtNum(r)+'$').join(', ')}` : 'Корней нет'}`;
+  }
+  return `**Попробуем ещё раз:**\n\nРазберём шаг за шагом. Напиши конкретный пример — покажу по-другому.`;
+}
+
+function handleNotUnderstood(msg){
+  const bubble = document.createElement('div');
+  bubble.className = 'msg ai';
+  const lvl = state.explainLevel || 0;
+  const text = smarterExplanation(msg._problem, lvl);
+  if(!text){ showToast('Нет что объяснять'); return; }
+  bubble.innerHTML = `<div class="avatar"><svg><use href="#i-brain"/></svg></div><div class="body"><div class="name"><span class="dot"></span>Разбор ${lvl === 0 ? '🌱 просто' : lvl === 1 ? '📘 средне' : '🎓 строго'}</div><div class="text">${renderText(text)}</div><div class="msg-actions" style="margin-top:10px"><button class="msg-act" id="nextLvlBtn">${ico('refresh')}<span>${lvl < 2 ? 'Ещё проще/строже' : 'Начать сначала'}</span></button></div></div>`;
+  chatEl.appendChild(bubble); scrollDown();
+  haptic('success');
+  bubble.querySelector('#nextLvlBtn').onclick = () => {
+    state.explainLevel = (state.explainLevel || 0) + 1;
+    if(state.explainLevel > 2) state.explainLevel = 0;
+    handleNotUnderstood(msg);
+  };
+  state.explainLevel = lvl;
+}
+
+/* ================================================================
+   ГЕОМЕТРИЯ — расширенная
+   ================================================================ */
 const GEOM_LAYOUTS = {
-  segment:  { names:['A','B'],         pos:[[80,180],[320,180]] },
-  ray:      { names:['O','A'],         pos:[[80,200],[320,100]] },
-  line:     { names:['A','B'],         pos:[[80,210],[320,90]] },
-  angle:    { names:['A','B','C'],     pos:[[320,90],[100,220],[360,230]] },
-  triangle: { names:['A','B','C'],     pos:[[200,60],[80,240],[320,240]] },
-  square:   { names:['A','B','C','D'], pos:[[90,80],[310,80],[310,230],[90,230]] }
+  segment:        { pos:[[80,180],[320,180]] },
+  ray:            { pos:[[80,200],[320,100]] },
+  line:           { pos:[[80,210],[320,90]] },
+  angle:          { pos:[[320,90],[100,220],[360,230]] },
+  triangle:       { pos:[[200,60],[80,240],[320,240]] },
+  rightTriangle:  { pos:[[80,60],[80,240],[320,240]] },
+  square:         { pos:[[90,80],[310,80],[310,230],[90,230]] },
+  rectangle:      { pos:[[70,90],[330,90],[330,230],[70,230]] },
+  parallelogram:  { pos:[[60,90],[300,90],[340,230],[100,230]] },
+  rhombus:        { pos:[[200,60],[320,165],[200,270],[80,165]] },
+  trapezoid:      { pos:[[110,90],[290,90],[350,230],[50,230]] },
+  circle:         { pos:[[200,165]] }
 };
 
 function parseGeometry(query){
@@ -1353,30 +1425,59 @@ function parseGeometry(query){
   const shapes = [];
   for(let part of parts){
     let m;
+    // Окружность
+    m = part.match(/окружност\w*\s+(?:с\s+)?(?:центром\s+)?([A-ZА-Я])(?:\s+радиус\w*\s+(\d+(?:\.\d+)?))?/i);
+    if(m){ shapes.push({type:'circle', center:m[1].toUpperCase(), radius:m[2]?parseFloat(m[2]):3}); continue; }
+    // Прямоугольный треугольник
+    m = part.match(/прямоугольн\w*\s+треугольник\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ shapes.push({type:'rightTriangle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase())}); continue; }
+    // Обычный треугольник
     m = part.match(/треугольник\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'triangle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase())}); continue; }
-
-    m = part.match(/квадрат\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
-    if(m){ shapes.push({type:'square', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
-
+    // Медиана/высота/биссектриса треугольника
+    m = part.match(/(медиан\w*|высот\w*|биссектрис\w*)\s+(?:из\s+)?([A-ZА-Я])\s+(?:в\s+)?треугольник\w*\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ const kind = m[1].toLowerCase().includes('медиан') ? 'median' : m[1].toLowerCase().includes('высот') ? 'altitude' : 'bisectorTri';
+      shapes.push({type:'triangle', pts:[m[3],m[4],m[5]].map(x=>x.toUpperCase()), extra:kind, extraFrom:m[2].toUpperCase()}); continue; }
+    // Прямоугольник
+    m = part.match(/прямоугольник\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])(?:\s+(\d+)\s*(?:на|x)\s*(\d+))?/i);
+    if(m){ shapes.push({type:'rectangle', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase()), sides:m[5]&&m[6]?[parseInt(m[5]),parseInt(m[6])]:null}); continue; }
+    // Параллелограмм
+    m = part.match(/параллелограмм\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ shapes.push({type:'parallelogram', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
+    // Ромб
+    m = part.match(/ромб\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ shapes.push({type:'rhombus', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
+    // Трапеция
+    m = part.match(/трапеци\w*\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ shapes.push({type:'trapezoid', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase())}); continue; }
+    // Квадрат
+    m = part.match(/квадрат\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])(?:\s+(\d+))?/i);
+    if(m){ shapes.push({type:'square', pts:[m[1],m[2],m[3],m[4]].map(x=>x.toUpperCase()), side:m[5]?parseInt(m[5]):null}); continue; }
+    // Биссектриса угла
     m = part.match(/биссектрис\w*\s+угла\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'angle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase()), degrees:60, bisector:true}); continue; }
-
+    // Прямой угол
     m = part.match(/прямой\s+угол\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'angle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase()), degrees:90, right:true}); continue; }
-
+    // Угол с градусами
     m = part.match(/угол\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])\s*=?\s*(\d+)\s*°?/i);
     if(m){ shapes.push({type:'angle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase()), degrees:parseInt(m[4])}); continue; }
-
+    // Угол без градусов
     m = part.match(/угол\s+([A-ZА-Я])\s*([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'angle', pts:[m[1],m[2],m[3]].map(x=>x.toUpperCase()), degrees:60}); continue; }
-
+    // Луч
     m = part.match(/луч\s+([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'ray', pts:[m[1],m[2]].map(x=>x.toUpperCase())}); continue; }
-
+    // Прямая
     m = part.match(/прямую?\s+([A-ZА-Я])\s*([A-ZА-Я])/i);
     if(m){ shapes.push({type:'line', pts:[m[1],m[2]].map(x=>x.toUpperCase())}); continue; }
-
+    // Перпендикуляр
+    m = part.match(/перпендикуляр\w*\s+(?:из\s+)?([A-ZА-Я])\s+(?:к|на)\s+([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ shapes.push({type:'perpendicular', from:m[1].toUpperCase(), to:[m[2],m[3]].map(x=>x.toUpperCase())}); continue; }
+    // Параллельные
+    m = part.match(/параллельн\w*\s+прям\w*\s+([A-ZА-Я])\s*([A-ZА-Я])/i);
+    if(m){ shapes.push({type:'parallel', pts:[m[1],m[2]].map(x=>x.toUpperCase())}); continue; }
+    // Отрезок
     m = part.match(/отрезок\s+([A-ZА-Я])\s*([A-ZА-Я])(?:\s+длиной\s+(\d+))?/i);
     if(m){ shapes.push({type:'segment', pts:[m[1],m[2]].map(x=>x.toUpperCase()), length:m[3]?parseInt(m[3]):null}); continue; }
   }
@@ -1387,183 +1488,93 @@ function drawGeometry(container, shapes){
   const W = 400, H = 300;
   const canvas = document.createElement('canvas');
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  canvas.style.width = '100%';
-  canvas.style.height = 'auto';
-  canvas.style.display = 'block';
-  canvas.style.background = '#f8fafc';
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = '100%'; canvas.style.height = 'auto'; canvas.style.display = 'block'; canvas.style.background = '#f8fafc';
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
   ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, W, H);
 
-  const ACCENT = '#2563eb';
-  const TEXT = '#0f172a';
-  const DASH = '#dc2626';
-  const ARC = '#f59e0b';
+  const ACCENT = '#2563eb', TEXT = '#0f172a', DASH = '#dc2626', ARC = '#f59e0b', PERP = '#16a34a';
 
+  // Собираем позиции
   const positions = {};
-  for(const s of shapes){
-    const layout = GEOM_LAYOUTS[s.type];
-    if(!layout) continue;
-    for(let i = 0; i < s.pts.length; i++){
-      const letter = s.pts[i];
-      if(!positions[letter]) positions[letter] = layout.pos[i];
+  // Обрабатываем каждый shape: для окружности — своя логика
+  shapes.forEach(s => {
+    if(s.type === 'circle'){
+      if(!positions[s.center]) positions[s.center] = [200, 165];
+      return;
     }
-  }
+    const layout = GEOM_LAYOUTS[s.type];
+    if(!layout) return;
+    s.pts.forEach((letter, i) => { if(!positions[letter] && layout.pos[i]) positions[letter] = layout.pos[i]; });
+  });
 
-  for(const s of shapes) drawShape(ctx, s, positions, ACCENT, DASH, ARC);
+  // Рисуем
+  shapes.forEach(s => drawShape(ctx, s, positions, {ACCENT, TEXT, DASH, ARC, PERP}));
 
+  // Метки букв
   for(const letter in positions){
     const [x, y] = positions[letter];
     const cx = 200, cy = 165;
     const vx = x - cx, vy = y - cy;
     const len = Math.hypot(vx, vy) || 1;
-    const dx = (vx / len) * 20, dy = (vy / len) * 20;
+    const dx = (vx / len) * 22, dy = (vy / len) * 22;
+    // Точка
     ctx.fillStyle = ACCENT;
     ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI*2); ctx.fill();
+    // Буква
     ctx.fillStyle = TEXT;
     ctx.font = 'bold 15px -apple-system,sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(letter, x + dx, y + dy);
   }
+
+  // Информационная панель внизу
+  const info = collectFormulas(shapes);
+  if(info){
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 11px -apple-system,sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    const lines = info.split('\n');
+    lines.forEach((line, i) => ctx.fillText(line, 10, H - 8 - (lines.length - i - 1) * 14));
+  }
 }
 
-function drawShape(ctx, s, positions, ACCENT, DASH, ARC){
-  const get = l => positions[l];
-  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-
-  if(s.type === 'segment'){
-    const [a, b] = s.pts.map(get);
-    ctx.strokeStyle = ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
-    if(s.length){
-      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
-      ctx.fillStyle = TEXT; ctx.font = '13px -apple-system,sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(s.length + ' см', mx, my - 12);
+function collectFormulas(shapes){
+  const lines = [];
+  shapes.forEach(s => {
+    if(s.type === 'circle'){
+      const r = s.radius;
+      const C = 2 * Math.PI * r, S = Math.PI * r * r;
+      lines.push(`Окружность r=${r}: C = 2πr ≈ ${C.toFixed(2)}, S = πr² ≈ ${S.toFixed(2)}`);
     }
-    return;
-  }
-
-  if(s.type === 'ray'){
-    const [o, a] = s.pts.map(get);
-    const dx = a[0] - o[0], dy = a[1] - o[1];
-    const len = Math.hypot(dx, dy);
-    const ux = dx/len, uy = dy/len;
-    const end = [o[0] + ux * 320, o[1] + uy * 320];
-    ctx.strokeStyle = ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.moveTo(o[0], o[1]); ctx.lineTo(end[0], end[1]); ctx.stroke();
-    const tipX = end[0], tipY = end[1];
-    const arrowLen = 12, arrowW = 8;
-    const left = [tipX - ux*arrowLen - uy*arrowW, tipY - uy*arrowLen + ux*arrowW];
-    const right = [tipX - ux*arrowLen + uy*arrowW, tipY - uy*arrowLen - ux*arrowW];
-    ctx.fillStyle = ACCENT;
-    ctx.beginPath(); ctx.moveTo(tipX, tipY);
-    ctx.lineTo(left[0], left[1]); ctx.lineTo(right[0], right[1]);
-    ctx.closePath(); ctx.fill();
-    return;
-  }
-
-  if(s.type === 'line'){
-    const [a, b] = s.pts.map(get);
-    const dx = b[0] - a[0], dy = b[1] - a[1];
-    const len = Math.hypot(dx, dy);
-    const ux = dx/len, uy = dy/len;
-    ctx.strokeStyle = ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(a[0] - ux*500, a[1] - uy*500);
-    ctx.lineTo(b[0] + ux*500, b[1] + uy*500);
-    ctx.stroke();
-    return;
-  }
-
-  if(s.type === 'triangle'){
-    const [a, b, c] = s.pts.map(get);
-    ctx.strokeStyle = ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
-    ctx.lineTo(c[0], c[1]); ctx.closePath();
-    ctx.stroke();
-    return;
-  }
-
-  if(s.type === 'square'){
-    const [a, b, c, d] = s.pts.map(get);
-    ctx.strokeStyle = ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
-    ctx.lineTo(c[0], c[1]); ctx.lineTo(d[0], d[1]);
-    ctx.closePath();
-    ctx.stroke();
-    return;
-  }
-
-  if(s.type === 'angle'){
-    const [a, b, c] = s.pts.map(get);
-    const extA = extendRay(b, a, 320);
-    const extC = extendRay(b, c, 320);
-    ctx.strokeStyle = ACCENT; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(extA[0], extA[1]); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(extC[0], extC[1]); ctx.stroke();
-
-    const angleA = Math.atan2(a[1] - b[1], a[0] - b[0]);
-    const angleC = Math.atan2(c[1] - b[1], c[0] - b[0]);
-    const radius = 40;
-
-    if(s.right){
-      const size = 20;
-      const u1 = [Math.cos(angleA), Math.sin(angleA)];
-      const u2 = [Math.cos(angleC), Math.sin(angleC)];
-      const p1 = [b[0] + u1[0]*size, b[1] + u1[1]*size];
-      const p2 = [b[0] + u2[0]*size, b[1] + u2[1]*size];
-      const p3 = [b[0] + u1[0]*size + u2[0]*size, b[1] + u1[1]*size + u2[1]*size];
-      ctx.strokeStyle = ARC; ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(p1[0], p1[1]);
-      ctx.lineTo(p3[0], p3[1]);
-      ctx.lineTo(p2[0], p2[1]);
-      ctx.stroke();
-      ctx.fillStyle = ARC; ctx.font = 'bold 12px -apple-system,sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('90°', b[0] + Math.cos((angleA+angleC)/2) * (radius + 12), b[1] + Math.sin((angleA+angleC)/2) * (radius + 12));
-    } else {
-      let startA = angleA, endC = angleC;
-      let diff = endC - startA;
-      while(diff > Math.PI) diff -= Math.PI*2;
-      while(diff < -Math.PI) diff += Math.PI*2;
-      if(diff < 0){ [startA, endC] = [endC, startA]; }
-      ctx.strokeStyle = ARC; ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(b[0], b[1], radius, startA, endC);
-      ctx.stroke();
-      const midAngle = (startA + endC) / 2;
-      const label = s.degrees ? s.degrees + '°' : '';
-      if(label){
-        ctx.fillStyle = ARC; ctx.font = 'bold 13px -apple-system,sans-serif';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(label, b[0] + Math.cos(midAngle) * (radius + 16), b[1] + Math.sin(midAngle) * (radius + 16));
+    if(s.type === 'square'){
+      if(s.side){
+        lines.push(`Квадрат ${s.side}×${s.side}: S = ${s.side*s.side}, P = ${4*s.side}`);
+      } else {
+        // Примерно из координат
+        const dx = GEOM_LAYOUTS.square.pos[1][0] - GEOM_LAYOUTS.square.pos[0][0];
+        const dy = GEOM_LAYOUTS.square.pos[1][1] - GEOM_LAYOUTS.square.pos[0][1];
+        const side = Math.hypot(dx, dy);
+        lines.push(`Квадрат: S = a², P = 4a`);
       }
     }
-
-    if(s.bisector){
-      const midAngle = Math.atan2(
-        Math.sin(angleA) + Math.sin(angleC),
-        Math.cos(angleA) + Math.cos(angleC)
-      );
-      const bisLen = 200;
-      const bx = b[0] + Math.cos(midAngle) * bisLen;
-      const by = b[1] + Math.sin(midAngle) * bisLen;
-      ctx.strokeStyle = DASH; ctx.lineWidth = 1.8;
-      ctx.setLineDash([6, 5]);
-      ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(bx, by); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = DASH; ctx.font = '11px -apple-system,sans-serif';
-      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-      ctx.fillText('биссектриса', bx - 90, by + 14);
+    if(s.type === 'rectangle'){
+      if(s.sides){
+        const [w, h] = s.sides;
+        lines.push(`Прямоугольник ${w}×${h}: S = ${w*h}, P = ${2*(w+h)}`);
+      } else {
+        lines.push(`Прямоугольник: S = a·b, P = 2(a+b)`);
+      }
     }
-  }
+    if(s.type === 'rhombus') lines.push(`Ромб: S = d₁·d₂/2, P = 4a`);
+    if(s.type === 'parallelogram') lines.push(`Параллелограмм: S = a·h`);
+    if(s.type === 'trapezoid') lines.push(`Трапеция: S = (a+b)/2 · h`);
+    if(s.type === 'triangle') lines.push(`Треугольник: S = ½·a·h`);
+    if(s.type === 'rightTriangle') lines.push(`Прямоугольный Δ: S = ½·a·b, c² = a² + b²`);
+  });
+  return lines.length ? lines.join('\n') : '';
 }
 
 function extendRay(from, through, len){
@@ -1572,7 +1583,199 @@ function extendRay(from, through, len){
   return [from[0] + (dx/d)*len, from[1] + (dy/d)*len];
 }
 
-/* ============== RENDER TEXT ============== */
+function drawShape(ctx, s, positions, C){
+  const get = l => positions[l];
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  if(s.type === 'segment'){
+    const [a, b] = s.pts.map(get);
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    if(s.length){
+      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+      ctx.fillStyle = C.TEXT; ctx.font = '13px -apple-system,sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(s.length + ' см', mx, my - 12);
+    }
+    return;
+  }
+  if(s.type === 'ray'){
+    const [o, a] = s.pts.map(get);
+    const dx = a[0] - o[0], dy = a[1] - o[1];
+    const len = Math.hypot(dx, dy), ux = dx/len, uy = dy/len;
+    const end = [o[0] + ux * 320, o[1] + uy * 320];
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(o[0], o[1]); ctx.lineTo(end[0], end[1]); ctx.stroke();
+    const arrowLen = 12, arrowW = 8;
+    const left = [end[0] - ux*arrowLen - uy*arrowW, end[1] - uy*arrowLen + ux*arrowW];
+    const right = [end[0] - ux*arrowLen + uy*arrowW, end[1] - uy*arrowLen - ux*arrowW];
+    ctx.fillStyle = C.ACCENT;
+    ctx.beginPath(); ctx.moveTo(end[0], end[1]); ctx.lineTo(left[0], left[1]); ctx.lineTo(right[0], right[1]); ctx.closePath(); ctx.fill();
+    return;
+  }
+  if(s.type === 'line'){
+    const [a, b] = s.pts.map(get);
+    const dx = b[0]-a[0], dy = b[1]-a[1], len = Math.hypot(dx,dy), ux = dx/len, uy = dy/len;
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(a[0]-ux*500, a[1]-uy*500); ctx.lineTo(b[0]+ux*500, b[1]+uy*500); ctx.stroke();
+    return;
+  }
+  if(s.type === 'triangle' || s.type === 'rightTriangle'){
+    const [a, b, c] = s.pts.map(get);
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.lineTo(c[0],c[1]); ctx.closePath(); ctx.stroke();
+    // Прямой угол в вершине a (для rightTriangle)
+    if(s.type === 'rightTriangle'){
+      const abx = b[0]-a[0], aby = b[1]-a[1], acx = c[0]-a[0], acy = c[1]-a[1];
+      const abLen = Math.hypot(abx, aby), acLen = Math.hypot(acx, acy);
+      const u1 = [abx/abLen, aby/abLen], u2 = [acx/acLen, acy/acLen];
+      const s1 = 16;
+      const p1 = [a[0]+u1[0]*s1, a[1]+u1[1]*s1];
+      const p2 = [a[0]+u2[0]*s1, a[1]+u2[1]*s1];
+      const p3 = [a[0]+u1[0]*s1+u2[0]*s1, a[1]+u1[1]*s1+u2[1]*s1];
+      ctx.strokeStyle = C.ARC; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p3[0],p3[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+    }
+    // Доп. линия
+    if(s.extra){
+      const from = s.extraFrom === s.pts[0] ? a : s.extraFrom === s.pts[1] ? b : c;
+      const opposite = [s.pts[0],s.pts[1],s.pts[2]].filter(p => p !== s.extraFrom);
+      const p1 = get(opposite[0]), p2 = get(opposite[1]);
+      let target, label = '', color = C.DASH;
+      if(s.extra === 'median'){ target = [(p1[0]+p2[0])/2, (p1[1]+p2[1])/2]; label = 'медиана'; }
+      else if(s.extra === 'altitude'){
+        // Перпендикуляр к прямой p1-p2 из точки from
+        const dx = p2[0]-p1[0], dy = p2[1]-p1[1];
+        const t = ((from[0]-p1[0])*dx + (from[1]-p1[1])*dy) / (dx*dx + dy*dy);
+        target = [p1[0]+t*dx, p1[1]+t*dy]; label = 'высота';
+      } else if(s.extra === 'bisectorTri'){
+        // Биссектриса из from к противолежащей стороне
+        const l1 = Math.hypot(p1[0]-from[0], p1[1]-from[1]);
+        const l2 = Math.hypot(p2[0]-from[0], p2[1]-from[1]);
+        const t = l1 / (l1 + l2);
+        target = [p1[0] + t*(p2[0]-p1[0]), p1[1] + t*(p2[1]-p1[1])];
+        label = 'биссектриса';
+      }
+      if(target){
+        ctx.strokeStyle = color; ctx.lineWidth = 1.8;
+        ctx.setLineDash([6,5]);
+        ctx.beginPath(); ctx.moveTo(from[0], from[1]); ctx.lineTo(target[0], target[1]); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = color; ctx.font = '11px -apple-system,sans-serif';
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        ctx.fillText(label, target[0] + 6, target[1] - 10);
+      }
+    }
+    return;
+  }
+  if(s.type === 'square' || s.type === 'rectangle' || s.type === 'parallelogram' || s.type === 'rhombus' || s.type === 'trapezoid'){
+    const pts = s.pts.map(get);
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+    for(let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.closePath(); ctx.stroke();
+    return;
+  }
+  if(s.type === 'circle'){
+    const [cx, cy] = get(s.center);
+    const rPix = 30 + (s.radius || 3) * 20;
+    // Окружность
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.arc(cx, cy, Math.min(rPix, 120), 0, Math.PI*2); ctx.stroke();
+    // Центр
+    ctx.fillStyle = C.ACCENT;
+    ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2); ctx.fill();
+    // Радиус (пунктир)
+    const rr = Math.min(rPix, 120);
+    ctx.strokeStyle = C.DASH; ctx.lineWidth = 1.5; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + rr * Math.cos(-Math.PI/4), cy + rr * Math.sin(-Math.PI/4)); ctx.stroke();
+    ctx.setLineDash([]);
+    // Подпись r
+    ctx.fillStyle = C.DASH; ctx.font = 'bold 12px -apple-system,sans-serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('r = ' + (s.radius || 3), cx + rr * Math.cos(-Math.PI/4)/2 + 6, cy + rr * Math.sin(-Math.PI/4)/2 - 6);
+    return;
+  }
+  if(s.type === 'angle'){
+    const [a, b, c] = s.pts.map(get);
+    const extA = extendRay(b, a, 320), extC = extendRay(b, c, 320);
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(extA[0], extA[1]); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(extC[0], extC[1]); ctx.stroke();
+    const angleA = Math.atan2(a[1]-b[1], a[0]-b[0]);
+    const angleC = Math.atan2(c[1]-b[1], c[0]-b[0]);
+    const radius = 40;
+    if(s.right){
+      const size = 20;
+      const u1 = [Math.cos(angleA), Math.sin(angleA)], u2 = [Math.cos(angleC), Math.sin(angleC)];
+      const p1 = [b[0]+u1[0]*size, b[1]+u1[1]*size];
+      const p2 = [b[0]+u2[0]*size, b[1]+u2[1]*size];
+      const p3 = [b[0]+u1[0]*size+u2[0]*size, b[1]+u1[1]*size+u2[1]*size];
+      ctx.strokeStyle = C.ARC; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p3[0],p3[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+      ctx.fillStyle = C.ARC; ctx.font = 'bold 12px -apple-system,sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('90°', b[0] + Math.cos((angleA+angleC)/2) * (radius + 12), b[1] + Math.sin((angleA+angleC)/2) * (radius + 12));
+    } else {
+      let startA = angleA, endC = angleC;
+      let diff = endC - startA;
+      while(diff > Math.PI) diff -= Math.PI*2;
+      while(diff < -Math.PI) diff += Math.PI*2;
+      if(diff < 0){ [startA, endC] = [endC, startA]; }
+      ctx.strokeStyle = C.ARC; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(b[0], b[1], radius, startA, endC); ctx.stroke();
+      const midAngle = (startA + endC) / 2;
+      if(s.degrees){
+        ctx.fillStyle = C.ARC; ctx.font = 'bold 13px -apple-system,sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(s.degrees + '°', b[0] + Math.cos(midAngle) * (radius + 16), b[1] + Math.sin(midAngle) * (radius + 16));
+      }
+    }
+    if(s.bisector){
+      const midAngle = Math.atan2(Math.sin(angleA)+Math.sin(angleC), Math.cos(angleA)+Math.cos(angleC));
+      const bx = b[0] + Math.cos(midAngle) * 200, by = b[1] + Math.sin(midAngle) * 200;
+      ctx.strokeStyle = C.DASH; ctx.lineWidth = 1.8; ctx.setLineDash([6,5]);
+      ctx.beginPath(); ctx.moveTo(b[0], b[1]); ctx.lineTo(bx, by); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = C.DASH; ctx.font = '11px -apple-system,sans-serif';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText('биссектриса', bx - 90, by + 14);
+    }
+    return;
+  }
+  if(s.type === 'perpendicular'){
+    // Рисуем AB горизонтально и перпендикуляр из точки
+    const [a, b] = s.to;
+    const pA = positions[a] || [80, 200], pB = positions[b] || [320, 200];
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(pA[0], pA[1]); ctx.lineTo(pB[0], pB[1]); ctx.stroke();
+    // Перпендикуляр из середины
+    const mx = (pA[0] + pB[0]) / 2;
+    const py = pA[1] - 100;
+    ctx.beginPath(); ctx.moveTo(mx, pA[1]); ctx.lineTo(mx, py); ctx.stroke();
+    // Маркер прямого угла
+    ctx.strokeStyle = C.PERP; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(mx - 12, pA[1]);
+    ctx.lineTo(mx - 12, pA[1] - 12);
+    ctx.lineTo(mx, pA[1] - 12);
+    ctx.stroke();
+    return;
+  }
+  if(s.type === 'parallel'){
+    const [a, b] = s.pts;
+    ctx.strokeStyle = C.ACCENT; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(40, 100); ctx.lineTo(360, 100); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(40, 200); ctx.lineTo(360, 200); ctx.stroke();
+    // Маркеры параллельности
+    ctx.strokeStyle = C.PERP; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(200, 92); ctx.lineTo(200, 108); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(200, 192); ctx.lineTo(200, 208); ctx.stroke();
+    return;
+  }
+}
+
+/* ================================================================
+   РЕНДЕР, ЧАТ, UI
+   ================================================================ */
 function renderText(raw){
   const mathBlocks = [];
   let text = String(raw);
@@ -1582,9 +1785,7 @@ function renderText(raw){
   text = text.replace(/<span class="ico[^"]*"><svg><use href="#i-([a-z0-9-]+)"\/><\/svg><\/span>/gi, (m, id) => {
     const idx = iconBlocks.length;
     let cls = '';
-    if(/inl-ok/.test(m)) cls = 'inl-ok';
-    else if(/inl-err/.test(m)) cls = 'inl-err';
-    else if(/inl-warn/.test(m)) cls = 'inl-warn';
+    if(/inl-ok/.test(m)) cls = 'inl-ok'; else if(/inl-err/.test(m)) cls = 'inl-err';
     iconBlocks.push({id, cls});
     return `\u0000I${idx}\u0000`;
   });
@@ -1605,11 +1806,10 @@ function renderText(raw){
   return h;
 }
 
-/* ============== INLINE GRAPH ============== */
 function parseFnExpr(expr){
   let js = expr.replace(/\^/g,'**').replace(/\bpi\b/gi,'Math.PI').replace(/\be\b/g,'Math.E').replace(/\s+/g,'');
   js = js.replace(/\bsin\(/g,'Math.sin(').replace(/\bcos\(/g,'Math.cos(').replace(/\btan\(/g,'Math.tan(');
-  js = js.replace(/\bln\(/g,'Math.log(').replace(/\bsqrt\(/g,'Math.sqrt(').replace(/\babs\(/g,'Math.abs(');
+  js = js.replace(/\bln\(/g,'Math.log(').replace(/\bsqrt\(/g,'Math.sqrt(');
   js = js.replace(/(\d)([x(])/g,'$1*$2').replace(/([x)])(\d)/g,'$1*$2').replace(/\)(\()/g,')*(').replace(/x(\()/g,'x*(').replace(/\)x/g,')*x');
   js = js.replace(/x([a-zA-Z])/g,'x*$1');
   return js;
@@ -1619,8 +1819,7 @@ function drawInlineGraph(container, funcs){
   const canvas = document.createElement('canvas');
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = W * dpr; canvas.height = H * dpr;
-  canvas.style.width = '100%'; canvas.style.height = 'auto';
-  canvas.style.display = 'block'; canvas.style.background = '#f8fafc';
+  canvas.style.width = '100%'; canvas.style.height = 'auto'; canvas.style.display = 'block'; canvas.style.background = '#f8fafc';
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
@@ -1661,7 +1860,7 @@ function drawInlineGraph(container, funcs){
   funcs.forEach((fn, idx) => { ctx.fillStyle = colors[idx % colors.length]; ctx.fillText(`y = ${fn}`, 8, 16 + idx * 14); });
 }
 
-/* ============== CHAT ============== */
+/* ============ ЧАТ ============ */
 function createChat(){
   const c = { id: uid(), title:'Новый чат', messages:[], pinned:false, createdAt:Date.now(), updatedAt:Date.now() };
   state.chats.unshift(c); state.activeId = c.id;
@@ -1689,12 +1888,9 @@ function autoTitle(chat, text){
   if(/начерти|построй|нарисуй|проведи/i.test(text)) prefix = '📐 ';
   else if(/реши/i.test(text)) prefix = '= ';
   else if(/производн/i.test(text)) prefix = "f' ";
-  else if(/разложи/i.test(text)) prefix = '( ) ';
-  else if(/упрости/i.test(text)) prefix = '~ ';
-  else if(/график/i.test(text)) prefix = 'f(x) ';
-  else if(/система/i.test(text)) prefix = '{ ';
   else if(/∫|интеграл/i.test(text)) prefix = '∫ ';
-  else if(/неравенств|[<>≤≥]/i.test(text)) prefix = '≷ ';
+  else if(/график/i.test(text)) prefix = 'f(x) ';
+  else if(/было|отдал|осталось|задач/i.test(text)) prefix = '📝 ';
   chat.title = (prefix + text.slice(0,40)).trim() || 'Новый чат';
 }
 
@@ -1736,16 +1932,16 @@ function renderEmptyState(){
   const hello = name ? `Привет, ${name}!` : 'Привет!';
   const chips = [
     {q:'Реши 2x + 5 = 15', i:'equals'},
-    {q:'Система: {x+y=7, x-y=1}', i:'function'},
+    {q:'Построй окружность радиуса 3', i:'chart'},
     {q:'Построй прямой угол ABC', i:'chart'},
-    {q:'Проведи биссектрису угла ABC', i:'sigma'},
-    {q:'Построй угол ABC = 60°', i:'chart'},
-    {q:'Начерти отрезок AB', i:'grid'},
+    {q:'Построй трапецию ABCD', i:'grid'},
+    {q:'У Маши было 10 яблок, отдала 3, сколько осталось?', i:'book-open'},
+    {q:'Медиана из A в треугольнике ABC', i:'chart'},
     {q:'Построй y = x^2 - 4', i:'chart'},
     {q:'Производная x^3 + 2x', i:'chart'}
   ];
   const html = chips.map(c => `<button class="empty-chip" data-q="${escA(c.q)}">${ico(c.i)}${esc(c.q)}</button>`).join('');
-  chatEl.innerHTML = `<div class="empty"><div class="empty-planet"><svg><use href="#i-planet-ring"/></svg></div><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Решаю уравнения, строю графики и чертежи, объясняю шаг за шагом.</div><div class="empty-chips">${html}</div></div>`;
+  chatEl.innerHTML = `<div class="empty"><div class="empty-planet"><svg><use href="#i-planet-ring"/></svg></div><div class="empty-title">${esc(hello)}</div><div class="empty-sub">Решаю задачи, строю чертежи и графики, объясняю по шагам.</div><div class="empty-chips">${html}</div></div>`;
   chatEl.querySelectorAll('.empty-chip').forEach(b => b.addEventListener('click', () => { haptic('light'); handleSend(b.getAttribute('data-q')); }));
 }
 
@@ -1783,15 +1979,13 @@ function appendAIMessage(msg, animate = true, idx = -1){
     typed.innerHTML = renderText(msg.text);
     if(!msg._blocked) appendActions(div.querySelector('.body'), msg, idx);
     if(msg._graph){
-      const gDiv = document.createElement('div');
-      gDiv.className = 'graph-inline';
+      const gDiv = document.createElement('div'); gDiv.className = 'graph-inline';
       typed.parentElement.appendChild(gDiv);
       const funcs = String(msg._graph).split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean);
       setTimeout(() => { try{ drawInlineGraph(gDiv, funcs); }catch(e){} }, 50);
     }
     if(msg._geometry){
-      const gDiv = document.createElement('div');
-      gDiv.className = 'graph-inline';
+      const gDiv = document.createElement('div'); gDiv.className = 'graph-inline';
       typed.parentElement.appendChild(gDiv);
       setTimeout(() => { try{ drawGeometry(gDiv, msg._geometry); }catch(e){} }, 50);
     }
@@ -1803,27 +1997,20 @@ function appendAIMessage(msg, animate = true, idx = -1){
 function appendActions(body, msg, idx){
   const acts = document.createElement('div'); acts.className = 'msg-actions';
   const sp = state.plus ? `<button class="msg-act speak-act">${ico('speak')}</button>` : '';
+  const nu = msg._problem ? `<button class="msg-act notunder-act">${ico('brain')}<span>Не понял</span></button>` : '';
   acts.innerHTML = sp
     + `<button class="msg-act copy-act">${ico('copy')}</button>`
-    + `<button class="msg-act latex-act">${ico('laTeX')}</button>`
+    + nu
     + `<button class="msg-act regen">${ico('refresh')}</button>`
     + `<button class="msg-act hint-act">${ico('hint')}<span>Подсказка</span></button>`;
   body.appendChild(acts);
   const sb = acts.querySelector('.speak-act');
   if(sb) sb.onclick = () => speak(msg.text, sb);
   acts.querySelector('.copy-act').onclick = () => copyText(msg.text);
-  acts.querySelector('.latex-act').onclick = () => copyLaTeX(msg.text);
   acts.querySelector('.regen').onclick = () => regenerate(idx);
   acts.querySelector('.hint-act').onclick = () => showHint(msg);
-}
-
-async function copyLaTeX(text){
-  const blocks = [];
-  text.replace(/\$\$([^$]+?)\$\$/g, (m, expr) => { blocks.push(expr.trim()); return m; });
-  text.replace(/\$([^$\n]+?)\$/g, (m, expr) => { blocks.push(expr.trim()); return m; });
-  const latex = blocks.length ? blocks.join('\n\n') : text;
-  await copyText(latex);
-  showToast('LaTeX скопирован');
+  const nuBtn = acts.querySelector('.notunder-act');
+  if(nuBtn) nuBtn.onclick = () => { state.explainLevel = 0; handleNotUnderstood(msg); };
 }
 
 function showHint(msg){
@@ -1832,7 +2019,8 @@ function showHint(msg){
     'квадратн': 'Найди дискриминант D = b² − 4ac.',
     'производн': 'Используй (xⁿ)′ = n·xⁿ⁻¹.',
     'интеграл': 'Используй ∫ xⁿ dx = xⁿ⁺¹/(n+1) + C.',
-    'биссектрис': 'Биссектриса делит угол пополам — отложи равные углы от сторон.'
+    'биссектрис': 'Биссектриса делит угол пополам.',
+    'окружност': 'C = 2πr, S = πr².'
   };
   const lower = msg.text.toLowerCase();
   let key = Object.keys(hints).find(k => lower.includes(k)) || 'линейн';
@@ -1865,8 +2053,7 @@ async function regenerate(idx){
 function showTyping(){
   let el = document.querySelector('.typing');
   if(!el){
-    el = document.createElement('div');
-    el.className = 'typing';
+    el = document.createElement('div'); el.className = 'typing';
     el.innerHTML = `<div class="avatar"><svg><use href="#i-planet"/></svg></div><div class="thinking"><div class="thinking-name"><span class="dot"></span>Orbita AI</div><div class="thinking-status"><span class="thinking-label">Думает</span><span class="thinking-dots"><i></i><i></i><i></i></span></div></div>`;
     chatEl.appendChild(el);
   }
@@ -1887,23 +2074,18 @@ async function typeText(el, text){
   cur.remove(); scrollDown();
 }
 
-/* ============== TTS ============== */
+/* ============ TTS ============ */
 let currentSpeakingBtn = null, speakTimeout = null, speechUnlocked = false, voicesCache = [];
 function refreshVoices(){ if(!window.speechSynthesis) return; try{ const v = speechSynthesis.getVoices(); if(v && v.length) voicesCache = v; }catch(e){} }
-if(window.speechSynthesis){ refreshVoices(); speechSynthesis.onvoiceschanged = refreshVoices; setTimeout(refreshVoices, 200); setTimeout(refreshVoices, 800); }
+if(window.speechSynthesis){ refreshVoices(); speechSynthesis.onvoiceschanged = refreshVoices; setTimeout(refreshVoices, 200); }
 function unlockSpeech(){ if(speechUnlocked || !window.speechSynthesis) return; try{ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); setTimeout(() => { try{ speechSynthesis.cancel(); }catch(e){} }, 50); speechUnlocked = true; }catch(e){} }
 ['touchstart','touchend','click','keydown'].forEach(evt => document.addEventListener(evt, unlockSpeech, { passive: true }));
 function pickRussianVoice(){ if(!voicesCache.length) refreshVoices(); const v = voicesCache; if(!v?.length) return null; return v.find(x=>/milena/i.test(x.name)) || v.find(x=>x.lang==='ru-RU') || null; }
 function cleanForSpeech(t){
-  return String(t)
-    .replace(/\$\$([^$]+)\$\$/g, '$1').replace(/\$([^$]+)\$/g, '$1')
-    .replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, '$1 делить на $2')
-    .replace(/x\^2/g, 'икс в квадрате').replace(/x\^(\d+)/g, 'икс в степени $1')
-    .replace(/\\sqrt\{([^}]+)\}/g, 'корень из $1').replace(/\\sqrt/g, 'корень из')
-    .replace(/\\pm/g, 'плюс-минус').replace(/\\cdot/g, 'умножить на')
-    .replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'')
-    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'')
-    .replace(/\s+/g,' ').trim();
+  return String(t).replace(/\$\$([^$]+)\$\$/g, '$1').replace(/\$([^$]+)\$/g, '$1')
+    .replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, '$1 делить на $2').replace(/x\^2/g, 'икс в квадрате')
+    .replace(/x\^(\d+)/g, 'икс в степени $1').replace(/\\sqrt\{([^}]+)\}/g, 'корень из $1')
+    .replace(/\*\*/g,'').replace(/\*/g,'').replace(/`/g,'').replace(/\s+/g,' ').trim();
 }
 function splitIntoChunks(t, max){ max = max || 180; const parts = t.split(/(?<=[.!?;:,])\s+/); const chunks = []; let buf=''; for(const p of parts){ if((buf+' '+p).length>max && buf){ chunks.push(buf.trim()); buf=p; } else { buf = buf?buf+' '+p:p; } } if(buf) chunks.push(buf.trim()); return chunks.length?chunks:[t]; }
 function stopSpeak(){ try{ speechSynthesis.cancel(); }catch(e){} if(speakTimeout){ clearTimeout(speakTimeout); speakTimeout=null; } if(currentSpeakingBtn){ currentSpeakingBtn.classList.remove('speaking'); currentSpeakingBtn=null; } }
@@ -1925,11 +2107,11 @@ function speak(text, btn){
   speakTimeout = setTimeout(next, 30);
 }
 
-/* ============== PLUS ============== */
+/* ============ PLUS / LIMIT ============ */
 function openPlusModal(){
   $('plusModalBg').classList.add('active');
   const b = $('plusActiveBanner'), r = $('plusRequestBtn');
-  if(state.plus){ b.style.display='flex'; $('plusActiveText').textContent='Подписка Plus активна'; r.textContent='Уже активно'; r.disabled=true; }
+  if(state.plus){ b.style.display='flex'; $('plusActiveText').textContent='Подписка активна'; r.textContent='Уже активно'; r.disabled=true; }
   else { b.style.display='none'; r.textContent='Запросить Plus'; r.disabled=false; }
   haptic('light');
 }
@@ -1942,12 +2124,10 @@ async function requestPlus(){
     showToast('Запрос отправлен'); haptic('success'); closePlusModal();
   }catch(e){ showToast('Ошибка отправки'); haptic('error'); }
 }
-
-/* ============== LIMIT ============== */
 function isLimitReached(chat){ return !state.plus && (chat?.messages?.length || 0) >= MSG_LIMIT_FREE; }
 function updateLimitUI(){ const chat = getActiveChat(); if(isLimitReached(chat)) $('limitBanner').classList.add('show'); else $('limitBanner').classList.remove('show'); updateSendBtn(); }
 
-/* ============== GATE ============== */
+/* ============ GATE ============ */
 let accessPollTimer = null, gateState = 'checking';
 async function checkAccess(){
   const uId = tg?.initDataUnsafe?.user?.id;
@@ -1974,11 +2154,10 @@ function showGate(s){
   btn.onclick = sendAccessRequest; btn.style.display='none'; btn.disabled=false;
   if(s==='need_request'){ title.textContent='Доступ ограничен'; sub.textContent='Отправь заявку — админ откроет доступ.'; btn.style.display='flex'; btnText.textContent='Отправить заявку'; }
   else if(s==='pending'){ title.textContent='Заявка отправлена'; sub.textContent='Ожидай одобрения.'; const wait = document.createElement('div'); wait.className='gate-waiting'; wait.innerHTML='<div class="spin"></div><span>Ожидание…</span>'; btn.parentNode.insertBefore(wait, btn); }
-  else if(s==='banned'){ title.textContent='Вы забанены'; sub.textContent='Администратор закрыл доступ.'; }
-  else if(s==='denied'){ title.textContent='Заявка отклонена'; sub.textContent='Свяжитесь с администратором.'; }
+  else if(s==='banned'){ title.textContent='Вы забанены'; sub.textContent='Доступ закрыт.'; }
+  else if(s==='denied'){ title.textContent='Заявка отклонена'; sub.textContent='Свяжитесь с админом.'; }
   else if(s==='no_telegram'){ title.textContent='Открой через Telegram'; sub.textContent='Mini App работает только внутри Telegram.'; }
   else if(s==='error'){ title.textContent='Сервер недоступен'; sub.textContent='Не удалось проверить доступ.'; btn.style.display='flex'; btnText.textContent='Повторить'; btn.onclick=()=>checkAccess(); }
-  else { title.textContent='Проверка доступа…'; sub.textContent='Пожалуйста, подождите.'; }
 }
 function hideGate(){ $('gate').classList.add('hidden'); lockScroll(false); }
 function startAccessPoll(){
@@ -2008,7 +2187,7 @@ async function sendAccessRequest(){
   }catch(e){ showToast('Не удалось отправить'); btn.disabled=false; $('gateActionText').textContent='Отправить заявку'; haptic('error'); }
 }
 
-/* ============== VOICE ============== */
+/* ============ VOICE ============ */
 let recognition = null, isRecording = false, voiceFinalText = '';
 let audioContext = null, analyser = null, mediaStream = null;
 let orbRaf = null, orbCtx = null, orbStartTime = 0, orbLevel = 0, orbDataArray = null;
@@ -2016,19 +2195,13 @@ let orbRaf = null, orbCtx = null, orbStartTime = 0, orbLevel = 0, orbDataArray =
 function normalizeVoiceText(t){
   if(!t) return '';
   let s = ' ' + String(t).toLowerCase() + ' ';
-  s = s
-    .replace(/\bикс\b/g, 'x').replace(/\bигрек\b/g, 'y').replace(/\bзет\b/g, 'z')
-    .replace(/\bравно\b/g, '=').replace(/\bплюс\b/g, '+').replace(/\bминус\b/g, '-')
-    .replace(/\bумножить на\b/g, '*').replace(/\bумножить\b/g, '*')
-    .replace(/\bразделить на\b/g, '/').replace(/\bделить на\b/g, '/')
-    .replace(/\bв квадрате\b/g, '^2').replace(/\bв кубе\b/g, '^3').replace(/\bв степени\b/g, '^')
-    .replace(/\bкорень из\b/g, 'sqrt').replace(/\bпи\b/g, 'π')
-    .replace(/\s+/g, ' ').trim();
+  s = s.replace(/\bикс\b/g, 'x').replace(/\bигрек\b/g, 'y').replace(/\bравно\b/g, '=').replace(/\bплюс\b/g, '+').replace(/\bминус\b/g, '-')
+    .replace(/\bумножить\b/g, '*').replace(/\bразделить на\b/g, '/').replace(/\bделить на\b/g, '/')
+    .replace(/\bв квадрате\b/g, '^2').replace(/\bв кубе\b/g, '^3').replace(/\s+/g, ' ').trim();
   s = s.replace(/\s*([=+\-*/^><])\s*/g, '$1');
   s = s.replace(/(\d)\s+([a-zA-Zа-яёπ])/g, '$1$2');
   return s;
 }
-
 function initOrbCanvas(){
   const orbCanvas = document.getElementById('voiceCanvas'); if(!orbCanvas) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2), size = 280;
@@ -2058,15 +2231,12 @@ function drawOrbFrame(){
   orbCtx.clearRect(0,0,w,h);
   const r = 88*(1 + orbLevel*0.12);
   const glow = orbCtx.createRadialGradient(cx,cy,r*0.6,cx,cy,r*1.9);
-  glow.addColorStop(0, `rgba(59,130,246,${0.35+orbLevel*0.35})`);
-  glow.addColorStop(0.5, `rgba(37,99,235,${0.15+orbLevel*0.15})`);
-  glow.addColorStop(1, 'rgba(37,99,235,0)');
+  glow.addColorStop(0, `rgba(59,130,246,${0.35+orbLevel*0.35})`); glow.addColorStop(1, 'rgba(37,99,235,0)');
   orbCtx.fillStyle = glow; orbCtx.beginPath(); orbCtx.arc(cx,cy,r*1.9,0,Math.PI*2); orbCtx.fill();
   for(let i=0;i<3;i++){
     const lr = r*(0.95+i*0.06), alpha=0.32-i*0.09;
     const g = orbCtx.createRadialGradient(cx,cy,0,cx,cy,lr*1.15);
-    g.addColorStop(0, `rgba(147,197,253,${alpha+0.15})`);
-    g.addColorStop(1, `rgba(37,99,235,${alpha*0.4})`);
+    g.addColorStop(0, `rgba(147,197,253,${alpha+0.15})`); g.addColorStop(1, `rgba(37,99,235,${alpha*0.4})`);
     drawBlob(orbCtx,cx,cy,lr,t,orbLevel,i*2.1,g);
   }
   const mg = orbCtx.createRadialGradient(cx - r*0.35, cy - r*0.4, r*0.1, cx, cy, r*1.05);
@@ -2116,16 +2286,9 @@ function initVoice(){
     if(finalNorm) voiceFinalText = finalNorm;
     const vt = $('voiceText'); const d = finalNorm || interimNorm;
     if(d){ vt.textContent = d; vt.classList.remove('empty'); }
-    else { vt.textContent = 'Продиктуй пример'; vt.classList.add('empty'); }
     $('voiceStatus').textContent = final ? 'Готово!' : 'Слушаю…';
   };
-  recognition.onerror = (e) => {
-    stopVoice();
-    if(e.error === 'not-allowed') showToast('Микрофон запрещён');
-    else if(e.error === 'no-speech') showToast('Ничего не услышал');
-    else showToast('Ошибка распознавания');
-    haptic('error');
-  };
+  recognition.onerror = (e) => { stopVoice(); showToast('Ошибка распознавания'); haptic('error'); };
   recognition.onend = () => {
     if(isRecording){
       isRecording = false;
@@ -2135,10 +2298,78 @@ function initVoice(){
     }
   };
 }
-function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.lang='ru-RU'; recognition.start(); }catch(e){ stopVoice(); } }
+function startVoice(){ if(!recognition){ showToast('Голосовой ввод не поддерживается'); return; } if(isRecording){ stopVoice(); return; } try{ recognition.start(); }catch(e){ stopVoice(); } }
 function stopVoice(){ isRecording=false; $('voiceOverlay').classList.remove('active'); stopAudioVisualization(); try{ recognition && recognition.stop(); }catch(e){} }
 
-/* ============== OCR ============== */
+/* ============ CAMERA ============ */
+async function openCamera(){
+  closePicker();
+  try {
+    const constraints = {
+      video: { facingMode: state.facing, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    };
+    state.stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const video = $('cameraVideo');
+    video.srcObject = state.stream;
+    state.cameraTrack = state.stream.getVideoTracks()[0];
+    state.flashOn = false;
+    $('cameraFlash').classList.remove('on');
+    $('cameraOverlay').classList.add('active');
+    haptic('light');
+  } catch(e){
+    showToast('Нет доступа к камере');
+    haptic('error');
+  }
+}
+function closeCamera(){
+  if(state.stream){ state.stream.getTracks().forEach(t => t.stop()); state.stream = null; }
+  state.cameraTrack = null;
+  state.flashOn = false;
+  $('cameraOverlay').classList.remove('active');
+}
+async function toggleFlash(){
+  if(!state.cameraTrack) return;
+  try {
+    const caps = state.cameraTrack.getCapabilities ? state.cameraTrack.getCapabilities() : {};
+    if(!caps.torch){ showToast('Фонарик не поддерживается'); haptic('warning'); return; }
+    state.flashOn = !state.flashOn;
+    await state.cameraTrack.applyConstraints({ advanced: [{ torch: state.flashOn }] });
+    $('cameraFlash').classList.toggle('on', state.flashOn);
+    haptic('light');
+  } catch(e){ showToast('Не удалось включить фонарик'); }
+}
+async function switchCamera(){
+  state.facing = state.facing === 'environment' ? 'user' : 'environment';
+  if(state.stream){ state.stream.getTracks().forEach(t => t.stop()); state.stream = null; }
+  try {
+    state.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: state.facing }, audio: false });
+    $('cameraVideo').srcObject = state.stream;
+    state.cameraTrack = state.stream.getVideoTracks()[0];
+    state.flashOn = false;
+    $('cameraFlash').classList.remove('on');
+    haptic('light');
+  } catch(e){ showToast('Не удалось переключить'); }
+}
+function takePhoto(){
+  const video = $('cameraVideo');
+  const canvas = $('cameraCanvas');
+  const w = video.videoWidth, h = video.videoHeight;
+  if(!w || !h){ showToast('Камера ещё не готова'); return; }
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  if(state.facing === 'user'){ ctx.translate(w, 0); ctx.scale(-1, 1); }
+  ctx.drawImage(video, 0, 0, w, h);
+  canvas.toBlob(async (blob) => {
+    if(!blob){ showToast('Ошибка фото'); return; }
+    haptic('success');
+    closeCamera();
+    const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+    await handleFileUpload(file);
+  }, 'image/jpeg', 0.92);
+}
+
+/* ============ FILE / OCR ============ */
 async function handleFileUpload(file){
   if(!file) return;
   if(file.size > 10*1024*1024){ showToast('Файл больше 10 МБ'); return; }
@@ -2152,13 +2383,13 @@ async function handleFileUpload(file){
   const chat = getActiveChat();
   const empty = chatEl.querySelector('.empty'); if(empty) empty.remove();
   const ts = Date.now();
-  const fm = { role:'user', text:`Распознанный текст:\n${text.slice(0,300)}`, attachment:{ kind:'image', name: file.name || 'фото', url }, ts };
+  const fm = { role:'user', text:`Распознанный текст:\n${text.slice(0,300)}`, attachment:{ kind:'image', name: 'фото', url }, ts };
   chat.messages.push(fm); chat.updatedAt = ts;
-  if(chat.title === 'Новый чат') chat.title = 'Фото · ' + (file.name || 'задача').slice(0,30);
+  if(chat.title === 'Новый чат') chat.title = 'Фото задачи';
   store.saveChats(state.chats);
   appendUserMessage(fm.text, true, chat.messages.length-1, fm.attachment);
   renderChatsList();
-  setTimeout(() => { handleSend(`Распознай и реши задачу с картинки:\n\n${text.slice(0,2000)}`); }, 400);
+  setTimeout(() => { handleSend(`Реши задачу:\n\n${text.slice(0,2000)}`); }, 400);
 }
 async function extractImageText(file){
   if(!window.Tesseract) throw new Error('tesseract missing');
@@ -2176,7 +2407,11 @@ async function extractImageText(file){
   }catch(e){ if(w){ try{ await w.terminate(); }catch(_){} } throw e; }
 }
 
-/* ============== RATE LIMIT ============== */
+/* ============ PICKER ============ */
+function openPicker(){ $('pickerOverlay').classList.add('active'); haptic('light'); }
+function closePicker(){ $('pickerOverlay').classList.remove('active'); }
+
+/* ============ RATE LIMIT ============ */
 const RATE_MS = 5000;
 function getLastReq(){ return parseInt(localStorage.getItem(KEYS.LAST_REQ)||'0',10); }
 function setLastReq(t){ localStorage.setItem(KEYS.LAST_REQ, String(t)); }
@@ -2196,7 +2431,7 @@ function startCooldown(){
   state.rateLimitTimer = setInterval(tick, 200);
 }
 
-/* ============== PROFANITY ============== */
+/* ============ PROFANITY ============ */
 function normalizeAggressive(raw){
   let s = String(raw).toLowerCase();
   try{ s = s.normalize('NFKD'); }catch(e){}
@@ -2217,7 +2452,7 @@ function hasProfanity(raw){
   return false;
 }
 
-/* ============== SEND ============== */
+/* ============ SEND ============ */
 function updateSendBtn(){
   if(state.busy){ sendBtn.disabled = false; sendBtn.classList.add('stop'); sendBtn.classList.remove('cooldown'); sendIconEl.innerHTML = '<svg><use href="#i-stop"/></svg>'; return; }
   if(state.rateLimit){ sendBtn.disabled = true; sendBtn.classList.remove('stop'); sendBtn.classList.add('cooldown'); return; }
@@ -2266,22 +2501,20 @@ async function handleSend(textOverride){
   try{ result = await generateAnswer(text); }
   catch(e){ hideTyping(); state.busy = false; updateSendBtn(); showToast('Ошибка'); return; }
   hideTyping();
-  const aiMsg = { role:'ai', text: result.text, ts: Date.now(), _blocked: result._isBlocked, _graph: result._graph, _geometry: result._geometry };
+  const aiMsg = { role:'ai', text: result.text, ts: Date.now(), _blocked: result._isBlocked, _graph: result._graph, _geometry: result._geometry, _problem: result._problem };
   chat.messages.push(aiMsg); chat.updatedAt = Date.now(); store.saveChats(state.chats);
   if(result._isBlocked){ appendAIMessage(aiMsg, false, chat.messages.length-1); state.busy = false; updateSendBtn(); updateLimitUI(); return; }
   const el = appendAIMessage(aiMsg, true, chat.messages.length-1);
   if(state.abortRequested){ el.innerHTML = renderText(result.text); const c = el.parentElement.querySelector('.cursor'); if(c) c.remove(); }
   else await typeText(el, result.text);
   if(result._graph){
-    const gDiv = document.createElement('div');
-    gDiv.className = 'graph-inline';
+    const gDiv = document.createElement('div'); gDiv.className = 'graph-inline';
     el.parentElement.appendChild(gDiv);
     const funcs = String(result._graph).split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean);
     setTimeout(() => { try{ drawInlineGraph(gDiv, funcs); }catch(e){} }, 100);
   }
   if(result._geometry){
-    const gDiv = document.createElement('div');
-    gDiv.className = 'graph-inline';
+    const gDiv = document.createElement('div'); gDiv.className = 'graph-inline';
     el.parentElement.appendChild(gDiv);
     setTimeout(() => { try{ drawGeometry(gDiv, result._geometry); }catch(e){} }, 100);
   }
@@ -2291,11 +2524,11 @@ async function handleSend(textOverride){
   updateSendBtn(); updateLimitUI(); haptic('success');
 }
 
-/* ============== DRAWER ============== */
+/* ============ DRAWER ============ */
 function openDrawer(){ $('drawer').classList.add('open'); $('drawerOverlay').classList.add('open'); lockScroll(true); showBackButton(closeDrawer); haptic('light'); }
 function closeDrawer(){ $('drawer').classList.remove('open'); $('drawerOverlay').classList.remove('open'); lockScroll(false); hideBackButton(); }
 
-/* ============== ACCOUNT ============== */
+/* ============ ACCOUNT ============ */
 function applyPlusUI(){
   const b = $('headerPlusBadge'), bm = $('brandMark'), av = $('drawerAvatar'), ap = $('avatarPreview');
   if(state.plus){ b.style.display = 'inline-flex'; bm.classList.add('plus'); av.classList.add('plus'); ap.classList.add('plus'); }
@@ -2312,8 +2545,11 @@ function openAccount(){
   $('accountNameInput').value = state.user.name || '';
   $('statChats').textContent = state.chats.length;
   $('statMsgs').textContent = state.chats.reduce((s,c)=>s+c.messages.length,0);
-  state.vibration = localStorage.getItem('o_vib') !== '0';
+  state.vibration = localStorage.getItem(KEYS.VIB) !== '0';
   $('vibToggle').checked = state.vibration;
+  state.fontSize = parseInt(localStorage.getItem(KEYS.FONT) || '15');
+  $('fontSlider').value = state.fontSize;
+  $('fontVal').textContent = state.fontSize;
   updateAvatarPreview(); applyPlusUI();
   $('accountOverlay').classList.add('open'); lockScroll(true);
   showBackButton(closeAccount); showMainBtn('Сохранить', saveProfile);
@@ -2360,7 +2596,7 @@ async function clearAllData(){
   closeAccount(); location.reload();
 }
 
-/* ============== TRAINER ============== */
+/* ============ TRAINER / EXAM / CHEAT / GRAPH ============ */
 let trainer = { topic:'linear', diff:1, task:null, answer:null, right:0, wrong:0, streak:0 };
 function genTrainerTask(){
   const {topic, diff} = trainer;
@@ -2369,7 +2605,7 @@ function genTrainerTask(){
   if(topic === 'quadratic'){ const r1 = R(-5*diff, 5*diff), r2 = R(-5*diff, 5*diff); const b = -(r1+r2), c = r1*r2; const eq = `x^2 ${b>=0?'+':'-'} ${Math.abs(b)}x ${c>=0?'+':'-'} ${Math.abs(c)} = 0`; const ans = r1 === r2 ? [r1] : [r1, r2].sort((a,b)=>a-b); return { text: eq, answer: ans }; }
   if(topic === 'arithmetic'){ const a = R(10*diff, 99*diff), b = R(2, 20*diff); const op = ['+','-','×'][R(0,2)]; let ans = op === '+' ? a+b : op === '-' ? a-b : a*b; return { text: `${a} ${op} ${b}`, answer: ans }; }
   if(topic === 'derivative'){ const a = R(1, 5), n = R(2, diff+2); return { text: `Найди производную: ${a}x^${n}`, answer: `${a*n}x^${n-1}`, _free: true }; }
-  if(topic === 'inequality'){ const a = R(1, 3*diff), b = R(-5, 10); const x0 = R(-5, 5); const sign = ['<','>','≤','≥'][R(0,3)]; const bAdj = a*x0 + b; return { text: `${a}x ${b>=0?'+':'-'} ${Math.abs(b)} ${sign} ${bAdj}`, answer: x0, _ineq: true }; }
+  if(topic === 'inequality'){ const a = R(1, 3*diff), b = R(-5, 10); const x0 = R(-5, 5); const sign = ['<','>','≤','≥'][R(0,3)]; const bAdj = a*x0 + b; return { text: `${a}x ${b>=0?'+':'-'} ${Math.abs(b)} ${sign} ${bAdj}`, answer: x0 }; }
   if(topic === 'integral'){ const n = R(1, 4); return { text: `∫ x^${n} dx`, answer: `x^${n+1}/${n+1}`, _free: true }; }
   return { text:'2x + 5 = 15', answer:5 };
 }
@@ -2384,32 +2620,30 @@ function checkTrainer(){
   if(Array.isArray(ans)){ const userNums = inp.split(/[;,\s]+/).map(s => parseFloat(s.replace(',','.'))).filter(n => !isNaN(n)); correct = userNums.length === ans.length && ans.every(a => userNums.some(u => Math.abs(u-a) < 1e-6)); }
   else if(typeof ans === 'number'){ const u = parseFloat(inp); correct = !isNaN(u) && Math.abs(u - ans) < 1e-6; }
   else correct = inp.replace(/\^/g,'').replace(/\*/g,'') === String(ans).replace(/\^/g,'').replace(/\*/g,'').toLowerCase();
-  if(correct){ trainer.right++; trainer.streak++; fb.className = 'trainer-feedback ok show'; fb.innerHTML = `${ico('check-circle')}<span>Верно! ${trainer.streak >= 3 ? `Серия ${trainer.streak}!` : ''}</span>`; haptic('success'); }
+  if(correct){ trainer.right++; trainer.streak++; fb.className = 'trainer-feedback ok show'; fb.innerHTML = `${ico('check-circle')}<span>Верно!${trainer.streak>=3?' Серия '+trainer.streak:''}</span>`; haptic('success'); }
   else { trainer.wrong++; trainer.streak = 0; fb.className = 'trainer-feedback bad show'; const ansStr = Array.isArray(ans) ? ans.join(', ') : ans; fb.innerHTML = `${ico('x-circle')}<span>Неверно. Ответ: <b>${ansStr}</b></span>`; haptic('error'); }
   $('tRight').textContent = trainer.right; $('tWrong').textContent = trainer.wrong; $('tStreak').textContent = trainer.streak;
 }
 function openTrainer(){ $('trainerOverlay').classList.add('active'); if(!trainer.task) startTrainerTask(); haptic('light'); }
 function closeTrainer(){ $('trainerOverlay').classList.remove('active'); }
 
-/* ============== EXAM ============== */
 let exam = { active:false, timeLeft:0, tasks:[], current:0, answers:[], timer:null };
 function startExam(){
   exam.active = true; exam.timeLeft = 20 * 60; exam.tasks = []; exam.current = 0; exam.answers = [];
-  const savedTopic = trainer.topic, savedDiff = trainer.diff;
+  const sT = trainer.topic, sD = trainer.diff;
   for(let i = 0; i < 5; i++){ trainer.topic = ['linear','quadratic','arithmetic','derivative','inequality'][i % 5]; trainer.diff = 2; exam.tasks.push(genTrainerTask()); }
-  trainer.topic = savedTopic; trainer.diff = savedDiff;
-  $('examStart').style.display = 'none'; $('examTimer').classList.remove('danger');
-  updateExamUI();
+  trainer.topic = sT; trainer.diff = sD;
+  $('examStart').style.display = 'none'; $('examTimer').classList.remove('danger'); updateExamUI();
   exam.timer = setInterval(() => { exam.timeLeft--; updateExamUI(); if(exam.timeLeft <= 0) finishExam(); }, 1000);
   haptic('success');
 }
 function updateExamUI(){
-  const m = Math.floor(exam.timeLeft / 60), s = exam.timeLeft % 60;
+  const m = Math.floor(exam.timeLeft/60), s = exam.timeLeft%60;
   $('examTimer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   if(exam.timeLeft <= 60) $('examTimer').classList.add('danger');
-  $('examProgress').textContent = `Задача ${exam.current + 1} из ${exam.tasks.length}`;
+  $('examProgress').textContent = `Задача ${exam.current+1} из ${exam.tasks.length}`;
   const t = exam.tasks[exam.current]; $('examQuestion').textContent = t ? t.text : '';
-  $('examInput').value = ''; $('examFeedback').classList.remove('show');
+  $('examInput').value = '';
 }
 function checkExamAnswer(){
   if(!exam.active) return;
@@ -2420,7 +2654,7 @@ function checkExamAnswer(){
   if(Array.isArray(ans)){ const nums = inp.split(/[;,\s]+/).map(s => parseFloat(s.replace(',','.'))).filter(n => !isNaN(n)); correct = nums.length === ans.length && ans.every(a => nums.some(u => Math.abs(u-a) < 1e-6)); }
   else if(typeof ans === 'number'){ const u = parseFloat(inp); correct = !isNaN(u) && Math.abs(u - ans) < 1e-6; }
   else correct = inp.replace(/\^/g,'').replace(/\*/g,'') === String(ans).replace(/\^/g,'').replace(/\*/g,'').toLowerCase();
-  exam.answers.push({ task: t, userAnswer: inp, correct });
+  exam.answers.push({ task: t, correct });
   exam.current++;
   if(exam.current >= exam.tasks.length) finishExam(); else updateExamUI();
 }
@@ -2429,10 +2663,10 @@ function finishExam(){
   if(exam.timer){ clearInterval(exam.timer); exam.timer = null; }
   const correct = exam.answers.filter(a => a.correct).length;
   const total = exam.tasks.length;
-  const pct = Math.round(correct / total * 100);
+  const pct = Math.round(correct/total*100);
   let grade = '2'; if(pct >= 90) grade = '5'; else if(pct >= 70) grade = '4'; else if(pct >= 50) grade = '3';
   $('examQuestion').innerHTML = `<div style="text-align:center">Результат: <b>${correct}/${total}</b> (${pct}%)<br><span style="font-size:32px">Оценка: ${grade}</span></div>`;
-  $('examProgress').textContent = 'Экзамен завершён';
+  $('examProgress').textContent = 'Завершён';
   $('examTimer').textContent = '00:00';
   $('examStart').style.display = 'flex';
   $('examStart').innerHTML = `${ico('refresh')}Ещё раз`;
@@ -2441,13 +2675,12 @@ function finishExam(){
 function openExam(){ $('examOverlay').classList.add('active'); haptic('light'); }
 function closeExam(){ if(exam.timer){ clearInterval(exam.timer); exam.timer = null; } exam.active = false; $('examOverlay').classList.remove('active'); }
 
-/* ============== CHEAT ============== */
 const CHEATS = {
-  trig: [{n:'Основное тождество', f:'sin²α + cos²α = 1'}, {n:'Тангенс', f:'tg α = sin α / cos α'}, {n:'Сумма углов', f:'sin(α+β) = sin α cos β + cos α sin β'}, {n:'Двойной угол', f:'sin 2α = 2 sin α cos α'}, {n:'30°', f:'sin 30° = 1/2, cos 30° = √3/2'}, {n:'45°', f:'sin 45° = cos 45° = √2/2'}, {n:'60°', f:'sin 60° = √3/2, cos 60° = 1/2'}],
-  der: [{n:'Степень', f:'(xⁿ)′ = n · xⁿ⁻¹'}, {n:'Синус', f:'(sin x)′ = cos x'}, {n:'Косинус', f:'(cos x)′ = −sin x'}, {n:'Экспонента', f:'(eˣ)′ = eˣ'}, {n:'Логарифм', f:'(ln x)′ = 1 / x'}, {n:'Произведение', f:'(uv)′ = u′v + uv′'}, {n:'Частное', f:'(u/v)′ = (u′v − uv′)/v²'}, {n:'Сложная', f:'(f(g(x)))′ = f′(g) · g′(x)'}],
-  int: [{n:'Степень', f:'∫ xⁿ dx = xⁿ⁺¹/(n+1) + C'}, {n:'Обратная', f:'∫ dx / x = ln|x| + C'}, {n:'Экспонента', f:'∫ eˣ dx = eˣ + C'}, {n:'Синус', f:'∫ sin x dx = −cos x + C'}, {n:'Косинус', f:'∫ cos x dx = sin x + C'}, {n:'Ньютон-Лейбниц', f:'∫ₐᵇ f dx = F(b) − F(a)'}],
-  log: [{n:'Определение', f:'logₐ b = c ⟺ aᶜ = b'}, {n:'Произведение', f:'logₐ(xy) = logₐx + logₐy'}, {n:'Степень', f:'logₐ(xⁿ) = n · logₐx'}, {n:'Переход', f:'logₐ b = log꜀ b / log꜀ a'}],
-  short: [{n:'Квадрат суммы', f:'(a+b)² = a² + 2ab + b²'}, {n:'Квадрат разности', f:'(a−b)² = a² − 2ab + b²'}, {n:'Разность квадратов', f:'a² − b² = (a−b)(a+b)'}, {n:'Куб суммы', f:'(a+b)³ = a³ + 3a²b + 3ab² + b³'}, {n:'Сумма кубов', f:'a³ + b³ = (a+b)(a² − ab + b²)'}]
+  trig: [{n:'Основное тождество', f:'sin²α + cos²α = 1'}, {n:'Тангенс', f:'tg α = sin α / cos α'}, {n:'Двойной угол', f:'sin 2α = 2 sin α cos α'}, {n:'30°', f:'sin 30° = 1/2'}, {n:'45°', f:'sin 45° = √2/2'}, {n:'60°', f:'sin 60° = √3/2'}],
+  der: [{n:'Степень', f:'(xⁿ)′ = n·xⁿ⁻¹'}, {n:'Синус', f:'(sin x)′ = cos x'}, {n:'Косинус', f:'(cos x)′ = −sin x'}, {n:'Экспонента', f:'(eˣ)′ = eˣ'}, {n:'Логарифм', f:'(ln x)′ = 1/x'}, {n:'Произведение', f:'(uv)′ = u′v + uv′'}, {n:'Частное', f:'(u/v)′ = (u′v − uv′)/v²'}],
+  int: [{n:'Степень', f:'∫ xⁿ dx = xⁿ⁺¹/(n+1) + C'}, {n:'Обратная', f:'∫ dx/x = ln|x| + C'}, {n:'Экспонента', f:'∫ eˣ dx = eˣ + C'}, {n:'Синус', f:'∫ sin x dx = −cos x + C'}, {n:'Косинус', f:'∫ cos x dx = sin x + C'}],
+  log: [{n:'Определение', f:'logₐ b = c ⟺ aᶜ = b'}, {n:'Произведение', f:'logₐ(xy) = logₐx + logₐy'}, {n:'Степень', f:'logₐ(xⁿ) = n·logₐx'}, {n:'Переход', f:'logₐ b = log꜀b / log꜀a'}],
+  geo: [{n:'Окружность', f:'C = 2πr, S = πr²'}, {n:'Треугольник', f:'S = ½·a·h'}, {n:'Прямоугольный Δ', f:'S = ½·a·b, c² = a² + b²'}, {n:'Квадрат', f:'S = a², P = 4a'}, {n:'Прямоугольник', f:'S = a·b, P = 2(a+b)'}, {n:'Параллелограмм', f:'S = a·h'}, {n:'Ромб', f:'S = d₁·d₂/2'}, {n:'Трапеция', f:'S = (a+b)/2 · h'}, {n:'Теорема Пифагора', f:'a² + b² = c²'}]
 };
 function renderCheat(tab){
   document.querySelectorAll('.cheat-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
@@ -2458,13 +2691,7 @@ function renderCheat(tab){
 function openCheat(){ $('cheatOverlay').classList.add('active'); renderCheat('trig'); haptic('light'); }
 function closeCheat(){ $('cheatOverlay').classList.remove('active'); }
 
-/* ============== GRAPH modal ============== */
-function openGraph(expr){
-  $('graphOverlay').classList.add('active');
-  if(expr) $('graphInput').value = 'y = ' + expr;
-  setTimeout(buildGraph, 100);
-  haptic('light');
-}
+function openGraph(expr){ $('graphOverlay').classList.add('active'); if(expr) $('graphInput').value = 'y = ' + expr; setTimeout(buildGraph, 100); }
 function closeGraph(){ $('graphOverlay').classList.remove('active'); }
 function buildGraph(){
   const raw = $('graphInput').value.trim();
@@ -2472,14 +2699,12 @@ function buildGraph(){
   const exprs = raw.split(/[;]/).map(s => s.trim().replace(/^y\s*=\s*/i,'')).filter(Boolean);
   const container = $('graphContainer');
   container.innerHTML = '';
-  const wrapper = document.createElement('div');
-  wrapper.style.width = '100%';
+  const wrapper = document.createElement('div'); wrapper.style.width = '100%';
   container.appendChild(wrapper);
-  try{ drawInlineGraph(wrapper, exprs); }
-  catch(e){ showToast('Ошибка построения'); }
+  try{ drawInlineGraph(wrapper, exprs); } catch(e){ showToast('Ошибка'); }
 }
 
-/* ============== ONBOARDING ============== */
+/* ============ ONBOARDING / INIT ============ */
 let onbSlide = 0;
 function onbGoTo(i){ onbSlide = Math.max(0, Math.min(2, i)); $('onbTrack').style.transform = `translateX(-${onbSlide*100}%)`; document.querySelectorAll('.onb-dot').forEach(d => d.classList.toggle('active', +d.dataset.slide === onbSlide)); }
 function finishOnboarding(){
@@ -2490,12 +2715,12 @@ function finishOnboarding(){
   $('onboarding').classList.remove('active');
   lockScroll(false); initApp();
 }
-
-/* ============== INIT ============== */
 function initApp(){
   state.chats = store.getChats();
   state.activeId = store.getActive();
-  state.vibration = localStorage.getItem('o_vib') !== '0';
+  state.vibration = localStorage.getItem(KEYS.VIB) !== '0';
+  state.fontSize = parseInt(localStorage.getItem(KEYS.FONT) || '15');
+  applyFontSize(state.fontSize);
   ensureChat();
   renderChatsList(); renderActiveChat(); updateSendBtn(); updateLimitUI();
   const elapsed = Date.now() - getLastReq();
@@ -2504,12 +2729,10 @@ function initApp(){
   updateAvatarUI(); applyPlusUI();
   initVoice();
 }
-
-/* ============== QUICK MENU ============== */
 function openQuickMenu(){ $('quickMenu').classList.add('open'); $('fsquaresBtn').classList.add('open'); $('qmBackdrop').classList.add('show'); haptic('light'); }
 function closeQuickMenu(){ $('quickMenu').classList.remove('open'); $('fsquaresBtn').classList.remove('open'); $('qmBackdrop').classList.remove('show'); }
 
-/* ============== EVENTS ============== */
+/* ============ EVENTS ============ */
 inputEl.addEventListener('input', () => { updateSendBtn(); localStorage.setItem(KEYS.DRAFT, inputEl.value); });
 inputEl.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
 sendBtn.addEventListener('click', () => {
@@ -2535,11 +2758,8 @@ $('accountOverlay').addEventListener('click', e => { if(e.target === $('accountO
 $('avatarPreview').addEventListener('click', () => $('avatarInput').click());
 $('avatarInput').addEventListener('change', e => { if(e.target.files[0]) handleAvatarUpload(e.target.files[0]); e.target.value = ''; });
 $('removeAvatarBtn').addEventListener('click', () => { if(state.user?.avatar){ state.user.avatar = null; store.saveUser(state.user); updateAvatarPreview(); } });
-$('vibToggle').addEventListener('change', e => {
-  state.vibration = e.target.checked;
-  localStorage.setItem('o_vib', state.vibration ? '1' : '0');
-  if(state.vibration) haptic('light');
-});
+$('vibToggle').addEventListener('change', e => { state.vibration = e.target.checked; localStorage.setItem(KEYS.VIB, state.vibration ? '1' : '0'); if(state.vibration) haptic('light'); });
+$('fontSlider').addEventListener('input', e => { const v = parseInt(e.target.value); $('fontVal').textContent = v; applyFontSize(v); });
 $('voiceCancel').addEventListener('click', stopVoice);
 $('onbSkip').addEventListener('click', finishOnboarding);
 document.querySelectorAll('.onb-slide').forEach((s, i) => s.addEventListener('click', () => { if(i < 2) onbGoTo(i+1); }));
@@ -2561,10 +2781,20 @@ $('quickMenu').addEventListener('click', e => {
   setTimeout(() => {
     if(action === 'voice'){ startVoice(); }
     else if(action === 'keyboard'){ $('mathKb').classList.toggle('show'); setTimeout(() => inputEl.focus(), 100); hapticSel(); }
-    else if(action === 'attach'){ $('fileInput').click(); }
+    else if(action === 'attach'){ openPicker(); }
   }, 200);
 });
-$('fileInput').addEventListener('change', e => { if(e.target.files[0]) handleFileUpload(e.target.files[0]); e.target.value = ''; });
+/* Picker */
+$('pickCamera').addEventListener('click', openCamera);
+$('pickGallery').addEventListener('click', () => { closePicker(); $('galleryInput').click(); });
+$('pickCancel').addEventListener('click', closePicker);
+$('pickerOverlay').addEventListener('click', e => { if(e.target === $('pickerOverlay')) closePicker(); });
+$('galleryInput').addEventListener('change', e => { if(e.target.files[0]) handleFileUpload(e.target.files[0]); e.target.value = ''; });
+/* Camera */
+$('cameraClose').addEventListener('click', closeCamera);
+$('cameraShutter').addEventListener('click', takePhoto);
+$('cameraFlash').addEventListener('click', toggleFlash);
+$('cameraSwitch').addEventListener('click', switchCamera);
 document.querySelectorAll('#mathKb button').forEach(b => b.addEventListener('click', () => {
   const ins = b.dataset.ins;
   const start = inputEl.selectionStart ?? inputEl.value.length;
@@ -2615,11 +2845,13 @@ function printNotebook(){
   setTimeout(() => { w.print(); }, 300);
 }
 
-/* ============== BOOT ============== */
+/* ============ BOOT ============ */
 window.addEventListener('load', async () => {
   const draft = localStorage.getItem(KEYS.DRAFT);
   if(draft){ inputEl.value = draft; updateSendBtn(); }
-  state.vibration = localStorage.getItem('o_vib') !== '0';
+  state.vibration = localStorage.getItem(KEYS.VIB) !== '0';
+  state.fontSize = parseInt(localStorage.getItem(KEYS.FONT) || '15');
+  applyFontSize(state.fontSize);
   await checkAccess();
   if(gateState === 'approved'){
     state.user = store.getUser() || { name: tg?.initDataUnsafe?.user?.first_name || 'User', joinedAt: Date.now() };
