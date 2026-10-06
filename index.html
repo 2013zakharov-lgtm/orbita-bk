@@ -81,11 +81,12 @@ input::placeholder{color:var(--text-dim2)}
 .section-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);font-weight:700;margin:12px 0 8px}
 .section-title:first-child{margin-top:0}
 
-.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px}
-.skin-opt{aspect-ratio:1;border-radius:11px;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;background:var(--card2);border:2px solid var(--border2);transition:.15s;overflow:hidden;touch-action:manipulation}
+.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px}
+.skin-opt{aspect-ratio:1;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--card2);border:2px solid var(--border2);transition:.15s;overflow:hidden;touch-action:manipulation;position:relative}
 .skin-opt:active{transform:scale(.94)}
-.skin-opt.sel{border-color:var(--accent);background:var(--accent-bg)}
+.skin-opt.sel{border-color:var(--accent);background:var(--accent-bg);box-shadow:0 0 0 2px var(--accent-bg)}
 .skin-opt img{width:100%;height:100%;object-fit:cover;border-radius:9px}
+.skin-opt.none::before{content:'';position:absolute;width:60%;height:2px;background:var(--text-dim2);transform:rotate(-45deg)}
 
 .frame-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}
 .frame-opt{aspect-ratio:1;border-radius:50%;cursor:pointer;background:var(--card2);border:2px solid var(--border2);position:relative;transition:.15s;padding:6px;touch-action:manipulation}
@@ -129,15 +130,13 @@ input::placeholder{color:var(--text-dim2)}
 .toggle.on{background:var(--accent)}
 .toggle.on::after{transform:translateX(20px)}
 
-/* ================= GAME SCREEN ================= */
 #gameScreen{background:var(--bg);touch-action:none}
 #game{position:absolute;inset:0;width:100%;height:100%;display:block;background:var(--bg);cursor:crosshair;touch-action:none}
 
 #hud{position:absolute;inset:0;pointer-events:none;z-index:3}
-
 .hud-box{position:absolute;background:var(--hud-bg);border:1.5px solid var(--border);border-radius:12px;padding:8px 12px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 
-#statBox{left:calc(var(--safe-left) + 8px);top:calc(var(--safe-top) + 8px);min-width:auto;padding:6px 10px}
+#statBox{left:calc(var(--safe-left) + 8px);top:calc(var(--safe-top) + 8px);padding:6px 10px}
 #statBox .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);font-weight:700}
 #statBox .val{font-size:20px;font-weight:800;color:var(--accent);line-height:1.1}
 #statBox .row2{display:flex;gap:10px;margin-top:4px;font-size:11px;color:var(--text-dim);flex-wrap:wrap}
@@ -148,11 +147,7 @@ input::placeholder{color:var(--text-dim2)}
 .hud-btn:active{transform:scale(.9)}
 .hud-btn.off{opacity:.5;color:var(--text-dim2)}
 
-#lbBox{
-  right:calc(var(--safe-right) + 8px);top:calc(var(--safe-top) + 56px);
-  width:180px;padding:8px 10px;
-  display:none;
-}
+#lbBox{right:calc(var(--safe-right) + 8px);top:calc(var(--safe-top) + 56px);width:180px;padding:8px 10px;display:none}
 #lbBox.on{display:block}
 #lbBox .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);font-weight:700;margin-bottom:6px}
 #lbRows{position:relative;height:200px}
@@ -173,7 +168,7 @@ input::placeholder{color:var(--text-dim2)}
 #myRankBox.on{display:flex}
 #myRankBox .r{font-weight:800;color:var(--accent);min-width:20px}
 
-#minimap{left:calc(var(--safe-left) + 8px);bottom:calc(var(--safe-bottom) + 8px);right:auto;top:auto;width:90px;height:90px;border-radius:10px;background:var(--hud-bg);border:1.5px solid var(--border);overflow:hidden;position:absolute}
+#minimap{left:calc(var(--safe-left) + 8px);bottom:calc(var(--safe-bottom) + 8px);width:90px;height:90px;border-radius:10px;background:var(--hud-bg);border:1.5px solid var(--border);overflow:hidden;position:absolute}
 #minimap canvas{width:100%;height:100%;display:block}
 
 #killfeed{left:calc(var(--safe-left) + 8px);top:calc(var(--safe-top) + 90px);display:flex;flex-direction:column;gap:3px;max-width:240px;pointer-events:none;z-index:4}
@@ -188,38 +183,57 @@ input::placeholder{color:var(--text-dim2)}
 #debug{position:absolute;left:calc(var(--safe-left) + 8px);bottom:calc(var(--safe-bottom) + 106px);background:var(--hud-bg2);border:1.5px solid var(--border);border-radius:8px;padding:3px 8px;font-size:9.5px;color:var(--text-dim2);font-family:monospace;z-index:4;pointer-events:none;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none}
 #debug.on{display:block}
 
-/* ========== ACTION BUTTONS (mobile) ========== */
+/* ============= ACTION BUTTONS ============= */
 #actionBtns{
   position:absolute;
   right:calc(var(--safe-right) + 10px);
   bottom:calc(var(--safe-bottom) + 10px);
-  display:flex;
-  flex-direction:row;
-  gap:8px;
-  align-items:flex-end;
-  pointer-events:auto;
-  z-index:5;
+  display:flex;flex-direction:row;gap:8px;align-items:flex-end;
+  pointer-events:auto;z-index:5;
 }
 .action-btn{
-  width:62px;height:62px;
-  border-radius:50%;
-  background:var(--hud-bg);
-  border:2px solid var(--border);
-  color:var(--accent);
-  font-size:24px;
+  width:62px;height:62px;border-radius:50%;
+  background:var(--hud-bg);border:2px solid var(--border);color:var(--accent);
+  font-size:22px;font-weight:800;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;font-family:inherit;
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   touch-action:manipulation;
-  transition:transform .08s,background .15s;
+  transition:transform .1s, background .15s, border-color .15s, color .15s;
   user-select:none;-webkit-user-select:none;
   box-shadow:0 2px 8px rgba(0,0,0,.08);
+  position:relative;
 }
 .action-btn:active{transform:scale(.88);background:var(--accent-bg)}
-.action-btn.big{width:76px;height:76px;font-size:30px;background:var(--accent);color:#fff;border-color:var(--accent-h)}
+.action-btn .lbl{
+  position:absolute;bottom:5px;left:0;right:0;
+  font-size:8px;font-weight:800;opacity:.75;
+  text-transform:uppercase;letter-spacing:.4px;
+  text-align:center;pointer-events:none;
+}
+.action-btn .ico{position:absolute;top:9px;left:0;right:0;text-align:center;font-size:20px;line-height:1;pointer-events:none}
+.action-btn.big{width:78px;height:78px;background:var(--accent);color:#fff;border-color:var(--accent-h)}
 .action-btn.big:active{background:var(--accent-h)}
-.action-btn .lbl{position:absolute;bottom:4px;font-size:8px;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.4px}
-.action-btn{position:relative}
+.action-btn.big .ico{font-size:26px;top:12px}
+.action-btn.big .lbl{font-size:9px;bottom:7px}
+
+/* Split hold state */
+.action-btn.holding{
+  background:var(--accent-bg);border-color:var(--accent);
+  transform:scale(.92);
+  box-shadow:0 0 0 0 var(--accent);
+  animation:holdPulse .3s linear forwards;
+}
+@keyframes holdPulse{
+  0%{box-shadow:0 0 0 0 rgba(74,139,255,.6)}
+  100%{box-shadow:0 0 0 18px rgba(74,139,255,0)}
+}
+.action-btn.merged{
+  background:var(--success)!important;color:#fff!important;
+  border-color:var(--success)!important;
+  transform:scale(1.15);
+  transition:all .1s;
+}
 
 #pauseOverlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:6;background:var(--hud-bg2);padding:20px}
 #pauseOverlay.on{display:flex}
@@ -245,10 +259,8 @@ input::placeholder{color:var(--text-dim2)}
 #promoOverlay.on{display:flex;animation:promoIn .2s ease}
 @keyframes promoIn{from{opacity:0}to{opacity:1}}
 #promoOverlay .card{width:min(380px,100%);padding:22px 20px;text-align:center}
-.promo-icon{font-size:46px;margin-bottom:4px;display:block}
 .promo-title{font-size:22px;font-weight:800;margin-bottom:4px;color:var(--accent)}
 .promo-sub{font-size:12.5px;color:var(--text-dim);margin-bottom:16px}
-.promo-input-wrap{position:relative;margin-bottom:10px}
 #promoInput{width:100%;padding:14px;border-radius:11px;background:var(--card2);border:1.5px solid var(--border);color:var(--text);font-size:14px;outline:none;font-family:monospace;transition:.2s;text-align:center;letter-spacing:.5px;-webkit-appearance:none}
 #promoInput:focus{border-color:var(--accent);background:var(--card)}
 #promoMsg{font-size:12.5px;text-align:center;margin-top:10px;min-height:18px;font-weight:600}
@@ -257,35 +269,27 @@ input::placeholder{color:var(--text-dim2)}
 .promo-actions{display:flex;gap:8px;margin-top:12px}
 .promo-actions .btn{flex:1}
 
-#tgUserBar{
-  display:flex;align-items:center;gap:8px;padding:8px 12px;
-  background:var(--card2);border:1.5px solid var(--border);
-  border-radius:11px;margin-bottom:12px;font-size:13px;
-}
+#tgUserBar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card2);border:1.5px solid var(--border);border-radius:11px;margin-bottom:12px;font-size:13px}
 #tgUserBar img{width:32px;height:32px;border-radius:50%;border:2px solid var(--border)}
 #tgUserBar .name{flex:1;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 @media (orientation: landscape) and (max-height: 500px){
-  #statBox{padding:4px 8px}
   #statBox .val{font-size:16px}
   #statBox .lbl{font-size:8.5px}
-  #statBox .row2{font-size:10px;margin-top:2px}
-  .action-btn{width:54px;height:54px;font-size:20px}
-  .action-btn.big{width:66px;height:66px;font-size:26px}
+  #statBox .row2{font-size:10px}
+  .action-btn{width:54px;height:54px;font-size:18px}
+  .action-btn .ico{font-size:16px;top:8px}
+  .action-btn.big{width:66px;height:66px}
+  .action-btn.big .ico{font-size:22px;top:10px}
   #minimap{width:70px;height:70px}
   .hud-btn{width:36px;height:36px;font-size:15px}
   #lbBox{width:160px}
   #lbRows{height:160px}
 }
-@media (min-width:769px){
-  .action-btn{opacity:.35}
-  .action-btn:hover{opacity:1}
-}
 </style>
 </head>
 <body>
 
-<!-- AUTH (skipped if Telegram user) -->
 <section id="authScreen" class="screen active">
   <div class="card">
     <div class="logo">AgarX</div>
@@ -299,7 +303,6 @@ input::placeholder{color:var(--text-dim2)}
   </div>
 </section>
 
-<!-- MENU -->
 <section id="menuScreen" class="screen">
   <div class="card">
     <div class="menu-row">
@@ -315,61 +318,61 @@ input::placeholder{color:var(--text-dim2)}
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-tab="play">▶ Игра</button>
-      <button class="tab" data-tab="skins">🎨 Скин</button>
-      <button class="tab" data-tab="titles">🏅 Звания</button>
-      <button class="tab" data-tab="settings">⚙ Настройки</button>
+      <button class="tab active" data-tab="play">Игра</button>
+      <button class="tab" data-tab="skins">Скин</button>
+      <button class="tab" data-tab="titles">Звания</button>
+      <button class="tab" data-tab="settings">Настройки</button>
     </div>
 
     <div class="tab-content active" id="tab-play">
-      <div class="section-title">🏆 Глобальный рейтинг</div>
+      <div class="section-title">Глобальный рейтинг</div>
       <div class="rank-list" id="globalRank"></div>
-      <button class="btn" id="btnPlay" style="margin-top:16px">▶ Начать игру</button>
+      <button class="btn" id="btnPlay" style="margin-top:16px">Начать игру</button>
     </div>
 
     <div class="tab-content" id="tab-skins">
-      <div class="section-title">🌈 GIF-шары</div>
+      <div class="section-title">Анимированные шары</div>
       <div class="skin-grid" id="gifSkins"></div>
-      <div class="section-title">🎨 Эмодзи скины</div>
+      <div class="section-title">Аватары</div>
       <div class="skin-grid" id="presetSkins"></div>
-      <div class="section-title">✨ Рамки</div>
+      <div class="section-title">Рамки</div>
       <div class="frame-grid" id="frameGrid"></div>
-      <div class="section-title">🖼 Свой скин</div>
+      <div class="section-title">Свой скин (URL / файл)</div>
       <div class="skin-row"><input type="text" id="skinUrl" placeholder="https://... или data:image..."></div>
       <div class="skin-row">
-        <label class="file-btn" style="flex:1">📁 Загрузить<input type="file" id="skinFile" accept="image/*" style="display:none"></label>
-        <button class="file-btn" id="skinClear">✕ Очистить</button>
+        <label class="file-btn" style="flex:1">Загрузить файл<input type="file" id="skinFile" accept="image/*" style="display:none"></label>
+        <button class="file-btn" id="skinClear">Очистить</button>
       </div>
       <div class="hint">GIF-аватарка анимируется на шарике во время игры.</div>
     </div>
 
     <div class="tab-content" id="tab-titles">
-      <div class="section-title">🏅 Выбери звание</div>
+      <div class="section-title">Выбери звание</div>
       <div class="title-grid" id="titleGrid"></div>
-      <div class="section-title">🌈 Цвет перелива</div>
+      <div class="section-title">Цвет перелива</div>
       <div class="color-row" id="colorRow"></div>
-      <div class="hint">Звание над ником. Разблокируется по рейтингу. <b>𝐀𝐠𝐚𝐫𝐗</b> — по промокоду.</div>
+      <div class="hint">Звание над ником. <b>𝐀𝐠𝐚𝐫𝐗</b> — по промокоду (~).</div>
     </div>
 
     <div class="tab-content" id="tab-settings">
       <div class="setting-row">
-        <div class="setting-info"><div class="setting-name">🌙 Тёмная тема</div><div class="setting-desc">Чёрный фон</div></div>
+        <div class="setting-info"><div class="setting-name">Тёмная тема</div><div class="setting-desc">Чёрный фон</div></div>
         <button class="toggle" data-setting="dark"></button>
       </div>
       <div class="setting-row">
-        <div class="setting-info"><div class="setting-name">🏷️ Звания</div><div class="setting-desc">Показывать {звание} над ником</div></div>
+        <div class="setting-info"><div class="setting-name">Звания</div><div class="setting-desc">Показывать {звание} над ником</div></div>
         <button class="toggle on" data-setting="showTitles"></button>
       </div>
       <div class="setting-row">
-        <div class="setting-info"><div class="setting-name">📳 Вибрация</div><div class="setting-desc">Отклик при убийствах и сплитах</div></div>
+        <div class="setting-info"><div class="setting-name">Вибрация</div><div class="setting-desc">Отклик при убийствах и сплитах</div></div>
         <button class="toggle on" data-setting="haptic"></button>
       </div>
       <div class="setting-row">
-        <div class="setting-info"><div class="setting-name">🔍 Отладка</div><div class="setting-desc">Показать счётчики</div></div>
+        <div class="setting-info"><div class="setting-name">Отладка</div><div class="setting-desc">Показать счётчики</div></div>
         <button class="toggle" data-setting="debug"></button>
       </div>
       <div class="setting-row">
-        <div class="setting-info"><div class="setting-name">🔊 Звуки</div><div class="setting-desc">Поедание, сплит, смерть</div></div>
+        <div class="setting-info"><div class="setting-name">Звуки</div><div class="setting-desc">Поедание, сплит, смерть</div></div>
         <button class="toggle on" data-setting="sound"></button>
       </div>
     </div>
@@ -378,7 +381,6 @@ input::placeholder{color:var(--text-dim2)}
   </div>
 </section>
 
-<!-- GAME -->
 <section id="gameScreen" class="screen">
   <canvas id="game"></canvas>
   <div id="hud">
@@ -393,13 +395,13 @@ input::placeholder{color:var(--text-dim2)}
     </div>
 
     <div id="lbToggle">
-      <button class="hud-btn" id="btnToggleTitles" title="Звания">🏷️</button>
-      <button class="hud-btn" id="btnShowLb" title="Рейтинг">🏆</button>
-      <button class="hud-btn" id="btnPause" title="Пауза">⏸</button>
+      <button class="hud-btn" id="btnToggleTitles" title="Звания">Ab</button>
+      <button class="hud-btn" id="btnShowLb" title="Рейтинг">LB</button>
+      <button class="hud-btn" id="btnPause" title="Пауза">II</button>
     </div>
 
     <div class="hud-box" id="lbBox">
-      <div class="lbl">🏆 Рейтинг</div>
+      <div class="lbl">Рейтинг</div>
       <div id="lbRows"></div>
     </div>
 
@@ -413,9 +415,18 @@ input::placeholder{color:var(--text-dim2)}
     <div id="killfeed"></div>
 
     <div id="actionBtns">
-      <button class="action-btn" id="btnEject" title="Выплюнуть">💨<span class="lbl">Eject</span></button>
-      <button class="action-btn" id="btnKick" title="Толчок">💥<span class="lbl">Kick</span></button>
-      <button class="action-btn big" id="btnSplit" title="Сплит">⚡<span class="lbl">Split</span></button>
+      <button class="action-btn" id="btnEject">
+        <span class="ico">↗</span>
+        <span class="lbl">Eject</span>
+      </button>
+      <button class="action-btn" id="btnKick">
+        <span class="ico">↯</span>
+        <span class="lbl">Kick</span>
+      </button>
+      <button class="action-btn big" id="btnSplit">
+        <span class="ico">✂</span>
+        <span class="lbl">Split</span>
+      </button>
     </div>
 
     <div id="debug">—</div>
@@ -423,7 +434,7 @@ input::placeholder{color:var(--text-dim2)}
 
   <div id="pauseOverlay">
     <div class="card">
-      <div class="pause-title">⏸ Пауза</div>
+      <div class="pause-title">Пауза</div>
       <button class="btn" id="btnResume">Продолжить</button>
       <button class="btn ghost" id="btnQuit" style="margin-top:10px">Выйти в меню</button>
     </div>
@@ -448,12 +459,9 @@ input::placeholder{color:var(--text-dim2)}
 
 <div id="promoOverlay">
   <div class="card">
-    <span class="promo-icon">🎁</span>
     <div class="promo-title">Промокод</div>
     <div class="promo-sub">Секретный код для бонусов</div>
-    <div class="promo-input-wrap">
-      <input type="text" id="promoInput" placeholder="*код..." autocomplete="off" spellcheck="false">
-    </div>
+    <div><input type="text" id="promoInput" placeholder="*код..." autocomplete="off" spellcheck="false"></div>
     <div class="promo-actions">
       <button class="btn ghost" id="promoClose">Отмена</button>
       <button class="btn" id="promoApply">Активировать</button>
@@ -464,22 +472,20 @@ input::placeholder{color:var(--text-dim2)}
 
 <script>
 /* ========================================================
-   TELEGRAM WEBAPP INIT
+   TELEGRAM WEBAPP
 ======================================================== */
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 let tgUser = null;
-
 function initTelegram(){
   if(!tg) return;
   try{
-    tg.ready();
-    tg.expand();
+    tg.ready(); tg.expand();
     if(tg.disableVerticalSwipes) tg.disableVerticalSwipes();
     if(tg.enableClosingConfirmation) tg.enableClosingConfirmation();
     if(tg.setHeaderColor) tg.setHeaderColor('#0a1020');
     if(tg.setBackgroundColor) tg.setBackgroundColor('#0a1020');
     tgUser = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-  }catch(e){ console.warn('TG init failed', e); }
+  }catch(e){}
 }
 initTelegram();
 
@@ -487,11 +493,8 @@ function haptic(type){
   if(!tg || !tg.HapticFeedback) return;
   if(!currentUser || currentUser.haptic === false) return;
   try{
-    if(type === 'light') tg.HapticFeedback.impactOccurred('light');
-    else if(type === 'medium') tg.HapticFeedback.impactOccurred('medium');
-    else if(type === 'heavy') tg.HapticFeedback.impactOccurred('heavy');
-    else if(type === 'success') tg.HapticFeedback.notificationOccurred('success');
-    else if(type === 'error') tg.HapticFeedback.notificationOccurred('error');
+    if(type === 'light' || type === 'medium' || type === 'heavy') tg.HapticFeedback.impactOccurred(type);
+    else if(type === 'success' || type === 'error' || type === 'warning') tg.HapticFeedback.notificationOccurred(type);
   }catch(e){}
 }
 
@@ -514,9 +517,7 @@ function fmtMass(m){
 }
 function fmtTime(s){
   s = Math.floor(s);
-  const m = Math.floor(s / 60);
-  const ss = s % 60;
-  return m + ':' + String(ss).padStart(2, '0');
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
 }
 
 /* ========================================================
@@ -526,21 +527,16 @@ const Sound = {
   ctx: null, enabled: true,
   init(){
     if(this.ctx) return;
-    try{ this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
-    catch(e){ this.enabled = false; }
+    try{ this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ this.enabled = false; }
   },
   play(freq, dur, type='sine', vol=0.05){
     if(!this.enabled || !this.ctx) return;
     try{
       const t = this.ctx.currentTime;
-      const o = this.ctx.createOscillator();
-      const g = this.ctx.createGain();
-      o.type = type;
-      o.frequency.setValueAtTime(freq, t);
-      g.gain.setValueAtTime(vol, t);
-      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      o.connect(g); g.connect(this.ctx.destination);
-      o.start(t); o.stop(t + dur);
+      const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t + dur);
     }catch(e){}
   },
   eat(){ this.play(500 + Math.random()*300, 0.06, 'sine', 0.03); },
@@ -548,10 +544,7 @@ const Sound = {
   merge(){ this.play(180, 0.2, 'sine', 0.04); },
   eject(){ this.play(200, 0.05, 'square', 0.025); },
   kick(){ this.play(140, 0.1, 'sawtooth', 0.04); },
-  death(){
-    this.play(160, 0.35, 'sawtooth', 0.07);
-    setTimeout(()=> this.play(90, 0.5, 'sawtooth', 0.07), 120);
-  },
+  death(){ this.play(160, 0.35, 'sawtooth', 0.07); setTimeout(()=> this.play(90, 0.5, 'sawtooth', 0.07), 120); },
   kill(){ this.play(660, 0.1, 'sine', 0.05); setTimeout(()=> this.play(880, 0.15, 'sine', 0.05), 80); },
   promo(){ this.play(660, 0.15, 'sine', 0.06); setTimeout(()=>this.play(880, 0.15, 'sine', 0.06), 120); setTimeout(()=>this.play(1100, 0.25, 'sine', 0.06), 240); }
 };
@@ -592,7 +585,7 @@ const PROMO_CODES = [
 ];
 
 /* ========================================================
-   ИЗОБРАЖЕНИЯ
+   ИЗОБРАЖЕНИЯ + GIF
 ======================================================== */
 const imgCache = new Map();
 const IMG_CACHE_MAX = 40;
@@ -606,11 +599,7 @@ function isSvgSrc(src){ return /^data:image\/svg\+xml/i.test(src); }
 function getImage(src, tryCross){
   if(!src) return null;
   const key = src + (tryCross ? '|c' : '');
-  if(imgCache.has(key)){
-    const c = imgCache.get(key);
-    imgCache.delete(key); imgCache.set(key, c);
-    return c;
-  }
+  if(imgCache.has(key)){ const c = imgCache.get(key); imgCache.delete(key); imgCache.set(key, c); return c; }
   const img = new Image();
   const animated = isGifSrc(src) || isSvgSrc(src);
   if(tryCross && /^https?:/i.test(src)) img.crossOrigin = 'anonymous';
@@ -625,44 +614,101 @@ function getImage(src, tryCross){
     }
   };
   img.src = src;
-  if(animated){
-    img.style.cssText = 'width:64px;height:64px;display:block;';
-    gifContainer.appendChild(img);
-  }
+  if(animated){ img.style.cssText = 'width:64px;height:64px;display:block;'; gifContainer.appendChild(img); }
   if(imgCache.size >= IMG_CACHE_MAX){
     const oldestKey = imgCache.keys().next().value;
     const oldImg = imgCache.get(oldestKey);
     if(oldImg && oldImg.parentNode) oldImg.parentNode.removeChild(oldImg);
     imgCache.delete(oldestKey);
   }
-  imgCache.set(key, img);
-  return img;
+  imgCache.set(key, img); return img;
 }
 function imgReady(img){ return img && img._ok && !img._err && img.naturalWidth > 0; }
 function drawableOf(img){ return img._fallback && img._fallback.complete ? img._fallback : img; }
 function preload(src){ if(src) getImage(src, true); }
 
-function emojiSvg(emoji){
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="52" font-size="82" text-anchor="middle" dominant-baseline="central">${emoji}</text></svg>`;
-  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-}
-
+/* ========================================================
+   SVG-АВАТАРЫ (замена эмодзи)
+======================================================== */
 function svgData(inner){
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${inner}</svg>`
   );
 }
+
+const AVATARS = [
+  // 1. Sun
+  svgData(`<circle cx="50" cy="50" r="50" fill="#ffcc33"/><circle cx="50" cy="50" r="26" fill="#fff8cc"/><g stroke="#ff9900" stroke-width="4" stroke-linecap="round"><line x1="50" y1="8" x2="50" y2="20"/><line x1="50" y1="80" x2="50" y2="92"/><line x1="8" y1="50" x2="20" y2="50"/><line x1="80" y1="50" x2="92" y2="50"/><line x1="20" y1="20" x2="28" y2="28"/><line x1="72" y1="72" x2="80" y2="80"/><line x1="80" y1="20" x2="72" y2="28"/><line x1="28" y1="72" x2="20" y2="80"/></g>`),
+  // 2. Moon
+  svgData(`<circle cx="50" cy="50" r="50" fill="#1a2a4a"/><path d="M62 20 A32 32 0 1 0 62 80 A26 26 0 1 1 62 20 Z" fill="#e6eefb"/><circle cx="38" cy="34" r="3" fill="#8a9fc7"/><circle cx="32" cy="52" r="2" fill="#8a9fc7"/><circle cx="42" cy="66" r="2.5" fill="#8a9fc7"/>`),
+  // 3. Star
+  svgData(`<circle cx="50" cy="50" r="50" fill="#2a3b5c"/><path d="M50 15 L60 40 L88 42 L66 60 L73 86 L50 71 L27 86 L34 60 L12 42 L40 40 Z" fill="#ffe94a" stroke="#c9a000" stroke-width="2" stroke-linejoin="round"/>`),
+  // 4. Heart
+  svgData(`<circle cx="50" cy="50" r="50" fill="#330a1a"/><path d="M50 78 C 20 58, 15 38, 30 28 C 42 20, 50 30, 50 30 C 50 30, 58 20, 70 28 C 85 38, 80 58, 50 78 Z" fill="#ff4a6b"/>`),
+  // 5. Diamond
+  svgData(`<circle cx="50" cy="50" r="50" fill="#0a2a4a"/><path d="M50 15 L82 42 L50 88 L18 42 Z" fill="#4ddbff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/><path d="M50 15 L66 42 L50 88 L34 42 Z" fill="#a8e8ff" opacity="0.7"/>`),
+  // 6. Flame
+  svgData(`<circle cx="50" cy="50" r="50" fill="#330a00"/><path d="M50 12 C 42 32, 22 42, 22 62 C 22 78, 35 88, 50 88 C 65 88, 78 78, 78 62 C 78 48, 68 40, 60 30 C 56 40, 52 42, 50 38 C 48 32, 52 22, 50 12 Z" fill="#ff6b1a"/><path d="M50 32 C 44 46, 34 52, 34 66 C 34 76, 42 84, 50 84 C 58 84, 66 76, 66 66 C 66 56, 60 48, 56 42 C 54 50, 50 48, 50 32 Z" fill="#ffdd44"/>`),
+  // 7. Lightning
+  svgData(`<circle cx="50" cy="50" r="50" fill="#1a1a3a"/><path d="M56 8 L30 52 L46 52 L40 92 L70 44 L54 44 Z" fill="#ffe000" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/>`),
+  // 8. Leaf
+  svgData(`<circle cx="50" cy="50" r="50" fill="#0a2a10"/><path d="M50 15 C 25 30, 20 60, 50 85 C 80 60, 75 30, 50 15 Z" fill="#4ddb7a"/><path d="M50 15 L50 85" stroke="#1a6e2e" stroke-width="3"/><path d="M50 35 L35 30 M50 45 L32 42 M50 55 L34 55 M50 65 L38 68 M50 35 L65 30 M50 45 L68 42 M50 55 L66 55 M50 65 L62 68" stroke="#1a6e2e" stroke-width="1.5" fill="none"/>`),
+  // 9. Water drop
+  svgData(`<circle cx="50" cy="50" r="50" fill="#0a1a3a"/><path d="M50 12 C 30 40, 22 58, 22 68 C 22 82, 34 92, 50 92 C 66 92, 78 82, 78 68 C 78 58, 70 40, 50 12 Z" fill="#4ddbff"/><ellipse cx="38" cy="66" rx="8" ry="12" fill="#ffffff" opacity="0.4"/>`),
+  // 10. Snowflake
+  svgData(`<circle cx="50" cy="50" r="50" fill="#1a3a5a"/><g stroke="#ffffff" stroke-width="3" stroke-linecap="round"><line x1="50" y1="15" x2="50" y2="85"/><line x1="15" y1="50" x2="85" y2="50"/><line x1="25" y1="25" x2="75" y2="75"/><line x1="75" y1="25" x2="25" y2="75"/><path d="M50 20 L44 30 M50 20 L56 30" fill="none"/><path d="M50 80 L44 70 M50 80 L56 70" fill="none"/><path d="M20 50 L30 44 M20 50 L30 56" fill="none"/><path d="M80 50 L70 44 M80 50 L70 56" fill="none"/></g>`),
+  // 11. Skull
+  svgData(`<circle cx="50" cy="50" r="50" fill="#0a0a0a"/><path d="M50 15 C 32 15, 22 28, 22 46 C 22 58, 28 66, 34 70 L34 82 C 34 86, 38 88, 42 86 L46 84 L54 84 L58 86 C 62 88, 66 86, 66 82 L66 70 C 72 66, 78 58, 78 46 C 78 28, 68 15, 50 15 Z" fill="#e6eefb"/><circle cx="38" cy="48" r="7" fill="#0a0a0a"/><circle cx="62" cy="48" r="7" fill="#0a0a0a"/><path d="M50 60 L46 68 L54 68 Z" fill="#0a0a0a"/>`),
+  // 12. Alien
+  svgData(`<circle cx="50" cy="50" r="50" fill="#0a1a0a"/><ellipse cx="50" cy="46" rx="30" ry="32" fill="#4ddb7a"/><ellipse cx="38" cy="44" rx="7" ry="10" fill="#0a0a0a"/><ellipse cx="62" cy="44" rx="7" ry="10" fill="#0a0a0a"/><circle cx="38" cy="44" r="2" fill="#ffffff"/><circle cx="62" cy="44" r="2" fill="#ffffff"/><path d="M44 66 Q50 70 56 66" stroke="#0a0a0a" stroke-width="2" fill="none"/>`),
+  // 13. Robot
+  svgData(`<circle cx="50" cy="50" r="50" fill="#2a2a3a"/><rect x="24" y="28" width="52" height="46" rx="6" fill="#8a9fc7"/><rect x="32" y="40" width="12" height="12" rx="2" fill="#4ddbff"/><rect x="56" y="40" width="12" height="12" rx="2" fill="#4ddbff"/><rect x="36" y="60" width="28" height="4" fill="#1a1a2a"/><line x1="50" y1="20" x2="50" y2="28" stroke="#8a9fc7" stroke-width="3"/><circle cx="50" cy="18" r="4" fill="#ff4a6b"/>`),
+  // 14. Ninja
+  svgData(`<circle cx="50" cy="50" r="50" fill="#1a1a2a"/><ellipse cx="50" cy="48" rx="30" ry="32" fill="#0a0a0a"/><rect x="20" y="42" width="60" height="12" fill="#ff3b3b"/><circle cx="38" cy="48" r="3" fill="#ffffff"/><circle cx="62" cy="48" r="3" fill="#ffffff"/>`),
+  // 15. Ghost
+  svgData(`<circle cx="50" cy="50" r="50" fill="#1a2a3a"/><path d="M28 30 C 28 18, 72 18, 72 30 L 72 74 C 72 78, 68 80, 65 78 L 58 72 L 50 78 L 42 72 L 35 78 C 32 80, 28 78, 28 74 Z" fill="#e6eefb"/><circle cx="42" cy="44" r="3" fill="#0a0a0a"/><circle cx="58" cy="44" r="3" fill="#0a0a0a"/><ellipse cx="50" cy="56" rx="4" ry="5" fill="#0a0a0a"/>`),
+  // 16. Devil
+  svgData(`<circle cx="50" cy="50" r="50" fill="#330000"/><path d="M22 26 L 26 44 L 40 34 Z" fill="#8a0000"/><path d="M78 26 L 74 44 L 60 34 Z" fill="#8a0000"/><circle cx="50" cy="52" r="28" fill="#ff2a3b"/><path d="M38 48 L46 52 L38 56 Z" fill="#0a0a0a"/><path d="M62 48 L54 52 L62 56 Z" fill="#0a0a0a"/><path d="M40 68 Q50 62 60 68" stroke="#0a0a0a" stroke-width="2" fill="none"/>`),
+  // 17. Crown
+  svgData(`<circle cx="50" cy="50" r="50" fill="#1a1a3a"/><path d="M22 68 L22 36 L34 48 L50 26 L66 48 L78 36 L78 68 Z" fill="#ffe94a" stroke="#c9a000" stroke-width="2" stroke-linejoin="round"/><rect x="22" y="68" width="56" height="8" fill="#ffe94a" stroke="#c9a000" stroke-width="2"/><circle cx="34" cy="46" r="3" fill="#ff4a6b"/><circle cx="50" cy="40" r="3" fill="#4ddbff"/><circle cx="66" cy="46" r="3" fill="#4ddbff"/>`),
+  // 18. Eye
+  svgData(`<circle cx="50" cy="50" r="50" fill="#1a0a2a"/><path d="M14 50 Q50 18 86 50 Q50 82 14 50 Z" fill="#e6eefb"/><circle cx="50" cy="50" r="16" fill="#8a2be2"/><circle cx="50" cy="50" r="7" fill="#0a0a0a"/><circle cx="46" cy="46" r="3" fill="#ffffff"/>`),
+  // 19. Yin-yang
+  svgData(`<circle cx="50" cy="50" r="50" fill="#e6eefb"/><path d="M50 0 A50 50 0 0 1 50 100 A25 25 0 0 1 50 50 A25 25 0 0 0 50 0 Z" fill="#0a0a0a"/><circle cx="50" cy="25" r="5" fill="#0a0a0a"/><circle cx="50" cy="75" r="5" fill="#e6eefb"/>`),
+  // 20. Gear
+  svgData(`<circle cx="50" cy="50" r="50" fill="#2a2a3a"/><g fill="#8a9fc7"><rect x="44" y="8" width="12" height="16"/><rect x="44" y="76" width="12" height="16"/><rect x="8" y="44" width="16" height="12"/><rect x="76" y="44" width="16" height="12"/><rect x="16" y="18" width="12" height="14" transform="rotate(45 22 25)"/><rect x="72" y="18" width="12" height="14" transform="rotate(-45 78 25)"/><rect x="16" y="68" width="12" height="14" transform="rotate(-45 22 75)"/><rect x="72" y="68" width="12" height="14" transform="rotate(45 78 75)"/></g><circle cx="50" cy="50" r="22" fill="#8a9fc7"/><circle cx="50" cy="50" r="10" fill="#2a2a3a"/>`),
+  // 21. Paw
+  svgData(`<circle cx="50" cy="50" r="50" fill="#3a1a10"/><ellipse cx="50" cy="66" rx="22" ry="18" fill="#ff8c3b"/><circle cx="26" cy="42" r="9" fill="#ff8c3b"/><circle cx="42" cy="30" r="9" fill="#ff8c3b"/><circle cx="58" cy="30" r="9" fill="#ff8c3b"/><circle cx="74" cy="42" r="9" fill="#ff8c3b"/>`),
+  // 22. Dragon
+  svgData(`<circle cx="50" cy="50" r="50" fill="#0a2a10"/><path d="M50 15 C 30 15, 22 32, 26 50 L 18 46 L 24 60 C 30 78, 42 88, 50 88 C 58 88, 70 78, 76 60 L 82 46 L 74 50 C 78 32, 70 15, 50 15 Z" fill="#2ea854"/><path d="M32 46 L44 50 L32 54 Z" fill="#ffe94a"/><path d="M68 46 L56 50 L68 54 Z" fill="#ffe94a"/><path d="M40 66 L46 72 L50 66 L54 72 L60 66" stroke="#ffe94a" stroke-width="2" fill="none"/>`),
+  // 23. Rocket
+  svgData(`<circle cx="50" cy="50" r="50" fill="#0a1a3a"/><path d="M50 12 C 40 30, 36 50, 36 68 L 64 68 C 64 50, 60 30, 50 12 Z" fill="#e6eefb"/><path d="M36 68 L 26 82 L 36 76 Z" fill="#ff4a6b"/><path d="M64 68 L 74 82 L 64 76 Z" fill="#ff4a6b"/><circle cx="50" cy="42" r="7" fill="#4ddbff" stroke="#1a5a8a" stroke-width="2"/><path d="M42 84 L50 78 L58 84 L50 92 Z" fill="#ff8c3b"/>`),
+  // 24. Purple gem
+  svgData(`<circle cx="50" cy="50" r="50" fill="#0a0a2a"/><path d="M50 15 L82 42 L50 88 L18 42 Z" fill="#b57bff" stroke="#ffffff" stroke-width="1.5"/><path d="M50 15 L66 42 L50 88 L34 42 Z" fill="#d4b8ff" opacity="0.8"/><path d="M18 42 L50 42 L82 42" stroke="#ffffff" stroke-width="1.5"/><path d="M34 42 L50 22 L66 42" stroke="#ffffff" stroke-width="1.5" fill="none"/>`)
+];
+
+// Пресеты: пусто + все аватары
+const PRESET_SKINS = [''].concat(AVATARS);
+
+// Боты — используют те же аватары, плюс немного GIF-шаров
+const BOT_AVATAR_POOL = AVATARS.concat(AVATARS.slice(0, 8));
+
+const BOT_NAMES = ['Алекс','Макс','Кирилл','Никита','Артём','Даня','Миша','Саня','Влад','Егор','Тимоха','Лёха','Дима','Серёга','Костя','Ваня','Гоша','Стёпа','Рома','Юра','Андрей','Илья','Паша','Денис','Антон','Саша','Женя','Толя','Гриша','Слава','Shadow','Blade','Hunter','Frost','Storm','Neon','Rex','Vortex','Phantom','Blaze','Sniper','Ghost','Titan','Fury','Krypt','Wolf','Raven','Onyx','Drift','Pixel','Nova','Cobra','Falcon','Reaper','Sly','Rogue','Glitch','Echo','Nitro','Hawk','Барс','Тигр','Феникс','Дракон','Гризли','Кобра','Сокол','Лев','Пантера','Ястреб'];
+
+/* ========================================================
+   GIF-ШАРЫ (анимированные SVG)
+======================================================== */
 const GIF_BALLS = [
-  svgData(`<defs><radialGradient id="f1"><stop offset="0" stop-color="#fff8d0"/><stop offset="0.35" stop-color="#ffcc33"/><stop offset="0.7" stop-color="#ff6600"/><stop offset="1" stop-color="#8a0000"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f1)"/><circle cx="50" cy="50" r="28" fill="#ffdd44" opacity="0.55"><animate attributeName="r" values="28;40;28" dur="0.8s" repeatCount="indefinite"/></circle>`),
-  svgData(`<defs><radialGradient id="f2"><stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#a8e8ff"/><stop offset="1" stop-color="#2a86c9"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f2)"/><circle cx="50" cy="50" r="36" fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.7"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="6s" repeatCount="indefinite"/></circle>`),
-  svgData(`<defs><radialGradient id="f3"><stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#ff66ff"/><stop offset="0.7" stop-color="#8a2be2"/><stop offset="1" stop-color="#1a0033"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f3)"/><circle cx="50" cy="50" r="32" fill="none" stroke="#ff99ff" stroke-width="2.2" opacity="0.85"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="2.4s" repeatCount="indefinite"/></circle>`),
-  svgData(`<defs><linearGradient id="f4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3b3b"/><stop offset="0.2" stop-color="#ffb83b"/><stop offset="0.4" stop-color="#ffe83b"/><stop offset="0.6" stop-color="#3bff83"/><stop offset="0.8" stop-color="#3bb8ff"/><stop offset="1" stop-color="#833bff"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f4)"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="5s" repeatCount="indefinite"/></circle>`),
-  svgData(`<defs><radialGradient id="f5"><stop offset="0" stop-color="#e0ff99"/><stop offset="0.5" stop-color="#66ff33"/><stop offset="1" stop-color="#1a6600"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f5)"/><circle cx="50" cy="50" r="30" fill="#99ff44" opacity="0.6"><animate attributeName="r" values="30;42;30" dur="0.9s" repeatCount="indefinite"/></circle>`),
-  svgData(`<defs><radialGradient id="f6"><stop offset="0" stop-color="#fffbe0"/><stop offset="0.4" stop-color="#ffe94a"/><stop offset="0.8" stop-color="#d4a000"/><stop offset="1" stop-color="#664400"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f6)"/><circle cx="50" cy="50" r="40" fill="none" stroke="#ffff99" stroke-width="1.6" opacity="0.85"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="8s" repeatCount="indefinite"/></circle>`),
-  svgData(`<defs><radialGradient id="f7"><stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#cc66ff"/><stop offset="0.7" stop-color="#3b1a6b"/><stop offset="1" stop-color="#000010"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f7)"/><g><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="10s" repeatCount="indefinite"/><circle cx="50" cy="18" r="2.2" fill="#ffffff"/><circle cx="80" cy="50" r="1.6" fill="#ffffff"/><circle cx="50" cy="82" r="2.2" fill="#ffffff"/><circle cx="20" cy="50" r="1.6" fill="#ffffff"/></g>`),
-  svgData(`<defs><radialGradient id="f8"><stop offset="0" stop-color="#ffaaaa"/><stop offset="0.4" stop-color="#ff2a3b"/><stop offset="0.8" stop-color="#8a0000"/><stop offset="1" stop-color="#330000"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f8)"/><circle cx="50" cy="50" r="35" fill="#ff5566" opacity="0.5"><animate attributeName="r" values="35;45;35" dur="1.2s" repeatCount="indefinite"/></circle>`),
-  svgData(`<defs><linearGradient id="f9" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a8e8ff"/><stop offset="1" stop-color="#0a4d8c"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f9)"/><path d="M0 55 Q25 45 50 55 T100 55" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.65"><animate attributeName="d" values="M0 55 Q25 45 50 55 T100 55;M0 55 Q25 65 50 55 T100 55;M0 55 Q25 45 50 55 T100 55" dur="2s" repeatCount="indefinite"/></path>`),
-  svgData(`<defs><radialGradient id="f10"><stop offset="0" stop-color="#ffffcc"/><stop offset="0.4" stop-color="#ffe000"/><stop offset="1" stop-color="#664400"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#f10)"/><path d="M55 20 L40 55 L52 55 L45 82 L65 45 L52 45 Z" fill="#ffffff" opacity="0.85"><animate attributeName="opacity" values="0.4;1;0.4;1;0.8" dur="0.8s" repeatCount="indefinite"/></path>`)
+  svgData(`<defs><radialGradient id="g1"><stop offset="0" stop-color="#fff8d0"/><stop offset="0.35" stop-color="#ffcc33"/><stop offset="0.7" stop-color="#ff6600"/><stop offset="1" stop-color="#8a0000"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g1)"/><circle cx="50" cy="50" r="28" fill="#ffdd44" opacity="0.55"><animate attributeName="r" values="28;40;28" dur="0.8s" repeatCount="indefinite"/></circle>`),
+  svgData(`<defs><radialGradient id="g2"><stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#a8e8ff"/><stop offset="1" stop-color="#2a86c9"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g2)"/><circle cx="50" cy="50" r="36" fill="none" stroke="#ffffff" stroke-width="1.6" opacity="0.7"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="6s" repeatCount="indefinite"/></circle>`),
+  svgData(`<defs><radialGradient id="g3"><stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#ff66ff"/><stop offset="0.7" stop-color="#8a2be2"/><stop offset="1" stop-color="#1a0033"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g3)"/><circle cx="50" cy="50" r="32" fill="none" stroke="#ff99ff" stroke-width="2.2" opacity="0.85"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="2.4s" repeatCount="indefinite"/></circle>`),
+  svgData(`<defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3b3b"/><stop offset="0.2" stop-color="#ffb83b"/><stop offset="0.4" stop-color="#ffe83b"/><stop offset="0.6" stop-color="#3bff83"/><stop offset="0.8" stop-color="#3bb8ff"/><stop offset="1" stop-color="#833bff"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g4)"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="5s" repeatCount="indefinite"/></circle>`),
+  svgData(`<defs><radialGradient id="g5"><stop offset="0" stop-color="#e0ff99"/><stop offset="0.5" stop-color="#66ff33"/><stop offset="1" stop-color="#1a6600"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g5)"/><circle cx="50" cy="50" r="30" fill="#99ff44" opacity="0.6"><animate attributeName="r" values="30;42;30" dur="0.9s" repeatCount="indefinite"/></circle>`),
+  svgData(`<defs><radialGradient id="g6"><stop offset="0" stop-color="#fffbe0"/><stop offset="0.4" stop-color="#ffe94a"/><stop offset="0.8" stop-color="#d4a000"/><stop offset="1" stop-color="#664400"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g6)"/><circle cx="50" cy="50" r="40" fill="none" stroke="#ffff99" stroke-width="1.6" opacity="0.85"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="8s" repeatCount="indefinite"/></circle>`),
+  svgData(`<defs><radialGradient id="g7"><stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#cc66ff"/><stop offset="0.7" stop-color="#3b1a6b"/><stop offset="1" stop-color="#000010"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g7)"/><g><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="10s" repeatCount="indefinite"/><circle cx="50" cy="18" r="2.2" fill="#ffffff"/><circle cx="80" cy="50" r="1.6" fill="#ffffff"/><circle cx="50" cy="82" r="2.2" fill="#ffffff"/><circle cx="20" cy="50" r="1.6" fill="#ffffff"/></g>`),
+  svgData(`<defs><radialGradient id="g8"><stop offset="0" stop-color="#ffaaaa"/><stop offset="0.4" stop-color="#ff2a3b"/><stop offset="0.8" stop-color="#8a0000"/><stop offset="1" stop-color="#330000"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g8)"/><circle cx="50" cy="50" r="35" fill="#ff5566" opacity="0.5"><animate attributeName="r" values="35;45;35" dur="1.2s" repeatCount="indefinite"/></circle>`),
+  svgData(`<defs><linearGradient id="g9" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a8e8ff"/><stop offset="1" stop-color="#0a4d8c"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g9)"/><path d="M0 55 Q25 45 50 55 T100 55" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.65"><animate attributeName="d" values="M0 55 Q25 45 50 55 T100 55;M0 55 Q25 65 50 55 T100 55;M0 55 Q25 45 50 55 T100 55" dur="2s" repeatCount="indefinite"/></path>`),
+  svgData(`<defs><radialGradient id="g10"><stop offset="0" stop-color="#ffffcc"/><stop offset="0.4" stop-color="#ffe000"/><stop offset="1" stop-color="#664400"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g10)"/><path d="M55 20 L40 55 L52 55 L45 82 L65 45 L52 45 Z" fill="#ffffff" opacity="0.85"><animate attributeName="opacity" values="0.4;1;0.4;1;0.8" dur="0.8s" repeatCount="indefinite"/></path>`)
 ];
 
 /* ========================================================
@@ -688,8 +734,7 @@ const SkinDB = {
       return new Promise((res, rej)=>{
         const tx = this.db.transaction('skins', 'readwrite');
         tx.objectStore('skins').put({ nick, data });
-        tx.oncomplete = () => res(true);
-        tx.onerror = rej;
+        tx.oncomplete = () => res(true); tx.onerror = rej;
       });
     }catch(e){ return false; }
   },
@@ -723,8 +768,8 @@ const CFG = {
 const massToR = m => Math.sqrt(Math.max(1, m)) * 5;
 const speedOf = m => 320 * Math.pow(22 / Math.max(1, m), 0.28);
 
-const DB_KEY = 'agarx_users_v7';
-const SESSION_KEY = 'agarx_session_v7';
+const DB_KEY = 'agarx_users_v8';
+const SESSION_KEY = 'agarx_session_v8';
 
 const DB = {
   load(){ try{ return JSON.parse(localStorage.getItem(DB_KEY) || '{}'); }catch(e){ return {}; } },
@@ -739,11 +784,6 @@ async function hashPass(str, nick){
     return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join('');
   }catch(e){ return 'plain:' + str; }
 }
-
-const PRESET_SKINS = ['','😎','🐱','🐶','🦊','🐼','🐸','🦁','🐲','👽','🤖','💀','👻','🍕','🍩','⚽','🎮','🚀','⭐','🔥','💎'].map(e => e ? emojiSvg(e) : '');
-const BOT_EMOJI_AVATARS = ['🐱','🐶','🦊','🐼','🐸','🦁','🐲','👽','🤖','💀','👻','🐺','🦅','🐯','🦈','🐙','🐵','🐨','🦝','🐮','🐷','🐭','🐹','🐰','🦄','🦉','🦇','🐢','🦂','🦋','🐝','🦖','😎','🥶','🤡','👹','👺','🤠','👾','😈','💩'].map(emojiSvg);
-const BOT_AVATAR_POOL = BOT_EMOJI_AVATARS.concat(BOT_EMOJI_AVATARS.slice(0, 10), GIF_BALLS.slice(0, 3));
-const BOT_NAMES = ['Алекс','Макс','Кирилл','Никита','Артём','Даня','Миша','Саня','Влад','Егор','Тимоха','Лёха','Дима','Серёга','Костя','Ваня','Гоша','Стёпа','Рома','Юра','Андрей','Илья','Паша','Денис','Антон','Саша','Женя','Толя','Гриша','Слава','Shadow','Blade','Hunter','Frost','Storm','Neon','Rex','Vortex','Phantom','Blaze','Sniper','Ghost','Titan','Fury','Krypt','Wolf','Raven','Onyx','Drift','Pixel','Nova','Cobra','Falcon','Reaper','Sly','Rogue','Glitch','Echo','Nitro','Hawk','Барс','Тигр','Феникс','Дракон','Гризли','Кобра','Сокол','Лев','Пантера','Ястреб'];
 
 /* ========================================================
    FOOD GRID
@@ -817,29 +857,25 @@ let currentUser = null;
 const _foodQuery = [];
 
 /* ========================================================
-   ВВОД — touch + mouse
+   ВВОД
 ======================================================== */
 function getCanvasPos(clientX, clientY){
   const rect = canvas.getBoundingClientRect();
   return { x: clientX - rect.left, y: clientY - rect.top };
 }
 
-// Mouse (desktop)
 document.addEventListener('mousemove', e => {
   const p = getCanvasPos(e.clientX, e.clientY);
-  mouse.x = p.x; mouse.y = p.y;
-  mouseMoved = true;
+  mouse.x = p.x; mouse.y = p.y; mouseMoved = true;
 }, {passive: true});
 
-// Touch — touch-to-move on canvas
 let activeTouchId = null;
 canvas.addEventListener('touchstart', e => {
   if(activeTouchId !== null) return;
   const t = e.changedTouches[0];
   activeTouchId = t.identifier;
   const p = getCanvasPos(t.clientX, t.clientY);
-  mouse.x = p.x; mouse.y = p.y;
-  mouseMoved = true;
+  mouse.x = p.x; mouse.y = p.y; mouseMoved = true;
   e.preventDefault();
 }, {passive: false});
 
@@ -857,20 +893,13 @@ canvas.addEventListener('touchmove', e => {
 
 canvas.addEventListener('touchend', e => {
   for(let i = 0; i < e.changedTouches.length; i++){
-    if(e.changedTouches[i].identifier === activeTouchId){
-      activeTouchId = null;
-      // Target stays — player keeps moving to last touch point
-    }
+    if(e.changedTouches[i].identifier === activeTouchId) activeTouchId = null;
   }
 }, {passive: false});
 
-canvas.addEventListener('touchcancel', e => {
-  activeTouchId = null;
-}, {passive: false});
-
+canvas.addEventListener('touchcancel', () => { activeTouchId = null; }, {passive: false});
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
-// Keyboard (desktop)
 document.addEventListener('keydown', e => {
   if(e.code === 'Backquote' && !running && !document.getElementById('promoOverlay').classList.contains('on')){
     e.preventDefault(); openPromo(); return;
@@ -878,7 +907,6 @@ document.addEventListener('keydown', e => {
   if(e.key === 'Escape' && document.getElementById('promoOverlay').classList.contains('on')){
     e.preventDefault(); closePromo(); return;
   }
-
   const k = e.key.toLowerCase();
   keys[k] = true;
   if(!running) return;
@@ -898,9 +926,7 @@ document.addEventListener('keydown', e => {
 });
 
 document.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
-window.addEventListener('blur', () => {
-  for(const k in keys) keys[k] = false;
-});
+window.addEventListener('blur', () => { for(const k in keys) keys[k] = false; });
 
 /* ========================================================
    ДЕЙСТВИЯ
@@ -955,6 +981,7 @@ function doMergeNow(){
   burst(cx, cy, 24, '#4a8bff', 5);
   Sound.merge();
 }
+
 function doMergeSlow(){ if(player.cells.length > 1) player.merging = true; }
 
 function doEject(){
@@ -966,11 +993,7 @@ function doEject(){
     let d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
     c.mass -= CFG.EJECT_COST;
     const r = massToR(c.mass);
-    ejected.push({
-      x: c.x + dx * (r + 6), y: c.y + dy * (r + 6),
-      vx: dx * 750, vy: dy * 750,
-      mass: CFG.EJECT_MASS, hue: randI(200, 300), ph: Math.random() * TAU
-    });
+    ejected.push({ x: c.x + dx * (r + 6), y: c.y + dy * (r + 6), vx: dx * 750, vy: dy * 750, mass: CFG.EJECT_MASS, hue: randI(200, 300), ph: Math.random() * TAU });
     Sound.eject();
     haptic('light');
   }
@@ -1002,8 +1025,7 @@ function toggleTitles(){
 
 function toggleLb(){
   const box = document.getElementById('lbBox');
-  const on = !box.classList.contains('on');
-  box.classList.toggle('on', on);
+  box.classList.toggle('on');
   haptic('light');
 }
 
@@ -1013,6 +1035,7 @@ function toggleLb(){
 function makeCell(x, y, mass){
   return { x, y, mass, vx: 0, vy: 0, dispR: massToR(mass), mergeAt: 0, spawn: 1, dead: false };
 }
+
 function spawnFood(x, y){
   food.push({
     x: x !== undefined ? x : rand(30, CFG.W - 30),
@@ -2108,7 +2131,6 @@ function startGame(){
   document.getElementById('menuScreen').classList.remove('active');
   document.getElementById('gameScreen').classList.add('active');
 
-  // TG: скрыть BackButton во время игры
   if(tg && tg.BackButton) tg.BackButton.hide();
 
   setTimeout(() => {
@@ -2200,7 +2222,7 @@ function goMenu(){
 }
 
 /* ========================================================
-   АВТОРИЗАЦИЯ — Telegram + локальная
+   АВТОРИЗАЦИЯ
 ======================================================== */
 const authScreen = document.getElementById('authScreen');
 const menuScreen = document.getElementById('menuScreen');
@@ -2213,25 +2235,18 @@ function showErr(msg){
   el.classList.add('on');
 }
 
-// Если TG пользователь — автологин
 function tryTelegramAuth(){
   if(!tgUser) return false;
-
-  // Ник из Telegram
   const nick = (tgUser.username || tgUser.first_name || ('tg' + tgUser.id)).slice(0, 14);
   const tgId = String(tgUser.id);
-
   const db = DB.load();
-  // Ищем по tgId
   let found = null;
   for(const k in db){
     if(db[k].tgId === tgId){ found = k; break; }
   }
-
   if(found){
     currentUser = { ...db[found] };
   } else {
-    // Создаём нового
     const finalNick = db[nick] ? (nick + '_' + randI(10,99)) : nick;
     currentUser = {
       nick: finalNick, pass: '', tgId,
@@ -2242,7 +2257,6 @@ function tryTelegramAuth(){
     db[finalNick] = { ...currentUser };
     DB.save(db);
   }
-
   localStorage.setItem(SESSION_KEY, JSON.stringify({ ...currentUser, skin: '', pass: '' }));
   return true;
 }
@@ -2285,9 +2299,7 @@ document.getElementById('quickPlay').addEventListener('click', () => {
   enterMenu();
 });
 
-document.getElementById('inPass').addEventListener('keydown', e => {
-  if(e.key === 'Enter') document.getElementById('btnAuth').click();
-});
+document.getElementById('inPass').addEventListener('keydown', e => { if(e.key === 'Enter') document.getElementById('btnAuth').click(); });
 
 async function enterMenu(){
   authScreen.classList.remove('active');
@@ -2295,10 +2307,7 @@ async function enterMenu(){
   if(tg && tg.BackButton) tg.BackButton.show();
 
   if(currentUser && !currentUser.guest){
-    try{
-      const s = await SkinDB.get(currentUser.nick);
-      currentUser.skin = s || '';
-    }catch(e){ currentUser.skin = ''; }
+    try{ const s = await SkinDB.get(currentUser.nick); currentUser.skin = s || ''; }catch(e){ currentUser.skin = ''; }
   }
   if(!currentUser.title) currentUser.title = 'noob';
   if(!currentUser.titleColor) currentUser.titleColor = '#2a6bff';
@@ -2310,9 +2319,7 @@ async function enterMenu(){
   if(currentUser.haptic === undefined) currentUser.haptic = true;
 
   showTitles = currentUser.showTitles !== false;
-
   if(currentUser.skin) preload(currentUser.skin);
-
   darkMode = !!currentUser.dark;
   showDebug = !!currentUser.debug;
   Sound.enabled = currentUser.sound !== false;
@@ -2326,8 +2333,6 @@ function applyTheme(){
   debugEl.classList.toggle('on', showDebug);
   const btn = document.getElementById('btnToggleTitles');
   if(btn) btn.classList.toggle('off', !showTitles);
-
-  // TG colors
   if(tg){
     try{
       if(tg.setHeaderColor) tg.setHeaderColor(darkMode ? '#0a1020' : '#f2f6fb');
@@ -2339,11 +2344,9 @@ function applyTheme(){
 
 function refreshMenu(){
   if(!currentUser) return;
-
   const t = getTitle(currentUser.title);
   const titleBadge = document.getElementById('menuTitle');
   titleBadge.textContent = '{' + t.label + '}';
-
   if(currentUser.titleColor === 'rainbow'){
     titleBadge.style.color = 'transparent';
     titleBadge.style.background = 'conic-gradient(from 0deg, #ff3b3b, #ffb83b, #ffe83b, #3bff83, #3bb8ff, #833bff, #ff3bb8, #ff3b3b)';
@@ -2357,19 +2360,14 @@ function refreshMenu(){
     titleBadge.style.animation = '';
     titleBadge.style.color = currentUser.titleColor;
   }
-
   document.getElementById('menuNick').textContent = '[' + currentUser.nick + ']';
-
   const verEl = document.getElementById('menuVerified');
   verEl.innerHTML = currentUser.verified ? '<span class="verified-badge lg" title="Верифицирован">✓</span>' : '';
-
   document.getElementById('menuRate').textContent = fmtMass(currentUser.rating || 0);
   document.getElementById('menuBest').textContent = fmtMass(currentUser.best || 0);
   document.getElementById('menuGames').textContent = currentUser.games || 0;
-
   const av = document.getElementById('avatarPrev');
   av.style.backgroundImage = currentUser.skin ? `url("${currentUser.skin}")` : 'none';
-
   renderGifSkins();
   renderSkins();
   renderFrames();
@@ -2398,9 +2396,8 @@ function renderSkins(){
   grid.innerHTML = '';
   PRESET_SKINS.forEach(src => {
     const d = document.createElement('div');
-    d.className = 'skin-opt' + (currentUser.skin === src ? ' sel' : '');
+    d.className = 'skin-opt' + (currentUser.skin === src ? ' sel' : '') + (src === '' ? ' none' : '');
     if(src){ const img = document.createElement('img'); img.src = src; d.appendChild(img); }
-    else { d.textContent = '—'; d.style.color = 'var(--text-dim2)'; d.style.fontSize = '20px'; }
     d.onclick = () => { currentUser.skin = src; if(src) preload(src); saveSkin(); haptic('light'); };
     grid.appendChild(d);
   });
@@ -2445,8 +2442,8 @@ function renderTitles(){
     d.className = 'title-opt' + (selected ? ' sel' : '') + (unlocked ? '' : ' locked');
     const nc = t.defaultColor === 'rainbow' ? 'var(--accent)' : t.defaultColor;
     let reqText;
-    if(t.verified) reqText = unlocked ? (selected ? '✓ Выбрано' : 'Доступно ✓') : '🔒 Промокод';
-    else reqText = unlocked ? (selected ? '✓ Выбрано' : 'Доступно') : 'От ' + fmtMass(t.minRating);
+    if(t.verified) reqText = unlocked ? (selected ? 'Выбрано' : 'Доступно') : 'Промокод';
+    else reqText = unlocked ? (selected ? 'Выбрано' : 'Доступно') : 'От ' + fmtMass(t.minRating);
     d.innerHTML = `<div class="title-opt-name" style="color:${nc}">{${t.label}}</div><div class="title-opt-req">${reqText}</div>`;
     if(unlocked) d.onclick = () => { currentUser.title = t.id; saveSkin(); haptic('light'); };
     grid.appendChild(d);
@@ -2523,11 +2520,7 @@ document.getElementById('skinFile').addEventListener('change', e => {
   const file = e.target.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = ev => {
-    currentUser.skin = ev.target.result;
-    preload(currentUser.skin);
-    saveSkin();
-  };
+  reader.onload = ev => { currentUser.skin = ev.target.result; preload(currentUser.skin); saveSkin(); };
   reader.readAsDataURL(file);
 });
 document.getElementById('skinClear').addEventListener('click', () => {
@@ -2544,8 +2537,7 @@ async function saveSkin(){
     await SkinDB.set(currentUser.nick, currentUser.skin || '');
     const db = DB.load();
     const copy = { ...currentUser };
-    delete copy.skin;
-    delete copy.pass;
+    delete copy.skin; delete copy.pass;
     const existing = db[currentUser.nick];
     if(existing && existing.pass) copy.pass = existing.pass;
     db[currentUser.nick] = copy;
@@ -2577,29 +2569,24 @@ const promoMsg = document.getElementById('promoMsg');
 
 function openPromo(){
   promoOverlay.classList.add('on');
-  promoInput.value = '';
-  promoMsg.textContent = '';
-  promoMsg.className = '';
+  promoInput.value = ''; promoMsg.textContent = ''; promoMsg.className = '';
   setTimeout(()=> promoInput.focus(), 80);
 }
 function closePromo(){ promoOverlay.classList.remove('on'); }
 
 function applyPromo(){
   const code = promoInput.value.trim();
-  if(!code){ promoMsg.textContent = '✕ Введи промокод'; promoMsg.className = 'bad'; return; }
-  if(!currentUser){ promoMsg.textContent = '✕ Сначала войди'; promoMsg.className = 'bad'; return; }
-
+  if(!code){ promoMsg.textContent = 'Введи промокод'; promoMsg.className = 'bad'; return; }
+  if(!currentUser){ promoMsg.textContent = 'Сначала войди'; promoMsg.className = 'bad'; return; }
   const matched = PROMO_CODES.some(c => c.toLowerCase() === code.toLowerCase());
-  if(!matched){ promoMsg.textContent = '✕ Неверный промокод'; promoMsg.className = 'bad'; return; }
-  if(currentUser.verified){ promoMsg.textContent = '✓ Уже активирован'; promoMsg.className = 'ok'; return; }
+  if(!matched){ promoMsg.textContent = 'Неверный промокод'; promoMsg.className = 'bad'; return; }
+  if(currentUser.verified){ promoMsg.textContent = 'Уже активирован'; promoMsg.className = 'ok'; return; }
 
   currentUser.verified = true;
   currentUser.title = 'agarx_v';
-  promoMsg.textContent = '🎉 Активировано! Звание 𝐀𝐠𝐚𝐫𝐗 и галочка ✓';
+  promoMsg.textContent = 'Активировано! Звание 𝐀𝐠𝐚𝐫𝐗 и галочка';
   promoMsg.className = 'ok';
-  Sound.init();
-  Sound.promo();
-  haptic('success');
+  Sound.init(); Sound.promo(); haptic('success');
   saveSkin();
   setTimeout(() => { closePromo(); refreshMenu(); }, 2200);
 }
@@ -2649,23 +2636,91 @@ document.getElementById('btnToggleTitles').addEventListener('click', toggleTitle
 document.getElementById('btnShowLb').addEventListener('click', toggleLb);
 document.getElementById('btnPause').addEventListener('click', () => togglePause());
 
-// Action buttons (touch-optimized)
+/* ========================================================
+   ACTION BUTTONS (Touch + Hold to merge)
+======================================================== */
 const btnSplit = document.getElementById('btnSplit');
 const btnEject = document.getElementById('btnEject');
 const btnKick = document.getElementById('btnKick');
-btnSplit.addEventListener('touchstart', e => { e.preventDefault(); doSplit(); }, {passive: false});
-btnEject.addEventListener('touchstart', e => { e.preventDefault(); doEject(); }, {passive: false});
-btnKick.addEventListener('touchstart', e => { e.preventDefault(); doKick(); }, {passive: false});
-// Desktop fallback
-btnSplit.addEventListener('click', e => { if(e.pointerType !== 'touch') doSplit(); });
+
+/* --- EJECT --- */
+let ejectLockTimer = null;
+function ejectStart(e){
+  e.preventDefault();
+  if(ejectLockTimer) return;
+  doEject();
+  ejectLockTimer = setTimeout(() => { ejectLockTimer = null; }, 250);
+}
+btnEject.addEventListener('touchstart', ejectStart, {passive: false});
 btnEject.addEventListener('click', e => { if(e.pointerType !== 'touch') doEject(); });
+
+/* --- KICK --- */
+let kickLockTimer = null;
+function kickStart(e){
+  e.preventDefault();
+  if(kickLockTimer) return;
+  doKick();
+  kickLockTimer = setTimeout(() => { kickLockTimer = null; }, 400);
+}
+btnKick.addEventListener('touchstart', kickStart, {passive: false});
 btnKick.addEventListener('click', e => { if(e.pointerType !== 'touch') doKick(); });
+
+/* --- SPLIT: tap = split, hold (>250ms) = merge all --- */
+const SPLIT_HOLD_MS = 250;
+let splitHoldTimeout = null;
+let splitHoldTriggered = false;
+let splitPointerActive = false;
+
+function splitStart(e){
+  if(e && e.preventDefault) e.preventDefault();
+  if(splitPointerActive) return;
+  splitPointerActive = true;
+  splitHoldTriggered = false;
+
+  btnSplit.classList.add('holding');
+
+  splitHoldTimeout = setTimeout(() => {
+    splitHoldTriggered = true;
+    doMergeNow();
+    haptic('heavy');
+    btnSplit.classList.remove('holding');
+    btnSplit.classList.add('merged');
+    setTimeout(() => btnSplit.classList.remove('merged'), 500);
+    splitHoldTimeout = null;
+  }, SPLIT_HOLD_MS);
+}
+
+function splitEnd(e){
+  if(e && e.preventDefault) e.preventDefault();
+  if(!splitPointerActive) return;
+  splitPointerActive = false;
+
+  if(splitHoldTimeout){
+    clearTimeout(splitHoldTimeout);
+    splitHoldTimeout = null;
+  }
+  btnSplit.classList.remove('holding');
+
+  if(!splitHoldTriggered){
+    doSplit();
+    haptic('light');
+  }
+  splitHoldTriggered = false;
+}
+
+btnSplit.addEventListener('touchstart', splitStart, {passive: false});
+btnSplit.addEventListener('touchend', splitEnd, {passive: false});
+btnSplit.addEventListener('touchcancel', splitEnd, {passive: false});
+
+// Desktop fallback: mouse
+btnSplit.addEventListener('mousedown', splitStart);
+btnSplit.addEventListener('mouseup', splitEnd);
+btnSplit.addEventListener('mouseleave', e => { if(splitPointerActive) splitEnd(e); });
 
 // TG BackButton
 if(tg && tg.BackButton){
   tg.BackButton.onClick(() => {
-    if(running){ togglePause(true); }
-    else if(menuScreen.classList.contains('active')){ /* в корне — не выходим */ }
+    if(running) togglePause(true);
   });
 }
 
@@ -2675,31 +2730,19 @@ if(tg && tg.BackButton){
 (function init(){
   requestAnimationFrame(loop);
 
-  // Применяем TG тему по умолчанию
   if(tg && tg.colorScheme === 'dark'){ darkMode = true; document.body.classList.add('dark'); }
 
-  // 1. Пробуем автологин через Telegram
-  if(tryTelegramAuth()){
-    enterMenu();
-    return;
-  }
+  if(tryTelegramAuth()){ enterMenu(); return; }
 
-  // 2. Проверяем сохранённую сессию
   const sess = localStorage.getItem(SESSION_KEY);
   if(sess){
     try{
       const u = JSON.parse(sess);
       const db = DB.load();
-      if(db[u.nick]){
-        currentUser = { ...db[u.nick] };
-        enterMenu();
-        return;
-      }
+      if(db[u.nick]){ currentUser = { ...db[u.nick] }; enterMenu(); return; }
     }catch(e){}
   }
 
-  // 3. Показываем экран авторизации
-  // Если есть TG user — предзаполняем ник
   if(tgUser){
     const bar = document.getElementById('tgUserBar');
     const nick = (tgUser.username || tgUser.first_name || 'tg' + tgUser.id).slice(0, 14);
@@ -2712,9 +2755,9 @@ if(tg && tg.BackButton){
   if(tg && tg.BackButton) tg.BackButton.hide();
 })();
 
-const style = document.createElement('style');
-style.textContent = '@keyframes rainbowSpin{to{filter:hue-rotate(360deg)}}';
-document.head.appendChild(style);
+const styleEl = document.createElement('style');
+styleEl.textContent = '@keyframes rainbowSpin{to{filter:hue-rotate(360deg)}}';
+document.head.appendChild(styleEl);
 </script>
 </body>
 </html>
