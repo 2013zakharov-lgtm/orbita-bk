@@ -1,1440 +1,1742 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
->
-<meta name="theme-color" content="#1683ff">
-<title>Orbita AI</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+<meta name="theme-color" content="#0b1b33" />
+<title>MiniOS</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a1020;color:var(--ink);}
+:root{
+  --blue-50:#eff5ff;--blue-100:#dfeaff;--blue-200:#c3d9ff;--blue-300:#9dc1ff;
+  --blue-400:#5b9bff;--blue-500:#2b7fff;--blue-600:#1560e0;--blue-700:#0f47ac;
+  --ink:#0c1c33;--muted:#6a80a0;--line:#e4ecfa;--card:#fff;
+  --wp:linear-gradient(160deg,#dbeafe,#93c5fd 55%,#3b82f6);
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
 }
-html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "Segoe UI",
-        Arial,
-        sans-serif;
-    background: #ffffff;
-    color: #172033;
-}
-button,
-input {
-    font: inherit;
-}
-button {
-    cursor: pointer;
-}
-.app {
-    width: 100%;
-    height: 100dvh;
-    position: relative;
-    overflow: hidden;
-    background: #fff;
-}
-/* ==============================
-   РЕГИСТРАЦИЯ
-============================== */
-.auth {
-    position: absolute;
-    inset: 0;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    background:
-        radial-gradient(
-            circle at 50% 15%,
-            #dceeff 0,
-            #ffffff 45%
-        );
-    transition:
-        opacity .45s ease,
-        transform .45s ease;
-}
-.auth.hidden {
-    opacity: 0;
-    transform: scale(1.04);
-    pointer-events: none;
-}
-.auth-card {
-    width: 100%;
-    max-width: 390px;
-    text-align: center;
-    animation: authAppear .7s ease;
-}
-@keyframes authAppear {
-    from {
-        opacity: 0;
-        transform: translateY(35px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-.logo {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 30px;
-    color: white;
-    font-size: 34px;
-    font-weight: 800;
-    background:
-        linear-gradient(
-            135deg,
-            #087eff,
-            #61b5ff
-        );
-    box-shadow:
-        0 18px 45px
-        rgba(22, 131, 255, .28);
-    animation: logoFloat 3s ease-in-out infinite;
-}
-@keyframes logoFloat {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-7px);
-    }
-}
-.auth-title {
-    margin: 0;
-    font-size: 34px;
-    font-weight: 800;
-}
-.auth-subtitle {
-    margin: 10px 0 28px;
-    color: #8b95a7;
-    font-size: 16px;
-}
-.name-input {
-    width: 100%;
-    height: 58px;
-    padding: 0 18px;
-    border: 1px solid #e1e8f1;
-    border-radius: 18px;
-    outline: none;
-    background: #ffffff;
-    color: #172033;
-    font-size: 17px;
-    box-shadow:
-        0 8px 30px
-        rgba(0, 0, 0, .04);
-    -webkit-user-select: text;
-    user-select: text;
-}
-.name-input:focus {
-    border-color: #1683ff;
-    box-shadow:
-        0 0 0 3px
-        rgba(22, 131, 255, .10);
-}
-.start-button {
-    width: 100%;
-    height: 58px;
-    margin-top: 13px;
-    border: 0;
-    border-radius: 18px;
-    color: #fff;
-    font-size: 17px;
-    font-weight: 700;
-    background:
-        linear-gradient(
-            135deg,
-            #1683ff,
-            #4ca4ff
-        );
-    box-shadow:
-        0 12px 25px
-        rgba(22, 131, 255, .25);
-    transition: transform .15s ease;
-}
-.start-button:active {
-    transform: scale(.97);
-}
-/* ==============================
-   ОСНОВНОЕ ПРИЛОЖЕНИЕ
-============================== */
-.main {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    opacity: 0;
-    transition:
-        opacity .45s ease,
-        transform .45s ease;
-    transform: translateY(15px);
-}
-.main.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-/* ==============================
-   HEADER
-============================== */
-.header {
-    flex: 0 0 72px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding:
-        10px 15px;
-    border-bottom: 1px solid #edf1f6;
-    background: rgba(255,255,255,.94);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-}
-.ai-info {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-}
-.ai-avatar {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 15px;
-    color: white;
-    font-size: 17px;
-    font-weight: 800;
-    background:
-        linear-gradient(
-            135deg,
-            #087eff,
-            #62b7ff
-        );
-    box-shadow:
-        0 6px 17px
-        rgba(22, 131, 255, .22);
-}
-.ai-name {
-    font-size: 16px;
-    font-weight: 750;
-}
-.online {
-    margin-top: 2px;
-    font-size: 12px;
-    color: #39bd72;
-}
-.menu-button {
-    width: 42px;
-    height: 42px;
-    border: 0;
-    border-radius: 14px;
-    background: #f2f6fb;
-    font-size: 20px;
-}
-/* ==============================
-   ЧАТ
-============================== */
-.chat {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding:
-        18px 14px
-        110px;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-}
-.message {
-    width: 100%;
-    display: flex;
-    margin-bottom: 13px;
-    animation:
-        messageAppear .25s ease;
-}
-@keyframes messageAppear {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-.message.user {
-    justify-content: flex-end;
-}
-.bubble {
-    max-width: 84%;
-    padding:
-        12px 15px;
-    border-radius: 19px;
-    font-size: 16px;
-    line-height: 1.45;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-.message.ai .bubble {
-    background: #f1f6fc;
-    border-bottom-left-radius: 6px;
-}
-.message.user .bubble {
-    color: white;
-    background:
-        linear-gradient(
-            135deg,
-            #1683ff,
-            #3f9eff
-        );
-    border-bottom-right-radius: 6px;
-}
-/* ==============================
-   TYPING
-============================== */
-.typing {
-    display: none;
-    padding:
-        0 14px
-        100px;
-}
-.typing.visible {
-    display: block;
-}
-.typing-bubble {
-    width: fit-content;
-    display: flex;
-    gap: 4px;
-    padding: 14px 17px;
-    border-radius: 18px;
-    background: #f1f6fc;
-}
-.dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #8c99aa;
-    animation: dotAnimation 1.1s infinite;
-}
-.dot:nth-child(2) {
-    animation-delay: .15s;
-}
-.dot:nth-child(3) {
-    animation-delay: .30s;
-}
-@keyframes dotAnimation {
-    0%,
-    60%,
-    100% {
-        transform: translateY(0);
-    }
-    30% {
-        transform: translateY(-5px);
-    }
-}
-/* ==============================
-   INPUT
-============================== */
-.input-area {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 10;
-    padding:
-        8px 11px
-        calc(8px + env(safe-area-inset-bottom));
-    background:
-        rgba(255,255,255,.96);
-    border-top:
-        1px solid #edf1f6;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-.input-box {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px;
-    border-radius: 20px;
-    background: #f2f5f9;
-}
-.text-input {
-    flex: 1;
-    min-width: 0;
-    height: 44px;
-    padding:
-        0 8px;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: #172033;
-    font-size: 16px;
-    -webkit-user-select: text;
-    user-select: text;
-    -webkit-appearance: none;
-    appearance: none;
-}
-.text-input::placeholder {
-    color: #98a3b3;
-}
-.icon-button {
-    width: 44px;
-    height: 44px;
-    flex: 0 0 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    border-radius: 15px;
-    background: white;
-    font-size: 20px;
-    transition:
-        transform .15s ease,
-        background .15s ease;
-}
-.icon-button:active {
-    transform: scale(.91);
-}
-.send-button {
-    color: white;
-    background: #1683ff;
-}
-/* ==============================
-   VOICE
-============================== */
-.voice-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background:
-        rgba(255,255,255,.96);
-    backdrop-filter: blur(20px);
-}
-.voice-screen.visible {
-    display: flex;
-}
-.voice-circle {
-    width: 145px;
-    height: 145px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    color: white;
-    font-size: 55px;
-    background:
-        linear-gradient(
-            135deg,
-            #1683ff,
-            #65b7ff
-        );
-    box-shadow:
-        0 0 0 20px
-        rgba(22,131,255,.08);
-    animation:
-        voicePulse 1.3s infinite;
-}
-@keyframes voicePulse {
-    50% {
-        transform: scale(1.07);
-        box-shadow:
-            0 0 0 34px
-            rgba(22,131,255,.08);
-    }
-}
-.voice-title {
-    margin-top: 32px;
-    margin-bottom: 5px;
-}
-.voice-description {
-    color: #8b95a7;
-}
-.stop-button {
-    margin-top: 25px;
-    padding:
-        13px 25px;
-    border: 0;
-    border-radius: 15px;
-    background: #f0f3f7;
-}
-/* ==============================
-   MEMORY
-============================== */
-.memory-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 90;
-    display: none;
-    background:
-        rgba(0,0,0,.20);
-    backdrop-filter: blur(5px);
-}
-.memory-overlay.visible {
-    display: block;
-}
-.memory-card {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding:
-        23px;
-    border-radius:
-        25px 25px 0 0;
-    background: white;
-    animation:
-        sheetAppear .3s ease;
-}
-@keyframes sheetAppear {
-    from {
-        transform: translateY(100%);
-    }
-    to {
-        transform: translateY(0);
-    }
-}
-.memory-card h2 {
-    margin-top: 0;
-}
-.memory-list {
-    max-height: 230px;
-    overflow-y: auto;
-    color: #697588;
-    line-height: 1.6;
-}
-.clear-button {
-    width: 100%;
-    height: 50px;
-    border: 0;
-    border-radius: 15px;
-    background: #f1f4f8;
-}
-/* ==============================
-   ERROR SHAKE
-============================== */
-.shake {
-    animation: shake .25s ease;
-}
-@keyframes shake {
-    25% {
-        transform: translateX(-5px);
-    }
-    50% {
-        transform: translateX(5px);
-    }
-    75% {
-        transform: translateX(-5px);
-    }
-}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit;}
+input{font-family:inherit;}
+::-webkit-scrollbar{width:0;height:0;}
+svg{width:100%;height:100%;display:block;}
+
+.phone{position:relative;width:min(430px,100vw);height:100vh;height:100dvh;margin:0 auto;overflow:hidden;background:var(--wp);background-size:cover;background-position:center;transition:background .45s;}
+@media(min-width:520px){body{display:flex;align-items:center;justify-content:center;}.phone{border-radius:38px;box-shadow:0 30px 90px rgba(4,20,50,.55),0 0 0 10px #0f1a2e,0 0 0 12px #1b2c4a;}}
+
+/* LOCK */
+.lock{position:absolute;inset:0;z-index:40;background:var(--wp);background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:space-between;padding:calc(var(--st) + 62px) 26px calc(var(--sb) + 26px);color:#fff;transition:transform .5s cubic-bezier(.32,.72,0,1),opacity .4s;touch-action:none;user-select:none;}
+.lock.hidden{transform:translateY(-100%) scale(.96);opacity:0;pointer-events:none;}
+.lock::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,30,70,.3),rgba(6,30,70,.05) 40%,rgba(6,30,70,.45));pointer-events:none;}
+.lock>*{position:relative;z-index:2;}
+.lock-top{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.lock-icon{width:26px;height:26px;opacity:.9;margin-bottom:14px;}
+.lock-time{font-size:74px;font-weight:200;letter-spacing:-3px;line-height:1;text-shadow:0 6px 30px rgba(4,24,60,.35);font-variant-numeric:tabular-nums;}
+.lock-date{font-size:15px;font-weight:500;opacity:.92;text-transform:capitalize;}
+.lock-card{margin:auto 0;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 10px 30px rgba(4,24,60,.18);}
+.lock-card .lc-ic{width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.9);color:var(--blue-600);display:grid;place-items:center;padding:7px;flex:0 0 auto;}
+.lock-card b{display:block;font-size:13px;font-weight:600;}
+.lock-card span{font-size:12px;opacity:.85;}
+.lock-bottom{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.swipe-hint{font-size:12.5px;opacity:.85;display:flex;align-items:center;gap:8px;}
+.swipe-hint .arr{width:16px;height:16px;animation:up 1.8s infinite;}
+@keyframes up{0%,100%{transform:translateY(3px);opacity:.5}50%{transform:translateY(-3px);opacity:1}}
+.home-bar{width:130px;height:5px;border-radius:5px;background:rgba(255,255,255,.85);}
+
+/* HOME */
+.home{position:absolute;inset:0;z-index:10;background:var(--wp);background-size:cover;background-position:center;display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.32,.72,0,1),opacity .35s;}
+.home.blur{transform:scale(.94);opacity:.4;}
+.statusbar{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--st) + 12px) 22px 6px;color:#fff;font-size:14px;font-weight:600;text-shadow:0 2px 10px rgba(4,24,60,.35);}
+.sb-right{display:flex;align-items:center;gap:7px;}
+.sb-ic{width:16px;height:16px;opacity:.95;}
+.sb-bat{width:24px;height:12px;border:1.6px solid rgba(255,255,255,.95);border-radius:4px;position:relative;padding:1.5px;}
+.sb-bat::after{content:'';position:absolute;right:-4px;top:3.5px;width:2.5px;height:5px;background:rgba(255,255,255,.95);border-radius:0 2px 2px 0;}
+.sb-bat i{display:block;height:100%;background:#fff;border-radius:2px;transition:width .4s;}
+.sb-lock{width:17px;height:17px;opacity:.95;margin-left:2px;}
+.homescroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 18px 6px;-webkit-overflow-scrolling:touch;}
+
+/* WIDGETS */
+.widgets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;}
+.widget{background:rgba(255,255,255,.94);border-radius:22px;padding:14px 15px;box-shadow:0 8px 22px rgba(9,36,80,.16);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.7);animation:pop .35s cubic-bezier(.3,1.4,.5,1);color:var(--ink);text-align:left;overflow:hidden;position:relative;}
+@keyframes pop{from{opacity:0;transform:scale(.9) translateY(8px)}to{opacity:1;transform:none}}
+.widget.wide{grid-column:span 2;}
+.w-lbl{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--blue-500);opacity:.9;}
+.w-clock{font-size:44px;font-weight:200;letter-spacing:-2px;line-height:1.05;font-variant-numeric:tabular-nums;}
+.w-date{font-size:12.5px;color:var(--muted);text-transform:capitalize;margin-top:2px;}
+.w-temp{font-size:34px;font-weight:300;letter-spacing:-1.5px;line-height:1.1;}
+.w-sub{font-size:12px;color:var(--muted);}
+.w-big{font-size:26px;font-weight:600;letter-spacing:-.5px;}
+.w-bar{height:7px;border-radius:6px;background:var(--blue-100);overflow:hidden;margin-top:8px;}
+.w-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--blue-400),var(--blue-600));}
+.w-row{display:flex;align-items:center;gap:8px;}
+.w-ic{width:20px;height:20px;color:var(--blue-500);flex:0 0 auto;}
+.emptyw{grid-column:span 2;text-align:center;font-size:13px;color:#fff;opacity:.85;padding:18px;border:1.5px dashed rgba(255,255,255,.5);border-radius:20px;line-height:1.5;}
+
+/* APP GRID */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px 10px;padding-bottom:16px;}
+.app{display:flex;flex-direction:column;align-items:center;gap:7px;animation:pop .35s backwards;}
+.app:active .appicon{transform:scale(.88);}
+.appicon{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;color:#fff;padding:15px;box-shadow:0 7px 16px rgba(9,36,80,.28),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .16s cubic-bezier(.3,1.5,.6,1);position:relative;overflow:hidden;}
+.appicon::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 55%);pointer-events:none;}
+.appname{font-size:11px;color:#fff;font-weight:600;text-shadow:0 1px 6px rgba(4,24,60,.55);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dock{margin:0 14px calc(var(--sb) + 12px);padding:12px 10px;background:rgba(255,255,255,.24);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;box-shadow:0 10px 30px rgba(4,24,60,.2);}
+.dock .appname{display:none;}
+.dock .appicon{width:54px;height:54px;}
+
+/* APP VIEW */
+.appview{position:absolute;inset:0;z-index:50;background:#f6f9ff;transform:translateY(100%);transition:transform .42s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;overflow:hidden;}
+.appview.open{transform:translateY(0);}
+.apphead{display:flex;align-items:center;gap:12px;padding:calc(var(--st) + 14px) 16px 14px;background:#fff;border-bottom:1px solid var(--line);position:relative;z-index:5;}
+.backbtn{width:38px;height:38px;border-radius:13px;background:var(--blue-50);color:var(--blue-600);display:grid;place-items:center;padding:10px;flex:0 0 auto;transition:background .2s;}
+.backbtn:active{background:var(--blue-100);}
+.apptitle{font-size:17px;font-weight:700;letter-spacing:-.3px;}
+.appbody{flex:1;overflow-y:auto;padding:16px 16px calc(var(--sb) + 22px);-webkit-overflow-scrolling:touch;}
+.appview[data-full="1"] .apphead{display:none;}
+.appview[data-full="1"] .appbody{padding:0;overflow:hidden;background:#000;}
+
+/* COMMON */
+.btn{background:linear-gradient(160deg,var(--blue-400),var(--blue-600));color:#fff;padding:11px 18px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:0 6px 16px rgba(21,96,224,.28);transition:transform .15s,opacity .2s;}
+.btn:active{transform:scale(.95);}
+.btn.ghost{background:var(--blue-50);color:var(--blue-600);box-shadow:none;}
+.btn.sm{padding:8px 14px;font-size:12.5px;border-radius:11px;}
+.btn.danger{background:linear-gradient(160deg,#ff8a8a,#e23b3b);box-shadow:0 6px 16px rgba(226,59,59,.25);}
+.card{background:#fff;border-radius:20px;padding:16px;border:1px solid var(--line);box-shadow:0 4px 16px rgba(20,60,130,.05);}
+.sect{margin-bottom:18px;}
+.sect h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin:0 0 10px 4px;font-weight:700;}
+.row{display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border-bottom:1px solid var(--line);}
+.row:first-child{border-radius:18px 18px 0 0;}
+.row:last-child{border-bottom:none;border-radius:0 0 18px 18px;}
+.row:only-child{border-radius:18px;}
+.row-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;color:#fff;padding:8px;flex:0 0 auto;}
+.row-t{flex:1;font-size:14px;font-weight:600;}
+.row-s{font-size:11.5px;color:var(--muted);font-weight:500;}
+.empty{text-align:center;color:var(--muted);font-size:13.5px;padding:34px 20px;line-height:1.6;}
+.hintline{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5;}
+.switch{width:48px;height:28px;border-radius:20px;background:var(--blue-100);position:relative;transition:background .25s;flex:0 0 auto;}
+.switch i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(10,40,90,.2);transition:transform .25s cubic-bezier(.3,1.4,.5,1);}
+.switch.on{background:var(--blue-500);}
+.switch.on i{transform:translateX(20px);}
+.badge{display:inline-block;padding:3px 9px;border-radius:8px;background:var(--blue-50);color:var(--blue-600);font-size:11px;font-weight:700;}
+
+/* GALLERY */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.gtile{aspect-ratio:1;border-radius:14px;overflow:hidden;position:relative;background:#e5eefb;transition:transform .15s;box-shadow:0 4px 14px rgba(20,60,130,.12);}
+.gtile:active{transform:scale(.94);}
+.gtile-img{width:100%;height:100%;object-fit:cover;display:block;}
+.gtile-video::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(10,25,55,.65);backdrop-filter:blur(6px);border:2px solid rgba(255,255,255,.9);}
+.gtile-video::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-40%,-50%);width:0;height:0;border-left:11px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent;z-index:2;}
+.gtile-vdur{position:absolute;bottom:5px;right:5px;background:rgba(10,25,55,.7);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px;z-index:3;}
+.gtile-add{display:grid;place-items:center;background:linear-gradient(160deg,var(--blue-50),var(--blue-100));color:var(--blue-500);border:2px dashed var(--blue-300);font-size:32px;font-weight:300;}
+.gtile-add svg{width:38px;height:38px;padding:8px;}
+
+/* VIEWER / EDITOR */
+.viewer{position:fixed;inset:0;z-index:100;background:rgba(4,14,34,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;flex-direction:column;padding:calc(var(--st) + 12px) 14px calc(var(--sb) + 14px);animation:fade .25s;}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.viewer-top{display:flex;align-items:center;justify-content:space-between;color:#fff;margin-bottom:12px;}
+.viewer-close{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;padding:10px;}
+.viewer-info{font-size:13px;opacity:.8;}
+.viewer-stage{flex:1;display:grid;place-items:center;overflow:hidden;position:relative;border-radius:20px;background:rgba(0,0,0,.35);}
+.viewer-stage img,.viewer-stage video{max-width:100%;max-height:100%;border-radius:16px;display:block;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:filter .25s;}
+.viewer-tools{display:flex;gap:8px;padding:12px 0;overflow-x:auto;scrollbar-width:none;}
+.toolchip{flex:0 0 auto;padding:9px 15px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:12.5px;font-weight:600;border:1px solid rgba(255,255,255,.16);transition:all .18s;display:flex;align-items:center;gap:6px;}
+.toolchip.active{background:#fff;color:var(--blue-700);}
+.toolchip .ti{width:15px;height:15px;}
+.viewer-actions{display:flex;gap:8px;padding-top:6px;}
+.viewer-actions .btn{flex:1;padding:12px;font-size:13px;}
+.sliderbox{background:rgba(255,255,255,.1);border-radius:16px;padding:12px 15px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px;}
+.sliderbox label{color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.7px;opacity:.75;display:flex;justify-content:space-between;}
+.sliderbox input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:rgba(255,255,255,.25);outline:none;}
+.sliderbox input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.4);cursor:pointer;}
+.sliderbox input[type=range]::-moz-range-thumb{width:20px;height:20px;border:none;border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.4);cursor:pointer;}
+
+/* CAMERA */
+.cam{position:relative;width:100%;height:100%;background:#000;overflow:hidden;}
+.cam-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;}
+.cam-video.mirror{transform:scaleX(-1);}
+.cam-overlay{position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.5),transparent 22%,transparent 68%,rgba(0,0,0,.65));}
+.cam-grid{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity .25s;}
+.cam-grid.on{opacity:.55;}
+.cam-grid i{position:absolute;background:rgba(255,255,255,.65);}
+.cam-grid i:nth-child(1){left:33.33%;top:0;bottom:0;width:1px;}
+.cam-grid i:nth-child(2){left:66.66%;top:0;bottom:0;width:1px;}
+.cam-grid i:nth-child(3){top:33.33%;left:0;right:0;height:1px;}
+.cam-grid i:nth-child(4){top:66.66%;left:0;right:0;height:1px;}
+.cam-topbar{position:absolute;top:calc(var(--st) + 12px);left:0;right:0;z-index:5;display:flex;gap:8px;align-items:center;padding:0 14px;}
+.cam-chip{display:inline-flex;align-items:center;gap:7px;padding:10px 13px;border-radius:14px;background:rgba(10,25,55,.55);color:#fff;font-size:12.5px;font-weight:600;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:transform .15s,background .25s,box-shadow .25s;}
+.cam-chip .ci{width:15px;height:15px;display:block;}
+.cam-chip:active{transform:scale(.94);}
+.cam-chip[disabled]{opacity:.35;pointer-events:none;}
+.cam-chip.on{background:linear-gradient(160deg,#ffd166,#ff9f1c);color:#1b1b1b;border-color:rgba(255,255,255,.75);box-shadow:0 6px 20px rgba(255,159,28,.5);}
+.cam-chip.on .ci{color:#1b1b1b;}
+.cam-modes{position:absolute;bottom:130px;left:0;right:0;z-index:5;display:flex;gap:6px;justify-content:center;padding:0 20px;}
+.cam-mode{padding:7px 16px;border-radius:999px;background:rgba(10,25,55,.5);color:rgba(255,255,255,.7);font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);transition:all .2s;}
+.cam-mode.active{background:#fff;color:var(--blue-700);border-color:#fff;}
+.cam-bottombar{position:absolute;bottom:0;left:0;right:0;z-index:5;padding:16px 26px calc(var(--sb) + 22px);display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.cam-thumb{width:56px;height:56px;border-radius:16px;border:2px solid rgba(255,255,255,.85);background:linear-gradient(160deg,#6fb2ff,#1a63e0);background-size:cover;background-position:center;box-shadow:0 6px 20px rgba(0,0,0,.4);transition:transform .15s;flex:0 0 auto;}
+.cam-thumb:active{transform:scale(.9);}
+.cam-shutter{width:84px;height:84px;border-radius:50%;padding:5px;border:3px solid #fff;background:transparent;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .12s;flex:0 0 auto;}
+.cam-shutter i{display:block;width:100%;height:100%;border-radius:50%;background:#fff;transition:transform .12s,background .2s,border-radius .2s;}
+.cam-shutter:active{transform:scale(.9);}
+.cam-shutter.rec i{background:#ff3b3b;border-radius:10px;transform:scale(.55);}
+.cam-shutter.rec{border-color:#ff3b3b;}
+.cam-side{width:56px;height:56px;border-radius:16px;background:rgba(10,25,55,.5);color:#fff;display:grid;place-items:center;padding:16px;border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(12px);flex:0 0 auto;transition:transform .15s;}
+.cam-side:active{transform:scale(.9);}
+.cam-timer{position:absolute;top:calc(var(--st) + 70px);left:50%;transform:translateX(-50%);z-index:6;background:rgba(255,59,59,.92);color:#fff;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.8px;display:none;align-items:center;gap:7px;}
+.cam-timer.on{display:flex;}
+.cam-timer .dot{width:9px;height:9px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.cam-flash{position:absolute;inset:0;background:#fff;z-index:9;pointer-events:none;opacity:0;}
+.cam-flash.fire{animation:cflash .22s ease-out;}
+@keyframes cflash{0%{opacity:0}35%{opacity:.95}100%{opacity:0}}
+.cam-fallback{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px;text-align:center;color:#fff;background:linear-gradient(160deg,#0d1a33,#05132a);}
+.cam-fallback .cf-ic{width:64px;height:64px;color:#6fb2ff;margin-bottom:8px;}
+.cam-fallback .cf-t{font-size:19px;font-weight:700;}
+.cam-fallback .cf-s{font-size:13px;opacity:.75;max-width:300px;line-height:1.55;margin-bottom:8px;}
+
+/* STORE */
+.tabs{display:flex;gap:8px;background:var(--blue-50);padding:5px;border-radius:16px;margin-bottom:16px;}
+.tab{flex:1;padding:10px;border-radius:12px;font-size:13.5px;font-weight:600;color:var(--blue-600);transition:all .22s;}
+.tab.active{background:#fff;color:var(--blue-700);box-shadow:0 3px 10px rgba(21,96,224,.15);}
+.storeitem{display:flex;align-items:center;gap:13px;background:#fff;padding:13px;border-radius:18px;margin-bottom:10px;border:1px solid var(--line);box-shadow:0 3px 12px rgba(20,60,130,.05);}
+.storeitem .appicon{width:50px;height:50px;border-radius:15px;padding:13px;box-shadow:none;}
+.si-info{flex:1;min-width:0;}
+.si-info b{display:block;font-size:14px;font-weight:700;}
+.si-info span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* WALLPAPER */
+.wpgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.wpswatch{aspect-ratio:.62;border-radius:16px;border:2.5px solid transparent;transition:all .2s;box-shadow:0 4px 14px rgba(20,60,130,.12);background-size:cover;background-position:center;}
+.wpswatch.sel{border-color:var(--blue-500);transform:scale(1.04);box-shadow:0 6px 18px rgba(21,96,224,.35);}
+.uploadbtn{grid-column:span 4;padding:14px;border-radius:16px;background:linear-gradient(160deg,var(--blue-50),var(--blue-100));color:var(--blue-700);font-weight:700;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--blue-300);transition:transform .15s;}
+.uploadbtn:active{transform:scale(.97);}
+.uploadbtn svg{width:18px;height:18px;}
+
+/* CALCULATOR */
+.calc{display:flex;flex-direction:column;gap:14px;}
+.calc-screen{background:linear-gradient(160deg,#eaf2ff,#dbe8ff);border-radius:24px;padding:26px 20px;text-align:right;min-height:120px;display:flex;flex-direction:column;justify-content:flex-end;}
+.calc-out{font-size:44px;font-weight:300;letter-spacing:-2px;color:var(--blue-700);overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums;}
+.calc-pad{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.ckey{aspect-ratio:1;border-radius:20px;background:#fff;font-size:21px;font-weight:600;color:var(--ink);box-shadow:0 4px 12px rgba(20,60,130,.08);transition:transform .12s,background .15s;display:grid;place-items:center;}
+.ckey:active{transform:scale(.92);}
+.ckey.op{background:var(--blue-50);color:var(--blue-600);}
+.ckey.eq{background:linear-gradient(160deg,var(--blue-400),var(--blue-600));color:#fff;}
+.ckey.zero{grid-column:span 2;aspect-ratio:auto;}
+
+/* NOTES */
+.notenew{display:flex;gap:9px;margin-bottom:16px;}
+.notenew input{flex:1;padding:13px 16px;border-radius:15px;border:1.5px solid var(--line);background:#fff;font-size:14px;outline:none;}
+.notenew input:focus{border-color:var(--blue-400);}
+.notenew .btn{padding:0;width:48px;display:grid;place-items:center;}
+.notenew .btn svg{width:20px;height:20px;}
+.note{background:#fff;border-radius:18px;padding:14px 16px;margin-bottom:10px;position:relative;border:1px solid var(--line);box-shadow:0 3px 12px rgba(20,60,130,.05);}
+.note-t{font-size:14px;font-weight:600;line-height:1.4;padding-right:36px;word-break:break-word;}
+.note-d{font-size:11px;color:var(--muted);margin-top:6px;}
+.note .x{position:absolute;top:8px;right:8px;width:36px;height:36px;color:#c3d0e4;padding:9px;display:grid;place-items:center;}
+.note .x:active{color:#e23b3b;}
+
+/* MUSIC */
+.cover{width:200px;height:200px;border-radius:28px;margin:10px auto 22px;display:grid;place-items:center;color:#fff;box-shadow:0 18px 44px rgba(21,96,224,.28);padding:56px;background:linear-gradient(150deg,#6fb2ff,#1a63e0);transition:transform .4s;}
+.cover.playing{animation:spin 9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mtitle{text-align:center;font-size:19px;font-weight:700;}
+.martist{text-align:center;font-size:13px;color:var(--muted);margin-top:4px;}
+.progress{height:6px;border-radius:6px;background:var(--blue-100);margin:20px 0 6px;overflow:hidden;}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--blue-400),var(--blue-600));border-radius:6px;transition:width .3s linear;}
+.ptime{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+.mcontrols{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:22px;}
+.mbtn{width:52px;height:52px;border-radius:50%;background:var(--blue-50);color:var(--blue-600);display:grid;place-items:center;padding:15px;}
+.mbtn:active{transform:scale(.9);}
+.mbtn.main{width:68px;height:68px;background:linear-gradient(160deg,var(--blue-400),var(--blue-600));color:#fff;padding:20px;box-shadow:0 10px 26px rgba(21,96,224,.35);}
+.tracklist{margin-top:26px;}
+.track{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:14px;transition:background .2s;}
+.track.active{background:var(--blue-50);}
+.track .tn{flex:1;font-size:13.5px;font-weight:600;}
+.track .td{font-size:11.5px;color:var(--muted);}
+
+/* CHAT */
+.chat{display:flex;flex-direction:column;gap:9px;padding-bottom:12px;}
+.msg{max-width:80%;padding:11px 15px;border-radius:19px;font-size:14px;line-height:1.45;animation:pop .28s;word-break:break-word;}
+.msg.me{align-self:flex-end;background:linear-gradient(160deg,var(--blue-400),var(--blue-600));color:#fff;border-bottom-right-radius:6px;box-shadow:0 5px 14px rgba(21,96,224,.25);}
+.msg.you{align-self:flex-start;background:#fff;border-bottom-left-radius:6px;border:1px solid var(--line);box-shadow:0 3px 10px rgba(20,60,130,.05);}
+.chatbar{display:flex;gap:9px;margin-top:14px;}
+.chatbar input{flex:1;padding:13px 16px;border-radius:16px;border:1.5px solid var(--line);background:#fff;font-size:14px;outline:none;}
+.chatbar input:focus{border-color:var(--blue-400);}
+.chatbar .btn{width:48px;padding:0;display:grid;place-items:center;}
+.chatbar .btn svg{width:20px;height:20px;}
+
+/* WEATHER */
+.whero{background:linear-gradient(160deg,#5b9bff,#1560e0);border-radius:26px;padding:26px 22px;color:#fff;text-align:center;box-shadow:0 14px 34px rgba(21,96,224,.3);margin-bottom:16px;}
+.whero .t{font-size:66px;font-weight:200;letter-spacing:-3px;line-height:1;}
+.whero .c{font-size:14px;opacity:.9;margin-top:8px;}
+.whero .ic{width:52px;height:52px;margin:0 auto 12px;}
+.wdays{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.wday{background:#fff;border-radius:18px;padding:13px 6px;text-align:center;border:1px solid var(--line);}
+.wday b{display:block;font-size:12px;font-weight:700;color:var(--muted);}
+.wday .di{width:24px;height:24px;margin:9px auto;color:var(--blue-500);}
+.wday span{font-size:13px;font-weight:700;}
+
+/* CALENDAR */
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.calhead b{font-size:16px;font-weight:700;text-transform:capitalize;}
+.calnav{width:36px;height:36px;border-radius:12px;background:var(--blue-50);color:var(--blue-600);display:grid;place-items:center;padding:9px;}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.calwd{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:6px 0;}
+.calday{aspect-ratio:1;display:grid;place-items:center;border-radius:12px;font-size:13px;font-weight:600;color:var(--ink);}
+.calday.mute{color:#c3d0e4;}
+.calday.today{background:linear-gradient(160deg,var(--blue-400),var(--blue-600));color:#fff;}
+
+/* BROWSER */
+.urlbar{display:flex;align-items:center;gap:9px;background:#fff;border-radius:16px;padding:10px 14px;border:1.5px solid var(--line);margin-bottom:14px;}
+.urlbar .lk{width:15px;height:15px;color:var(--blue-500);flex:0 0 auto;}
+.urlbar input{flex:1;border:none;outline:none;font-size:14px;background:transparent;}
+.bhome{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.bsite{background:#fff;border-radius:18px;padding:16px;border:1px solid var(--line);text-align:left;transition:transform .15s;}
+.bsite:active{transform:scale(.96);}
+.bsite .bi{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;color:#fff;padding:8px;margin-bottom:10px;}
+.bsite b{font-size:13.5px;display:block;}
+.bsite span{font-size:11px;color:var(--muted);}
+.bpage h2{font-size:20px;margin:0 0 12px;}
+.bpage p{font-size:14px;line-height:1.65;color:#3d5377;margin:0 0 12px;}
+
+/* CLOCK */
+.smallcard{background:#fff;border-radius:22px;padding:24px 18px;text-align:center;box-shadow:0 4px 16px rgba(20,60,130,.06);border:1px solid var(--line);}
+.smallcard .big{font-size:54px;font-weight:200;letter-spacing:-2.5px;color:var(--blue-700);}
+.smallcard .sub{font-size:12.5px;color:var(--muted);text-transform:capitalize;margin-top:4px;}
 </style>
 </head>
 <body>
-<div class="app">
-    <!-- РЕГИСТРАЦИЯ -->
-    <section
-        class="auth"
-        id="auth"
-    >
-        <div class="auth-card">
-            <div class="logo">
-                OR
-            </div>
-            <h1 class="auth-title">
-                Orbita AI
-            </h1>
-            <p class="auth-subtitle">
-                Твой умный голосовой помощник
-            </p>
-            <input
-                id="nameInput"
-                class="name-input"
-                type="text"
-                inputmode="text"
-                autocomplete="name"
-                autocapitalize="sentences"
-                spellcheck="false"
-                placeholder="Как тебя зовут?"
-                maxlength="30"
-            >
-            <button
-                id="startButton"
-                class="start-button"
-                type="button"
-            >
-                Продолжить
-            </button>
-        </div>
-    </section>
-    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
-    <main
-        class="main"
-        id="main"
-    >
-        <header class="header">
-            <div class="ai-info">
-                <div class="ai-avatar">
-                    OR
-                </div>
-                <div>
-                    <div class="ai-name">
-                        Orbita AI
-                    </div>
-                    <div class="online">
-                        ● онлайн
-                    </div>
-                </div>
-            </div>
-            <button
-                id="memoryButton"
-                class="menu-button"
-                type="button"
-            >
-                ☰
-            </button>
-        </header>
-        <!-- ЧАТ -->
-        <div
-            class="chat"
-            id="chat"
-        ></div>
-        <!-- ВВОД -->
-        <div class="input-area">
-            <div class="input-box">
-                <button
-                    id="voiceButton"
-                    class="icon-button"
-                    type="button"
-                    aria-label="Голосовой ввод"
-                >
-                    🎙️
-                </button>
-                <input
-                    id="messageInput"
-                    class="text-input"
-                    type="text"
-                    inputmode="text"
-                    autocomplete="off"
-                    autocapitalize="sentences"
-                    spellcheck="true"
-                    placeholder="Напиши сообщение..."
-                >
-                <button
-                    id="sendButton"
-                    class="icon-button send-button"
-                    type="button"
-                    aria-label="Отправить"
-                >
-                    ➤
-                </button>
-            </div>
-        </div>
-    </main>
-    <!-- ЭКРАН ГОЛОСА -->
-    <div
-        class="voice-screen"
-        id="voiceScreen"
-    >
-        <div class="voice-circle">
-            🎙️
-        </div>
-        <h2 class="voice-title">
-            Слушаю...
-        </h2>
-        <div class="voice-description">
-            Говори, Orbita AI тебя слушает
-        </div>
-        <button
-            id="stopVoiceButton"
-            class="stop-button"
-            type="button"
-        >
-            Остановить
-        </button>
+
+<div class="phone" id="phone">
+
+  <section class="lock" id="lock">
+    <div class="lock-top">
+      <div class="lock-icon" id="lockIcon"></div>
+      <div class="lock-time" data-live="time">00:00</div>
+      <div class="lock-date" data-live="date"></div>
     </div>
-    <!-- ПАМЯТЬ -->
-    <div
-        class="memory-overlay"
-        id="memoryOverlay"
-    >
-        <div
-            class="memory-card"
-            id="memoryCard"
-        >
-            <h2>
-                🧠 Память Orbita AI
-            </h2>
-            <div
-                class="memory-list"
-                id="memoryList"
-            ></div>
-            <br>
-            <button
-                id="clearMemoryButton"
-                class="clear-button"
-                type="button"
-            >
-                Очистить память
-            </button>
-        </div>
+    <div class="lock-card">
+      <div class="lc-ic" id="lcIcon"></div>
+      <div><b>MiniOS</b><span>Добро пожаловать в карманную систему</span></div>
     </div>
+    <div class="lock-bottom">
+      <div class="swipe-hint"><span class="arr" id="arrIcon"></span> Проведите вверх</div>
+      <div class="home-bar"></div>
+    </div>
+  </section>
+
+  <section class="home" id="home">
+    <div class="statusbar">
+      <div data-live="time">00:00</div>
+      <div class="sb-right">
+        <span class="sb-ic" id="sbSignal"></span>
+        <span class="sb-ic" id="sbWifi"></span>
+        <span class="sb-bat"><i id="sbBat" style="width:87%"></i></span>
+        <button class="sb-lock" id="lockBtn"></button>
+      </div>
+    </div>
+    <div class="homescroll">
+      <div class="widgets" id="widgetArea"></div>
+      <div class="grid" id="appGrid"></div>
+    </div>
+    <div class="dock" id="dock"></div>
+  </section>
+
+  <section class="appview" id="appView"></section>
 </div>
+
 <script>
-/* ==================================================
-   TELEGRAM
-================================================== */
-const tg =
-    window.Telegram &&
-    window.Telegram.WebApp
-        ? window.Telegram.WebApp
-        : null;
-if (tg) {
-    try {
-        tg.ready();
-        tg.expand();
-        if (tg.setHeaderColor) {
-            tg.setHeaderColor("#ffffff");
-        }
-        if (tg.setBackgroundColor) {
-            tg.setBackgroundColor("#ffffff");
-        }
-    } catch (error) {
-        console.log("Telegram WebApp:", error);
+/* ===================== ICONS ===================== */
+const svg=(p,f)=>`<svg viewBox="0 0 24 24" fill="${f||'none'}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const I={
+  photos:svg('<rect x="3" y="4.5" width="18" height="15" rx="3.6"/><circle cx="9" cy="10" r="1.8"/><path d="M3.6 17.4l4.2-3.9a2 2 0 0 1 2.7 0l2.9 2.7"/><path d="M13.9 15.8l1.7-1.5a2 2 0 0 1 2.7 0l2.1 1.9"/>'),
+  browser:svg('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.5 2.7 2.5 14.3 0 17"/><path d="M12 3.5c-2.5 2.7-2.5 14.3 0 17"/>'),
+  settings:svg('<circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.3M12 19.1v2.3M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.6 12h2.3M19.1 12h2.3M4.4 19.6l1.6-1.6M18 6l1.6-1.6"/>'),
+  calculator:svg('<rect x="5" y="2.8" width="14" height="18.4" rx="3.4"/><rect x="8.2" y="5.8" width="7.6" height="3.2" rx="1.2"/><path d="M8.8 12.7h.01M12 12.7h.01M15.2 12.7h.01M8.8 16.4h.01M12 16.4h.01M15.2 16.4h.01"/>'),
+  notes:svg('<rect x="4" y="3" width="16" height="18" rx="3.4"/><path d="M8 8.2h8M8 12h8M8 15.8h5"/>'),
+  music:svg('<path d="M9 18V6.4l10-2.1v11"/><circle cx="6.6" cy="18" r="2.6"/><circle cx="16.6" cy="15.3" r="2.6"/>'),
+  clock:svg('<circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3 2"/>'),
+  weather:svg('<circle cx="9" cy="8.6" r="2.9"/><path d="M9 3.4v1.4M3.8 8.6H5.2M4.6 4.2l1 1M13.4 4.2l-1 1"/><path d="M7.6 19.6h9a3.5 3.5 0 0 0 .3-7 4.6 4.6 0 0 0-8.7 1.3 3.4 3.4 0 0 0-.6 5.7z"/>'),
+  messages:svg('<path d="M4 6.6A3.6 3.6 0 0 1 7.6 3h8.8A3.6 3.6 0 0 1 20 6.6v5.8a3.6 3.6 0 0 1-3.6 3.6h-6.2l-4.6 3.6a1 1 0 0 1-1.6-.8z"/><path d="M8.6 8.6h6.8M8.6 12h4"/>'),
+  store:svg('<path d="M5 8.4h14l-1.1 10.1a2.6 2.6 0 0 1-2.6 2.3H8.7a2.6 2.6 0 0 1-2.6-2.3z"/><path d="M8.8 8.4V7a3.2 3.2 0 0 1 6.4 0v1.4"/>'),
+  calendar:svg('<rect x="3.5" y="5" width="17" height="15.6" rx="3.4"/><path d="M3.5 10h17M8 3.2v3.6M16 3.2v3.6"/><path d="M8.4 14h.01M12 14h.01M15.6 14h.01M8.4 17.2h.01M12 17.2h.01"/>'),
+  mail:svg('<rect x="3" y="5.2" width="18" height="13.6" rx="3.4"/><path d="M4.2 7.6l6.9 4.9a1.7 1.7 0 0 0 1.8 0l6.9-4.9"/>'),
+  maps:svg('<path d="M12 21s6.6-6.1 6.6-11.2A6.6 6.6 0 1 0 5.4 9.8C5.4 14.9 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/>'),
+  camera:svg('<rect x="3" y="6.6" width="18" height="12.8" rx="3.6"/><path d="M8.6 6.6l1.2-2.2h4.4l1.2 2.2"/><circle cx="12" cy="13" r="3.4"/>'),
+  fitness:svg('<path d="M12 20s-7.6-4.7-7.6-9.7A4.5 4.5 0 0 1 12 7.5a4.5 4.5 0 0 1 7.6 2.8C19.6 15.3 12 20 12 20z"/><path d="M7.4 12h2.3l1.3-2 2 4 1.2-2h2.4"/>'),
+  translate:svg('<path d="M4 5.8h7.2M7.6 4v1.8M4.6 5.8c.6 3.9 2.6 6.2 5.9 7.6"/><path d="M12.6 20.2l3.3-8.6 3.3 8.6M13.9 17.3h4"/>'),
+  games:svg('<path d="M7.6 7.4h8.8a5 5 0 0 1 5 5v.7a3 3 0 0 1-5.4 1.8l-1-1.2H9l-1 1.2a3 3 0 0 1-5.4-1.8v-.7a5 5 0 0 1 5-5z"/><path d="M7 10.9v2.4M5.8 12.1h2.4"/><path d="M15.8 11.5h.01M17.7 13.3h.01"/>'),
+  video:svg('<rect x="2.8" y="5.6" width="18.4" height="12.8" rx="3.6"/><path d="M10.3 9.4l4.7 2.6-4.7 2.6z"/>'),
+  chevron:svg('<path d="M15 5l-7 7 7 7"/>'),
+  plus:svg('<path d="M12 5.2v13.6M5.2 12h13.6"/>'),
+  trash:svg('<path d="M4 7h16M9.2 7V5.6A1.6 1.6 0 0 1 10.8 4h2.4a1.6 1.6 0 0 1 1.6 1.6V7"/><path d="M6.6 7l.9 12.1A2.1 2.1 0 0 0 9.6 21h4.8a2.1 2.1 0 0 0 2.1-1.9L17.4 7"/>'),
+  lock:svg('<rect x="5" y="10.4" width="14" height="10.2" rx="3.2"/><path d="M8.2 10.4V8a3.8 3.8 0 0 1 7.6 0v2.4"/>'),
+  signal:svg('<rect x="3" y="14" width="3" height="6.4" rx="1.1" fill="currentColor" stroke="none"/><rect x="8" y="11" width="3" height="9.4" rx="1.1" fill="currentColor" stroke="none"/><rect x="13" y="7.6" width="3" height="12.8" rx="1.1" fill="currentColor" stroke="none"/><rect x="18" y="4.2" width="3" height="16.2" rx="1.1" fill="currentColor" stroke="none"/>'),
+  wifi:svg('<path d="M3.4 9.2a13 13 0 0 1 17.2 0M6.4 12.6a8.6 8.6 0 0 1 11.2 0M9.4 16a4 4 0 0 1 5.2 0"/><circle cx="12" cy="19.2" r="1.1" fill="currentColor" stroke="none"/>'),
+  arrowUp:svg('<path d="M12 19V5M6 11l6-6 6 6"/>'),
+  search:svg('<circle cx="11" cy="11" r="6.6"/><path d="M15.9 15.9l4.6 4.6"/>'),
+  play:svg('<path d="M8 5.4l11 6.6-11 6.6z" fill="currentColor"/>'),
+  pause:svg('<rect x="7" y="5" width="3.6" height="14" rx="1.4" fill="currentColor" stroke="none"/><rect x="13.4" y="5" width="3.6" height="14" rx="1.4" fill="currentColor" stroke="none"/>'),
+  next:svg('<path d="M6 5.4l9 6.6-9 6.6z" fill="currentColor"/><rect x="16.4" y="5.4" width="2.4" height="13.2" rx="1.2" fill="currentColor" stroke="none"/>'),
+  prev:svg('<path d="M18 5.4l-9 6.6 9 6.6z" fill="currentColor"/><rect x="5.2" y="5.4" width="2.4" height="13.2" rx="1.2" fill="currentColor" stroke="none"/>'),
+  send:svg('<path d="M21 3L10.4 13.6M21 3l-6.8 18-3.8-7.4L3 9.8z"/>'),
+  sun:svg('<circle cx="12" cy="12" r="4"/><path d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/>'),
+  cloud:svg('<path d="M7.4 18.6h9.2a3.6 3.6 0 0 0 .3-7.2 4.7 4.7 0 0 0-8.9 1.3 3.5 3.5 0 0 0-.6 5.9z"/>'),
+  battery:svg('<rect x="2.6" y="7.4" width="16.8" height="9.2" rx="3"/><rect x="4.6" y="9.4" width="9" height="5.2" rx="1.6" fill="currentColor" stroke="none"/><path d="M21.2 11v2"/>'),
+  refresh:svg('<path d="M20.2 12a8.2 8.2 0 1 1-2.6-6"/><path d="M20.4 3.8v4.6h-4.6"/>'),
+  x:svg('<path d="M6 6l12 12M18 6L6 18"/>'),
+  flash:svg('<path d="M13 2 4 13h6l-1 9 9-11h-6z" fill="currentColor" stroke="none"/>'),
+  flashAuto:svg('<path d="M13 2 4 13h6l-1 9 9-11h-6z"/>'),
+  grid:svg('<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M9.2 3.5v17M14.8 3.5v17M3.5 9.2h17M3.5 14.8h17"/>'),
+  switchCam:svg('<path d="M4 12a8 8 0 0 1 13.5-5.8L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.5 5.8L4 15.5"/><path d="M4 20v-4.5h4.5"/>'),
+  rotate:svg('<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>'),
+  check:svg('<path d="M4 12.5l5 5 11-11"/>'),
+  edit:svg('<path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.1 2.1 0 1 1 3 3L12 15l-4 1 1-4z"/>'),
+  download:svg('<path d="M12 3v12M7 11l5 5 5-5"/><path d="M4 21h16"/>'),
+  image:svg('<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9" r="1.5"/><path d="M3.5 18l4.5-4a2 2 0 0 1 2.7 0l2.8 2.5"/><path d="M14.5 15.5l1.6-1.4a2 2 0 0 1 2.7 0l1.7 1.5"/>')
+};
+
+/* ===================== DB (IndexedDB) ===================== */
+const DB_NAME='minios',STORE='media';
+let _db=null;
+function openDB(){
+  return new Promise((res,rej)=>{
+    if(_db) return res(_db);
+    const req=indexedDB.open(DB_NAME,1);
+    req.onupgradeneeded=e=>{
+      const d=e.target.result;
+      if(!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});
+    };
+    req.onsuccess=e=>{_db=e.target.result;res(_db);};
+    req.onerror=()=>rej(req.error);
+  });
+}
+function dbAdd(item){return openDB().then(d=>new Promise((res,rej)=>{const tx=d.transaction(STORE,'readwrite');const r=tx.objectStore(STORE).add(item);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}));}
+function dbAll(){return openDB().then(d=>new Promise((res,rej)=>{const tx=d.transaction(STORE,'readonly');const r=tx.objectStore(STORE).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error);}));}
+function dbDel(id){return openDB().then(d=>new Promise((res,rej)=>{const tx=d.transaction(STORE,'readwrite');const r=tx.objectStore(STORE).delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error);}));}
+function dbPut(item){return openDB().then(d=>new Promise((res,rej)=>{const tx=d.transaction(STORE,'readwrite');const r=tx.objectStore(STORE).put(item);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}));}
+
+/* ===================== STATE ===================== */
+const KEY='minios.v3';
+const WALLPAPERS=[
+  'linear-gradient(160deg,#dbeafe,#93c5fd 55%,#3b82f6)',
+  'linear-gradient(160deg,#e0f2fe,#7dd3fc 50%,#2563eb)',
+  'linear-gradient(155deg,#eef2ff,#a5b4fc 55%,#4f46e5)',
+  'linear-gradient(165deg,#f0f9ff,#bae6fd 45%,#0284c7)',
+  'linear-gradient(150deg,#ffffff,#cfe3ff 50%,#1d4ed8)',
+  'linear-gradient(170deg,#e8f1ff,#8ab6ff 60%,#0f47ac)',
+  'linear-gradient(145deg,#f5faff,#a7d3ff 40%,#1e40af)',
+  'linear-gradient(160deg,#dff1ff,#60a5fa 55%,#1e3a8a)'
+];
+
+const state={
+  wallpaper:WALLPAPERS[0],
+  installed:['photos','camera','browser','store','settings','calculator','notes','music','clock','weather','messages'],
+  dock:['photos','camera','browser','settings'],
+  widgets:['clock','weather'],
+  notes:[{t:'Добро пожаловать в MiniOS!',d:Date.now()}],
+  battery:87,
+  clicks:0
+};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'{}');Object.keys(state).forEach(k=>{if(s[k]!==undefined)state[k]=s[k];});}catch(e){}}
+
+/* ===================== UTILS ===================== */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const pad=n=>String(n).padStart(2,'0');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isImage=s=>typeof s==='string'&&s.startsWith('data:image');
+const isVideo=s=>typeof s==='string'&&s.startsWith('data:video');
+const fmt=s=>Math.floor(s/60)+':'+pad(Math.floor(s%60));
+const haptic=(s='light')=>{try{Telegram?.WebApp?.HapticFeedback?.impactOccurred(s);}catch(e){}};
+const tg=window.Telegram?.WebApp;
+
+const phone=$('#phone'),lock=$('#lock'),home=$('#home'),appView=$('#appView');
+const widgetArea=$('#widgetArea'),appGrid=$('#appGrid'),dockEl=$('#dock');
+
+let currentApp=null;
+let appTimers=[];
+function clearTimers(){appTimers.forEach(t=>clearInterval(t));appTimers=[];}
+function addTimer(t){appTimers.push(t);return t;}
+
+/* ===================== WALLPAPER ===================== */
+function applyWallpaper(){
+  const wp=state.wallpaper;
+  if(isImage(wp)){
+    phone.style.backgroundImage=`url('${wp}')`;
+    phone.style.backgroundSize='cover';
+    phone.style.backgroundPosition='center';
+    lock.style.backgroundImage=`url('${wp}')`;
+    lock.style.backgroundSize='cover';
+    lock.style.backgroundPosition='center';
+    home.style.backgroundImage=`url('${wp}')`;
+    home.style.backgroundSize='cover';
+    home.style.backgroundPosition='center';
+  }else{
+    phone.style.backgroundImage=wp;
+    lock.style.backgroundImage=wp;
+    home.style.backgroundImage=wp;
+  }
+}
+
+/* ===================== MEDIA (общая функция) ===================== */
+// Медиа хранится в IndexedDB. Загружаем в память при старте.
+let mediaItems=[]; // {id, type:'photo'|'video', dataUrl, thumb, ts, dur}
+let mediaLoaded=false;
+
+async function loadMedia(){
+  try{
+    mediaItems=await dbAll();
+    mediaItems.sort((a,b)=>b.ts-a.ts);
+    mediaLoaded=true;
+  }catch(e){console.warn('db load fail',e);mediaLoaded=true;}
+}
+async function addMediaPhoto(dataUrl){
+  const item={type:'photo',dataUrl,ts:Date.now()};
+  const id=await dbAdd(item);
+  item.id=id;
+  mediaItems.unshift(item);
+  return item;
+}
+async function addMediaVideo(dataUrl,thumb,dur){
+  const item={type:'video',dataUrl,thumb,ts:Date.now(),dur};
+  const id=await dbAdd(item);
+  item.id=id;
+  mediaItems.unshift(item);
+  return item;
+}
+async function deleteMedia(id){
+  try{await dbDel(id);}catch(e){}
+  mediaItems=mediaItems.filter(m=>m.id!==id);
+}
+async function updateMedia(id,patch){
+  const item=mediaItems.find(m=>m.id===id);
+  if(!item) return;
+  Object.assign(item,patch);
+  try{await dbPut(item);}catch(e){}
+}
+
+/* ===================== APP ICONS / GRID ===================== */
+function appIconHTML(id){
+  const a=APPS[id];if(!a)return '';
+  return `<button class="app" data-app="${id}">
+    <span class="appicon" style="background:${a.grad}">${I[a.icon]}</span>
+    <span class="appname">${a.name}</span>
+  </button>`;
+}
+
+function renderHome(){
+  // widgets
+  if(state.widgets.length){
+    widgetArea.innerHTML=state.widgets.map(k=>{
+      const w=WIDGETS[k];if(!w)return '';
+      return `<div class="widget ${w.wide?'wide':''}">${w.render()}</div>`;
+    }).join('');
+  }else{
+    widgetArea.innerHTML=`<div class="emptyw">Виджетов нет.<br>Добавьте их в Магазине → Виджеты</div>`;
+  }
+  const gridApps=state.installed.filter(id=>!state.dock.includes(id)&&APPS[id]);
+  appGrid.innerHTML=gridApps.map(appIconHTML).join('');
+  const dockApps=state.dock.filter(id=>state.installed.includes(id)&&APPS[id]);
+  dockEl.innerHTML=dockApps.map(appIconHTML).join('');
+}
+
+// Event delegation (один раз)
+appGrid.addEventListener('click',e=>{
+  const a=e.target.closest('.app');if(!a)return;
+  haptic('light');openApp(a.dataset.app);
+});
+dockEl.addEventListener('click',e=>{
+  const a=e.target.closest('.app');if(!a)return;
+  haptic('light');openApp(a.dataset.app);
+});
+
+/* ===================== APP VIEW ===================== */
+function openApp(id,silent){
+  const app=APPS[id];if(!app)return;
+  clearTimers();
+  currentApp=id;
+  appView.dataset.app=id;
+  appView.dataset.full=app.full?'1':'0';
+  appView.innerHTML=`
+    <div class="apphead">
+      <button class="backbtn" id="backBtn">${I.chevron}</button>
+      <span class="apptitle">${app.name}</span>
+    </div>
+    <div class="appbody" id="appBody">${app.full?'':app.view()}</div>`;
+  if(app.full){
+    // full-screen app (camera) — рендерим внутри тела
+    $('#appBody').innerHTML=app.view();
+  }
+  if(!silent) requestAnimationFrame(()=>appView.classList.add('open'));
+  else appView.classList.add('open');
+  home.classList.add('blur');
+  $('#backBtn').onclick=closeApp;
+  if(app.mount) app.mount($('#appBody'));
+}
+function closeApp(){
+  if(currentApp==='camera'&&window.__camStop){window.__camStop();window.__camStop=null;}
+  clearTimers();
+  appView.classList.remove('open');
+  home.classList.remove('blur');
+  currentApp=null;
+  setTimeout(()=>{if(!currentApp)appView.innerHTML='';},420);
+}
+function refresh(){
+  renderHome();
+  if(currentApp) openApp(currentApp,true);
+}
+
+/* ===================== LOCK SCREEN ===================== */
+let dragY=null,dragId=null;
+function unlock(){lock.classList.add('hidden');}
+function lockScreen(){lock.classList.remove('hidden');lock.style.transform='';}
+lock.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.lock-card'))return;
+  dragY=e.clientY;dragId=e.pointerId;
+  try{lock.setPointerCapture(e.pointerId);}catch(_){}
+  lock.style.transition='none';
+});
+lock.addEventListener('pointermove',e=>{
+  if(dragY===null)return;
+  const dy=Math.min(0,e.clientY-dragY);
+  lock.style.transform='translateY('+dy+'px)';
+});
+lock.addEventListener('pointerup',e=>{
+  if(dragY===null)return;
+  const dy=e.clientY-dragY;
+  lock.style.transition='';lock.style.transform='';
+  dragY=null;dragId=null;
+  if(dy<-70)unlock();
+});
+lock.addEventListener('pointercancel',()=>{
+  dragY=null;lock.style.transition='';lock.style.transform='';
+});
+$('#lockBtn').onclick=lockScreen;
+
+/* ===================== TICK ===================== */
+function tick(){
+  const d=new Date();
+  const t=pad(d.getHours())+':'+pad(d.getMinutes());
+  const ds=d.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
+  $$('[data-live="time"]').forEach(e=>e.textContent=t);
+  $$('[data-live="date"]').forEach(e=>e.textContent=ds);
+  $$('[data-live="wt"]').forEach(e=>{
+    const off=+e.dataset.off||0;
+    const dd=new Date(d.getTime()+off*3600000);
+    e.textContent=pad(dd.getHours())+':'+pad(dd.getMinutes());
+  });
+}
+
+/* ===================== APPS CATALOG ===================== */
+const APPS={
+  photos:{name:'Галерея',icon:'photos',core:true,grad:'linear-gradient(150deg,#6fb2ff,#1a63e0)',desc:'Фото и видео',view:viewPhotos,mount:mountPhotos},
+  camera:{name:'Камера',icon:'camera',core:true,full:true,grad:'linear-gradient(150deg,#cbd5e1,#334155)',desc:'Съёмка',view:viewCamera,mount:mountCamera},
+  browser:{name:'Браузер',icon:'browser',core:true,grad:'linear-gradient(150deg,#67e8f9,#0891b2)',desc:'Интернет',view:viewBrowser,mount:mountBrowser},
+  store:{name:'Магазин',icon:'store',core:true,grad:'linear-gradient(150deg,#60a5fa,#1e40af)',desc:'Приложения',view:viewStore,mount:mountStore},
+  settings:{name:'Настройки',icon:'settings',core:true,grad:'linear-gradient(150deg,#94a3b8,#475569)',desc:'Обои, система',view:viewSettings,mount:mountSettings},
+  calculator:{name:'Калькулятор',icon:'calculator',core:true,grad:'linear-gradient(150deg,#7dd3fc,#1d4ed8)',desc:'Считает',view:viewCalc,mount:mountCalc},
+  notes:{name:'Заметки',icon:'notes',core:true,grad:'linear-gradient(150deg,#fcd34d,#f59e0b)',desc:'Записи',view:viewNotes,mount:mountNotes},
+  music:{name:'Музыка',icon:'music',core:true,grad:'linear-gradient(150deg,#c4b5fd,#7c3aed)',desc:'Плеер',view:viewMusic,mount:mountMusic},
+  clock:{name:'Часы',icon:'clock',core:true,grad:'linear-gradient(150deg,#a5b4fc,#4338ca)',desc:'Мировые часы',view:viewClock},
+  weather:{name:'Погода',icon:'weather',core:true,grad:'linear-gradient(150deg,#93c5fd,#2563eb)',desc:'Прогноз',view:viewWeather},
+  messages:{name:'Сообщения',icon:'messages',core:true,grad:'linear-gradient(150deg,#6ee7b7,#059669)',desc:'Чат',view:viewMessages,mount:mountMessages},
+  calendar:{name:'Календарь',icon:'calendar',core:false,grad:'linear-gradient(150deg,#fda4af,#e11d48)',desc:'Месяц',view:viewCalendar,mount:mountCalendar},
+  mail:{name:'Почта',icon:'mail',core:false,grad:'linear-gradient(150deg,#7dd3fc,#0369a1)',desc:'Письма',view:viewMail},
+  maps:{name:'Карты',icon:'maps',core:false,grad:'linear-gradient(150deg,#86efac,#15803d)',desc:'Навигация',view:viewMaps},
+  fitness:{name:'Фитнес',icon:'fitness',core:false,grad:'linear-gradient(150deg,#f9a8d4,#be185d)',desc:'Активность',view:viewFitness},
+  translate:{name:'Переводчик',icon:'translate',core:false,grad:'linear-gradient(150deg,#a7f3d0,#047857)',desc:'Слова',view:viewTranslate,mount:mountTranslate},
+  games:{name:'Игры',icon:'games',core:false,grad:'linear-gradient(150deg,#fdba74,#ea580c)',desc:'Кликер',view:viewGames,mount:mountGames},
+  video:{name:'Видео',icon:'video',core:false,grad:'linear-gradient(150deg,#f0abfc,#a21caf)',desc:'Плейлист',view:viewVideo}
+};
+
+/* ===================== WIDGETS ===================== */
+const WIDGETS={
+  clock:{name:'Часы',icon:'clock',grad:'linear-gradient(150deg,#6fb2ff,#1a63e0)',wide:true,
+    render:()=>`<div class="w-lbl">Часы</div><div class="w-clock" data-live="time">00:00</div><div class="w-date" data-live="date"></div>`},
+  weather:{name:'Погода',icon:'weather',grad:'linear-gradient(150deg,#8fd0ff,#2b7fff)',
+    render:()=>`<div class="w-lbl">Погода</div><div class="w-row" style="margin-top:6px"><span class="w-ic">${I.sun}</span><span class="w-temp">+21°</span></div><div class="w-sub">Ясно · Москва</div>`},
+  battery:{name:'Батарея',icon:'battery',grad:'linear-gradient(150deg,#9ae6b4,#16a34a)',
+    render:()=>`<div class="w-lbl">Батарея</div><div class="w-big" style="margin-top:4px">${state.battery}%</div><div class="w-bar"><i style="width:${state.battery}%"></i></div>`},
+  notes:{name:'Заметки',icon:'notes',grad:'linear-gradient(150deg,#fcd34d,#f59e0b)',
+    render:()=>{const n=state.notes[0];return `<div class="w-lbl">Заметка</div><div style="font-size:13px;font-weight:600;margin-top:6px;line-height:1.35;max-height:38px;overflow:hidden">${n?esc(n.t):'Пока пусто'}</div>`;}},
+  music:{name:'Музыка',icon:'music',grad:'linear-gradient(150deg,#c4b5fd,#7c3aed)',
+    render:()=>`<div class="w-lbl">Сейчас играет</div><div class="w-row" style="margin-top:6px"><span class="w-ic">${I.music}</span><div><div style="font-size:12.5px;font-weight:700">Blue Horizon</div><div class="w-sub">MiniOS Sound</div></div></div>`},
+  calendar:{name:'Календарь',icon:'calendar',grad:'linear-gradient(150deg,#fda4af,#e11d48)',
+    render:()=>{const d=new Date();return `<div class="w-lbl">Сегодня</div><div class="w-row" style="margin-top:6px;align-items:flex-end;gap:10px"><div class="w-big" style="font-size:34px;line-height:1">${d.getDate()}</div><div class="w-sub" style="text-transform:capitalize">${d.toLocaleDateString('ru-RU',{month:'long'})}</div></div><div class="w-sub">${d.toLocaleDateString('ru-RU',{weekday:'long'})}</div>`;}}
+};
+
+/* ===================== GALLERY ===================== */
+function viewPhotos(){
+  // Строим из mediaItems + кнопка загрузки
+  const tiles=mediaItems.map(m=>{
+    if(m.type==='photo'){
+      return `<button class="gtile" data-mid="${m.id}"><img class="gtile-img" src="${m.dataUrl}" alt=""/></button>`;
     }
+    return `<button class="gtile gtile-video" data-mid="${m.id}">
+      <img class="gtile-img" src="${m.thumb||''}" alt=""/>
+      ${m.dur?`<span class="gtile-vdur">${fmt(m.dur)}</span>`:''}
+    </button>`;
+  }).join('');
+
+  const addTile=`<button class="gtile gtile-add" id="addPhotoBtn">${I.plus}</button>`;
+  const empty=mediaItems.length?'':`<div class="empty" style="grid-column:span 3">Галерея пуста.<br>Снимите фото в Камере или загрузите из устройства.</div>`;
+
+  return `<div class="gallery">${addTile}${tiles}</div>${empty}
+    <div class="hintline">Нажмите на медиа, чтобы открыть редактор</div>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden/>`;
 }
-/* ==================================================
-   ELEMENTS
-================================================== */
-const auth =
-    document.getElementById("auth");
-const main =
-    document.getElementById("main");
-const nameInput =
-    document.getElementById("nameInput");
-const startButton =
-    document.getElementById("startButton");
-const chat =
-    document.getElementById("chat");
-const messageInput =
-    document.getElementById("messageInput");
-const sendButton =
-    document.getElementById("sendButton");
-const voiceButton =
-    document.getElementById("voiceButton");
-const voiceScreen =
-    document.getElementById("voiceScreen");
-const stopVoiceButton =
-    document.getElementById("stopVoiceButton");
-const memoryButton =
-    document.getElementById("memoryButton");
-const memoryOverlay =
-    document.getElementById("memoryOverlay");
-const memoryList =
-    document.getElementById("memoryList");
-const clearMemoryButton =
-    document.getElementById("clearMemoryButton");
-/* ==================================================
-   STATE
-================================================== */
-let userName =
-    localStorage.getItem("orbita_ai_name") || "";
-let memory =
-    readJSON(
-        "orbita_ai_memory",
-        []
-    );
-let messages =
-    readJSON(
-        "orbita_ai_messages",
-        []
-    );
-let recognition = null;
-/* ==================================================
-   LOCAL STORAGE
-================================================== */
-function readJSON(key, fallback) {
-    try {
-        const value =
-            localStorage.getItem(key);
-        if (!value) {
-            return fallback;
-        }
-        const parsed =
-            JSON.parse(value);
-        return parsed;
-    } catch (error) {
-        console.error(error);
-        return fallback;
+
+function mountPhotos(root){
+  const inp=$('#fileInput',root);
+  $('#addPhotoBtn',root).onclick=()=>inp.click();
+
+  inp.onchange=async e=>{
+    const files=Array.from(e.target.files||[]);
+    for(const f of files){
+      if(!f.type.startsWith('image/'))continue;
+      const url=await readFileAsDataURL(f);
+      // сжимаем если слишком большое
+      const compressed=await compressImage(url,1600,0.85);
+      await addMediaPhoto(compressed);
     }
+    openApp('photos',true);
+  };
+
+  root.querySelectorAll('[data-mid]').forEach(el=>{
+    el.onclick=()=>openViewer(+el.dataset.mid);
+  });
 }
-function saveData() {
-    localStorage.setItem(
-        "orbita_ai_name",
-        userName
-    );
-    localStorage.setItem(
-        "orbita_ai_memory",
-        JSON.stringify(memory)
-    );
-    localStorage.setItem(
-        "orbita_ai_messages",
-        JSON.stringify(messages)
-    );
+
+function readFileAsDataURL(file){
+  return new Promise(res=>{
+    const fr=new FileReader();
+    fr.onload=()=>res(fr.result);
+    fr.readAsDataURL(file);
+  });
 }
-/* ==================================================
-   REGISTRATION
-================================================== */
-function register() {
-    const name =
-        nameInput.value.trim();
-    if (!name) {
-        nameInput.classList.remove("shake");
-        void nameInput.offsetWidth;
-        nameInput.classList.add("shake");
-        nameInput.focus();
+
+function compressImage(dataUrl,maxSide,quality){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      let {width:w,height:h}=img;
+      if(Math.max(w,h)>maxSide){
+        const k=maxSide/Math.max(w,h);
+        w=Math.round(w*k);h=Math.round(h*k);
+      }
+      const cv=document.createElement('canvas');
+      cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      res(cv.toDataURL('image/jpeg',quality));
+    };
+    img.onerror=()=>res(dataUrl);
+    img.src=dataUrl;
+  });
+}
+
+/* ===================== VIEWER / EDITOR ===================== */
+let viewerState=null;
+
+function openViewer(id){
+  const m=mediaItems.find(x=>x.id===id);
+  if(!m)return;
+  viewerState={
+    item:m,
+    rotation:0,
+    filter:{brightness:100,contrast:100,saturate:100,blur:0,sepia:0,grayscale:0},
+    tool:'none'
+  };
+  renderViewer();
+}
+
+function renderViewer(){
+  const m=viewerState.item;
+  const f=viewerState.filter;
+  const cssFilter=`brightness(${f.brightness}%) contrast(${f.contrast}%) saturate(${f.saturate}%) blur(${f.blur}px) sepia(${f.sepia}%) grayscale(${f.grayscale}%)`;
+
+  let mediaHTML;
+  if(m.type==='photo'){
+    mediaHTML=`<img id="vMedia" src="${m.dataUrl}" style="filter:${cssFilter};transform:rotate(${viewerState.rotation}deg);" alt=""/>`;
+  }else{
+    mediaHTML=`<video id="vMedia" src="${m.dataUrl}" controls style="filter:${cssFilter}" playsinline></video>`;
+  }
+
+  const toolChips=`
+    <button class="toolchip ${viewerState.tool==='adjust'?'active':''}" data-tool="adjust"><span class="ti">${I.edit}</span>Фильтры</button>
+    <button class="toolchip" data-tool="rotate"><span class="ti">${I.rotate}</span>Повернуть</button>
+    <button class="toolchip" data-tool="wallpaper"><span class="ti">${I.image}</span>Обои</button>
+    <button class="toolchip" data-tool="download"><span class="ti">${I.download}</span>Скачать</button>
+  `;
+
+  let sliderHTML='';
+  if(viewerState.tool==='adjust'&&m.type==='photo'){
+    sliderHTML=`
+      <div class="sliderbox">
+        <label>Яркость <span data-val="brightness">${f.brightness}%</span></label>
+        <input type="range" min="20" max="200" value="${f.brightness}" data-f="brightness"/>
+      </div>
+      <div class="sliderbox">
+        <label>Контраст <span data-val="contrast">${f.contrast}%</span></label>
+        <input type="range" min="20" max="200" value="${f.contrast}" data-f="contrast"/>
+      </div>
+      <div class="sliderbox">
+        <label>Насыщенность <span data-val="saturate">${f.saturate}%</span></label>
+        <input type="range" min="0" max="250" value="${f.saturate}" data-f="saturate"/>
+      </div>
+      <div class="sliderbox">
+        <label>Размытие <span data-val="blur">${f.blur}px</span></label>
+        <input type="range" min="0" max="10" value="${f.blur}" data-f="blur"/>
+      </div>
+      <div class="sliderbox">
+        <label>Сепия <span data-val="sepia">${f.sepia}%</span></label>
+        <input type="range" min="0" max="100" value="${f.sepia}" data-f="sepia"/>
+      </div>
+      <div class="sliderbox">
+        <label>Ч/Б <span data-val="grayscale">${f.grayscale}%</span></label>
+        <input type="range" min="0" max="100" value="${f.grayscale}" data-f="grayscale"/>
+      </div>
+      <button class="btn ghost" id="vReset" style="width:100%;margin-top:6px;background:rgba(255,255,255,.12);color:#fff;">Сбросить фильтры</button>
+    `;
+  }
+
+  const overlay=document.createElement('div');
+  overlay.className='viewer';
+  overlay.id='viewer';
+  overlay.innerHTML=`
+    <div class="viewer-top">
+      <button class="viewer-close" id="vClose">${I.x}</button>
+      <span class="viewer-info">${m.type==='photo'?'Фото':'Видео'} · ${new Date(m.ts).toLocaleDateString('ru-RU')}</span>
+      <span style="width:40px"></span>
+    </div>
+    <div class="viewer-stage" id="vStage">${mediaHTML}</div>
+    <div class="viewer-tools">${toolChips}</div>
+    <div id="vSliders">${sliderHTML}</div>
+    <div class="viewer-actions">
+      <button class="btn" id="vSave" style="display:${viewerState.tool==='adjust'&&m.type==='photo'?'flex':'none'};justify-content:center;">${I.check}Сохранить</button>
+      <button class="btn danger" id="vDelete">${I.trash}Удалить</button>
+    </div>
+  `;
+  // удаляем старый viewer если есть
+  const old=document.getElementById('viewer');if(old)old.remove();
+  document.body.appendChild(overlay);
+
+  // events
+  $('#vClose').onclick=()=>overlay.remove();
+
+  $$('.toolchip',overlay).forEach(b=>{
+    b.onclick=()=>{
+      const t=b.dataset.tool;
+      if(t==='rotate'){
+        if(m.type==='photo'){
+          viewerState.rotation=(viewerState.rotation+90)%360;
+          const img=$('#vMedia',overlay);
+          if(img)img.style.transform=`rotate(${viewerState.rotation}deg)`;
+        }
         return;
-    }
-    userName = name;
-    saveData();
-    auth.classList.add("hidden");
-    setTimeout(() => {
-        main.classList.add("visible");
-        loadMessages();
-        if (messages.length === 0) {
-            setTimeout(() => {
-                const welcome =
-                    `Привет, ${userName}! 👋\n\n` +
-                    `Я Orbita AI. Со мной можно ` +
-                    `общаться текстом или голосом. ` +
-                    `Я также могу запоминать ` +
-                    `информацию, которую ты попросишь меня запомнить.`;
-                addMessage(
-                    "ai",
-                    welcome,
-                    true
-                );
-            }, 350);
+      }
+      if(t==='wallpaper'){
+        if(m.type==='photo'){
+          state.wallpaper=m.dataUrl;save();applyWallpaper();
+          closeToast(overlay,'Установлено как обои ✓');
+        }else{
+          closeToast(overlay,'Только для фото');
         }
-    }, 300);
+        return;
+      }
+      if(t==='download'){
+        const a=document.createElement('a');
+        a.href=m.dataUrl;
+        a.download='minios_'+Date.now()+(m.type==='photo'?'.jpg':'.webm');
+        a.click();
+        return;
+      }
+      viewerState.tool=t==='adjust'?'adjust':'none';
+      renderViewer();
+    };
+  });
+
+  $$('#vSliders input[type=range]',overlay).forEach(r=>{
+    r.oninput=()=>{
+      const k=r.dataset.f;
+      viewerState.filter[k]=+r.value;
+      const lab=$(`[data-val="${k}"]`,overlay);
+      if(lab)lab.textContent=+r.value+(k==='blur'?'px':'%');
+      const media=$('#vMedia',overlay);
+      if(media){
+        const f2=viewerState.filter;
+        media.style.filter=`brightness(${f2.brightness}%) contrast(${f2.contrast}%) saturate(${f2.saturate}%) blur(${f2.blur}px) sepia(${f2.sepia}%) grayscale(${f2.grayscale}%)`;
+      }
+    };
+  });
+
+  const reset=$('#vReset',overlay);
+  if(reset)reset.onclick=()=>{
+    viewerState.filter={brightness:100,contrast:100,saturate:100,blur:0,sepia:0,grayscale:0};
+    renderViewer();
+  };
+
+  $('#vSave').onclick=async()=>{
+    if(m.type!=='photo')return;
+    const img=new Image();
+    img.onload=async()=>{
+      const cv=document.createElement('canvas');
+      const rot=viewerState.rotation;
+      const w=img.width,h=img.height;
+      if(rot===90||rot===270){cv.width=h;cv.height=w;}
+      else{cv.width=w;cv.height=h;}
+      const ctx=cv.getContext('2d');
+      ctx.translate(cv.width/2,cv.height/2);
+      ctx.rotate(rot*Math.PI/180);
+      ctx.filter=`brightness(${viewerState.filter.brightness}%) contrast(${viewerState.filter.contrast}%) saturate(${viewerState.filter.saturate}%) blur(${viewerState.filter.blur}px) sepia(${viewerState.filter.sepia}%) grayscale(${viewerState.filter.grayscale}%)`;
+      ctx.drawImage(img,-w/2,-h/2,w,h);
+      const out=cv.toDataURL('image/jpeg',0.9);
+      await updateMedia(m.id,{dataUrl:out});
+      // если это были обои — обновим
+      if(state.wallpaper===m.dataUrl){
+        state.wallpaper=out;save();applyWallpaper();
+      }
+      overlay.remove();
+      openApp('photos',true);
+    };
+    img.src=m.dataUrl;
+  };
+
+  $('#vDelete').onclick=async()=>{
+    if(!confirm('Удалить это медиа?'))return;
+    await deleteMedia(m.id);
+    overlay.remove();
+    openApp('photos',true);
+  };
+
+  function closeToast(container,msg){
+    const t=document.createElement('div');
+    t.textContent=msg;
+    t.style.cssText='position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(10,25,55,.9);color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:600;z-index:20;';
+    container.appendChild(t);
+    setTimeout(()=>t.remove(),1500);
+  }
 }
-/* ==================================================
-   START
-================================================== */
-startButton.addEventListener(
-    "click",
-    register
-);
-nameInput.addEventListener(
-    "keydown",
-    function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            register();
-        }
+
+/* ===================== CAMERA ===================== */
+const cam={
+  stream:null,track:null,facing:'environment',torchOn:false,torchSupported:false,
+  mode:'photo',recording:false,rec:null,chunks:[],recTimer:null,recStart:0,
+  gridOn:false,frontMirror:true
+};
+
+function viewCamera(){
+  return `<div class="cam" id="cam">
+    <video class="cam-video" id="camVideo" autoplay playsinline muted></video>
+    <div class="cam-overlay"></div>
+    <div class="cam-grid ${cam.gridOn?'on':''}" id="camGrid"><i></i><i></i><i></i><i></i></div>
+
+    <div class="cam-topbar">
+      <button class="cam-chip" id="camFlash"><span class="ci">${I.flash}</span><span class="cl">Фонарик</span></button>
+      <div style="flex:1"></div>
+      <button class="cam-chip" id="camGridBtn" title="Сетка"><span class="ci">${I.grid}</span></button>
+    </div>
+
+    <div class="cam-timer" id="camTimer"><span class="dot"></span><span id="camTimerVal">00:00</span></div>
+
+    <div class="cam-modes">
+      <button class="cam-mode active" data-mode="photo">Фото</button>
+      <button class="cam-mode" data-mode="video">Видео</button>
+    </div>
+
+    <div class="cam-bottombar">
+      <button class="cam-thumb" id="camThumb"></button>
+      <button class="cam-shutter" id="camShutter"><i></i></button>
+      <button class="cam-side" id="camFlip">${I.switchCam}</button>
+    </div>
+
+    <div class="cam-flash" id="camFlashOverlay"></div>
+
+    <div class="cam-fallback" id="camFallback" hidden>
+      <div class="cf-ic">${I.camera}</div>
+      <div class="cf-t">Камера недоступна</div>
+      <div class="cf-s" id="camFallbackText">Разрешите доступ к камере</div>
+      <button class="btn" id="camRetry">Попробовать снова</button>
+    </div>
+  </div>`;
+}
+
+async function mountCamera(root){
+  const video=$('#camVideo',root),flashBtn=$('#camFlash',root),gridBtn=$('#camGridBtn',root),
+    flipBtn=$('#camFlip',root),shutter=$('#camShutter',root),fallback=$('#camFallback',root),
+    fallbackText=$('#camFallbackText',root),thumb=$('#camThumb',root),timer=$('#camTimer',root),
+    timerVal=$('#camTimerVal',root),flashOverlay=$('#camFlashOverlay',root);
+
+  updateThumb();
+  gridBtn.classList.toggle('on',cam.gridOn);
+
+  async function start(){
+    stop();
+    try{
+      cam.stream=await navigator.mediaDevices.getUserMedia({
+        audio:cam.mode==='video',
+        video:{facingMode:{ideal:cam.facing},width:{ideal:1920},height:{ideal:1080}}
+      });
+      video.srcObject=cam.stream;
+      cam.track=cam.stream.getVideoTracks()[0];
+      const cap=cam.track.getCapabilities?.()||{};
+      cam.torchSupported=!!cap.torch&&cam.facing==='environment';
+      flashBtn.toggleAttribute('disabled',!cam.torchSupported);
+      flashBtn.classList.toggle('on',cam.torchOn&&cam.torchSupported);
+
+      // зеркалим фронталку
+      const isFront=cam.facing==='user';
+      video.classList.toggle('mirror',isFront&&cam.frontMirror);
+
+      fallback.hidden=true;
+    }catch(err){
+      console.warn('cam error',err);
+      fallback.hidden=false;
+      if(err.name==='NotAllowedError')fallbackText.textContent='Доступ к камере запрещён. Разрешите его в настройках Telegram.';
+      else if(err.name==='NotFoundError')fallbackText.textContent='Камера не найдена на этом устройстве.';
+      else fallbackText.textContent='Не удалось запустить камеру: '+(err.message||err.name);
     }
-);
-/* ==================================================
-   AUTO LOGIN
-================================================== */
-window.addEventListener(
-    "load",
-    function() {
-        if (userName) {
-            auth.classList.add("hidden");
-            setTimeout(() => {
-                main.classList.add("visible");
-                loadMessages();
-            }, 100);
-        } else {
-            setTimeout(() => {
-                nameInput.focus();
-            }, 400);
-        }
+  }
+  function stop(){
+    if(cam.recording)stopRecording();
+    if(cam.stream){cam.stream.getTracks().forEach(t=>t.stop());cam.stream=null;cam.track=null;}
+  }
+  window.__camStop=stop;
+
+  function updateThumb(){
+    const last=mediaItems[0];
+    if(last){
+      const src=last.type==='photo'?last.dataUrl:(last.thumb||'');
+      thumb.style.backgroundImage=`url('${src}')`;
+      thumb.style.backgroundSize='cover';
+      thumb.style.backgroundPosition='center';
+    }else{
+      thumb.style.backgroundImage='linear-gradient(160deg,#6fb2ff,#1a63e0)';
     }
-);
-/* ==================================================
-   CHAT MESSAGES
-================================================== */
-function loadMessages() {
-    chat.innerHTML = "";
-    messages.forEach(
-        message => {
-            renderMessage(
-                message.type,
-                message.text
-            );
-        }
-    );
-    scrollChat();
-}
-function renderMessage(
-    type,
-    text
-) {
-    const wrapper =
-        document.createElement("div");
-    wrapper.className =
-        "message " + type;
-    const bubble =
-        document.createElement("div");
-    bubble.className =
-        "bubble";
-    bubble.textContent =
-        text;
-    wrapper.appendChild(bubble);
-    chat.appendChild(wrapper);
-}
-function addMessage(
-    type,
-    text,
-    save = true
-) {
-    renderMessage(
-        type,
-        text
-    );
-    if (save) {
-        messages.push({
-            type: type,
-            text: text
-        });
-        saveData();
+  }
+
+  /* --- Фонарик --- */
+  flashBtn.onclick=async()=>{
+    if(!cam.torchSupported)return;
+    haptic('medium');
+    const next=!cam.torchOn;
+    try{
+      await cam.track.applyConstraints({advanced:[{torch:next}]});
+      cam.torchOn=next;
+      flashBtn.classList.toggle('on',next);
+    }catch(e){
+      cam.torchOn=false;flashBtn.classList.remove('on');
     }
-    scrollChat();
+  };
+
+  /* --- Сетка --- */
+  gridBtn.onclick=()=>{
+    haptic('light');
+    cam.gridOn=!cam.gridOn;
+    $('#camGrid',root).classList.toggle('on',cam.gridOn);
+    gridBtn.classList.toggle('on',cam.gridOn);
+  };
+
+  /* --- Смена камеры --- */
+  flipBtn.onclick=()=>{
+    haptic('light');
+    cam.facing=cam.facing==='environment'?'user':'environment';
+    cam.torchOn=false;flashBtn.classList.remove('on');
+    start();
+  };
+
+  /* --- Режим фото/видео --- */
+  root.querySelectorAll('[data-mode]').forEach(b=>{
+    b.onclick=()=>{
+      if(cam.recording)return;
+      haptic('light');
+      cam.mode=b.dataset.mode;
+      root.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));
+      start(); // перезапуск для audio в видео
+    };
+  });
+
+  /* --- Съёмка --- */
+  function screenFlash(){
+    flashOverlay.classList.remove('fire');
+    void flashOverlay.offsetWidth;
+    flashOverlay.classList.add('fire');
+  }
+
+  shutter.onclick=async()=>{
+    if(!cam.track)return;
+    if(cam.mode==='photo'){
+      haptic('medium');
+      screenFlash();
+      // визуальный эффект
+      const w=video.videoWidth,h=video.videoHeight;
+      if(!w||!h)return;
+      const cv=document.createElement('canvas');
+      cv.width=w;cv.height=h;
+      const ctx=cv.getContext('2d');
+      if(cam.facing==='user'&&cam.frontMirror){ctx.translate(w,0);ctx.scale(-1,1);}
+      ctx.drawImage(video,0,0,w,h);
+      const dataUrl=cv.toDataURL('image/jpeg',0.85);
+      const compressed=await compressImage(dataUrl,1600,0.82);
+      await addMediaPhoto(compressed);
+      updateThumb();
+      haptic('heavy');
+    }else{
+      // видео
+      if(cam.recording){
+        stopRecording();
+      }else{
+        startRecording();
+      }
+    }
+  };
+
+  function startRecording(){
+    try{
+      cam.chunks=[];
+      const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'].find(m=>MediaRecorder.isTypeSupported(m))||'';
+      cam.rec=new MediaRecorder(cam.stream,mime?{mimeType:mime}:undefined);
+      cam.rec.ondataavailable=e=>{if(e.data&&e.data.size)cam.chunks.push(e.data);};
+      cam.rec.onstop=async()=>{
+        if(cam.chunks.length){
+          const blob=new Blob(cam.chunks,{type:cam.rec.mimeType||'video/webm'});
+          const dur=Math.round((Date.now()-cam.recStart)/1000);
+          const dataUrl=await blobToDataURL(blob);
+          const thumb=await captureVideoThumb(video);
+          await addMediaVideo(dataUrl,thumb,dur);
+          updateThumb();
+        }
+      };
+      cam.rec.start();
+      cam.recording=true;
+      cam.recStart=Date.now();
+      shutter.classList.add('rec');
+      timer.classList.add('on');
+      haptic('heavy');
+
+      cam.recTimer=setInterval(()=>{
+        const s=Math.floor((Date.now()-cam.recStart)/1000);
+        timerVal.textContent=fmt(s);
+        // авто-стоп на 60 сек
+        if(s>=60)stopRecording();
+      },250);
+    }catch(e){
+      console.warn('rec error',e);
+    }
+  }
+  function stopRecording(){
+    if(!cam.recording)return;
+    try{cam.rec.stop();}catch(e){}
+    cam.recording=false;
+    clearInterval(cam.recTimer);
+    cam.recTimer=null;
+    shutter.classList.remove('rec');
+    timer.classList.remove('on');
+    haptic('medium');
+  }
+
+  async function captureVideoThumb(videoEl){
+    const w=videoEl.videoWidth,h=videoEl.videoHeight;
+    if(!w||!h)return '';
+    const cv=document.createElement('canvas');
+    cv.width=w;cv.height=h;
+    cv.getContext('2d').drawImage(videoEl,0,0,w,h);
+    return cv.toDataURL('image/jpeg',0.7);
+  }
+
+  thumb.onclick=()=>{stop();openApp('photos');};
+  $('#camRetry',root).onclick=()=>start();
+
+  await start();
 }
-function scrollChat() {
-    requestAnimationFrame(() => {
-        chat.scrollTop =
-            chat.scrollHeight;
+
+function blobToDataURL(blob){
+  return new Promise(res=>{
+    const fr=new FileReader();
+    fr.onload=()=>res(fr.result);
+    fr.readAsDataURL(blob);
+  });
+}
+
+/* ===================== SETTINGS ===================== */
+function viewSettings(){
+  const presets=WALLPAPERS.map(w=>`<button class="wpswatch ${state.wallpaper===w?'sel':''}" data-wp="${w}" style="background:${w}"></button>`).join('');
+  const fromGallery=mediaItems.filter(m=>m.type==='photo').slice(0,8).map(m=>
+    `<button class="wpswatch ${state.wallpaper===m.dataUrl?'sel':''}" data-mid="${m.id}" style="background-image:url('${m.dataUrl}')"></button>`
+  ).join('');
+
+  const wgRows=Object.entries(WIDGETS).map(([k,w])=>{
+    const on=state.widgets.includes(k);
+    return `<div class="row">
+      <span class="row-ic" style="background:${w.grad}">${I[w.icon]}</span>
+      <span class="row-t">${w.name}</span>
+      <button class="switch ${on?'on':''}" data-wg="${k}"><i></i></button>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="sect"><h3>Обои системы</h3>
+      <div class="wpgrid">
+        ${presets}
+        <button class="uploadbtn" id="uploadWallpaper">${I.plus}Загрузить своё фото</button>
+      </div>
+      <input type="file" id="wallFileInput" accept="image/*" hidden/>
+    </div>
+
+    ${fromGallery?`<div class="sect"><h3>Из галереи</h3>
+      <div class="wpgrid">${fromGallery}</div>
+    </div>`:''}
+
+    <div class="sect"><h3>Виджеты</h3>
+      <div style="border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(20,60,130,.05)">${wgRows}</div>
+    </div>
+
+    <div class="sect"><h3>Система</h3>
+      <div style="border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(20,60,130,.05)">
+        <div class="row">
+          <span class="row-ic" style="background:linear-gradient(150deg,#6fb2ff,#1a63e0)">${I.store}</span>
+          <span class="row-t">Приложений<br><span class="row-s">${state.installed.length} шт.</span></span>
+        </div>
+        <div class="row">
+          <span class="row-ic" style="background:linear-gradient(150deg,#f9a8d4,#be185d)">${I.photos}</span>
+          <span class="row-t">Медиафайлов<br><span class="row-s">${mediaItems.length} шт.</span></span>
+        </div>
+        <div class="row">
+          <span class="row-ic" style="background:linear-gradient(150deg,#a5b4fc,#4338ca)">${I.clock}</span>
+          <span class="row-t">Версия<br><span class="row-s">MiniOS 3.0</span></span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn danger" id="resetBtn" style="width:100%">Сбросить всё</button>
+    <div class="hintline">MiniOS · для Telegram</div>`;
+}
+
+function mountSettings(root){
+  root.querySelectorAll('[data-wp]').forEach(b=>{
+    b.onclick=()=>{state.wallpaper=b.dataset.wp;save();applyWallpaper();refresh();};
+  });
+  root.querySelectorAll('[data-mid]').forEach(b=>{
+    b.onclick=()=>{
+      const m=mediaItems.find(x=>x.id===+b.dataset.mid);
+      if(m){state.wallpaper=m.dataUrl;save();applyWallpaper();refresh();}
+    };
+  });
+  const up=$('#uploadWallpaper',root),upInp=$('#wallFileInput',root);
+  up.onclick=()=>upInp.click();
+  upInp.onchange=async e=>{
+    const f=e.target.files?.[0];if(!f)return;
+    const url=await readFileAsDataURL(f);
+    const comp=await compressImage(url,1920,0.9);
+    state.wallpaper=comp;save();applyWallpaper();refresh();
+  };
+  root.querySelectorAll('[data-wg]').forEach(b=>{
+    b.onclick=()=>{
+      const k=b.dataset.wg;const i=state.widgets.indexOf(k);
+      if(i>=0)state.widgets.splice(i,1);else state.widgets.push(k);
+      save();refresh();
+    };
+  });
+  const rb=$('#resetBtn',root);
+  if(rb)rb.onclick=async()=>{
+    if(!confirm('Удалить все данные и настройки?'))return;
+    localStorage.removeItem(KEY);
+    const all=await dbAll();
+    for(const m of all)await dbDel(m.id);
+    location.reload();
+  };
+}
+
+/* ===================== STORE ===================== */
+let storeTab='apps';
+function viewStore(){
+  return `<div class="tabs">
+    <button class="tab ${storeTab==='apps'?'active':''}" data-tab="apps">Приложения</button>
+    <button class="tab ${storeTab==='widgets'?'active':''}" data-tab="widgets">Виджеты</button>
+  </div><div id="storeList"></div>`;
+}
+function mountStore(root){
+  root.querySelectorAll('[data-tab]').forEach(b=>{
+    b.onclick=()=>{storeTab=b.dataset.tab;openApp('store',true);};
+  });
+  renderStoreList($('#storeList',root));
+}
+function renderStoreList(list){
+  if(!list)return;
+  if(storeTab==='apps'){
+    const items=Object.entries(APPS).filter(([,a])=>!a.core);
+    list.innerHTML=items.map(([id,a])=>{
+      const has=state.installed.includes(id);
+      return `<div class="storeitem">
+        <span class="appicon" style="background:${a.grad}">${I[a.icon]}</span>
+        <div class="si-info"><b>${a.name}</b><span>${a.desc}</span></div>
+        ${has?`<button class="btn ghost sm" data-remove="${id}">Удалить</button>`:`<button class="btn sm" data-install="${id}">Скачать</button>`}
+      </div>`;
+    }).join('')+`<div class="hintline">Скачанные приложения появятся на рабочем столе</div>`;
+  }else{
+    const items=Object.entries(WIDGETS);
+    list.innerHTML=items.map(([id,w])=>{
+      const has=state.widgets.includes(id);
+      return `<div class="storeitem">
+        <span class="appicon" style="background:${w.grad}">${I[w.icon]}</span>
+        <div class="si-info"><b>${w.name}</b><span>Виджет</span></div>
+        ${has?`<button class="btn ghost sm" data-unwg="${id}">Убрать</button>`:`<button class="btn sm" data-addwg="${id}">Добавить</button>`}
+      </div>`;
+    }).join('')+`<div class="hintline">Виджеты появятся сверху рабочего стола</div>`;
+  }
+  list.querySelectorAll('[data-install]').forEach(b=>{
+    b.onclick=()=>{const id=b.dataset.install;if(!state.installed.includes(id))state.installed.push(id);save();refresh();openApp('store',true);};
+  });
+  list.querySelectorAll('[data-remove]').forEach(b=>{
+    b.onclick=()=>{const id=b.dataset.remove;state.installed=state.installed.filter(x=>x!==id);state.dock=state.dock.filter(x=>x!==id);save();refresh();openApp('store',true);};
+  });
+  list.querySelectorAll('[data-addwg]').forEach(b=>{
+    b.onclick=()=>{const id=b.dataset.addwg;if(!state.widgets.includes(id))state.widgets.push(id);save();refresh();openApp('store',true);};
+  });
+  list.querySelectorAll('[data-unwg]').forEach(b=>{
+    b.onclick=()=>{const id=b.dataset.unwg;state.widgets=state.widgets.filter(x=>x!==id);save();refresh();openApp('store',true);};
+  });
+}
+
+/* ===================== CALCULATOR ===================== */
+let calcExpr='';
+function viewCalc(){
+  const keys=['C','⌫','%','÷','7','8','9','×','4','5','6','−','1','2','3','+','0','.','='];
+  const pad2=keys.map(k=>{
+    let cls='ckey';
+    if(['÷','×','−','+','%','C','⌫'].includes(k))cls+=' op';
+    if(k==='=')cls+=' eq';
+    if(k==='0')cls+=' zero';
+    return `<button class="${cls}" data-k="${k}">${k}</button>`;
+  }).join('');
+  return `<div class="calc"><div class="calc-screen"><div class="calc-out" id="calcOut">0</div></div><div class="calc-pad">${pad2}</div></div>`;
+}
+function mountCalc(root){
+  const out=$('#calcOut',root);
+  const show=()=>{out.textContent=calcExpr||'0';};
+  root.addEventListener('click',e=>{
+    const b=e.target.closest('[data-k]');if(!b)return;
+    const k=b.dataset.k;
+    if(k==='C')calcExpr='';
+    else if(k==='⌫')calcExpr=calcExpr.slice(0,-1);
+    else if(k==='='){
+      try{
+        const raw=calcExpr.replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-').replace(/%/g,'/100');
+        const v=Function('"use strict";return ('+raw+')')();
+        calcExpr=(Math.round(v*1e10)/1e10).toString();
+      }catch(e){calcExpr='Ошибка';}
+    }else calcExpr+=k;
+    haptic('light');
+    show();
+  });
+  show();
+}
+
+/* ===================== NOTES ===================== */
+function viewNotes(){
+  const list=state.notes.length?state.notes.map((n,i)=>`
+    <div class="note">
+      <div class="note-t">${esc(n.t)}</div>
+      <div class="note-d">${new Date(n.d).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+      <button class="x" data-delnote="${i}">${I.trash}</button>
+    </div>`).join(''):'<div class="empty">Пока нет заметок</div>';
+  return `<div class="notenew">
+      <input id="noteInput" placeholder="Новая заметка..." maxlength="120"/>
+      <button class="btn" id="noteAdd">${I.plus}</button>
+    </div><div class="notelist" id="noteList">${list}</div>`;
+}
+function mountNotes(root){
+  const input=$('#noteInput',root),list=$('#noteList',root);
+  const add=()=>{
+    const v=input.value.trim();if(!v)return;
+    state.notes.unshift({t:v,d:Date.now()});
+    save();
+    // точечное обновление
+    list.insertAdjacentHTML('afterbegin',
+      `<div class="note"><div class="note-t">${esc(v)}</div>
+        <div class="note-d">${new Date().toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+        <button class="x" data-delnote="0">${I.trash}</button></div>`);
+    input.value='';
+    haptic('light');
+    // Обновить виджет заметки если открыт
+    renderHome();
+  };
+  $('#noteAdd',root).onclick=add;
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')add();});
+  list.addEventListener('click',e=>{
+    const b=e.target.closest('[data-delnote]');if(!b)return;
+    state.notes.splice(+b.dataset.delnote,1);
+    save();openApp('notes',true);
+  });
+}
+
+/* ===================== MUSIC ===================== */
+const TRACKS=[
+  {n:'Blue Horizon',a:'MiniOS Sound',d:214},
+  {n:'Deep Water',a:'Aqua Project',d:187},
+  {n:'Skyline',a:'Nova Blue',d:243},
+  {n:'Frost',a:'Polar Waves',d:198}
+];
+let mIndex=0,mPlaying=false,mPos=0,musicTimer=null;
+
+function viewMusic(){
+  return `<div class="cover" id="mCover">${I.music}</div>
+    <div class="mtitle" id="mTitle">${TRACKS[0].n}</div>
+    <div class="martist" id="mArtist">${TRACKS[0].a}</div>
+    <div class="progress"><i id="mBar" style="width:0%"></i></div>
+    <div class="ptime"><span id="mCur">0:00</span><span id="mDur">${fmt(TRACKS[0].d)}</span></div>
+    <div class="mcontrols">
+      <button class="mbtn" id="mPrev">${I.prev}</button>
+      <button class="mbtn main" id="mPlay">${I.play}</button>
+      <button class="mbtn" id="mNext">${I.next}</button>
+    </div>
+    <div class="tracklist">
+      ${TRACKS.map((t,i)=>`<div class="track ${i===0?'active':''}" data-track="${i}">
+        <span class="w-ic">${I.music}</span>
+        <div style="flex:1"><div class="tn">${t.n}</div><div class="td">${t.a}</div></div>
+        <span class="td">${fmt(t.d)}</span>
+      </div>`).join('')}
+    </div>`;
+}
+function syncMusicUI(){
+  const root=$('#appBody');if(!root)return;
+  const t=TRACKS[mIndex];
+  const title=$('#mTitle',root);if(title)title.textContent=t.n;
+  const artist=$('#mArtist',root);if(artist)artist.textContent=t.a;
+  const bar=$('#mBar',root);if(bar)bar.style.width=(mPos/t.d*100)+'%';
+  const cur=$('#mCur',root);if(cur)cur.textContent=fmt(mPos);
+  const dur=$('#mDur',root);if(dur)dur.textContent=fmt(t.d);
+  const play=$('#mPlay',root);if(play)play.innerHTML=mPlaying?I.pause:I.play;
+  const cover=$('#mCover',root);if(cover)cover.classList.toggle('playing',mPlaying);
+  root.querySelectorAll('[data-track]').forEach(el=>{
+    el.classList.toggle('active',+el.dataset.track===mIndex);
+  });
+}
+function mountMusic(root){
+  if(!musicTimer){
+    musicTimer=setInterval(()=>{
+      if(!mPlaying)return;
+      mPos++;
+      if(mPos>=TRACKS[mIndex].d){mPos=0;mIndex=(mIndex+1)%TRACKS.length;}
+      if(currentApp==='music')syncMusicUI();
+    },1000);
+  }
+  $('#mPlay',root).onclick=()=>{mPlaying=!mPlaying;haptic('light');syncMusicUI();};
+  $('#mNext',root).onclick=()=>{mIndex=(mIndex+1)%TRACKS.length;mPos=0;haptic('light');syncMusicUI();};
+  $('#mPrev',root).onclick=()=>{mIndex=(mIndex-1+TRACKS.length)%TRACKS.length;mPos=0;haptic('light');syncMusicUI();};
+  root.querySelectorAll('[data-track]').forEach(el=>{
+    el.onclick=()=>{mIndex=+el.dataset.track;mPos=0;mPlaying=true;haptic('light');syncMusicUI();};
+  });
+  syncMusicUI();
+}
+
+/* ===================== CLOCK ===================== */
+function viewClock(){
+  const cities=[{c:'Москва',o:0},{c:'Лондон',o:-2},{c:'Нью-Йорк',o:-7},{c:'Токио',o:+6}];
+  const rows=cities.map(x=>`<div class="row">
+    <span class="row-ic" style="background:linear-gradient(150deg,#a5b4fc,#4338ca)">${I.clock}</span>
+    <span class="row-t">${x.c}</span>
+    <span class="badge" data-live="wt" data-off="${x.o}">--:--</span>
+  </div>`).join('');
+  return `<div class="smallcard" style="margin-bottom:16px">
+      <div class="big" data-live="time">00:00</div>
+      <div class="sub" data-live="date"></div>
+    </div>
+    <div class="sect"><h3>Мировое время</h3>
+      <div style="border-radius:18px;overflow:hidden">${rows}</div>
+    </div>`;
+}
+
+/* ===================== WEATHER ===================== */
+function viewWeather(){
+  const days=[{d:'Пн',t:'+21°',i:'sun'},{d:'Вт',t:'+19°',i:'cloud'},{d:'Ср',t:'+17°',i:'cloud'},{d:'Чт',t:'+23°',i:'sun'}];
+  return `<div class="whero">
+      <div class="ic">${I.sun}</div>
+      <div class="t">+21°</div>
+      <div class="c">Ясно · Москва</div>
+      <div class="c" style="opacity:.75;margin-top:4px">Ощущается как +20°</div>
+    </div>
+    <div class="sect"><h3>На 4 дня</h3>
+      <div class="wdays">${days.map(x=>`<div class="wday"><b>${x.d}</b><div class="di">${I[x.i]}</div><span>${x.t}</span></div>`).join('')}</div>
+    </div>
+    <div class="sect"><h3>Подробно</h3>
+      <div style="border-radius:18px;overflow:hidden">
+        <div class="row"><span class="row-ic" style="background:linear-gradient(150deg,#8fd0ff,#2b7fff)">${I.weather}</span><span class="row-t">Влажность</span><span class="badge">54%</span></div>
+        <div class="row"><span class="row-ic" style="background:linear-gradient(150deg,#86efac,#15803d)">${I.refresh}</span><span class="row-t">Ветер</span><span class="badge">3 м/с</span></div>
+        <div class="row"><span class="row-ic" style="background:linear-gradient(150deg,#fdba74,#ea580c)">${I.sun}</span><span class="row-t">УФ-индекс</span><span class="badge">4</span></div>
+      </div>
+    </div>`;
+}
+
+/* ===================== MESSAGES ===================== */
+let chatLog=[
+  {me:false,t:'Привет! Я ассистент MiniOS.'},
+  {me:false,t:'Спроси о чём-нибудь или просто напиши.'}
+];
+function viewMessages(){
+  return `<div class="chat" id="chat">${chatLog.map(m=>`<div class="msg ${m.me?'me':'you'}">${esc(m.t)}</div>`).join('')}</div>
+    <div class="chatbar"><input id="chatInput" placeholder="Сообщение..." maxlength="200"/><button class="btn" id="chatSend">${I.send}</button></div>`;
+}
+function mountMessages(root){
+  const input=$('#chatInput',root),chat=$('#chat',root);
+  const scroll=()=>{const b=$('#appBody');if(b)b.scrollTop=b.scrollHeight;};
+  scroll();
+  const replies=['Понял тебя 👌','Интересно!','Система работает стабильно.','Могу открыть Магазин приложений.','Попробуй поставить новые обои в Настройках.'];
+  const send=()=>{
+    const v=input.value.trim();if(!v)return;
+    chatLog.push({me:true,t:v});input.value='';
+    chat.insertAdjacentHTML('beforeend',`<div class="msg me">${esc(v)}</div>`);
+    scroll();haptic('light');
+    setTimeout(()=>{
+      const r=replies[Math.floor(Math.random()*replies.length)];
+      chatLog.push({me:false,t:r});
+      chat.insertAdjacentHTML('beforeend',`<div class="msg you">${esc(r)}</div>`);
+      scroll();
+    },800);
+  };
+  $('#chatSend',root).onclick=send;
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
+}
+
+/* ===================== BROWSER ===================== */
+const SITES={
+  'mini.os':{t:'MiniOS',c:'Домашняя страница карманной системы.'},
+  'news.ru':{t:'Новости',c:'Сегодня в мире технологий: мини-приложения становятся стандартом.'},
+  'weather.ru':{t:'Погода',c:'В Москве ясно, +21°, ветер слабый.'},
+  'music.ru':{t:'Музыка',c:'Топ-чарт возглавляет Blue Horizon.'},
+  'docs.io':{t:'Документация',c:'MiniOS — демонстрационная ОС внутри Telegram.'}
+};
+function viewBrowser(){
+  return `<div class="urlbar"><span class="lk">${I.lock}</span><input id="urlInput" placeholder="Поиск или адрес"/></div>
+    <div class="bpage" id="bpage">${browserHome()}</div>`;
+}
+function browserHome(){
+  return `<div class="bhome">${Object.entries(SITES).map(([k,v])=>`
+    <button class="bsite" data-site="${k}">
+      <span class="bi" style="background:linear-gradient(150deg,#6fb2ff,#1a63e0)">${I.browser}</span>
+      <b>${v.t}</b><span>${k}</span>
+    </button>`).join('')}</div>`;
+}
+function mountBrowser(root){
+  const input=$('#urlInput',root),page=$('#bpage',root);
+  function bindHome(){page.querySelectorAll('[data-site]').forEach(b=>b.onclick=()=>showSite(b.dataset.site));}
+  function showSite(key){
+    const s=SITES[key];
+    if(!s){showSearch(key);return;}
+    page.innerHTML=`<h2>${s.t}</h2><p>${s.c}</p>
+      <p>Страница отрисована локально внутри MiniOS.</p>
+      <button class="btn ghost sm" id="bBack">На главную</button>`;
+    $('#bBack',page).onclick=()=>{page.innerHTML=browserHome();bindHome();};
+  }
+  function showSearch(q){
+    page.innerHTML=`<h2>Поиск</h2><p>По запросу «${esc(q)}» найдено 3 страницы.</p>
+      <div class="bhome" style="margin-top:14px">
+        ${Object.entries(SITES).slice(0,3).map(([k,v])=>`<button class="bsite" data-site="${k}"><span class="bi" style="background:linear-gradient(150deg,#67e8f9,#0891b2)">${I.search}</span><b>${v.t}</b><span>${k}</span></button>`).join('')}
+      </div>`;
+    page.querySelectorAll('[data-site]').forEach(b=>b.onclick=()=>showSite(b.dataset.site));
+  }
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){
+      const v=input.value.trim().toLowerCase();if(!v)return;
+      const key=Object.keys(SITES).find(k=>k.includes(v)||SITES[k].t.toLowerCase().includes(v));
+      key?showSite(key):showSearch(input.value.trim());
+    }
+  });
+  bindHome();
+}
+
+/* ===================== CALENDAR ===================== */
+let calDate=new Date();
+function viewCalendar(){
+  return `<div class="calhead">
+      <button class="calnav" id="calPrev">${I.chevron}</button>
+      <b id="calTitle"></b>
+      <button class="calnav" id="calNext" style="transform:rotate(180deg)">${I.chevron}</button>
+    </div>
+    <div class="card" style="padding:14px 10px"><div class="calgrid" id="calGrid"></div></div>`;
+}
+function mountCalendar(root){
+  const grid=$('#calGrid',root),title=$('#calTitle',root);
+  function draw(){
+    const y=calDate.getFullYear(),m=calDate.getMonth();
+    title.textContent=calDate.toLocaleDateString('ru-RU',{month:'long',year:'numeric'});
+    const first=new Date(y,m,1);let start=first.getDay();start=start===0?6:start-1;
+    const dim=new Date(y,m+1,0).getDate(),today=new Date();
+    let html=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=>`<div class="calwd">${d}</div>`).join('');
+    for(let i=0;i<start;i++)html+=`<div class="calday mute"></div>`;
+    for(let d=1;d<=dim;d++){
+      const isT=d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear();
+      html+=`<div class="calday ${isT?'today':''}">${d}</div>`;
+    }
+    grid.innerHTML=html;
+  }
+  $('#calPrev',root).onclick=()=>{calDate.setMonth(calDate.getMonth()-1);draw();};
+  $('#calNext',root).onclick=()=>{calDate.setMonth(calDate.getMonth()+1);draw();};
+  draw();
+}
+
+/* ===================== MAIL ===================== */
+function viewMail(){
+  const mails=[
+    {f:'MiniOS Team',s:'Добро пожаловать!',d:'сейчас'},
+    {f:'Магазин',s:'Новые виджеты доступны',d:'2 ч'},
+    {f:'Обновления',s:'Версия 3.0',d:'вчера'},
+    {f:'Друзья',s:'Встречаемся в 19:00',d:'вчера'}
+  ];
+  return mails.map(m=>`<div class="storeitem">
+    <span class="appicon" style="background:linear-gradient(150deg,#7dd3fc,#0369a1);padding:14px">${I.mail}</span>
+    <div class="si-info"><b>${m.f}</b><span>${m.s}</span></div>
+    <span class="badge">${m.d}</span>
+  </div>`).join('');
+}
+
+/* ===================== MAPS ===================== */
+function viewMaps(){
+  return `<div style="aspect-ratio:.85;border-radius:24px;overflow:hidden;position:relative;background:linear-gradient(160deg,#eaf2ff,#d6e6ff);border:1px solid var(--line)">
+      <div style="position:absolute;left:0;right:0;top:38%;height:18px;background:#fff;box-shadow:0 0 0 1px #dbe7fa;"></div>
+      <div style="position:absolute;top:0;bottom:0;left:55%;width:14px;background:#fff;box-shadow:0 0 0 1px #dbe7fa;"></div>
+      <div style="position:absolute;left:0;right:0;top:70%;height:11px;background:#fff;box-shadow:0 0 0 1px #dbe7fa;"></div>
+      <div style="position:absolute;top:0;bottom:0;left:22%;width:9px;background:#fff;box-shadow:0 0 0 1px #dbe7fa;"></div>
+      <span style="position:absolute;width:34px;height:34px;color:var(--blue-600);left:calc(50% - 17px);top:calc(45% - 34px)">${I.maps}</span>
+    </div>
+    <div class="sect" style="margin-top:16px"><h3>Рядом</h3>
+      <div style="border-radius:18px;overflow:hidden">
+        <div class="row"><span class="row-ic" style="background:linear-gradient(150deg,#86efac,#15803d)">${I.maps}</span><span class="row-t">Парк Победы</span><span class="badge">420 м</span></div>
+        <div class="row"><span class="row-ic" style="background:linear-gradient(150deg,#7dd3fc,#0369a1)">${I.maps}</span><span class="row-t">Кафе «Синий кит»</span><span class="badge">180 м</span></div>
+      </div>
+    </div>`;
+}
+
+/* ===================== FITNESS ===================== */
+function viewFitness(){
+  const rings=[['шаги','78%','#2b7fff'],['калории','54%','#22c55e'],['сон','91%','#8b5cf6']];
+  return `<div style="display:flex;justify-content:center;gap:18px;margin:14px 0 22px">
+      ${rings.map(r=>`<div style="width:96px;height:96px;border-radius:50%;position:relative;background:conic-gradient(${r[2]} ${r[1]}, #e4ecfa 0)">
+        <div style="position:absolute;inset:9px;border-radius:50%;background:#f6f9ff;display:grid;place-items:center;text-align:center">
+          <div><b style="font-size:17px;display:block">${r[1]}</b><span style="font-size:10px;color:var(--muted)">${r[0]}</span></div>
+        </div></div>`).join('')}
+    </div>
+    <div class="sect"><h3>Сегодня</h3>
+      <div style="border-radius:18px;overflow:hidden">
+        <div class="row"><span class="row-ic" style="background:linear-gradient(150deg,#6fb2ff,#1a63e0)">${I.fitness}</span><span class="row-t">Шаги</span><span class="badge">7 840</span></div>
+        <div class="row"><span class="row-ic" style="background:linear-gradient(150deg,#f9a8d4,#be185d)">${I.fitness}</span><span class="row-t">Пульс</span><span class="badge">68</span></div>
+        <div class="row"><span class="row-ic" style="background:linear-gradient(150deg,#86efac,#15803d)">${I.fitness}</span><span class="row-t">Минуты</span><span class="badge">42</span></div>
+      </div>
+    </div>`;
+}
+
+/* ===================== TRANSLATE ===================== */
+const DICT={'привет':'hello','спасибо':'thank you','синий':'blue','экран':'screen','приложение':'application','обои':'wallpaper','телефон':'phone','система':'system','hello':'привет','blue':'синий','screen':'экран','phone':'телефон'};
+function viewTranslate(){
+  return `<div class="urlbar"><span class="lk" style="width:17px;height:17px">${I.translate}</span><input id="trInput" placeholder="Введите слово..."/></div>
+    <div class="card" id="trOut" style="text-align:center;padding:34px 18px"><div style="color:var(--muted);font-size:13px">Перевод появится здесь</div></div>`;
+}
+function mountTranslate(root){
+  const input=$('#trInput',root),out=$('#trOut',root);
+  input.addEventListener('input',()=>{
+    const v=input.value.trim().toLowerCase();
+    if(!v){out.innerHTML='<div style="color:var(--muted);font-size:13px">Перевод появится здесь</div>';return;}
+    const t=DICT[v];
+    out.innerHTML=`<div style="font-size:12px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase">Перевод</div>
+      <div style="font-size:30px;font-weight:700;color:var(--blue-600);margin-top:8px">${esc(t||'—')}</div>`;
+  });
+  input.focus();
+}
+
+/* ===================== GAMES ===================== */
+function viewGames(){
+  return `<div style="text-align:center;padding:20px 0">
+      <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Ваш счёт</div>
+      <div style="font-size:52px;font-weight:200;letter-spacing:-2px;color:var(--blue-600)" id="score">${state.clicks}</div>
+      <button style="width:150px;height:150px;border-radius:50%;margin:30px auto 0;display:grid;place-items:center;background:linear-gradient(160deg,var(--blue-400),var(--blue-600));color:#fff;box-shadow:0 16px 40px rgba(21,96,224,.35);padding:46px" id="tap">${I.games}</button>
+      <button class="btn ghost sm" id="resetScore" style="margin-top:14px">Сбросить</button>
+    </div>`;
+}
+function mountGames(root){
+  const sc=$('#score',root);
+  $('#tap',root).onclick=()=>{state.clicks++;sc.textContent=state.clicks;save();haptic('light');};
+  $('#resetScore',root).onclick=()=>{state.clicks=0;sc.textContent=0;save();};
+}
+
+/* ===================== VIDEO ===================== */
+function viewVideo(){
+  const vids=[{t:'Как устроен MiniOS',d:'4:12'},{t:'Обзор интерфейса',d:'2:48'},{t:'Установка виджетов',d:'1:36'},{t:'Смена обоев',d:'0:54'}];
+  return `<div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+      <div style="aspect-ratio:16/9;background:linear-gradient(150deg,#6fb2ff,#1a63e0);display:grid;place-items:center;color:#fff">
+        <div style="width:64px;height:64px;padding:18px">${I.play}</div>
+      </div>
+    </div>
+    ${vids.map(v=>`<div class="storeitem">
+      <span class="appicon" style="background:linear-gradient(150deg,#c084fc,#7e22ce);padding:14px">${I.video}</span>
+      <div class="si-info"><b>${v.t}</b><span>${v.d}</span></div>
+      <span class="badge">▶</span>
+    </div>`).join('')}`;
+}
+
+/* ===================== INIT ===================== */
+function initStatus(){
+  $('#sbSignal').innerHTML=I.signal;
+  $('#sbWifi').innerHTML=I.wifi;
+  $('#sbBat').style.width=state.battery+'%';
+  $('#lockBtn').innerHTML=I.lock;
+  $('#lockIcon').innerHTML=I.lock;
+  $('#arrIcon').innerHTML=I.arrowUp;
+  $('#lcIcon').innerHTML=I.clock;
+}
+
+function initBattery(){
+  if(!navigator.getBattery){
+    setInterval(()=>{
+      state.battery=Math.max(5,state.battery-1);
+      const b=$('#sbBat');if(b)b.style.width=state.battery+'%';
+    },120000);
+    return;
+  }
+  navigator.getBattery().then(b=>{
+    const upd=()=>{state.battery=Math.round(b.level*100);const el=$('#sbBat');if(el)el.style.width=state.battery+'%';save();};
+    upd();
+    b.addEventListener('levelchange',upd);
+  }).catch(()=>{});
+}
+
+/* Telegram BackButton */
+function initTelegram(){
+  if(!tg)return;
+  try{
+    tg.ready();tg.expand();tg.setHeaderColor('#0b1b33');
+    tg.BackButton?.onClick(()=>{
+      if(document.getElementById('viewer')){document.getElementById('viewer').remove();return;}
+      if(currentApp)closeApp();
     });
+    // автоскрытие при отсутствии окна
+    setInterval(()=>{
+      if(currentApp||document.getElementById('viewer'))tg.BackButton?.show?.();
+      else tg.BackButton?.hide?.();
+    },400);
+  }catch(e){}
 }
-/* ==================================================
-   SEND MESSAGE
-================================================== */
-function sendMessage() {
-    const text =
-        messageInput.value.trim();
-    if (!text) {
-        messageInput.focus();
-        return;
-    }
-    messageInput.value = "";
-    addMessage(
-        "user",
-        text,
-        true
-    );
-    rememberFromMessage(text);
-    showTyping();
-    const delay =
-        550 +
-        Math.random() * 650;
-    setTimeout(() => {
-        hideTyping();
-        const answer =
-            generateAnswer(text);
-        addMessage(
-            "ai",
-            answer,
-            true
-        );
-        speak(answer);
-    }, delay);
+
+/* Escape для десктопа */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const v=document.getElementById('viewer');
+    if(v){v.remove();return;}
+    if(currentApp)closeApp();
+  }
+});
+
+async function init(){
+  load();
+  applyWallpaper();
+  initStatus();
+  await loadMedia();
+  renderHome();
+  tick();
+  setInterval(tick,1000);
+  initBattery();
+  initTelegram();
 }
-sendButton.addEventListener(
-    "click",
-    function(event) {
-        event.preventDefault();
-        sendMessage();
-    }
-);
-messageInput.addEventListener(
-    "keydown",
-    function(event) {
-        if (
-            event.key === "Enter" &&
-            !event.shiftKey
-        ) {
-            event.preventDefault();
-            sendMessage();
-        }
-    }
-);
-/* ==================================================
-   TYPING
-================================================== */
-function showTyping() {
-    let existing =
-        document.getElementById(
-            "typingMessage"
-        );
-    if (existing) {
-        return;
-    }
-    const wrapper =
-        document.createElement("div");
-    wrapper.id =
-        "typingMessage";
-    wrapper.className =
-        "message ai";
-    const bubble =
-        document.createElement("div");
-    bubble.className =
-        "typing-bubble";
-    bubble.innerHTML =
-        `<span class="dot"></span>
-         <span class="dot"></span>
-         <span class="dot"></span>`;
-    wrapper.appendChild(bubble);
-    chat.appendChild(wrapper);
-    scrollChat();
-}
-function hideTyping() {
-    const element =
-        document.getElementById(
-            "typingMessage"
-        );
-    if (element) {
-        element.remove();
-    }
-}
-/* ==================================================
-   SIMPLE AI
-================================================== */
-function generateAnswer(input) {
-    const text =
-        input.toLowerCase().trim();
-    /* ПРИВЕТ */
-    if (
-        text === "привет" ||
-        text.startsWith("привет ") ||
-        text === "здравствуй" ||
-        text === "здравствуйте" ||
-        text === "хай" ||
-        text === "hello" ||
-        text === "hi"
-    ) {
-        return (
-            `Привет, ${userName}! 👋\n` +
-            `Рад тебя видеть! Как настроение?`
-        );
-    }
-    /* ПОКА */
-    if (
-        text === "пока" ||
-        text.includes("до свидания") ||
-        text.includes("увидимся")
-    ) {
-        return (
-            "Пока! 👋 Буду ждать нашего следующего разговора."
-        );
-    }
-    /* КАК ДЕЛА */
-    if (
-        text.includes("как дела") ||
-        text.includes("как ты")
-    ) {
-        return (
-            "У меня всё отлично! 😊 " +
-            "Я готов общаться с тобой."
-        );
-    }
-    /* ИМЯ AI */
-    if (
-        text.includes("как тебя зовут") ||
-        text.includes("твое имя") ||
-        text.includes("твоё имя")
-    ) {
-        return (
-            "Меня зовут Orbita AI 🤖"
-        );
-    }
-    /* ИМЯ ПОЛЬЗОВАТЕЛЯ */
-    if (
-        text.includes("как меня зовут")
-    ) {
-        return (
-            `Тебя зовут ${userName}. ` +
-            "Я это помню 🧠"
-        );
-    }
-    /* СПАСИБО */
-    if (
-        text.includes("спасибо") ||
-        text.includes("благодарю")
-    ) {
-        return (
-            "Пожалуйста! 😊 Всегда рад помочь."
-        );
-    }
-    /* ЧТО УМЕЕШЬ */
-    if (
-        text.includes("что ты умеешь") ||
-        text.includes("твои возможности")
-    ) {
-        return (
-            "Я умею:\n\n" +
-            "💬 Общаться в чате\n" +
-            "🎙️ Слушать голос\n" +
-            "🔊 Отвечать голосом\n" +
-            "🧠 Запоминать информацию\n" +
-            "😊 Поддерживать обычный разговор"
-        );
-    }
-    /* КТО ТЫ */
-    if (
-        text.includes("кто ты")
-    ) {
-        return (
-            "Я Orbita AI — твой виртуальный " +
-            "голосовой помощник 🤖"
-        );
-    }
-    /* ЗАПОМНИ */
-    if (
-        text.startsWith("запомни")
-    ) {
-        const value =
-            input
-                .replace(/^запомни/i, "")
-                .trim();
-        if (value) {
-            memory.push(value);
-            saveData();
-            return (
-                "Хорошо! 🧠 Я запомнил:\n" +
-                "«" + value + "»"
-            );
-        }
-        return (
-            "Конечно. Скажи после слова «запомни», " +
-            "что именно мне нужно сохранить."
-        );
-    }
-    /* ПАМЯТЬ */
-    if (
-        text.includes("что ты помнишь") ||
-        text.includes("что ты запомнил")
-    ) {
-        if (memory.length === 0) {
-            return (
-                "Пока моя память пустая 🧠"
-            );
-        }
-        return (
-            "Вот что я помню:\n\n" +
-            memory
-                .map(
-                    item => "• " + item
-                )
-                .join("\n")
-        );
-    }
-    /* ЛЮБОВЬ */
-    if (
-        text.includes("ты меня любишь") ||
-        text.includes("ты любишь меня")
-    ) {
-        return (
-            "Мне очень нравится с тобой общаться! 💙"
-        );
-    }
-    /* ВРЕМЯ */
-    if (
-        text.includes("который час") ||
-        text.includes("сколько времени")
-    ) {
-        return (
-            "Сейчас " +
-            new Date().toLocaleTimeString(
-                "ru-RU",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            ) +
-            " ⏰"
-        );
-    }
-    /* ПОГОДА */
-    if (
-        text.includes("погода")
-    ) {
-        return (
-            "Для настоящей погоды мне пока " +
-            "нужно подключить погодный API 🌤️"
-        );
-    }
-    /* DEFAULT */
-    const answers = [
-        "Интересный вопрос 🤔 Расскажи немного подробнее.",
-        "Я тебя понял. Давай разберёмся вместе 😊",
-        "Хороший вопрос! Я пока небольшая локальная модель, но могу продолжить разговор.",
-        "Звучит интересно! Расскажи мне об этом подробнее 💙",
-        "Я пока не знаю точного ответа, но могу попробовать разобраться вместе с тобой."
-    ];
-    return answers[
-        Math.floor(
-            Math.random() *
-            answers.length
-        )
-    ];
-}
-/* ==================================================
-   MEMORY
-================================================== */
-function rememberFromMessage(text) {
-    const lower =
-        text.toLowerCase();
-    const triggers = [
-        "меня зовут",
-        "я люблю",
-        "мне нравится",
-        "мой любимый",
-        "я живу",
-        "я из"
-    ];
-    const found =
-        triggers.some(
-            trigger =>
-                lower.includes(trigger)
-        );
-    if (found) {
-        memory.push(text);
-        saveData();
-    }
-}
-/* ==================================================
-   MEMORY UI
-================================================== */
-memoryButton.addEventListener(
-    "click",
-    openMemory
-);
-function openMemory() {
-    memoryList.innerHTML = "";
-    if (memory.length === 0) {
-        memoryList.textContent =
-            "Память пока пустая.";
-    } else {
-        memory.forEach(
-            item => {
-                const div =
-                    document.createElement("div");
-                div.textContent =
-                    "• " + item;
-                memoryList.appendChild(div);
-            }
-        );
-    }
-    memoryOverlay.classList.add(
-        "visible"
-    );
-}
-memoryOverlay.addEventListener(
-    "click",
-    function(event) {
-        if (
-            event.target ===
-            memoryOverlay
-        ) {
-            memoryOverlay.classList.remove(
-                "visible"
-            );
-        }
-    }
-);
-clearMemoryButton.addEventListener(
-    "click",
-    function() {
-        memory = [];
-        saveData();
-        openMemory();
-    }
-);
-/* ==================================================
-   TEXT TO SPEECH
-================================================== */
-function speak(text) {
-    if (
-        !window.speechSynthesis ||
-        !window.SpeechSynthesisUtterance
-    ) {
-        return;
-    }
-    try {
-        speechSynthesis.cancel();
-        const utterance =
-            new SpeechSynthesisUtterance(
-                text
-            );
-        utterance.lang =
-            "ru-RU";
-        utterance.rate =
-            0.94;
-        utterance.pitch =
-            1.02;
-        utterance.volume =
-            1;
-        const voices =
-            speechSynthesis.getVoices();
-        const russianVoice =
-            voices.find(
-                voice =>
-                    voice.lang &&
-                    voice.lang
-                        .toLowerCase()
-                        .startsWith("ru")
-            );
-        if (russianVoice) {
-            utterance.voice =
-                russianVoice;
-        }
-        speechSynthesis.speak(
-            utterance
-        );
-    } catch (error) {
-        console.error(
-            "Speech error:",
-            error
-        );
-    }
-}
-/* ==================================================
-   VOICE RECOGNITION
-================================================== */
-function startVoice() {
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-        alert(
-            "Голосовой ввод не поддерживается этим браузером."
-        );
-        return;
-    }
-    if (recognition) {
-        try {
-            recognition.stop();
-        } catch (error) {}
-    }
-    recognition =
-        new SpeechRecognition();
-    recognition.lang =
-        "ru-RU";
-    recognition.continuous =
-        false;
-    recognition.interimResults =
-        false;
-    recognition.maxAlternatives =
-        1;
-    recognition.onstart =
-        function() {
-            voiceScreen.classList.add(
-                "visible"
-            );
-        };
-    recognition.onresult =
-        function(event) {
-            const result =
-                event.results[0][0];
-            const text =
-                result.transcript.trim();
-            voiceScreen.classList.remove(
-                "visible"
-            );
-            if (text) {
-                messageInput.value =
-                    text;
-                sendMessage();
-            }
-        };
-    recognition.onerror =
-        function(event) {
-            console.error(
-                "Recognition error:",
-                event.error
-            );
-            voiceScreen.classList.remove(
-                "visible"
-            );
-        };
-    recognition.onend =
-        function() {
-            voiceScreen.classList.remove(
-                "visible"
-            );
-        };
-    try {
-        recognition.start();
-    } catch (error) {
-        console.error(error);
-        voiceScreen.classList.remove(
-            "visible"
-        );
-    }
-}
-voiceButton.addEventListener(
-    "click",
-    startVoice
-);
-stopVoiceButton.addEventListener(
-    "click",
-    function() {
-        if (recognition) {
-            try {
-                recognition.stop();
-            } catch (error) {}
-        }
-        voiceScreen.classList.remove(
-            "visible"
-        );
-    }
-);
-/* ==================================================
-   MOBILE KEYBOARD FIX
-================================================== */
-messageInput.addEventListener(
-    "focus",
-    function() {
-        setTimeout(() => {
-            scrollChat();
-        }, 350);
-    }
-);
-/* ==================================================
-   PREVENT ACCIDENTAL SUBMIT
-================================================== */
-document.addEventListener(
-    "submit",
-    function(event) {
-        event.preventDefault();
-    }
-);
+init();
 </script>
 </body>
 </html>
-
-Теперь поле «Как тебя зовут?» реально принимает текст, после регистрации появляется чат, а нижнее поле также можно нажать и печатать сообщения. Enter отправляет сообщение, а ➤ отправляет его кнопкой.
-
-Для настоящей нейросети, а не набора заранее запрограммированных ответов, следующий шаг — подключить к этому интерфейсу backend + AI API. Тогда Orbita AI сможет нормально отвечать на любые вопросы, а память можно сделать серверной, чтобы она сохранялась даже при смене устройства.
