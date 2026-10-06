@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#0b5ed7">
 <title>Kvantum Bank</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
 :root{
   --bg:#f4f8ff;--surface:#fff;--surface-2:#f7faff;
@@ -19,8 +20,7 @@
   --purple:#8b5cf6;--purple-soft:#f0ebff;
   --shadow:0 6px 22px rgba(11,94,215,.08);
   --shadow-lg:0 20px 50px rgba(3,27,69,.14);
-  --radius:14px;--radius-lg:20px;
-  --ease:cubic-bezier(.22,.9,.3,1);--dur:.24s;
+  --radius:14px;--ease:cubic-bezier(.22,.9,.3,1);--dur:.24s;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bot:env(safe-area-inset-bottom,0px);
 }
@@ -28,8 +28,7 @@
   --bg:#05101f;--surface:#0d1c36;--surface-2:#102340;
   --line:#1b3155;--line-2:#152a48;
   --text:#eaf2ff;--text-2:#a9c1e0;--muted:#6b88ab;
-  --blue:#3d8dff;--blue-2:#5ba2ff;--blue-soft:#0f2a52;
-  --navy:#020d24;
+  --blue:#3d8dff;--blue-2:#5ba2ff;--blue-soft:#0f2a52;--navy:#020d24;
   --green:#28c98b;--green-soft:#0d3123;
   --red:#ff6b6b;--red-soft:#3a1414;
   --gold:#f0c668;--gold-soft:#3a2d10;
@@ -45,7 +44,7 @@ body{
   overflow-x:hidden;user-select:none;transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
   font-size:15px;
 }
-input{user-select:text}
+input,textarea{user-select:text}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .hidden{display:none!important}
 .icon{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -74,7 +73,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   color:#fff;font-weight:800;font-size:24px;box-shadow:0 14px 30px rgba(11,94,215,.35)}
 .auth-brand h1{font-size:20px;letter-spacing:-.4px;font-weight:800}
 .auth-brand p{font-size:12px;color:var(--muted);margin-top:3px}
-
 .tg-login{width:100%;padding:13px;border-radius:13px;
   background:linear-gradient(135deg,#2aabee,#229ed9);color:#fff;font-weight:700;
   font-size:14px;display:flex;align-items:center;justify-content:center;gap:9px;
@@ -83,7 +81,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .tg-divider{display:flex;align-items:center;gap:10px;margin:14px 0;
   font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px}
 .tg-divider::before,.tg-divider::after{content:'';flex:1;height:1px;background:var(--line)}
-
 .switch{display:flex;background:var(--surface-2);border:1px solid var(--line);
   border-radius:12px;padding:3px;margin-bottom:16px;position:relative}
 .switch-btn{flex:1;padding:10px;border-radius:10px;font-size:13.5px;font-weight:600;
@@ -93,13 +90,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   background:var(--surface);border-radius:10px;box-shadow:var(--shadow);
   transition:transform var(--dur) var(--ease);z-index:1}
 .switch[data-mode="register"] .switch-slider{transform:translateX(100%)}
-
 .field{margin-bottom:11px}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
-.field input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;
+.field input,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;
   font-size:15px;background:var(--surface-2);transition:all var(--dur) var(--ease);
-  outline:none;color:var(--text)}
-.field input:focus{border-color:var(--blue-2);background:var(--surface);
+  outline:none;color:var(--text);font-family:inherit}
+.field textarea{resize:vertical;min-height:60px}
+.field input:focus,.field textarea:focus{border-color:var(--blue-2);background:var(--surface);
   box-shadow:0 0 0 4px rgba(24,120,245,.13)}
 .error{color:var(--red);font-size:12px;min-height:15px;margin-bottom:5px;font-weight:500}
 .hint{font-size:12px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6}
@@ -148,7 +145,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .icon-btn{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
   color:var(--text-2);transition:all var(--dur) var(--ease)}
 .icon-btn:hover{background:var(--surface-2);color:var(--blue)}
-
 .content{max-width:1200px;width:100%;margin:0 auto;padding:14px 14px 110px;flex:1}
 
 /* BOTTOM NAV */
@@ -167,10 +163,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   width:22px;height:3px;background:var(--blue);border-radius:0 0 3px 3px}
 .bnav-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 
-/* PAGE */
 .page-in{animation:pageIn .36s var(--ease)}
 @keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-
 .page-head{margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:flex-end;
   justify-content:space-between;gap:10px}
 .page-head h2{font-size:20px;letter-spacing:-.4px;font-weight:800}
@@ -203,38 +197,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .hero-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;
   background:rgba(255,255,255,.18);font-size:11px;font-weight:700;backdrop-filter:blur(4px);
   border:1px solid rgba(255,255,255,.2);white-space:nowrap}
-
-/* TAP */
-.tap-section{background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 60%,transparent),var(--surface));
-  border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;
-  display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;overflow:hidden;
-  box-shadow:var(--shadow);margin-bottom:14px}
-.tap-section::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 50% 40%,rgba(232,184,75,.08),transparent 60%);pointer-events:none}
-.tap-coin{position:relative;width:160px;height:160px;border-radius:50%;
-  background:radial-gradient(circle at 30% 25%,#ffe082,#f0b429 45%,#b8860b 80%);
-  box-shadow:0 15px 40px rgba(240,180,41,.4),inset 0 -8px 20px rgba(0,0,0,.18),
-    inset 0 8px 16px rgba(255,255,255,.5);
-  display:grid;place-items:center;color:#4a2f00;font-weight:800;font-size:44px;
-  cursor:pointer;transition:transform .1s;animation:coinPulse 3s ease infinite;
-  user-select:none;touch-action:manipulation}
-@keyframes coinPulse{0%,100%{box-shadow:0 15px 40px rgba(240,180,41,.4),inset 0 -8px 20px rgba(0,0,0,.18),inset 0 8px 16px rgba(255,255,255,.5)}
-  50%{box-shadow:0 20px 55px rgba(240,180,41,.55),inset 0 -8px 20px rgba(0,0,0,.18),inset 0 8px 16px rgba(255,255,255,.5)}}
-.tap-coin:active{transform:scale(.94)}
-.tap-coin::before{content:'';position:absolute;inset:12px;border-radius:50%;border:2px dashed rgba(255,255,255,.5)}
-.tap-coin .cur{position:relative;z-index:2;text-shadow:0 2px 4px rgba(0,0,0,.15)}
-.tap-info{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
-.tap-value{font-size:12.5px;color:var(--muted);font-weight:600}
-.combo{font-size:13px;font-weight:800;color:var(--gold);min-height:18px;transition:all .3s var(--ease)}
-.combo.fire{font-size:16px;text-shadow:0 0 12px rgba(232,184,75,.6)}
-.energy-wrap{width:100%;max-width:340px}
-.energy-lbl{display:flex;justify-content:space-between;font-size:11px;
-  color:var(--muted);font-weight:600;margin-bottom:5px}
-.energy-bar{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden;
-  border:1px solid var(--line)}
-.energy-bar i{display:block;height:100%;border-radius:99px;
-  background:linear-gradient(90deg,#ffb340,#f59e0b);transition:width .3s var(--ease)}
-.energy-bar i.low{background:linear-gradient(90deg,#ef4444,#dc2626)}
 
 /* QUICK ACTIONS */
 .quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
@@ -269,27 +231,28 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   border-radius:10px;text-align:center}
 
 /* BUSINESS */
-.biz-card{display:flex;flex-direction:column;gap:11px}
-.biz-head{display:flex;align-items:center;gap:11px}
-.biz-ico{width:46px;height:46px;border-radius:13px;flex:none;
+.biz-card{display:flex;flex-direction:column;gap:11px;position:relative;overflow:hidden}
+.biz-head{display:flex;align-items:center;gap:12px}
+.biz-ico{width:52px;height:52px;border-radius:14px;flex:none;
   background:linear-gradient(135deg,var(--blue-soft),color-mix(in srgb,var(--blue-soft) 60%,var(--surface)));
-  color:var(--blue);display:grid;place-items:center}
-.biz-ico .icon{width:22px;height:22px}
-.biz-head h3{font-size:15px;font-weight:700}
-.biz-head p{font-size:11.5px;color:var(--muted);margin-top:2px}
-.biz-lvl{display:flex;gap:2px;margin-left:auto}
-.biz-lvl i{width:12px;height:5px;border-radius:2px;background:var(--line)}
-.biz-lvl i.on{background:linear-gradient(90deg,var(--blue-2),var(--blue))}
-.biz-wallet{background:linear-gradient(135deg,var(--purple-soft),var(--blue-soft));
-  border-radius:12px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;
+  color:var(--blue);display:grid;place-items:center;overflow:hidden;
   border:1px solid var(--line)}
-.biz-wallet .w-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.biz-wallet b{font-size:15px;color:var(--blue);font-variant-numeric:tabular-nums;display:block;margin-top:2px}
-.biz-wallet .w-icon{width:36px;height:36px;border-radius:10px;background:var(--surface);
+.biz-ico img{width:100%;height:100%;object-fit:cover;display:block}
+.biz-ico .icon{width:24px;height:24px}
+.biz-head .info{flex:1;min-width:0}
+.biz-head h3{font-size:15.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.biz-head p{font-size:11.5px;color:var(--muted);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.biz-code{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:11px;
+  background:var(--surface-2);border:1px dashed var(--line);font-family:'SF Mono',Menlo,monospace;
+  font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--blue);justify-content:center}
+.biz-wallet{background:linear-gradient(135deg,var(--purple-soft),var(--blue-soft));
+  border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;
+  border:1px solid var(--line)}
+.biz-wallet .w-lbl{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.biz-wallet b{font-size:16px;color:var(--blue);font-variant-numeric:tabular-nums;display:block;margin-top:2px}
+.biz-wallet .w-icon{width:38px;height:38px;border-radius:11px;background:var(--surface);
   color:var(--blue);display:grid;place-items:center;flex:none}
-.biz-acc{background:var(--surface-2);border:1px dashed var(--line);border-radius:11px;
-  padding:10px 13px;font-size:12px;display:flex;justify-content:space-between;align-items:center}
-.biz-acc b{color:var(--blue);font-size:13.5px;font-variant-numeric:tabular-nums}
 .biz-row{display:flex;gap:6px;flex-wrap:wrap}
 .biz-row .btn{flex:1;min-width:0;padding:9px 10px;font-size:11.5px}
 
@@ -297,32 +260,48 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .transfer-card{background:var(--surface);border:1px solid var(--line);
   border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .tab-switch{display:flex;background:var(--surface-2);border:1px solid var(--line);
-  border-radius:12px;padding:3px;margin-bottom:14px}
-.tab-switch button{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:600;
-  color:var(--muted);transition:all var(--dur) var(--ease)}
+  border-radius:12px;padding:3px;margin-bottom:14px;gap:3px}
+.tab-switch button{flex:1;padding:10px 6px;border-radius:10px;font-size:12px;font-weight:600;
+  color:var(--muted);transition:all var(--dur) var(--ease);display:flex;
+  align-items:center;justify-content:center;gap:5px}
 .tab-switch button.active{background:var(--surface);color:var(--blue);box-shadow:var(--shadow)}
-.recipient-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tab-switch button .icon{width:14px;height:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .chip{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:99px;
   background:var(--surface-2);border:1px solid var(--line);font-size:12px;font-weight:600;
   cursor:pointer;transition:all var(--dur) var(--ease)}
 .chip:hover,.chip.sel{border-color:var(--blue-2);background:var(--blue-soft);color:var(--blue)}
 .chip .av{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;
-  color:#fff;font-size:10px;font-weight:700;background:linear-gradient(135deg,#1878f5,#031b45)}
+  color:#fff;font-size:10px;font-weight:700;background:linear-gradient(135deg,#1878f5,#031b45);
+  overflow:hidden;flex:none}
+.chip .av img{width:100%;height:100%;object-fit:cover}
+
+/* QR */
+.qr-container{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0}
+.qr-box{background:#fff;padding:18px;border-radius:20px;
+  box-shadow:0 10px 40px rgba(3,27,69,.15);display:inline-block}
+.qr-box svg{display:block;width:220px;height:220px}
+.qr-fallback{background:var(--surface-2);border:1px dashed var(--line);border-radius:14px;
+  padding:18px;text-align:center;width:100%;max-width:280px}
+.qr-fallback .qr-text{font-family:monospace;font-size:13px;word-break:break-all;
+  color:var(--text);margin-bottom:10px;font-weight:600}
+.qr-title{font-size:15px;font-weight:800;text-align:center}
+.qr-subtitle{font-size:12px;color:var(--muted);text-align:center;margin-top:2px}
 
 /* ADMIN */
 .admin-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;
   background:linear-gradient(135deg,#f0c668,#e8b84b);color:#4a2f00;font-size:11px;font-weight:800;
   letter-spacing:.5px;text-transform:uppercase}
 .admin-row{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;
-  background:var(--surface-2);border:1px solid var(--line-2);margin-bottom:6px;transition:all var(--dur) var(--ease)}
-.admin-row:hover{background:var(--blue-soft)}
-.admin-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1878f5,#031b45);
-  color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+  background:var(--surface-2);border:1px solid var(--line-2);margin-bottom:6px}
+.admin-av{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1878f5,#031b45);
+  color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none;overflow:hidden}
 .admin-av.gold{background:linear-gradient(135deg,#f0c668,#b8860b)}
+.admin-av img{width:100%;height:100%;object-fit:cover}
 .admin-body{flex:1;min-width:0}
 .admin-body b{font-size:13px;font-weight:700;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.admin-body span{font-size:11px;color:var(--muted);display:block;margin-top:1px}
-.admin-actions{display:flex;gap:5px}
+.admin-body span{font-size:11px;color:var(--muted);display:block;margin-top:1px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* LISTS */
 .list{padding:5px}
@@ -343,7 +322,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .empty{text-align:center;padding:36px 18px;color:var(--muted);
   background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius)}
 .empty .icon{width:36px;height:36px;opacity:.4;margin-bottom:10px}
-.empty p{font-size:12.5px;line-height:1.6}
+.empty p{font-size:12.5px;line-height:1.6;margin-bottom:14px}
 
 /* MODAL */
 .modal{position:fixed;inset:0;background:rgba(3,27,69,.5);backdrop-filter:blur(5px);
@@ -352,19 +331,34 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   overflow-y:auto;overscroll-behavior:contain}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .modal-box{background:var(--surface);border-radius:20px;padding:22px;width:100%;
-  max-width:400px;box-shadow:var(--shadow-lg);animation:modalIn .28s var(--ease);
+  max-width:420px;box-shadow:var(--shadow-lg);animation:modalIn .28s var(--ease);
   margin:auto;position:relative}
 @keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 .modal-box h3{font-size:16px;margin-bottom:14px;font-weight:700}
-.modal-box input{width:100%;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;
-  font-size:16px;outline:none;background:var(--surface-2);transition:all var(--dur) var(--ease);color:var(--text)}
-.modal-box input:focus{border-color:var(--blue-2);background:var(--surface);
+.modal-box input,.modal-box textarea{width:100%;padding:13px 15px;border:1.5px solid var(--line);
+  border-radius:12px;font-size:15px;outline:none;background:var(--surface-2);
+  transition:all var(--dur) var(--ease);color:var(--text);font-family:inherit;resize:vertical}
+.modal-box textarea{min-height:70px}
+.modal-box input:focus,.modal-box textarea:focus{border-color:var(--blue-2);background:var(--surface);
   box-shadow:0 0 0 4px rgba(24,120,245,.13)}
 .modal-actions{display:flex;gap:8px;margin-top:16px}
 .modal-actions .btn{flex:1}
 .modal-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:9px;
   display:grid;place-items:center;color:var(--muted)}
 .modal-close:hover{background:var(--surface-2);color:var(--red)}
+
+/* ICON PICKER */
+.icon-picker{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px}
+.icon-preview{width:80px;height:80px;border-radius:18px;
+  background:linear-gradient(135deg,var(--blue-soft),color-mix(in srgb,var(--blue-soft) 60%,var(--surface)));
+  display:grid;place-items:center;color:var(--blue);border:2px dashed var(--line);
+  overflow:hidden;position:relative;transition:all var(--dur) var(--ease)}
+.icon-preview:hover{border-color:var(--blue-2)}
+.icon-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.icon-preview .icon{width:36px;height:36px}
+.icon-preview .upload-overlay{position:absolute;bottom:0;left:0;right:0;
+  background:rgba(11,94,215,.9);color:#fff;font-size:10px;font-weight:700;
+  text-align:center;padding:3px 0;letter-spacing:.5px}
 
 /* TOASTS */
 .toasts{position:fixed;left:50%;transform:translateX(-50%);
@@ -375,10 +369,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   animation:toastIn .28s var(--ease);display:flex;align-items:center;gap:8px;
   pointer-events:auto;max-width:100%}
 .toast .icon{width:16px;height:16px;color:var(--blue)}
-.toast.ok{border-left:4px solid var(--green)}
-.toast.ok .icon{color:var(--green)}
-.toast.err{border-left:4px solid var(--red)}
-.toast.err .icon{color:var(--red)}
+.toast.ok{border-left:4px solid var(--green)}.toast.ok .icon{color:var(--green)}
+.toast.err{border-left:4px solid var(--red)}.toast.err .icon{color:var(--red)}
 .toast.out{opacity:0;transform:translateY(12px);transition:all .3s var(--ease)}
 @keyframes toastIn{from{opacity:0;transform:translateY(-12px) scale(.96)}to{opacity:1;transform:none}}
 
@@ -416,12 +408,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   .content{padding:12px 12px 110px}
   .hero-balance{font-size:26px}
   .hero{padding:15px}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:9px}
+  .grid{grid-template-columns:1fr;gap:9px}
   .card{padding:13px}
-  .tap-coin{width:145px;height:145px}
   .bnav-btn{font-size:9.5px}
   .bnav-btn .icon{width:19px;height:19px}
   .balance-chip{display:none}
+  .tab-switch button{font-size:11px;padding:9px 4px}
+  .tab-switch button .icon{width:12px;height:12px}
+  .qr-box svg{width:180px;height:180px}
 }
 @media (min-width:900px){
   .bottom-nav{display:none}
@@ -452,11 +446,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-5 6 5 6M16 6l5 6-5 6M14 4l-4 16"/></symbol>
 <symbol id="i-trending" viewBox="0 0 24 24"><path d="m3 17 5-5 4 4 9-9"/><path d="M15 7h6v6"/></symbol>
 <symbol id="i-brain" viewBox="0 0 24 24"><path d="M9.5 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3V3Z"/><path d="M14.5 3a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3V3Z"/></symbol>
-<symbol id="i-coffee" viewBox="0 0 24 24"><path d="M4 8h13v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z"/><path d="M17 10h2a2 2 0 0 1 0 4h-2"/></symbol>
-<symbol id="i-shop" viewBox="0 0 24 24"><path d="M3 9 5 3h14l2 6"/><path d="M3 9h18v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 13h6"/></symbol>
-<symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 20h20"/></symbol>
-<symbol id="i-truck" viewBox="0 0 24 24"><rect x="2" y="7" width="13" height="10" rx="1"/><path d="M15 10h4l3 3v4h-7"/><circle cx="6" cy="18.5" r="1.7"/><circle cx="17" cy="18.5" r="1.7"/></symbol>
-<symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 9 12 3l9 6"/><path d="M5 9v9M9 9v9M15 9v9M19 9v9"/><path d="M3 21h18M3 18h18"/></symbol>
 <symbol id="i-upgrade" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="m6 9 6-6 6 6"/><path d="M4 21h16"/></symbol>
 <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></symbol>
 <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/></symbol>
@@ -464,12 +453,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></symbol>
 <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/></symbol>
 <symbol id="i-crown" viewBox="0 0 24 24"><path d="m3 8 3 10h12l3-10-5 4-4-7-4 7Z"/></symbol>
-<symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M4 12h16v9H4z"/><path d="M12 8v13"/><path d="M12 8a3 3 0 1 1 3-3c0 2-3 3-3 3Zm0 0a3 3 0 1 0-3-3c0 2 3 3 3 3Z"/></symbol>
 <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M16 12h3v3h-3a1.5 1.5 0 0 1 0-3Z"/></symbol>
 <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 21a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="3"/><path d="M15 21a6 6 0 0 1 7-5.9"/></symbol>
 <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></symbol>
 <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
 <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="i-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14h1M14 20h1M17 17h4v4h-4z"/></symbol>
+<symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/></symbol>
 </defs></svg>
 
 <div id="splash"><div class="splash-logo">K</div></div>
@@ -481,7 +476,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <div class="auth-mark">K</div>
       <div>
         <h1>Kvantum Bank</h1>
-        <p>Зарабатывай, вкладывай, расти</p>
+        <p>Создавай бизнесы · принимай платежи</p>
       </div>
     </div>
     <button class="tg-login hidden" id="tgLogin" type="button">
@@ -531,23 +526,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 </div>
 
 <div class="toasts" id="toasts"></div>
+<input type="file" id="hiddenFileInput" accept="image/*" class="hidden">
 
 <script>
 /* ============================================================
-   Kvantum Bank — clean focused version
+   Kvantum Bank — User-created businesses + QR payments
    ============================================================ */
 
-const ADMIN_TG_ID = 5268787813; // Админ — этот Telegram ID
-const DB_KEY = 'kvantum_db_v3';
-const SES_KEY = 'kvantum_session_v3';
+const ADMIN_TG_ID = 5268787813;
+const DB_KEY = 'kvantum_db_v4';
+const SES_KEY = 'kvantum_session_v4';
 const THEME_KEY = 'kv_theme';
 const SOUND_KEY = 'kv_sound';
 
 const START_BALANCE = 1000;
-const ENERGY_MAX = 100;
-const ENERGY_REGEN = 1;      // 1 ед/сек
-const TAP_BASE = 2;          // базовый тап
-const COMBO_WINDOW = 1400;
 
 /* ---------- Telegram ---------- */
 const TG = window.Telegram?.WebApp;
@@ -564,6 +556,12 @@ if(TG){
 }
 function haptic(s){ try{ TG?.HapticFeedback?.impactOccurred(s||'light'); }catch(e){} }
 function hapticNotify(s){ try{ TG?.HapticFeedback?.notificationOccurred(s||'success'); }catch(e){} }
+function shareTg(text, url){
+  const link = 'https://t.me/share/url?url=' + encodeURIComponent(url||'') + '&text=' + encodeURIComponent(text);
+  if(TG?.openTelegramLink) TG.openTelegramLink(link);
+  else if(navigator.share) navigator.share({text, url}).catch(()=>{});
+  else window.open(link, '_blank');
+}
 
 /* ---------- Sound ---------- */
 let actx = null;
@@ -585,8 +583,6 @@ const S = {
   ok:()=>{beep(880,.08,'sine',.045); setTimeout(()=>beep(1320,.11,'sine',.045),65);},
   err:()=>beep(220,.14,'sawtooth',.05),
   cash:()=>{beep(1046,.06,'sine',.045); setTimeout(()=>beep(1568,.13,'sine',.045),65);},
-  tap:()=>beep(720+Math.random()*160,.03,'sine',.018),
-  combo:()=>{beep(1046,.05,'sine',.035); setTimeout(()=>beep(1568,.06,'sine',.035),45); setTimeout(()=>beep(2093,.08,'sine',.035),90);},
   levelUp:()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.13,'sine',.045),i*85));}
 };
 
@@ -609,7 +605,13 @@ function fmtNum(n){
 function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function dateStr(ts){ return new Date(ts).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }
-function getLevel(u){ return Math.min(50, 1 + Math.floor((u.totalEarned||0) / 10000)); }
+function uid(prefix){ return (prefix||'') + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function genBizCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = 'KV-';
+  for(let i=0;i<5;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
 
 /* ---------- Storage ---------- */
 let db = loadDB();
@@ -651,30 +653,27 @@ function newUser(login, tg){
     businesses: [],
     history: [{t: now, title: 'Приветственный бонус', amount: START_BALANCE}],
     lastWork: {},
-    tap: {energy: ENERGY_MAX, energyMax: ENERGY_MAX, combo:0, lastTap:0, lastEnergyRegen: now},
-    stats: {taps:0, worksCount:0, bizCount:0, collects:0, transfersCount:0, adminGiven:0}
+    stats: {worksCount:0, transfersCount:0, adminGiven:0}
   };
 }
 function ensureUserFields(u){
   u.stats = u.stats || {};
-  ['taps','worksCount','bizCount','collects','transfersCount','adminGiven'].forEach(k=>{
+  ['worksCount','transfersCount','adminGiven'].forEach(k=>{
     if(typeof u.stats[k] !== 'number') u.stats[k] = 0;
   });
-  u.tap = u.tap || {energy: ENERGY_MAX, energyMax: ENERGY_MAX, combo:0, lastTap:0, lastEnergyRegen: Date.now()};
   u.businesses = u.businesses || [];
   u.history = u.history || [];
   u.avatar = u.avatar || {type:'gradient', id: rand(0,7)};
   u.display = u.display || u.login;
-  // Auto-admin if tgId matches
   if(u.tgId === ADMIN_TG_ID) u.isAdmin = true;
 }
 
-/* ---------- Balance & history ---------- */
+/* ---------- Money ---------- */
 function addMoney(u, amount, title){
   u.balance += amount;
   if(amount > 0) u.totalEarned = (u.totalEarned||0) + amount;
   u.history.unshift({t: Date.now(), title, amount});
-  if(u.history.length > 200) u.history.length = 200;
+  if(u.history.length > 250) u.history.length = 250;
 }
 
 /* ---------- Toast / float ---------- */
@@ -725,7 +724,7 @@ document.getElementById('modal').addEventListener('click', e => {
   if(e.target.id === 'modal') closeModal();
 });
 
-function askAmount(title, placeholder, subtitle){
+function askAmount(title, subtitle, placeholder){
   return new Promise(res => {
     openModal(`
       <button class="modal-close" data-mc="x"><svg class="icon sm"><use href="#i-x"/></svg></button>
@@ -760,8 +759,52 @@ function confirmDlg(title, text){
     });
   });
 }
+function alertDlg(title, text){
+  return new Promise(res => {
+    openModal(`
+      <h3>${esc(title)}</h3>
+      ${text ? `<p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.55">${text}</p>` : ''}
+      <div class="modal-actions">
+        <button class="btn btn-primary" data-mc="ok" type="button">ОК</button>
+      </div>`, () => {
+      document.querySelector('[data-mc="ok"]').onclick = () => { closeModal(); res(true); };
+    });
+  });
+}
 
-/* ---------- Game data ---------- */
+/* ---------- QR helpers ---------- */
+function makeQRSvg(text){
+  if(typeof qrcode === 'undefined') return null;
+  try{
+    const qr = qrcode(0, 'M');
+    qr.addData(text);
+    qr.make();
+    return qr.createSvgTag({cellSize: 6, margin: 2, scalable: true});
+  }catch(e){ return null; }
+}
+function qrHTML(text, title){
+  const svg = makeQRSvg(text);
+  if(svg) return `<div class="qr-box">${svg}</div>`;
+  return `
+    <div class="qr-fallback">
+      <div class="qr-text">${esc(text)}</div>
+      <button class="btn btn-outline btn-sm" data-copy="${esc(text)}" type="button">
+        <svg class="icon sm"><use href="#i-copy"/></svg>Скопировать код
+      </button>
+    </div>`;
+}
+/* QR payload format */
+function userQRPayload(login){ return 'kvantum:user:' + login; }
+function bizQRPayload(code){ return 'kvantum:biz:' + code; }
+function parseQRPayload(text){
+  text = String(text).trim();
+  if(text.startsWith('kvantum:user:')) return {type:'user', value: text.slice(13)};
+  if(text.startsWith('kvantum:biz:')) return {type:'biz', value: text.slice(12)};
+  if(text.startsWith('KV-')) return {type:'biz', value: text};
+  return {type:'user', value: text};
+}
+
+/* ---------- Jobs ---------- */
 const JOBS = [
   {id:'courier', name:'Курьер',              icon:'i-bike',     pay:[100,250],   cd:8000,  minLevel:1},
   {id:'barista', name:'Бариста',             icon:'i-cup',      pay:[250,550],   cd:15000, minLevel:1},
@@ -769,41 +812,28 @@ const JOBS = [
   {id:'trader',  name:'Трейдер',             icon:'i-trending', pay:[2000,4500], cd:45000, minLevel:5},
   {id:'quant',   name:'Квантовый аналитик',  icon:'i-brain',    pay:[5000,12000],cd:60000, minLevel:8}
 ];
-const BUSINESSES = [
-  {id:'coffee',  name:'Кофейня',        icon:'i-coffee', cost:25000,  income:250,   period:60000},
-  {id:'shop',    name:'Магазин',        icon:'i-shop',   cost:80000,  income:900,   period:60000},
-  {id:'startup', name:'IT-стартап',     icon:'i-laptop', cost:250000, income:3200,  period:60000},
-  {id:'logistic',name:'Логистика',      icon:'i-truck',  cost:700000, income:9500,  period:60000},
-  {id:'invest',  name:'Kvantum Invest', icon:'i-bank',   cost:2000000,income:30000, period:60000}
-];
-const AV_GRADIENTS = [
-  'linear-gradient(135deg,#1878f5,#031b45)',
-  'linear-gradient(135deg,#06b6d4,#0a44a8)',
-  'linear-gradient(135deg,#8b5cf6,#4c1d95)',
-  'linear-gradient(135deg,#ec4899,#831843)',
-  'linear-gradient(135deg,#f59e0b,#7c2d12)',
-  'linear-gradient(135deg,#10b981,#064e3b)',
-  'linear-gradient(135deg,#ef4444,#7f1d1d)',
-  'linear-gradient(135deg,#64748b,#0f172a)'
-];
-const AV_EMOJI = ['🦊','🐼','🦉','🐯','🐻','🐸','🦁','🐨','🐙','🦄','🐲','🦅'];
+function getLevel(u){ return Math.min(50, 1 + Math.floor((u.totalEarned||0) / 10000)); }
 
-function bizDef(id){ return BUSINESSES.find(b=>b.id===id); }
-
-/* Business income calculation */
-function bizAccum(b, now){
-  const def = bizDef(b.type); if(!def) return 0;
-  const lvlMult = 1 + 0.35*(b.level-1);
-  let periods = Math.floor((now - b.lastCollect) / def.period);
-  const maxP = Math.floor((12*3600000)/def.period);
-  if(periods > maxP) periods = maxP;
-  return Math.round(periods * def.income * lvlMult);
+/* ---------- All businesses helpers ---------- */
+function getAllBusinesses(){
+  const out = [];
+  Object.values(db.users).forEach(u => {
+    (u.businesses||[]).forEach(b => {
+      out.push({...b, ownerLogin: u.login, ownerDisplay: u.display || u.login,
+        ownerAvatar: u.avatar});
+    });
+  });
+  return out;
 }
-function bizUpgradeCost(b){
-  const def = bizDef(b.type);
-  return Math.round(def.cost * Math.pow(1.8, b.level-1));
+function findBizByCode(code){
+  const c = String(code).trim().toUpperCase();
+  for(const u of Object.values(db.users)){
+    for(const b of (u.businesses||[])){
+      if(b.code === c) return {biz: b, owner: u};
+    }
+  }
+  return null;
 }
-function bizTotalWallet(b){ return b.wallet || 0; }
 
 /* ---------- Navigation ---------- */
 const NAV = [
@@ -869,14 +899,12 @@ function renderContent(){
     case 'profile':  html = viewProfile(u); break;
   }
   c.innerHTML = `<div class="page-in">${html}</div>`;
-  if(activeTab === 'earn' || activeTab === 'business') tick();
+  if(activeTab === 'earn') tick();
 }
 
 /* ---------- HOME ---------- */
 function viewHome(u){
   const lvl = getLevel(u);
-  const earned = u.totalEarned || 0;
-  const lvlBase = TAP_BASE + Math.floor(lvl * 0.5);
   const recent = u.history.slice(0, 4);
   return `
     <div class="hero">
@@ -884,7 +912,7 @@ function viewHome(u){
         <div class="hero-left">
           <div class="hero-label">Баланс</div>
           <div class="hero-balance">${fmt(u.balance)}</div>
-          <div class="hero-sub">Уровень ${lvl} · Заработано ${fmt(earned)}</div>
+          <div class="hero-sub">Уровень ${lvl} · Заработано ${fmt(u.totalEarned||0)}</div>
         </div>
         <div class="hero-badge">
           <svg class="icon sm"><use href="#i-star"/></svg>Lv.${lvl}
@@ -892,49 +920,32 @@ function viewHome(u){
       </div>
     </div>
 
-    <div class="tap-section">
-      <div class="tap-coin" data-action="tap">
-        <span class="cur">₽</span>
-      </div>
-      <div class="tap-info">
-        <div class="tap-value" id="tapValue">+${fmt(lvlBase)} за тап</div>
-        <div class="combo" id="comboEl"></div>
-      </div>
-      <div class="energy-wrap">
-        <div class="energy-lbl">
-          <span>⚡ Энергия</span>
-          <span id="energyLbl">${Math.floor(u.tap.energy)} / ${u.tap.energyMax}</span>
-        </div>
-        <div class="energy-bar"><i id="energyBar" style="width:${(u.tap.energy/u.tap.energyMax)*100}%"></i></div>
-      </div>
-    </div>
-
     <div class="quick-actions">
-      <div class="qa" data-action="nav" data-tab="earn">
-        <div class="qa-ic"><svg class="icon"><use href="#i-briefcase"/></svg></div>
-        <span>Работать</span>
-      </div>
-      <div class="qa" data-action="quickCollect">
-        <div class="qa-ic"><svg class="icon"><use href="#i-coin"/></svg></div>
-        <span>Собрать</span>
+      <div class="qa" data-action="showMyQR">
+        <div class="qa-ic"><svg class="icon"><use href="#i-qr"/></svg></div>
+        <span>Мой QR</span>
       </div>
       <div class="qa" data-action="nav" data-tab="send">
         <div class="qa-ic"><svg class="icon"><use href="#i-send"/></svg></div>
         <span>Перевести</span>
       </div>
+      <div class="qa" data-action="createBusiness">
+        <div class="qa-ic"><svg class="icon"><use href="#i-plus"/></svg></div>
+        <span>Создать бизнес</span>
+      </div>
     </div>
 
     <div class="stats-row">
-      ${miniStat('i-bolt', fmtNum(u.stats.taps), 'Тапов')}
-      ${miniStat('i-briefcase', u.stats.worksCount, 'Работ')}
+      ${miniStat('i-briefcase', u.stats.worksCount||0, 'Работ')}
       ${miniStat('i-building', u.businesses.length, 'Бизнесов')}
-      ${miniStat('i-send', u.stats.transfersCount || 0, 'Переводов')}
+      ${miniStat('i-send', u.stats.transfersCount||0, 'Переводов')}
+      ${miniStat('i-wallet', fmtNum(u.businesses.reduce((s,b)=>s+(b.wallet||0),0)), 'В бизнесах')}
     </div>
 
     <div class="page-head" style="margin-bottom:10px">
       <h2 style="font-size:15px">Последние операции</h2>
     </div>
-    ${recent.length ? historyList(recent) : emptyState('i-history', 'Операций пока нет')}
+    ${recent.length ? historyList(recent) : emptyState('i-history', 'Операций пока нет', '')}
   `;
 }
 function miniStat(icon, val, lbl){
@@ -974,109 +985,316 @@ function viewEarn(u){
 
 /* ---------- BUSINESS ---------- */
 function viewBusiness(u){
-  const now = Date.now();
   return `
     <div class="page-head">
-      <div><h2>Бизнес</h2><p>${u.businesses.length} активов · пассивный доход</p></div>
+      <div>
+        <h2>Бизнесы</h2>
+        <p>${u.businesses.length} ${plural(u.businesses.length, 'бизнес', 'бизнеса', 'бизнесов')} · с уникальным кодом</p>
+      </div>
+      <button class="btn btn-primary" data-action="createBusiness" type="button">
+        <svg class="icon sm"><use href="#i-plus"/></svg>Создать
+      </button>
     </div>
-
-    ${u.businesses.length ? `
-      <h3 style="font-size:12px;margin:0 0 10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px">Мои бизнесы</h3>
-      <div class="grid" style="margin-bottom:20px">${u.businesses.map(b => renderOwnedBiz(b, now)).join('')}</div>
-    ` : ''}
-
-    <h3 style="font-size:12px;margin:0 0 10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px">Открыть новый</h3>
-    <div class="grid">
-      ${BUSINESSES.map(def => {
-        const canBuy = u.balance >= def.cost;
-        return `
-          <div class="card biz-card">
-            <div class="biz-head">
-              <div class="biz-ico"><svg class="icon"><use href="#${def.icon}"/></svg></div>
-              <div><h3>${def.name}</h3><p>${fmt(def.income)} / мин</p></div>
-            </div>
-            <div class="biz-acc"><span class="muted">Стоимость</span><b>${fmt(def.cost)}</b></div>
-            <button class="btn ${canBuy ? 'btn-primary' : 'btn-outline'} btn-block" data-action="buyBiz" data-id="${def.id}" type="button" ${canBuy ? '' : 'disabled'}>
-              ${canBuy ? 'Купить' : 'Нужно ' + fmtNum(def.cost)}
-            </button>
-          </div>`;
-      }).join('')}
-    </div>
+    ${u.businesses.length
+      ? `<div class="grid">${u.businesses.map(b => bizCardHTML(b, u)).join('')}</div>`
+      : `<div class="empty">
+           <svg class="icon"><use href="#i-building"/></svg>
+           <p>У вас ещё нет бизнесов.<br>Создайте первый — придумайте название, загрузите иконку.</p>
+           <button class="btn btn-primary" data-action="createBusiness" type="button">
+             <svg class="icon sm"><use href="#i-plus"/></svg>Создать бизнес
+           </button>
+         </div>`}
   `;
 }
-function renderOwnedBiz(b, now){
-  const def = bizDef(b.type);
-  const acc = bizAccum(b, now);
-  const upCost = bizUpgradeCost(b);
-  const maxLvl = b.level >= 5;
-  const wallet = b.wallet || 0;
+function bizCardHTML(b, u){
+  const iconHTML = b.icon
+    ? `<img src="${b.icon}" alt="">`
+    : `<svg class="icon"><use href="#i-building"/></svg>`;
   return `
     <div class="card biz-card">
       <div class="biz-head">
-        <div class="biz-ico"><svg class="icon"><use href="#${def.icon}"/></svg></div>
-        <div style="min-width:0">
-          <h3>${def.name}</h3>
-          <p>Lv.${b.level}/5 · ${fmt(def.income)} / мин</p>
+        <div class="biz-ico">${iconHTML}</div>
+        <div class="info">
+          <h3>${esc(b.name)}</h3>
+          <p>${esc(b.description || '—')}</p>
         </div>
-        <div class="biz-lvl">${[1,2,3,4,5].map(i => `<i class="${i<=b.level?'on':''}"></i>`).join('')}</div>
+      </div>
+
+      <div class="biz-code">
+        <svg class="icon sm"><use href="#i-qr"/></svg>
+        <span>${b.code}</span>
       </div>
 
       <div class="biz-wallet">
         <div>
-          <div class="w-lbl">Кошелёк бизнеса</div>
-          <b>${fmt(wallet)}</b>
+          <div class="w-lbl">Кошелёк</div>
+          <b>${fmt(b.wallet || 0)}</b>
         </div>
         <div class="w-icon"><svg class="icon"><use href="#i-wallet"/></svg></div>
       </div>
 
-      <div class="biz-acc" id="bizacc-${b.id}">
-        <span class="muted">Накоплен доход</span><b>${fmt(acc)}</b>
-      </div>
-
       <div class="biz-row">
-        <button class="btn btn-primary" data-action="collect" data-id="${b.id}" type="button" ${(acc <= 0 && wallet <= 0) ? 'disabled' : ''}>
-          <svg class="icon sm"><use href="#i-coin"/></svg>Собрать
+        <button class="btn btn-primary" data-action="withdrawBiz" data-id="${b.id}" type="button" ${(b.wallet||0) <= 0 ? 'disabled' : ''}>
+          <svg class="icon sm"><use href="#i-coin"/></svg>Снять
         </button>
-        <button class="btn btn-outline" data-action="upgradeBiz" data-id="${b.id}" type="button" ${maxLvl ? 'disabled' : ''}>
-          ${maxLvl ? 'MAX' : 'Улучшить'}
+        <button class="btn btn-outline" data-action="showBizQR" data-id="${b.id}" type="button">
+          <svg class="icon sm"><use href="#i-qr"/></svg>QR
+        </button>
+        <button class="btn btn-ghost btn-sm" data-action="bizMenu" data-id="${b.id}" type="button">
+          <svg class="icon sm"><use href="#i-edit"/></svg>
         </button>
       </div>
-      ${!maxLvl ? `<div style="font-size:11px;color:var(--muted);text-align:center">Стоимость улучшения: <b style="color:var(--blue)">${fmt(upCost)}</b></div>` : ''}
-    </div>`;
+    </div>
+  `;
+}
+function plural(n, one, few, many){
+  const m10 = n % 10, m100 = n % 100;
+  if(m10 === 1 && m100 !== 11) return one;
+  if(m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
 }
 
-/* ---------- SEND ---------- */
+/* Create business */
+let newBizState = {name:'', description:'', icon:null};
+function openCreateBiz(){
+  newBizState = {name:'', description:'', icon:null};
+  renderBizEditor('Создать бизнес', null);
+}
+function openEditBiz(bizId){
+  const u = getUser();
+  const b = u.businesses.find(x => x.id === bizId); if(!b) return;
+  newBizState = {name: b.name, description: b.description || '', icon: b.icon || null};
+  renderBizEditor('Изменить бизнес', b);
+}
+function renderBizEditor(title, existingBiz){
+  openModal(`
+    <button class="modal-close" data-mc="close"><svg class="icon sm"><use href="#i-x"/></svg></button>
+    <h3>${esc(title)}</h3>
+
+    <div class="icon-picker">
+      <div class="icon-preview" id="iconPreview" data-action="pickIcon">
+        ${newBizState.icon
+          ? `<img src="${newBizState.icon}" alt="">`
+          : `<svg class="icon"><use href="#i-image"/></svg>`}
+        <div class="upload-overlay">Загрузить</div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);text-align:center">
+        Нажми, чтобы выбрать иконку из медиатеки
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Название *</label>
+      <input id="bizName" type="text" maxlength="40" placeholder="Например, Coffee House" value="${esc(newBizState.name)}">
+    </div>
+    <div class="field">
+      <label>Описание</label>
+      <textarea id="bizDesc" maxlength="120" placeholder="Коротко о бизнесе">${esc(newBizState.description)}</textarea>
+    </div>
+
+    ${existingBiz ? `
+      <div style="background:var(--surface-2);border:1px dashed var(--line);border-radius:11px;padding:10px 13px;font-size:12px;margin-top:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="muted">Код бизнеса</span>
+          <b style="font-family:monospace;color:var(--blue);letter-spacing:1.2px">${existingBiz.code}</b>
+        </div>
+      </div>
+    ` : `<p style="font-size:11.5px;color:var(--muted);text-align:center;margin-top:6px">
+        После создания будет присвоен уникальный код для приёма платежей
+      </p>`}
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" data-mc="cancel" type="button">Отмена</button>
+      <button class="btn btn-primary" data-mc="save" type="button">
+        ${existingBiz ? 'Сохранить' : 'Создать'}
+      </button>
+    </div>
+  `, () => {
+    document.querySelector('[data-mc="close"]').onclick = closeModal;
+    document.querySelector('[data-mc="cancel"]').onclick = closeModal;
+    document.querySelector('[data-mc="save"]').onclick = () => saveBiz(existingBiz);
+    document.getElementById('iconPreview').onclick = pickBizIcon;
+    document.getElementById('bizName').oninput = e => { newBizState.name = e.target.value; };
+    document.getElementById('bizDesc').oninput = e => { newBizState.description = e.target.value; };
+  });
+}
+function pickBizIcon(){
+  const inp = document.getElementById('hiddenFileInput');
+  inp.value = '';
+  inp.onchange = e => {
+    const f = e.target.files[0]; if(!f) return;
+    compressImage(f, 256, dataUrl => {
+      newBizState.icon = dataUrl;
+      const preview = document.getElementById('iconPreview');
+      if(preview) preview.innerHTML = `<img src="${dataUrl}" alt=""><div class="upload-overlay">Изменить</div>`;
+      preview.onclick = pickBizIcon;
+    });
+  };
+  inp.click();
+}
+function compressImage(file, maxSize, cb){
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      if(w > h){ if(w > maxSize){ h = h * maxSize / w; w = maxSize; } }
+      else { if(h > maxSize){ w = w * maxSize / h; h = maxSize; } }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      cb(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = () => toast('Не удалось загрузить', 'err');
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function saveBiz(existingBiz){
+  const u = getUser();
+  const name = (newBizState.name || '').trim();
+  if(name.length < 2){ toast('Название минимум 2 символа', 'err'); S.err(); return; }
+  if(existingBiz){
+    existingBiz.name = name;
+    existingBiz.description = newBizState.description.trim();
+    existingBiz.icon = newBizState.icon;
+    addMoney(u, 0, 'Изменён бизнес: ' + name);
+    toast('Сохранено', 'ok'); S.ok();
+  }else{
+    const code = genBizCode();
+    u.businesses.push({
+      id: uid('b'),
+      code,
+      name,
+      description: newBizState.description.trim(),
+      icon: newBizState.icon,
+      wallet: 0,
+      createdAt: Date.now()
+    });
+    addMoney(u, 0, 'Создан бизнес: ' + name);
+    toast('Бизнес создан!', 'ok'); S.levelUp(); hapticNotify('success');
+  }
+  saveDB(); closeModal(); renderApp();
+}
+function bizMenu(bizId){
+  const u = getUser();
+  const b = u.businesses.find(x => x.id === bizId); if(!b) return;
+  openModal(`
+    <button class="modal-close" data-mc="close"><svg class="icon sm"><use href="#i-x"/></svg></button>
+    <h3>${esc(b.name)}</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">${esc(b.description || '')}</p>
+
+    <div style="background:var(--surface-2);border-radius:11px;padding:11px 13px;font-size:12.5px;line-height:1.7">
+      <div style="display:flex;justify-content:space-between"><span class="muted">Код</span><b style="font-family:monospace;color:var(--blue)">${b.code}</b></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="muted">Кошелёк</span><b>${fmt(b.wallet || 0)}</b></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="muted">Создан</span><b>${dateStr(b.createdAt)}</b></div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="btn btn-outline" data-mc="edit" type="button">
+        <svg class="icon sm"><use href="#i-edit"/></svg>Изменить
+      </button>
+      <button class="btn btn-danger" data-mc="del" type="button">
+        <svg class="icon sm"><use href="#i-trash"/></svg>Удалить
+      </button>
+    </div>
+  `, () => {
+    document.querySelector('[data-mc="close"]').onclick = closeModal;
+    document.querySelector('[data-mc="edit"]').onclick = () => { closeModal(); setTimeout(() => openEditBiz(bizId), 100); };
+    document.querySelector('[data-mc="del"]').onclick = async () => {
+      const ok = await confirmDlg('Удалить бизнес?', 'Кошелёк ' + fmt(b.wallet||0) + ' вернётся на счёт.');
+      if(!ok) return;
+      u.balance += (b.wallet || 0);
+      u.businesses = u.businesses.filter(x => x.id !== bizId);
+      addMoney(u, 0, 'Удалён бизнес: ' + b.name);
+      saveDB(); closeModal(); renderApp();
+      toast('Удалено', 'ok');
+    };
+  });
+}
+async function withdrawBiz(bizId){
+  const u = getUser();
+  const b = u.businesses.find(x => x.id === bizId); if(!b) return;
+  const wallet = b.wallet || 0;
+  if(wallet <= 0){ toast('Кошелёк пуст', 'err'); return; }
+  const ok = await confirmDlg('Снять ' + fmt(wallet) + '?', 'Все средства кошелька будут переведены на ваш баланс.');
+  if(!ok) return;
+  b.wallet = 0;
+  u.balance += wallet;
+  u.history.unshift({t: Date.now(), title: 'Снятие из ' + b.name, amount: wallet});
+  saveDB(); renderApp();
+  moneyFloat(wallet);
+  toast('+' + fmt(wallet), 'ok'); S.cash(); hapticNotify('success');
+}
+function showBizQR(bizId){
+  const u = getUser();
+  const b = u.businesses.find(x => x.id === bizId); if(!b) return;
+  const payload = bizQRPayload(b.code);
+  openModal(`
+    <button class="modal-close" data-mc="close"><svg class="icon sm"><use href="#i-x"/></svg></button>
+    <h3 style="text-align:center">${esc(b.name)}</h3>
+    <div class="qr-container">
+      ${qrHTML(payload, b.name)}
+      <div>
+        <div class="qr-title">Код: ${b.code}</div>
+        <div class="qr-subtitle">Покажите QR или отправьте код</div>
+      </div>
+      <div style="display:flex;gap:8px;width:100%;margin-top:8px">
+        <button class="btn btn-outline btn-sm" data-copy="${b.code}" type="button" style="flex:1">
+          <svg class="icon sm"><use href="#i-copy"/></svg>Код
+        </button>
+        <button class="btn btn-primary btn-sm" data-share="${esc(b.name)}|${b.code}" type="button" style="flex:1">
+          <svg class="icon sm"><use href="#i-send"/></svg>Отправить
+        </button>
+      </div>
+    </div>
+  `, () => {
+    document.querySelector('[data-mc="close"]').onclick = closeModal;
+  });
+}
+
+/* ---------- SEND (Transfer) ---------- */
 let sendTab = 'user';
 function viewSend(u){
-  const users = getOtherUsers(u);
-  const allBiz = getAllBusinesses();
   return `
     <div class="page-head">
-      <div><h2>Переводы</h2><p>Отправь деньги игроку или в бизнес</p></div>
+      <div><h2>Переводы</h2><p>Отправь деньги игроку, бизнесу или по QR</p></div>
     </div>
 
     <div class="tab-switch">
-      <button data-send-tab="user" class="${sendTab === 'user' ? 'active' : ''}" type="button">Игроку</button>
-      <button data-send-tab="business" class="${sendTab === 'business' ? 'active' : ''}" type="button">В бизнес</button>
+      <button data-send-tab="user" class="${sendTab === 'user' ? 'active' : ''}" type="button">
+        <svg class="icon"><use href="#i-user"/></svg>Игроку
+      </button>
+      <button data-send-tab="biz" class="${sendTab === 'biz' ? 'active' : ''}" type="button">
+        <svg class="icon"><use href="#i-building"/></svg>Бизнесу
+      </button>
+      <button data-send-tab="qr" class="${sendTab === 'qr' ? 'active' : ''}" type="button">
+        <svg class="icon"><use href="#i-qr"/></svg>По QR
+      </button>
     </div>
 
     <div class="transfer-card">
-      ${sendTab === 'user' ? renderSendUserForm(users) : renderSendBizForm(allBiz)}
+      ${sendTab === 'user' ? sendUserForm(u) : ''}
+      ${sendTab === 'biz' ? sendBizForm(u) : ''}
+      ${sendTab === 'qr' ? sendQRForm(u) : ''}
     </div>
 
     <h3 style="font-size:12px;margin:8px 0 10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px">История переводов</h3>
     ${renderTransferHistory(u)}
   `;
 }
-function renderSendUserForm(users){
+function sendUserForm(u){
+  const users = Object.values(db.users).filter(x => x.login !== currentUser);
   return `
-    <div class="recipient-chips">
-      ${users.slice(0, 8).map(p => `
-        <div class="chip" data-pick-recipient="${esc(p.login)}">
-          <div class="av">${esc((p.display||p.login).charAt(0).toUpperCase())}</div>
-          <span>${esc(p.display || p.login)}</span>
-        </div>`).join('')}
-    </div>
+    ${users.length ? `
+      <div class="chips">
+        ${users.slice(0, 8).map(p => `
+          <div class="chip" data-pick-recipient="${esc(p.login)}">
+            <div class="av">${esc((p.display||p.login).charAt(0).toUpperCase())}</div>
+            <span>${esc(p.display || p.login)}</span>
+          </div>`).join('')}
+      </div>` : ''}
     <div class="field">
       <label>Логин получателя</label>
       <input id="trLogin" type="text" placeholder="username" autocapitalize="off">
@@ -1091,39 +1309,14 @@ function renderSendUserForm(users){
     </button>
   `;
 }
-function renderSendBizForm(allBiz){
-  const u = getUser();
-  const myBiz = u.businesses || [];
-  const otherBiz = allBiz.filter(x => x.ownerLogin !== currentUser);
+function sendBizForm(u){
   return `
     <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;line-height:1.5">
-      Пополни кошелёк бизнеса — деньги можно потратить на улучшения или собрать владельцу.
+      Введите код бизнеса — деньги попадут в его кошелёк. Владелец сможет их снять.
     </p>
-    ${myBiz.length ? `
-      <h4 style="font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Мои бизнесы</h4>
-      <div class="recipient-chips">
-        ${myBiz.map(b => {
-          const def = bizDef(b.type);
-          return `<div class="chip" data-pick-biz="${esc(b.id)}">
-            <svg class="icon sm"><use href="#${def.icon}"/></svg>
-            <span>${def.name} #${b.id.slice(-3)}</span>
-          </div>`;
-        }).join('')}
-      </div>` : ''}
-    ${otherBiz.length ? `
-      <h4 style="font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 8px">Бизнесы игроков</h4>
-      <div class="recipient-chips">
-        ${otherBiz.slice(0, 10).map(b => {
-          const def = bizDef(b.type);
-          return `<div class="chip" data-pick-biz="${esc(b.id)}">
-            <svg class="icon sm"><use href="#${def.icon}"/></svg>
-            <span>${def.name} · ${esc(b.ownerDisplay || b.ownerLogin)}</span>
-          </div>`;
-        }).join('')}
-      </div>` : ''}
     <div class="field">
-      <label>ID бизнеса</label>
-      <input id="trBizId" type="text" placeholder="например, b1234" autocapitalize="off">
+      <label>Код бизнеса</label>
+      <input id="trBizCode" type="text" placeholder="KV-XXXXX" autocapitalize="characters" style="text-transform:uppercase;font-family:monospace;letter-spacing:1.5px">
     </div>
     <div class="field">
       <label>Сумма</label>
@@ -1131,26 +1324,55 @@ function renderSendBizForm(allBiz){
     </div>
     <div class="error" id="trBizError"></div>
     <button class="btn btn-primary btn-block btn-lg" data-action="doBizTransfer" type="button">
-      <svg class="icon"><use href="#i-wallet"/></svg>Перевести в бизнес
+      <svg class="icon"><use href="#i-wallet"/></svg>Отправить в бизнес
     </button>
+  `;
+}
+function sendQRForm(u){
+  const myQR = userQRPayload(u.login);
+  return `
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px">Ваш личный QR</div>
+      ${qrHTML(myQR, 'Мой QR')}
+      <div style="font-size:11.5px;color:var(--muted);margin-top:8px">
+        Покажите этот QR — вам смогут перевести деньги
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:center">
+        <button class="btn btn-outline btn-sm" data-copy="${esc(u.login)}" type="button">
+          <svg class="icon sm"><use href="#i-copy"/></svg>Логин
+        </button>
+        <button class="btn btn-primary btn-sm" data-action="shareMyQR" type="button">
+          <svg class="icon sm"><use href="#i-send"/></svg>Поделиться
+        </button>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--line);padding-top:14px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px">Вставить QR / код</div>
+      <div class="field">
+        <label>Текст QR или код бизнеса</label>
+        <input id="trQRText" type="text" placeholder="kvantum:user:alex или KV-XXXXX">
+      </div>
+      <div class="field">
+        <label>Сумма</label>
+        <input id="trQRAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="0">
+      </div>
+      <div class="error" id="trQRError"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" data-action="pasteQR" type="button" style="flex:1">
+          <svg class="icon"><use href="#i-copy"/></svg>Вставить
+        </button>
+        <button class="btn btn-primary" data-action="doQRTransfer" type="button" style="flex:1">
+          <svg class="icon"><use href="#i-send"/></svg>Перевести
+        </button>
+      </div>
+    </div>
   `;
 }
 function renderTransferHistory(u){
   const items = u.history.filter(h => /→|←|бизнес|Бизнес/i.test(h.title)).slice(0, 10);
-  if(!items.length) return emptyState('i-send', 'Переводов пока не было');
+  if(!items.length) return emptyState('i-send', 'Переводов пока не было', '');
   return historyList(items);
-}
-function getOtherUsers(me){
-  return Object.values(db.users).filter(x => x.login !== currentUser);
-}
-function getAllBusinesses(){
-  const out = [];
-  Object.values(db.users).forEach(u => {
-    (u.businesses||[]).forEach(b => {
-      out.push({...b, ownerLogin: u.login, ownerDisplay: u.display || u.login});
-    });
-  });
-  return out;
 }
 
 /* ---------- ADMIN ---------- */
@@ -1162,10 +1384,10 @@ function viewAdmin(u){
   return `
     <div class="page-head">
       <div>
-        <h2 style="display:flex;align-items:center;gap:8px">Админ-панель
+        <h2 style="display:flex;align-items:center;gap:8px">Админ
           <span class="admin-badge"><svg class="icon sm"><use href="#i-crown"/></svg>ADMIN</span>
         </h2>
-        <p>Управление игроками и бизнесами</p>
+        <p>Выдача денег игрокам и бизнесам</p>
       </div>
     </div>
 
@@ -1178,7 +1400,7 @@ function viewAdmin(u){
     <div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,var(--gold-soft),color-mix(in srgb,var(--gold-soft) 70%,var(--surface)));border-color:var(--gold)">
       <h3 style="font-size:14px;font-weight:800;margin-bottom:6px">💰 Раздать всем</h3>
       <p style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5">
-        Начислить каждому зарегистрированному игроку одинаковую сумму.
+        Начислить каждому игроку одинаковую сумму.
       </p>
       <button class="btn btn-gold btn-block" data-action="adminGiveAll" type="button">
         <svg class="icon sm"><use href="#i-gift"/></svg>Раздать всем
@@ -1186,34 +1408,34 @@ function viewAdmin(u){
     </div>
 
     <h3 style="font-size:12px;margin:14px 0 10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px">Игроки (${allUsers.length})</h3>
-    ${allUsers.sort((a,b)=>b.balance-a.balance).map(p => `
-      <div class="admin-row">
-        <div class="admin-av ${p.isAdmin?'gold':''}">${esc((p.display||p.login).charAt(0).toUpperCase())}</div>
-        <div class="admin-body">
-          <b>${esc(p.display || p.login)}${p.isAdmin ? ' 👑' : ''}</b>
-          <span>${esc(p.login)} · ${fmt(p.balance)}</span>
-        </div>
-        <div class="admin-actions">
+    ${allUsers.sort((a,b)=>b.balance-a.balance).map(p => {
+      const av = p.avatar?.type === 'emoji'
+        ? (['🦊','🐼','🦉','🐯','🐻','🐸','🦁','🐨','🐙','🦄','🐲','🦅'][p.avatar.id] || '🦊')
+        : esc((p.display||p.login).charAt(0).toUpperCase());
+      return `
+        <div class="admin-row">
+          <div class="admin-av ${p.isAdmin?'gold':''}">${av}</div>
+          <div class="admin-body">
+            <b>${esc(p.display || p.login)}${p.isAdmin ? ' 👑' : ''}</b>
+            <span>${esc(p.login)} · ${fmt(p.balance)}</span>
+          </div>
           <button class="btn btn-gold btn-sm" data-action="adminGiveUser" data-id="${esc(p.login)}" type="button">+ ₽</button>
-        </div>
-      </div>
-    `).join('')}
+        </div>`;
+    }).join('')}
 
     <h3 style="font-size:12px;margin:18px 0 10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px">Бизнесы (${allBiz.length})</h3>
     ${allBiz.length ? allBiz.map(b => {
-      const def = bizDef(b.type);
+      const iconHTML = b.icon ? `<img src="${b.icon}" alt="">` : `<svg class="icon sm"><use href="#i-building"/></svg>`;
       return `
         <div class="admin-row">
-          <div class="admin-av"><svg class="icon sm"><use href="#${def.icon}"/></svg></div>
+          <div class="admin-av">${iconHTML}</div>
           <div class="admin-body">
-            <b>${def.name} <span style="font-size:10px;color:var(--muted)">#${b.id.slice(-4)}</span></b>
-            <span>${esc(b.ownerDisplay||b.ownerLogin)} · кошелёк ${fmt(b.wallet||0)}</span>
+            <b>${esc(b.name)} <span style="font-family:monospace;color:var(--blue)">${b.code}</span></b>
+            <span>${esc(b.ownerDisplay)} · ${fmt(b.wallet||0)}</span>
           </div>
-          <div class="admin-actions">
-            <button class="btn btn-gold btn-sm" data-action="adminGiveBiz" data-id="${esc(b.id)}" type="button">+ ₽</button>
-          </div>
+          <button class="btn btn-gold btn-sm" data-action="adminGiveBiz" data-id="${esc(b.id)}" type="button">+ ₽</button>
         </div>`;
-    }).join('') : emptyState('i-building', 'Бизнесов пока нет')}
+    }).join('') : emptyState('i-building', 'Бизнесов пока нет', '')}
   `;
 }
 
@@ -1221,12 +1443,27 @@ function viewAdmin(u){
 function viewProfile(u){
   const mode = document.documentElement.dataset.theme || 'light';
   const lvl = getLevel(u);
+  const myQR = userQRPayload(u.login);
   return `
     <div class="page-head">
       <div><h2>Профиль</h2><p>${esc(u.display || u.login)}${u.isAdmin ? ' · ADMIN' : ''}</p></div>
       <button class="btn btn-outline btn-sm" data-action="logout" type="button">
         <svg class="icon sm"><use href="#i-logout"/></svg>Выйти
       </button>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;padding:20px;text-align:center">
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Мой QR для получения</div>
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:12px">Покажите — и вам переведут деньги</div>
+      ${qrHTML(myQR, 'Мой QR')}
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:14px">
+        <button class="btn btn-outline btn-sm" data-copy="${esc(u.login)}" type="button">
+          <svg class="icon sm"><use href="#i-copy"/></svg>Логин
+        </button>
+        <button class="btn btn-primary btn-sm" data-action="shareMyQR" type="button">
+          <svg class="icon sm"><use href="#i-send"/></svg>Поделиться
+        </button>
+      </div>
     </div>
 
     <div class="hero" style="margin-bottom:14px">
@@ -1242,11 +1479,11 @@ function viewProfile(u){
     <div class="card" style="margin-bottom:14px">
       <h3 style="font-size:14px;font-weight:800;margin-bottom:8px">Аватар</h3>
       <div class="avatar-grid">
-        ${AV_GRADIENTS.map((g,i) => `
-          <div class="av-pick ${(u.avatar.type==='gradient' && u.avatar.id===i)?'sel':''}"
+        ${['linear-gradient(135deg,#1878f5,#031b45)','linear-gradient(135deg,#06b6d4,#0a44a8)','linear-gradient(135deg,#8b5cf6,#4c1d95)','linear-gradient(135deg,#ec4899,#831843)','linear-gradient(135deg,#f59e0b,#7c2d12)','linear-gradient(135deg,#10b981,#064e3b)','linear-gradient(135deg,#ef4444,#7f1d1d)','linear-gradient(135deg,#64748b,#0f172a)'].map((g,i) =>
+          `<div class="av-pick ${(u.avatar.type==='gradient' && u.avatar.id===i)?'sel':''}"
                style="background:${g}" data-action="setAvatar" data-type="gradient" data-id="${i}">${esc((u.display||u.login).charAt(0).toUpperCase())}</div>`).join('')}
-        ${AV_EMOJI.map((e,i) => `
-          <div class="av-pick ${(u.avatar.type==='emoji' && u.avatar.id===i)?'sel':''}"
+        ${['🦊','🐼','🦉','🐯','🐻','🐸','🦁','🐨','🐙','🦄','🐲','🦅'].map((e,i) =>
+          `<div class="av-pick ${(u.avatar.type==='emoji' && u.avatar.id===i)?'sel':''}"
                style="background:linear-gradient(135deg,#1878f5,#031b45)" data-action="setAvatar" data-type="emoji" data-id="${i}">${e}</div>`).join('')}
       </div>
     </div>
@@ -1281,7 +1518,7 @@ function viewProfile(u){
     <div class="page-head" style="margin-bottom:10px">
       <h2 style="font-size:15px">История</h2>
     </div>
-    ${u.history.length ? historyList(u.history.slice(0, 30)) : emptyState('i-history', 'История пуста')}
+    ${u.history.length ? historyList(u.history.slice(0, 30)) : emptyState('i-history', 'История пуста', '')}
   `;
 }
 
@@ -1296,20 +1533,42 @@ function historyList(items){
     </div>`;
   }).join('')}</div>`;
 }
-function emptyState(icon, text){
-  return `<div class="empty"><svg class="icon"><use href="#${icon}"/></svg><p>${esc(text)}</p></div>`;
+function emptyState(icon, text, actionHTML){
+  return `<div class="empty">
+    <svg class="icon"><use href="#${icon}"/></svg>
+    <p>${esc(text)}</p>
+    ${actionHTML || ''}
+  </div>`;
 }
 
 /* ============================================================
    ACTIONS
    ============================================================ */
-document.addEventListener('click', e => {
-  const el = e.target.closest('[data-action]');
-  const st = e.target.closest('[data-send-tab]');
+document.addEventListener('click', async e => {
+  const copyEl = e.target.closest('[data-copy]');
+  if(copyEl){
+    const text = copyEl.dataset.copy;
+    try{
+      await navigator.clipboard.writeText(text);
+      toast('Скопировано!', 'ok'); S.ok();
+    }catch(err){
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); toast('Скопировано!', 'ok'); }catch(e2){ toast('Не удалось', 'err'); }
+      ta.remove();
+    }
+    return;
+  }
+  const shareEl = e.target.closest('[data-share]');
+  if(shareEl){
+    const [name, code] = shareEl.dataset.share.split('|');
+    const text = `Оплатить ${name} в Kvantum Bank. Код: ${code}`;
+    shareTg(text, code);
+    return;
+  }
+  const tabEl = e.target.closest('[data-send-tab]');
+  if(tabEl){ sendTab = tabEl.dataset.sendTab; renderContent(); S.click(); return; }
   const chipR = e.target.closest('[data-pick-recipient]');
-  const chipB = e.target.closest('[data-pick-biz]');
-
-  if(st){ sendTab = st.dataset.sendTab; renderContent(); S.click(); return; }
   if(chipR){
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
     chipR.classList.add('sel');
@@ -1317,13 +1576,7 @@ document.addEventListener('click', e => {
     if(inp) inp.value = chipR.dataset.pickRecipient;
     return;
   }
-  if(chipB){
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
-    chipB.classList.add('sel');
-    const inp = document.getElementById('trBizId');
-    if(inp) inp.value = chipB.dataset.pickBiz;
-    return;
-  }
+  const el = e.target.closest('[data-action]');
   if(!el) return;
   const action = el.dataset.action;
   const u = getUser();
@@ -1343,14 +1596,17 @@ document.addEventListener('click', e => {
       saveDB(); renderApp();
       break;
     case 'logout': doLogout(); break;
-    case 'tap': doTap(); break;
     case 'work': doWork(el.dataset.id); break;
-    case 'buyBiz': buyBiz(el.dataset.id); break;
-    case 'upgradeBiz': upgradeBiz(el.dataset.id); break;
-    case 'collect': collectBiz(el.dataset.id); break;
-    case 'quickCollect': quickCollect(); break;
+    case 'createBusiness': openCreateBiz(); break;
+    case 'withdrawBiz': withdrawBiz(el.dataset.id); break;
+    case 'showBizQR': showBizQR(el.dataset.id); break;
+    case 'bizMenu': bizMenu(el.dataset.id); break;
+    case 'showMyQR': showMyQR(); break;
+    case 'shareMyQR': shareMyQR(); break;
     case 'doTransfer': doTransfer(); break;
     case 'doBizTransfer': doBizTransfer(); break;
+    case 'doQRTransfer': doQRTransfer(); break;
+    case 'pasteQR': pasteQR(); break;
     case 'exportSave': exportSave(); break;
     case 'importSave': document.getElementById('importFile').click(); break;
     case 'adminGiveUser': adminGiveUser(el.dataset.id); break;
@@ -1358,65 +1614,6 @@ document.addEventListener('click', e => {
     case 'adminGiveAll': adminGiveAll(); break;
   }
 });
-
-/* ---------- Tap ---------- */
-function updateEnergy(u, now){
-  const t = u.tap;
-  const elapsed = (now - t.lastEnergyRegen) / 1000;
-  if(elapsed > 0){
-    t.energy = Math.min(t.energyMax, t.energy + elapsed * ENERGY_REGEN);
-    t.lastEnergyRegen = now;
-  }
-}
-function doTap(){
-  const u = getUser(); if(!u) return;
-  const now = Date.now();
-  updateEnergy(u, now);
-  if(u.tap.energy < 1){ S.err(); haptic('rigid'); return; }
-  u.tap.energy -= 1;
-
-  if(now - u.tap.lastTap < COMBO_WINDOW) u.tap.combo = Math.min(10, u.tap.combo + 1);
-  else u.tap.combo = 1;
-  u.tap.lastTap = now;
-
-  const lvl = getLevel(u);
-  const comboMult = Math.min(3, 1 + Math.floor((u.tap.combo-1) / 3) * 0.5);
-  const base = TAP_BASE + Math.floor(lvl * 0.5);
-  const amount = Math.max(1, Math.round(base * comboMult));
-  addMoney(u, amount, 'Тап-заработок');
-  u.stats.taps = (u.stats.taps||0) + 1;
-  saveDB();
-
-  const cx = window.innerWidth/2 + rand(-50,50);
-  const cy = window.innerHeight/2 - 30 + rand(-30,30);
-  moneyFloat(amount, cx, cy);
-
-  S.tap(); haptic('light');
-
-  const tapValueEl = document.getElementById('tapValue');
-  if(tapValueEl) tapValueEl.textContent = '+' + fmt(amount) + ' за тап';
-  const comboEl = document.getElementById('comboEl');
-  if(comboEl){
-    if(u.tap.combo >= 6){ comboEl.textContent = '🔥 COMBO ×' + u.tap.combo; comboEl.classList.add('fire'); S.combo(); }
-    else if(u.tap.combo >= 3){ comboEl.textContent = 'COMBO ×' + u.tap.combo; comboEl.classList.remove('fire'); }
-    else { comboEl.textContent = ''; comboEl.classList.remove('fire'); }
-  }
-  updateEnergyUI(u);
-  updateTopBalance();
-}
-function updateEnergyUI(u){
-  updateEnergy(u, Date.now());
-  const bar = document.getElementById('energyBar');
-  const lbl = document.getElementById('energyLbl');
-  const pct = (u.tap.energy / u.tap.energyMax) * 100;
-  if(bar){ bar.style.width = pct + '%'; bar.classList.toggle('low', pct < 25); }
-  if(lbl) lbl.textContent = Math.floor(u.tap.energy) + ' / ' + u.tap.energyMax;
-}
-setInterval(() => {
-  const u = getUser();
-  if(!u || activeTab !== 'home') return;
-  updateEnergyUI(u);
-}, 900);
 
 /* ---------- Work ---------- */
 function doWork(id){
@@ -1434,77 +1631,88 @@ function doWork(id){
   toast('+' + fmt(amount), 'ok'); S.cash(); hapticNotify('success');
 }
 
-/* ---------- Business ---------- */
-function buyBiz(type){
+/* ---------- QR ---------- */
+function showMyQR(){
   const u = getUser();
-  const def = bizDef(type); if(!def) return;
-  if(u.balance < def.cost){ toast('Нужно ' + fmt(def.cost), 'err'); S.err(); return; }
-  u.balance -= def.cost;
-  u.businesses.push({
-    id: 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,4),
-    type, level: 1, wallet: 0,
-    boughtAt: Date.now(), lastCollect: Date.now()
-  });
-  u.stats.bizCount = (u.stats.bizCount||0) + 1;
-  addMoney(u, 0, 'Открыт: ' + def.name);
-  saveDB(); renderApp();
-  toast(def.name + ' открыт!', 'ok'); S.ok(); hapticNotify('success');
+  const payload = userQRPayload(u.login);
+  openModal(`
+    <button class="modal-close" data-mc="close"><svg class="icon sm"><use href="#i-x"/></svg></button>
+    <h3 style="text-align:center">Мой QR</h3>
+    <div class="qr-container">
+      ${qrHTML(payload, 'Мой QR')}
+      <div>
+        <div class="qr-title">${esc(u.display || u.login)}</div>
+        <div class="qr-subtitle">Логин: ${esc(u.login)}</div>
+      </div>
+      <div style="display:flex;gap:8px;width:100%;margin-top:8px">
+        <button class="btn btn-outline btn-sm" data-copy="${esc(u.login)}" type="button" style="flex:1">
+          <svg class="icon sm"><use href="#i-copy"/></svg>Логин
+        </button>
+        <button class="btn btn-primary btn-sm" data-action="shareMyQR" type="button" style="flex:1">
+          <svg class="icon sm"><use href="#i-send"/></svg>Отправить
+        </button>
+      </div>
+    </div>
+  `, () => { document.querySelector('[data-mc="close"]').onclick = closeModal; });
 }
-async function upgradeBiz(id){
+function shareMyQR(){
   const u = getUser();
-  const b = u.businesses.find(x => x.id === id); if(!b || b.level >= 5) return;
-  const cost = bizUpgradeCost(b);
-  if(u.balance < cost){ toast('Нужно ' + fmt(cost), 'err'); S.err(); return; }
-  const ok = await confirmDlg('Улучшить до Lv.' + (b.level+1) + '?', 'Стоимость: ' + fmt(cost) + ' · Доход +35%');
-  if(!ok) return;
-  u.balance -= cost;
-  b.level += 1;
-  addMoney(u, 0, 'Улучшено до Lv.' + b.level);
-  saveDB(); renderApp();
-  toast('Lv.' + b.level + ' ✓', 'ok'); S.ok();
+  const text = `Переведи мне деньги в Kvantum Bank. Мой логин: ${u.login}`;
+  shareTg(text, userQRPayload(u.login));
+  haptic('medium');
 }
-function collectBiz(id){
-  const u = getUser();
-  const b = u.businesses.find(x => x.id === id); if(!b) return;
-  const now = Date.now();
-  const def = bizDef(b.type);
-  let periods = Math.floor((now - b.lastCollect) / def.period);
-  const maxP = Math.floor((12*3600000)/def.period);
-  if(periods > maxP) periods = maxP;
-  const income = periods > 0 ? Math.round(periods * def.income * (1 + 0.35*(b.level-1))) : 0;
-  const wallet = b.wallet || 0;
-  const total = income + wallet;
-  if(total <= 0){ toast('Пока нечего собирать', 'err'); return; }
-  if(periods > 0) b.lastCollect += periods * def.period;
-  b.wallet = 0;
-  addMoney(u, total, 'Доход: ' + def.name);
-  u.stats.collects = (u.stats.collects||0) + 1;
-  saveDB(); renderApp();
-  moneyFloat(total);
-  toast('+' + fmt(total), 'ok'); S.cash(); hapticNotify('success');
+async function pasteQR(){
+  try{
+    const text = await navigator.clipboard.readText();
+    const inp = document.getElementById('trQRText');
+    if(inp && text){ inp.value = text.trim(); toast('Вставлено', 'ok'); }
+    else toast('Буфер пуст', 'err');
+  }catch(err){ toast('Нет доступа к буферу', 'err'); }
 }
-function quickCollect(){
+function doQRTransfer(){
   const u = getUser();
-  if(!u.businesses.length){ toast('Сначала купи бизнес', 'err'); return; }
-  const now = Date.now();
-  let total = 0;
-  u.businesses.forEach(b => {
-    const def = bizDef(b.type);
-    let periods = Math.floor((now - b.lastCollect) / def.period);
-    const maxP = Math.floor((12*3600000)/def.period);
-    if(periods > maxP) periods = maxP;
-    if(periods > 0){
-      total += Math.round(periods * def.income * (1 + 0.35*(b.level-1)));
-      b.lastCollect += periods * def.period;
-    }
-    if(b.wallet){ total += b.wallet; b.wallet = 0; }
-  });
-  if(total <= 0){ toast('Пока нечего собирать', 'err'); return; }
-  addMoney(u, total, 'Сбор со всех бизнесов');
-  u.stats.collects = (u.stats.collects||0) + 1;
-  saveDB(); renderApp();
-  moneyFloat(total);
-  toast('+' + fmt(total), 'ok'); S.cash(); hapticNotify('success');
+  const textEl = document.getElementById('trQRText');
+  const amtEl = document.getElementById('trQRAmount');
+  const errBox = document.getElementById('trQRError');
+  if(!textEl || !amtEl) return;
+  errBox.textContent = '';
+  const text = textEl.value.trim();
+  const amount = parseFloat(amtEl.value);
+  if(!text){ errBox.textContent = 'Вставьте QR или код'; return; }
+  if(!(amount > 0)){ errBox.textContent = 'Некорректная сумма'; S.err(); return; }
+  if(amount > u.balance){ errBox.textContent = 'Недостаточно средств'; S.err(); return; }
+
+  const parsed = parseQRPayload(text);
+  if(parsed.type === 'user'){
+    const to = db.users[parsed.value.toLowerCase()];
+    if(!to){ errBox.textContent = 'Игрок не найден'; S.err(); return; }
+    if(to.login === currentUser){ errBox.textContent = 'Нельзя себе'; S.err(); return; }
+    u.balance -= amount;
+    u.history.unshift({t: Date.now(), title: '→ ' + (to.display || to.login), amount: -amount});
+    to.balance += amount;
+    to.totalEarned = (to.totalEarned||0) + amount;
+    to.history.unshift({t: Date.now(), title: '← ' + (u.display || u.login), amount});
+    u.stats.transfersCount = (u.stats.transfersCount||0) + 1;
+    saveDB(); renderApp();
+    toast('+' + fmt(amount) + ' → ' + (to.display || to.login), 'ok');
+    S.cash(); hapticNotify('success');
+    textEl.value = ''; amtEl.value = '';
+  }else if(parsed.type === 'biz'){
+    const found = findBizByCode(parsed.value);
+    if(!found){ errBox.textContent = 'Бизнес не найден'; S.err(); return; }
+    u.balance -= amount;
+    found.biz.wallet = (found.biz.wallet || 0) + amount;
+    u.history.unshift({t: Date.now(), title: '→ Бизнес ' + found.biz.name, amount: -amount});
+    found.owner.history.unshift({t: Date.now(), title: '💰 В ' + found.biz.name + ' от ' + (u.display||u.login), amount: 0});
+    u.stats.transfersCount = (u.stats.transfersCount||0) + 1;
+    saveDB(); renderApp();
+    toast('+' + fmt(amount) + ' → ' + found.biz.name, 'ok');
+    S.cash(); hapticNotify('success');
+    textEl.value = ''; amtEl.value = '';
+  }else{
+    errBox.textContent = 'Неизвестный формат QR';
+    S.err();
+  }
 }
 
 /* ---------- Transfer to user ---------- */
@@ -1517,7 +1725,6 @@ function doTransfer(){
   errBox.textContent = '';
   const login = loginEl.value.trim().toLowerCase();
   const amount = parseFloat(amtEl.value);
-
   if(!login){ errBox.textContent = 'Введите логин'; return; }
   if(login === currentUser){ errBox.textContent = 'Нельзя себе'; S.err(); return; }
   const to = db.users[login];
@@ -1540,42 +1747,36 @@ function doTransfer(){
 /* ---------- Transfer to business ---------- */
 function doBizTransfer(){
   const u = getUser();
-  const idEl = document.getElementById('trBizId');
+  const codeEl = document.getElementById('trBizCode');
   const amtEl = document.getElementById('trBizAmount');
   const errBox = document.getElementById('trBizError');
-  if(!idEl || !amtEl) return;
+  if(!codeEl || !amtEl) return;
   errBox.textContent = '';
-  const bizId = idEl.value.trim();
+  const code = codeEl.value.trim().toUpperCase();
   const amount = parseFloat(amtEl.value);
-
-  if(!bizId){ errBox.textContent = 'Укажите ID бизнеса'; return; }
-  const found = getAllBusinesses().find(x => x.id === bizId);
-  if(!found){ errBox.textContent = 'Бизнес не найден'; S.err(); return; }
+  if(!code){ errBox.textContent = 'Введите код бизнеса'; return; }
+  const found = findBizByCode(code);
+  if(!found){ errBox.textContent = 'Бизнес с таким кодом не найден'; S.err(); return; }
   if(!(amount > 0)){ errBox.textContent = 'Некорректная сумма'; S.err(); return; }
   if(amount > u.balance){ errBox.textContent = 'Недостаточно средств'; S.err(); return; }
 
-  const owner = db.users[found.ownerLogin];
-  const biz = owner?.businesses.find(x => x.id === bizId);
-  if(!biz){ errBox.textContent = 'Бизнес не найден'; S.err(); return; }
-
   u.balance -= amount;
-  u.history.unshift({t: Date.now(), title: '→ Бизнес ' + bizDef(biz.type).name + ' #' + bizId.slice(-3), amount: -amount});
-  biz.wallet = (biz.wallet || 0) + amount;
-  const def = bizDef(biz.type);
-  owner.history.unshift({t: Date.now(), title: '💰 В бизнес ' + def.name + ' от ' + (u.display||u.login), amount: 0});
+  found.biz.wallet = (found.biz.wallet || 0) + amount;
+  u.history.unshift({t: Date.now(), title: '→ Бизнес ' + found.biz.name, amount: -amount});
+  found.owner.history.unshift({t: Date.now(), title: '💰 В ' + found.biz.name + ' от ' + (u.display||u.login), amount: 0});
   u.stats.transfersCount = (u.stats.transfersCount||0) + 1;
   saveDB(); renderApp();
-  toast('+' + fmt(amount) + ' → ' + def.name, 'ok');
+  toast('+' + fmt(amount) + ' → ' + found.biz.name, 'ok');
   S.cash(); hapticNotify('success');
-  idEl.value = ''; amtEl.value = '';
+  codeEl.value = ''; amtEl.value = '';
 }
 
-/* ---------- ADMIN actions ---------- */
+/* ---------- ADMIN ---------- */
 async function adminGiveUser(login){
   const u = getUser();
   if(!u || !u.isAdmin){ toast('Нет доступа', 'err'); return; }
   const target = db.users[login]; if(!target) return;
-  const amt = await askAmount('Дать ' + (target.display || target.login), '0', 'Сумма будет зачислена получателю');
+  const amt = await askAmount('Дать ' + (target.display || target.login), 'Сумма будет зачислена получателю');
   if(amt === null) return;
   if(!(amt > 0)){ toast('Некорректно', 'err'); return; }
   target.balance += amt;
@@ -1595,21 +1796,21 @@ async function adminGiveBiz(bizId){
   const owner = db.users[found.ownerLogin];
   const biz = owner?.businesses.find(x => x.id === bizId);
   if(!biz) return;
-  const amt = await askAmount('Пополнить бизнес', '0', bizDef(biz.type).name + ' · владелец ' + (owner.display||owner.login));
+  const amt = await askAmount('Пополнить ' + biz.name, 'Владелец: ' + (owner.display||owner.login));
   if(amt === null) return;
   if(!(amt > 0)){ toast('Некорректно', 'err'); return; }
   biz.wallet = (biz.wallet || 0) + amt;
-  owner.history.unshift({t: Date.now(), title: '🎁 В бизнес ' + bizDef(biz.type).name + ' от админа', amount: 0});
+  owner.history.unshift({t: Date.now(), title: '🎁 В ' + biz.name + ' от админа', amount: 0});
   u.stats.adminGiven = (u.stats.adminGiven||0) + amt;
-  addMoney(u, 0, 'Админ: выдал ' + fmt(amt) + ' → бизнес ' + bizDef(biz.type).name);
+  addMoney(u, 0, 'Админ: выдал ' + fmt(amt) + ' → ' + biz.name);
   saveDB(); renderApp();
-  toast('+' + fmt(amt) + ' → ' + bizDef(biz.type).name, 'ok');
+  toast('+' + fmt(amt) + ' → ' + biz.name, 'ok');
   S.cash(); hapticNotify('success');
 }
 async function adminGiveAll(){
   const u = getUser();
   if(!u || !u.isAdmin){ toast('Нет доступа', 'err'); return; }
-  const amt = await askAmount('Раздать всем игрокам', '0', 'Каждому зарегистрированному игроку');
+  const amt = await askAmount('Раздать всем', 'Каждому зарегистрированному игроку');
   if(amt === null) return;
   if(!(amt > 0)){ toast('Некорректно', 'err'); return; }
   const all = Object.values(db.users);
@@ -1621,11 +1822,9 @@ async function adminGiveAll(){
   u.stats.adminGiven = (u.stats.adminGiven||0) + amt * all.length;
   addMoney(u, 0, 'Админ: раздал ' + fmt(amt) + ' × ' + all.length);
   saveDB(); renderApp();
-  toast('+' + fmt(amt) + ' раздано ' + all.length + ' игрокам', 'ok');
+  toast('+' + fmt(amt) + ' × ' + all.length, 'ok');
   S.cash(); hapticNotify('success');
 }
-
-/* ---------- Notifications none — removed ---------- */
 
 /* ---------- Export / Import ---------- */
 function exportSave(){
@@ -1665,16 +1864,6 @@ function tick(){
       const left = j.cd - (now - (u.lastWork[j.id] || 0));
       if(left > 0){ btn.disabled = true; cd.textContent = '⏳ ' + Math.ceil(left/1000) + 'с'; }
       else { btn.disabled = false; cd.textContent = ''; }
-    });
-  }
-  if(activeTab === 'business'){
-    u.businesses.forEach(b => {
-      const box = document.getElementById('bizacc-' + b.id);
-      if(!box) return;
-      const acc = bizAccum(b, now);
-      box.innerHTML = `<span class="muted">Накоплен доход</span><b>${fmt(acc)}</b>`;
-      const btn = document.querySelector(`[data-action="collect"][data-id="${b.id}"]`);
-      if(btn) btn.disabled = acc <= 0 && (b.wallet || 0) <= 0;
     });
   }
 }
@@ -1746,24 +1935,20 @@ function initTgLogin(){
   btn.classList.remove('hidden');
   div.classList.remove('hidden');
   btn.onclick = () => {
-    // Find user by tgId
     let key = Object.keys(db.users).find(k => db.users[k].tgId === tgUser.id);
     if(!key){
-      // Create new
-      const login = (tgUser.username || ('tg' + tgUser.id)).toLowerCase();
-      key = login;
-      if(db.users[key]){
-        // login taken by non-tg user, append suffix
-        key = login + '_' + tgUser.id.toString().slice(-4);
-      }
+      const base = (tgUser.username || ('tg' + tgUser.id)).toLowerCase();
+      key = base;
+      if(db.users[key]) key = base + '_' + tgUser.id.toString().slice(-4);
       const u = newUser(key, tgUser);
       db.users[key] = u;
       saveDB();
     }
     startSession(key);
     const u = db.users[key];
-    if(u.isAdmin){ toast('👑 Вход администратора', 'ok'); S.levelUp(); hapticNotify('success'); }
-    else { toast('Добро пожаловать, ' + (u.display || u.login) + '!', 'ok'); S.ok(); }
+    if(u.isAdmin) toast('👑 Вход администратора', 'ok');
+    else toast('Добро пожаловать, ' + (u.display || u.login) + '!', 'ok');
+    S.ok();
   };
 }
 
@@ -1778,7 +1963,6 @@ function boot(){
     if(ses && db.users[ses]){
       startSession(ses);
     }else if(tgUser){
-      // Auto-session if tg user exists
       const key = Object.keys(db.users).find(k => db.users[k].tgId === tgUser.id);
       if(key) startSession(key);
       else document.getElementById('authScreen').classList.remove('hidden');
@@ -1800,19 +1984,6 @@ window.addEventListener('storage', e => {
 /* ---------- Keyboard ---------- */
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape') closeModal();
-  if(e.code === 'Space' && activeTab === 'home' && !e.target.matches('input')){
-    e.preventDefault(); doTap();
-  }
-});
-
-/* ---------- Tap coin visual feedback ---------- */
-document.addEventListener('pointerdown', e => {
-  const coin = e.target.closest('[data-action="tap"]');
-  if(coin){ coin.style.transform = 'scale(.94)'; }
-});
-document.addEventListener('pointerup', e => {
-  const coin = e.target.closest('[data-action="tap"]');
-  if(coin){ setTimeout(() => { coin.style.transform = ''; }, 80); }
 });
 </script>
 </body>
