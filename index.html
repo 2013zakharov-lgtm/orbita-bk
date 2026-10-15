@@ -176,8 +176,6 @@
    ║                                                                        ║
    ║   ✅  URL ТВОЕГО WORKER'А УЖЕ ВСТАВЛЕН СЮДА                          ║
    ║                                                                        ║
-   ║   Если понадобится поменять — замени строку ниже целиком.             ║
-   ║                                                                        ║
    ╚══════════════════════════════════════════════════════════════════════╝ */
 
 const API_URL = 'https://shiny-flower-cc1aorbita-gate.2013zakharov.workers.dev/send';
@@ -185,70 +183,74 @@ const API_URL = 'https://shiny-flower-cc1aorbita-gate.2013zakharov.workers.dev/s
 /* ══════════════════════════════════════════════════════════════════════ */
 
 
-const tg = window.Telegram?.WebApp;
-tg?.ready();
-tg?.expand();
-tg?.setHeaderColor?.('#050505');
-tg?.setBackgroundColor?.('#050505');
-tg?.disableVerticalSwipes?.();
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  if (tg.setHeaderColor) tg.setHeaderColor('#050505');
+  if (tg.setBackgroundColor) tg.setBackgroundColor('#050505');
+  if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+}
 
-const upload     = document.getElementById('upload');
-const photoInput = document.getElementById('photoInput');
-const preview    = document.getElementById('preview');
-const removeBtn  = document.getElementById('removeBtn');
-const postText   = document.getElementById('postText');
-const counter    = document.getElementById('counter');
-const submitBtn  = document.getElementById('submitBtn');
-const btnLabel   = document.getElementById('btnLabel');
-const toast      = document.getElementById('toast');
-const toastText  = document.getElementById('toastText');
-const toastIcon  = document.getElementById('toastIcon');
+var upload     = document.getElementById('upload');
+var photoInput = document.getElementById('photoInput');
+var preview    = document.getElementById('preview');
+var removeBtn  = document.getElementById('removeBtn');
+var postText   = document.getElementById('postText');
+var counter    = document.getElementById('counter');
+var submitBtn  = document.getElementById('submitBtn');
+var btnLabel   = document.getElementById('btnLabel');
+var toast      = document.getElementById('toast');
+var toastText  = document.getElementById('toastText');
+var toastIcon  = document.getElementById('toastIcon');
 
-let photoFile = null;
-let toastTimer = null;
+var photoFile = null;
+var toastTimer = null;
 
-const ICONS = {
-  success: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
-  error:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`,
-  info:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8h.01M12 12v4"/></svg>`
+var ICONS = {
+  success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'
 };
 
-function showToast(msg, type = 'success') {
+function showToast(msg, type) {
+  if (!type) type = 'success';
   clearTimeout(toastTimer);
   toastText.textContent = msg;
   toastIcon.innerHTML = ICONS[type] || ICONS.success;
   toast.className = 'toast show' + (type === 'error' ? ' error' : '');
-  toastTimer = setTimeout(() => { toast.className = 'toast' + (type === 'error' ? ' error' : ''); }, 3000);
+  toastTimer = setTimeout(function () {
+    toast.className = 'toast' + (type === 'error' ? ' error' : '');
+  }, 3500);
 }
 
-photoInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
+photoInput.addEventListener('change', function (e) {
+  var file = e.target.files[0];
   if (!file) return;
-  if (!file.type.startsWith('image/')) { showToast('Только изображения', 'error'); return; }
+  if (file.type.indexOf('image/') !== 0) { showToast('Только изображения', 'error'); return; }
   if (file.size > 5 * 1024 * 1024) { showToast('Фото больше 5 МБ', 'error'); return; }
   photoFile = file;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
+  var reader = new FileReader();
+  reader.onload = function (ev) {
     preview.src = ev.target.result;
     upload.classList.add('has-photo');
-    tg?.HapticFeedback?.impactOccurred?.('light');
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
   };
   reader.readAsDataURL(file);
 });
 
-removeBtn.addEventListener('click', (e) => {
+removeBtn.addEventListener('click', function (e) {
   e.preventDefault();
   e.stopPropagation();
   photoFile = null;
   photoInput.value = '';
   preview.src = '';
   upload.classList.remove('has-photo');
-  tg?.HapticFeedback?.impactOccurred?.('light');
+  if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 });
 
-postText.addEventListener('input', () => {
-  const len = postText.value.length;
-  counter.textContent = `${len} / 1024`;
+postText.addEventListener('input', function () {
+  var len = postText.value.length;
+  counter.textContent = len + ' / 1024';
   counter.classList.toggle('warn', len > 850 && len <= 960);
   counter.classList.toggle('danger', len > 960);
 });
@@ -258,52 +260,58 @@ function setBtnState(state, label) {
   if (label) btnLabel.textContent = label;
 }
 
-submitBtn.addEventListener('click', async () => {
+submitBtn.addEventListener('click', async function () {
   if (submitBtn.dataset.state === 'loading') return;
 
-  const text = postText.value.trim();
+  var text = postText.value.trim();
 
   if (!text && !photoFile) {
     showToast('Добавь текст или фото', 'error');
     setBtnState('error');
-    tg?.HapticFeedback?.notificationOccurred?.('error');
-    setTimeout(() => setBtnState('idle', 'Отправить пост'), 900);
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+    setTimeout(function () { setBtnState('idle', 'Отправить пост'); }, 900);
     return;
   }
 
   setBtnState('loading');
-  tg?.HapticFeedback?.impactOccurred?.('medium');
+  if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
   try {
-    let photoBase64 = null;
+    var photoBase64 = null;
     if (photoFile) photoBase64 = await fileToBase64(photoFile);
 
-    const user = tg?.initDataUnsafe?.user;
-    const payload = {
+    var user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+    var fromLine = 'Mini App';
+    if (user) {
+      fromLine = (user.first_name || '') +
+        (user.last_name ? ' ' + user.last_name : '') +
+        (user.username ? ' · @' + user.username : '') +
+        ' · ID ' + user.id;
+    }
+
+    var payload = {
       text: text || '(без текста)',
       photo: photoBase64,
-      from: user
-        ? `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''}${user.username ? ' · @' + user.username : ''} · ID ${user.id}`
-        : 'Mini App'
+      from: fromLine
     };
 
-    const res = await fetch(API_URL, {
+    var res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
+    var data = await res.json();
 
     if (!res.ok || !data.ok) {
-      throw new Error(data.error || 'Ошибка сервера');
+      throw new Error(data.error || 'Ошибка сервера (HTTP ' + res.status + ')');
     }
 
     setBtnState('success');
-    tg?.HapticFeedback?.notificationOccurred?.('success');
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     showToast('Пост отправлен в Telegram', 'success');
 
-    setTimeout(() => {
+    setTimeout(function () {
       postText.value = '';
       counter.textContent = '0 / 1024';
       counter.classList.remove('warn', 'danger');
@@ -315,15 +323,15 @@ submitBtn.addEventListener('click', async () => {
     console.error(err);
     setBtnState('error');
     showToast(err.message || 'Не удалось отправить', 'error');
-    tg?.HapticFeedback?.notificationOccurred?.('error');
-    setTimeout(() => setBtnState('idle', 'Отправить пост'), 1400);
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+    setTimeout(function () { setBtnState('idle', 'Отправить пост'); }, 1600);
   }
 });
 
 function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result.split(',')[1]);
+  return new Promise(function (resolve, reject) {
+    var r = new FileReader();
+    r.onload = function () { resolve(r.result.split(',')[1]); };
     r.onerror = reject;
     r.readAsDataURL(file);
   });
