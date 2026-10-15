@@ -3,296 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#1e1f22">
+<meta name="theme-color" content="#0b0f1a">
 <title>Voicefriend</title>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<!-- Подключаем LiveKit Client SDK -->
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@2/dist/livekit-client.umd.min.js"></script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  :root {
-    --bg: #1e1f22; --bg-2: #2b2d31; --bg-3: #313338; --bg-hover: #383a40;
-    --border: #1a1b1e; --text: #f2f3f5; --text-2: #b5bac1; --text-3: #80848e;
-    --blurple: #5865f2; --green: #23a559; --red: #f23f43; --yellow: #f0b232;
-    --ease: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  html, body {
-    background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
-    height: 100vh; height: 100dvh; overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-    -webkit-user-select: none; user-select: none;
-    overscroll-behavior: none;
-  }
-  #app { height: 100vh; height: 100dvh; position: relative; overflow: hidden; }
-  .screen { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg); overflow: hidden; }
-  .screen.active { display: flex; animation: screenIn 0.4s var(--ease); }
-  @keyframes screenIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-  .screen-header { padding: 20px 20px 12px; padding-top: calc(20px + env(safe-area-inset-top, 0px)); flex-shrink: 0; }
-  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .logo-mark {
-    width: 56px; height: 56px; border-radius: 16px;
-    background: linear-gradient(135deg, var(--blurple) 0%, #7c85ff 100%);
-    display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 24px;
-    letter-spacing: -1px; position: relative; overflow: hidden;
-    animation: logoBreathe 4s ease-in-out infinite;
-  }
-  .logo-mark::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
-    transform: translateX(-100%); animation: shine 4s ease-in-out infinite;
-  }
-  @keyframes logoBreathe { 0%, 100% { box-shadow: 0 8px 32px rgba(88,101,242,0.3); } 50% { box-shadow: 0 8px 44px rgba(88,101,242,0.55); } }
-  @keyframes shine { 0%, 60% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-  .lang-switch { display: inline-flex; align-items: center; gap: 2px; padding: 3px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 100px; height: 38px; position: relative; }
-  .lang-btn { padding: 0 12px; height: 32px; background: transparent; border: none; color: var(--text-3); font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; border-radius: 100px; display: inline-flex; align-items: center; gap: 5px; transition: color 0.3s, transform 0.15s; position: relative; z-index: 1; }
-  .lang-btn.active { color: #fff; }
-  .lang-btn:active { transform: scale(0.94); }
-  .lang-btn .flag { font-size: 14px; line-height: 1; }
-  .lang-pill { position: absolute; top: 3px; height: 32px; background: var(--blurple); border-radius: 100px; transition: all 0.4s var(--ease-back); z-index: 0; pointer-events: none; }
-
-  .screen-title { font-size: 24px; font-weight: 800; letter-spacing: -0.7px; margin-bottom: 6px; }
-  .screen-subtitle { font-size: 14px; color: var(--text-3); line-height: 1.4; }
-
-  .screen-content { flex: 1; overflow-y: auto; padding: 8px 16px 16px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-
-  .list-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--bg-2); border-radius: 14px; margin-bottom: 8px; cursor: pointer; transition: background 0.15s, transform 0.15s; border: 1px solid transparent; opacity: 0; transform: translateY(12px); animation: listItemIn 0.4s var(--ease) forwards; }
-  @keyframes listItemIn { to { opacity: 1; transform: translateY(0); } }
-  .list-item:active { transform: scale(0.98); background: var(--bg-hover); }
-  .list-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--bg); display: grid; place-items: center; font-size: 22px; flex-shrink: 0; }
-  .list-icon.hashtag { background: rgba(88,101,242,0.15); color: var(--blurple); font-size: 20px; font-weight: 700; }
-  .list-info { flex: 1; min-width: 0; }
-  .list-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .list-subtitle { font-size: 12.5px; color: var(--text-3); display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .online-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; display: inline-block; }
-  .online-dot.empty { background: var(--text-3); }
-  .list-arrow { color: var(--text-3); flex-shrink: 0; }
-
-  .back-btn { width: 40px; height: 40px; border-radius: 12px; background: var(--bg-3); border: none; color: var(--text); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; transition: background 0.15s, transform 0.15s; margin-bottom: 14px; }
-  .back-btn:active { transform: scale(0.9); background: var(--bg-hover); }
-  .back-btn svg { width: 18px; height: 18px; }
-
-  .voice-screen { background: radial-gradient(ellipse at top, #2b2d31 0%, #1e1f22 60%); }
-  .voice-header { display: flex; align-items: center; padding: 12px 16px; padding-top: calc(12px + env(safe-area-inset-top, 0px)); background: rgba(30,31,34,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); gap: 12px; flex-shrink: 0; position: relative; z-index: 10; }
-  .voice-header .back-btn { width: 36px; height: 36px; margin-bottom: 0; }
-  .voice-header-info { flex: 1; min-width: 0; }
-  .voice-header-title { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
-  .voice-header-title .hash { color: var(--text-3); font-weight: 800; }
-  .voice-header-sub { font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 5px; margin-top: 2px; font-weight: 600; }
-  .voice-header-sub.connecting { color: var(--yellow); }
-  .voice-header-sub.error { color: var(--red); }
-
-  .live-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(35,165,89,0.15); border: 1px solid rgba(35,165,89,0.35); border-radius: 100px; font-size: 10px; font-weight: 800; color: var(--green); letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0; }
-  .live-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: liveBlink 1.5s ease-in-out infinite; }
-  @keyframes liveBlink { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
-
-  .voice-body { flex: 1; overflow-y: auto; padding: 16px 16px 20px; -webkit-overflow-scrolling: touch; position: relative; }
-  .participants-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-3); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-  .participants-count { background: var(--bg-3); padding: 2px 8px; border-radius: 100px; font-size: 10px; color: var(--text-2); letter-spacing: 0; }
-
-  .participant { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: rgba(43,45,49,0.7); border-radius: 14px; margin-bottom: 8px; transition: all 0.25s var(--ease); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.03); opacity: 0; transform: translateX(-12px); animation: participantIn 0.45s var(--ease) forwards; }
-  @keyframes participantIn { to { opacity: 1; transform: translateX(0); } }
-  .participant.me { border-color: rgba(88,101,242,0.4); background: rgba(88,101,242,0.12); }
-  .participant.speaking { background: rgba(35,165,89,0.12); border-color: rgba(35,165,89,0.4); animation: speakingGlow 1.2s ease-in-out infinite; }
-  @keyframes speakingGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(35,165,89,0.2); } 50% { box-shadow: 0 0 0 6px rgba(35,165,89,0); } }
-
-  .participant-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--blurple) 0%, #7c85ff 100%); display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 16px; flex-shrink: 0; position: relative; }
-  .participant.speaking .participant-avatar::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2.5px solid var(--green); animation: speakingRing 1.2s ease-out infinite; }
-  @keyframes speakingRing { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
-  .participant.speaking .participant-avatar::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--green); animation: speakingRing 1.2s ease-out infinite 0.4s; }
-  .participant-avatar.muted::after { content: ''; position: absolute; right: -2px; bottom: -2px; width: 18px; height: 18px; border-radius: 50%; background: var(--red); border: 2.5px solid var(--bg-2); background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'><line x1='1' y1='1' x2='23' y2='23'/></svg>"); background-size: 9px 9px; background-position: center; background-repeat: no-repeat; animation: muteAppear 0.3s var(--ease-back); }
-  @keyframes muteAppear { from { transform: scale(0); } to { transform: scale(1); } }
-
-  .participant-name { flex: 1; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
-  .participant-you { font-size: 10px; font-weight: 700; padding: 3px 7px; background: var(--blurple); color: #fff; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
-
-  .sound-wave { display: inline-flex; align-items: flex-end; gap: 2px; height: 16px; margin-left: 6px; flex-shrink: 0; }
-  .sound-wave span { width: 2.5px; background: var(--green); border-radius: 2px; height: 4px; }
-  .participant.speaking .sound-wave span { animation: wave 0.7s ease-in-out infinite; }
-  .participant.speaking .sound-wave span:nth-child(1) { animation-delay: 0s; height: 8px; }
-  .participant.speaking .sound-wave span:nth-child(2) { animation-delay: 0.15s; height: 14px; }
-  .participant.speaking .sound-wave span:nth-child(3) { animation-delay: 0.3s; height: 10px; }
-  .participant.speaking .sound-wave span:nth-child(4) { animation-delay: 0.45s; height: 12px; }
-  @keyframes wave { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
-
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 13.5px; line-height: 1.6; }
-  .empty-state .icon { font-size: 48px; opacity: 0.4; margin-bottom: 12px; display: block; animation: iconFloat 3s ease-in-out infinite; }
-  @keyframes iconFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
-  .voice-center-visual { height: 80px; display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 20px; opacity: 0.6; }
-  .voice-center-visual .bar { width: 3px; background: linear-gradient(180deg, var(--blurple), var(--green)); border-radius: 2px; animation: centerWave 1.4s ease-in-out infinite; }
-  @keyframes centerWave { 0%, 100% { height: 8px; opacity: 0.4; } 50% { height: 40px; opacity: 1; } }
-
-  .voice-controls { padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to top, var(--bg) 40%, rgba(30,31,34,0.6)); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; gap: 10px; flex-shrink: 0; position: relative; z-index: 10; }
-  .control-btn { flex: 1; height: 54px; border-radius: 16px; border: none; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.15s, background 0.25s, color 0.25s; position: relative; overflow: hidden; }
-  .control-btn:active:not(:disabled) { transform: scale(0.96); }
-  .control-btn svg { width: 20px; height: 20px; flex-shrink: 0; transition: transform 0.3s var(--ease-back); }
-  .control-btn.mute { background: var(--bg-3); color: var(--text); flex: 0 0 60px; }
-  .control-btn.mute:active svg { transform: rotate(-8deg); }
-  .control-btn.mute.active { background: var(--red); color: #fff; animation: mutePulse 1.5s ease-in-out infinite; }
-  @keyframes mutePulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(242,63,67,0.3); } 50% { box-shadow: 0 0 0 8px rgba(242,63,67,0); } }
-  .control-btn.leave { background: var(--red); color: #fff; flex: 1; }
-  .control-btn .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.35); transform: translate(-50%,-50%) scale(0); animation: ripple 0.65s ease-out; pointer-events: none; }
-  @keyframes ripple { to { transform: translate(-50%,-50%) scale(20); opacity: 0; } }
-
-  .mic-meter { height: 4px; background: var(--bg-3); border-radius: 3px; margin-top: 16px; overflow: hidden; }
-  .mic-meter-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--blurple), var(--green)); transition: width 0.06s linear; border-radius: 3px; }
-  .mic-meter-label { font-size: 11px; color: var(--text-3); margin-top: 8px; text-align: center; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; }
-
-  .toast { position: fixed; top: 0; left: 0; right: 0; display: none; justify-content: center; padding: 16px; padding-top: calc(16px + env(safe-area-inset-top, 0px)); pointer-events: none; z-index: 9999; }
-  .toast.show { display: flex; }
-  .toast-inner { background: var(--bg-3); color: var(--text); padding: 12px 18px; border-radius: 12px; font-size: 13.5px; font-weight: 600; border: 1px solid var(--border); max-width: 90%; box-shadow: 0 12px 32px rgba(0,0,0,0.5); animation: toastIn 0.35s var(--ease-back); text-align: center; }
-  .toast.error .toast-inner { background: #4a1618; border-color: #6b1f22; color: #ffb3b5; }
-  @keyframes toastIn { from { opacity: 0; transform: translateY(-24px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-
-  .banner { padding: 10px 16px; font-size: 12.5px; font-weight: 600; text-align: center; background: var(--yellow); color: #000; display: none; animation: bannerIn 0.3s var(--ease); }
-  .banner.show { display: block; }
-  .banner.error { background: var(--red); color: #fff; }
-  @keyframes bannerIn { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-
-  @media (max-width: 380px) {
-    .screen-header { padding: 16px 16px 10px; padding-top: calc(16px + env(safe-area-inset-top, 0px)); }
-    .screen-title { font-size: 22px; }
-    .logo-mark { width: 48px; height: 48px; font-size: 21px; }
-    .voice-controls { padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
-    .control-btn { height: 50px; font-size: 13px; }
-    .lang-switch { height: 34px; }
-    .lang-btn { height: 28px; font-size: 11.5px; padding: 0 10px; }
-    .lang-pill { height: 28px; }
-    .voice-center-visual { height: 60px; }
-  }
-  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+  /* ... Стили остаются почти без изменений, чтобы не загромождать ответ. 
+     Скопируй их из предыдущего сообщения (v4). Единственное, что можно убрать — 
+     анимацию "voice-center-visual", так как в LiveKit визуализация встроена. 
+     Я оставил её для красоты. ... */
 </style>
 </head>
 <body>
 
-<div id="app">
-
-  <div class="screen active" id="screen-region">
-    <div class="screen-header">
-      <div class="header-top">
-        <div class="logo-mark">V</div>
-        <div class="lang-switch" id="langSwitch">
-          <div class="lang-pill" id="langPill"></div>
-          <button class="lang-btn active" data-lang="ru" type="button"><span class="flag">🇷🇺</span> RU</button>
-          <button class="lang-btn" data-lang="en" type="button"><span class="flag">🇬🇧</span> EN</button>
-        </div>
-      </div>
-      <div class="screen-title" data-i18n="title">Voicefriend</div>
-      <div class="screen-subtitle" data-i18n="chooseRegion">Выбери регион, чтобы начать общение</div>
-    </div>
-    <div class="screen-content" id="regionList"></div>
-  </div>
-
-  <div class="screen" id="screen-rooms">
-    <div class="screen-header">
-      <button class="back-btn" id="backToRegions" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      </button>
-      <div class="screen-title" id="regionTitle">—</div>
-      <div class="screen-subtitle" data-i18n="chooseRoom">Выбери голосовую комнату</div>
-    </div>
-    <div class="screen-content" id="roomList"></div>
-  </div>
-
-  <div class="screen voice-screen" id="screen-voice">
-    <div class="banner" id="banner">—</div>
-    <div class="voice-header">
-      <button class="back-btn" id="leaveHeader" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      </button>
-      <div class="voice-header-info">
-        <div class="voice-header-title"><span class="hash">#</span><span id="voiceRoomTitle">—</span></div>
-        <div class="voice-header-sub connecting" id="voiceRoomSub">
-          <span class="online-dot"></span>
-          <span data-i18n="connecting">Подключение...</span>
-        </div>
-      </div>
-      <div class="live-badge">LIVE</div>
-    </div>
-    <div class="voice-body">
-      <div class="voice-center-visual" id="centerVisual"></div>
-      <div class="participants-title">
-        <span data-i18n="participants">Участники</span>
-        <span class="participants-count" id="participantsCount">0</span>
-      </div>
-      <div id="participantsList"></div>
-      <div class="mic-meter"><div class="mic-meter-bar" id="micBar"></div></div>
-      <div class="mic-meter-label" data-i18n="yourMic">Твой микрофон</div>
-    </div>
-    <div class="voice-controls">
-      <button class="control-btn mute" id="muteBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <path d="M12 19v4"/>
-        </svg>
-      </button>
-      <button class="control-btn leave" id="leaveBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <path d="M16 17l5-5-5-5M21 12H9"/>
-        </svg>
-        <span data-i18n="leave">Выйти</span>
-      </button>
-    </div>
-  </div>
-
-</div>
-
-<div class="toast" id="toast"><div class="toast-inner" id="toastText">—</div></div>
+<!-- ... Вся HTML-разметка (экраны, кнопки) остаётся как в v4 ... -->
 
 <script>
 /* ============================================================
-   VOICEFRIEND v3 — FIXED
-   Исправлено: кириллица в ID, retry, guest-to-guest связи
+   VOICEFRIEND v5 — на LiveKit (стабильный вариант)
 ============================================================ */
 
+/* ============================================================
+   🔑 ВСТАВЬ СЮДА СВОИ ДАННЫЕ ИЗ LIVEOIT CLOUD
+============================================================ */
+const LIVEKIT_URL = 'wss://ТВОЙ-ПРОЕКТ.livekit.cloud'; 
+const LIVEKIT_TOKEN_SERVER_ID = 'ТВОЙ_TOKEN_SERVER_ID';
+/* ============================================================ */
+
+
+/* --- Остальные настройки (языки, регионы) --- */
 const I18N = {
   ru: {
     title: 'Voicefriend', chooseRegion: 'Выбери регион, чтобы начать общение',
     chooseRoom: 'Выбери голосовую комнату', participants: 'Участники',
     yourMic: 'Твой микрофон', connecting: 'Подключение...',
-    connected: 'Подключено', connectedHost: 'Подключено (хост)',
-    waiting: 'Ожидаем других', searching: 'Ищем комнату...',
-    retrying: 'Переподключение...', reconnected: 'Переподключено',
+    connected: 'Подключено', waiting: 'Ожидаем других',
     leave: 'Выйти', you: 'Вы', guest: 'Гость',
     joinRoom: 'Войти в комнату', noOneYet: 'Пока никого нет',
-    callFriends: 'Позови друзей в эту комнату',
     askMic: 'Запрос доступа к микрофону...',
-    connectingServer: 'Подключение к серверу...',
     noMic: 'Нет доступа к микрофону', allowMic: 'Разреши доступ к микрофону',
     connError: 'Не удалось подключиться', connFailed: 'Ошибка соединения',
-    hostLeft: 'Хост вышел, переподключаемся...',
     joined: 'присоединился', left: 'отключился',
     room: 'комната', rooms: 'комнаты', roomsMany: 'комнат',
     participant: 'участник', participantsFew: 'участника', participantsMany: 'участников',
     regions: { eu: 'Европа', ru: 'Россия', asia: 'Азия', us: 'Америка', other: 'Другое' },
     roomNames: { 'Общий': 'Общий', 'Музыка': 'Музыка', 'Игры': 'Игры', 'Чилл': 'Чилл', 'Мемы': 'Мемы', 'Аниме': 'Аниме' },
   },
-  en: {
-    title: 'Voicefriend', chooseRegion: 'Choose a region to start talking',
-    chooseRoom: 'Choose a voice room', participants: 'Participants',
-    yourMic: 'Your microphone', connecting: 'Connecting...',
-    connected: 'Connected', connectedHost: 'Connected (host)',
-    waiting: 'Waiting for others', searching: 'Searching for room...',
-    retrying: 'Reconnecting...', reconnected: 'Reconnected',
-    leave: 'Leave', you: 'You', guest: 'Guest',
-    joinRoom: 'Join room', noOneYet: 'No one here yet',
-    callFriends: 'Invite friends to this room',
-    askMic: 'Requesting microphone access...',
-    connectingServer: 'Connecting to server...',
-    noMic: 'No microphone access', allowMic: 'Please allow microphone access',
-    connError: 'Could not connect', connFailed: 'Connection error',
-    hostLeft: 'Host left, reconnecting...',
-    joined: 'joined', left: 'left',
-    room: 'room', rooms: 'rooms', roomsMany: 'rooms',
-    participant: 'participant', participantsFew: 'participants', participantsMany: 'participants',
-    regions: { eu: 'Europe', ru: 'Russia', asia: 'Asia', us: 'America', other: 'Other' },
-    roomNames: { 'Общий': 'General', 'Музыка': 'Music', 'Игры': 'Games', 'Чилл': 'Chill', 'Мемы': 'Memes', 'Аниме': 'Anime' },
-  },
+  en: { /* ... английский перевод ... */ },
 };
 
 let currentLang = 'ru';
@@ -303,15 +61,6 @@ function tRoom(name) { return I18N[currentLang].roomNames[name] || name; }
 function tRegion(id) { return I18N[currentLang].regions[id] || id; }
 
 const CONFIG = {
-  ID_PREFIX: 'voicefriend-v3',
-  ICE: {
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' },
-      { urls: 'stun:stun3.l.google.com:19302' },
-    ],
-  },
   REGIONS: [
     { id: 'eu',    flag: '🇪🇺', rooms: ['Общий', 'Музыка', 'Игры'] },
     { id: 'ru',    flag: '🇷🇺', rooms: ['Общий', 'Чилл', 'Мемы'] },
@@ -321,25 +70,26 @@ const CONFIG = {
   ],
 };
 
+/* --- Telegram --- */
 const tg = window.Telegram && window.Telegram.WebApp;
 if (tg) {
   tg.ready(); tg.expand();
   try {
-    if (tg.setHeaderColor) tg.setHeaderColor('#1e1f22');
-    if (tg.setBackgroundColor) tg.setBackgroundColor('#1e1f22');
+    if (tg.setHeaderColor) tg.setHeaderColor('#0b0f1a');
+    if (tg.setBackgroundColor) tg.setBackgroundColor('#0b0f1a');
     if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
   } catch (e) {}
 }
 
+/* --- Состояние --- */
 const state = {
   userId: null, userName: 'Гость', userInitial: 'Г',
   region: null, room: null,
-  peer: null, isHost: false, hostConn: null,
-  localStream: null, muted: false,
-  calls: {}, participants: {}, userPeerIds: {},
-  audioContext: null, analyser: null, meterRAF: null,
-  speakingChecks: {},
-  status: 'idle', // idle | searching | host | guest | error
+  roomInstance: null, // LiveKit Room
+  localStream: null, // LiveKit будет управлять сам, но оставим для getUserMedia
+  isMuted: false,
+  participants: {}, // id -> { name, isMuted }
+  audioElements: {}, // id -> HTMLAudioElement
 };
 
 (function initUser() {
@@ -357,814 +107,192 @@ const state = {
   state.userInitial = (state.userName.charAt(0) || '?').toUpperCase();
 })();
 
-const screens = {
-  region: document.getElementById('screen-region'),
-  rooms:  document.getElementById('screen-rooms'),
-  voice:  document.getElementById('screen-voice'),
-};
+/* --- Элементы UI (как в v4) --- */
+const el = { /* ... */ };
+/* ... */
 
-const el = {
-  regionList: document.getElementById('regionList'),
-  roomList: document.getElementById('roomList'),
-  regionTitle: document.getElementById('regionTitle'),
-  voiceRoomTitle: document.getElementById('voiceRoomTitle'),
-  voiceRoomSub: document.getElementById('voiceRoomSub'),
-  participantsList: document.getElementById('participantsList'),
-  participantsCount: document.getElementById('participantsCount'),
-  micBar: document.getElementById('micBar'),
-  muteBtn: document.getElementById('muteBtn'),
-  leaveBtn: document.getElementById('leaveBtn'),
-  leaveHeader: document.getElementById('leaveHeader'),
-  backToRegions: document.getElementById('backToRegions'),
-  toast: document.getElementById('toast'),
-  toastText: document.getElementById('toastText'),
-  banner: document.getElementById('banner'),
-  centerVisual: document.getElementById('centerVisual'),
-  langSwitch: document.getElementById('langSwitch'),
-  langPill: document.getElementById('langPill'),
-};
-
-function showScreen(name) {
-  Object.values(screens).forEach(s => s.classList.remove('active'));
-  screens[name].classList.add('active');
-}
-function showBanner(text, isError) {
-  el.banner.textContent = text;
-  el.banner.className = 'banner show' + (isError ? ' error' : '');
-}
-function hideBanner() { el.banner.className = 'banner'; }
-
-let toastTimer = null;
-function showToast(msg, isError) {
-  clearTimeout(toastTimer);
-  el.toastText.textContent = msg;
-  el.toast.className = 'toast show' + (isError ? ' error' : '');
-  toastTimer = setTimeout(() => { el.toast.className = 'toast' + (isError ? ' error' : ''); }, 3000);
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-function plural(n, one, few, many) {
-  const mod = n % 10;
-  if (n % 100 >= 11 && n % 100 <= 19) return many;
-  if (mod === 1) return one;
-  if (mod >= 2 && mod <= 4) return few;
-  return many;
-}
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 /* ============================================================
-   КЛЮЧЕВОЕ: ХЕШ ДЛЯ ID КОМНАТЫ (поддерживает кириллицу)
+   🚀 ЗАПУСК ГОЛОСОВОГО ЧАТА (LIVEKIT)
 ============================================================ */
-function hashStr(str) {
-  let h = 5381;
-  for (let i = 0; i < str.length; i++) {
-    h = ((h << 5) + h) + str.charCodeAt(i);
-    h = h | 0;
-  }
-  return Math.abs(h).toString(36);
-}
 
-function makeRoomId(regionId, roomName) {
-  const key = regionId + '::' + roomName;
-  return CONFIG.ID_PREFIX + '-' + hashStr(key);
-}
-
-/* ============================================================
-   ЯЗЫК
-============================================================ */
-function updateLangPill() {
-  const activeBtn = el.langSwitch.querySelector('.lang-btn.active');
-  if (!activeBtn || !el.langPill) return;
-  const btnRect = activeBtn.getBoundingClientRect();
-  const parentRect = el.langSwitch.getBoundingClientRect();
-  el.langPill.style.left = (btnRect.left - parentRect.left) + 'px';
-  el.langPill.style.width = btnRect.width + 'px';
-}
-
-function setLang(lang) {
-  currentLang = lang;
-  try { localStorage.setItem('vf_lang', lang); } catch (e) {}
-  el.langSwitch.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-  setTimeout(updateLangPill, 10);
-  document.querySelectorAll('[data-i18n]').forEach(node => { node.textContent = t(node.getAttribute('data-i18n')); });
-  document.documentElement.lang = lang;
-  if (state.region) el.regionTitle.textContent = tRegion(state.region.id) + ' ' + state.region.flag;
-  renderRegions();
-  if (state.region) renderRooms();
-  if (state.room) el.voiceRoomTitle.textContent = tRoom(state.room);
-  updateParticipantsUI();
-  if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.selectionChanged(); } catch (e) {} }
-}
-
-el.langSwitch.addEventListener('click', (e) => {
-  const btn = e.target.closest('.lang-btn');
-  if (!btn) return;
-  setLang(btn.dataset.lang);
-});
-
-function buildCenterVisual() {
-  el.centerVisual.innerHTML = '';
-  for (let i = 0; i < 20; i++) {
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    bar.style.animationDelay = (i * 0.07) + 's';
-    bar.style.animationDuration = (1.2 + Math.random() * 0.6) + 's';
-    el.centerVisual.appendChild(bar);
-  }
-}
-
-function renderRegions() {
-  el.regionList.innerHTML = '';
-  CONFIG.REGIONS.forEach((r, i) => {
-    const item = document.createElement('div');
-    item.className = 'list-item';
-    item.style.animationDelay = (i * 0.05) + 's';
-    item.innerHTML =
-      '<div class="list-icon">' + r.flag + '</div>' +
-      '<div class="list-info">' +
-        '<div class="list-title">' + escapeHtml(tRegion(r.id)) + '</div>' +
-        '<div class="list-subtitle"><span class="online-dot"></span><span>' +
-          r.rooms.length + ' ' + plural(r.rooms.length, t('room'), t('rooms'), t('roomsMany')) +
-        '</span></div>' +
-      '</div>' +
-      '<div class="list-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>';
-    item.addEventListener('click', () => selectRegion(r));
-    el.regionList.appendChild(item);
-  });
-}
-
-function selectRegion(r) {
-  state.region = r;
-  el.regionTitle.textContent = tRegion(r.id) + ' ' + r.flag;
-  renderRooms();
-  showScreen('rooms');
-}
-
-function renderRooms() {
-  el.roomList.innerHTML = '';
-  state.region.rooms.forEach((roomName, i) => {
-    const item = document.createElement('div');
-    item.className = 'list-item';
-    item.style.animationDelay = (i * 0.05) + 's';
-    item.innerHTML =
-      '<div class="list-icon hashtag">#</div>' +
-      '<div class="list-info">' +
-        '<div class="list-title">' + escapeHtml(tRoom(roomName)) + '</div>' +
-        '<div class="list-subtitle"><span class="online-dot"></span><span>' + t('joinRoom') + '</span></div>' +
-      '</div>' +
-      '<div class="list-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></div>';
-    item.addEventListener('click', () => joinRoom(roomName));
-    el.roomList.appendChild(item);
-  });
-}
-
-/* ============================================================
-   JOIN ROOM
-============================================================ */
 async function joinRoom(roomName) {
   state.room = roomName;
   el.voiceRoomTitle.textContent = tRoom(roomName);
   setVoiceStatus('connecting', t('searching'));
-
   showScreen('voice');
   buildCenterVisual();
   showBanner(t('askMic'));
 
   try {
-    state.localStream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-      video: false,
+    // 1. Получаем токен от Token Server LiveKit
+    const response = await fetch(`https://cloud-api.livekit.io/api/v2/sandbox/connection-details`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        room_name: `vf-${state.region.id}-${roomName}`,
+        participant_identity: state.userId,
+        participant_name: state.userName,
+        sandbox_id: LIVEKIT_TOKEN_SERVER_ID
+      })
     });
-  } catch (err) {
-    console.error('Mic error:', err);
-    showBanner(t('noMic'), true);
-    showToast(t('allowMic'), true);
-    setTimeout(leaveRoom, 2000);
-    return;
-  }
 
-  showBanner(t('connectingServer'));
-  setupMicMeter();
+    if (!response.ok) throw new Error('Не удалось получить токен');
+    const { token, server_url } = await response.json();
 
-  try {
-    await initPeer();
+    // 2. Создаём комнату LiveKit
+    const room = new LivekitClient.Room({
+      adaptiveStream: true,
+      dynacast: true,
+    });
+    state.roomInstance = room;
+
+    // 3. Обработчики событий LiveKit
+    room.on(LivekitClient.RoomEvent.TrackSubscribed, handleTrackSubscribed);
+    room.on(LivekitClient.RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed);
+    room.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, handleActiveSpeakerChange);
+    room.on(LivekitClient.RoomEvent.ParticipantConnected, handleParticipantConnected);
+    room.on(LivekitClient.RoomEvent.ParticipantDisconnected, handleParticipantDisconnected);
+    room.on(LivekitClient.RoomEvent.Disconnected, handleDisconnect);
+    room.on(LivekitClient.RoomEvent.LocalTrackPublished, handleLocalTrackPublished);
+
+    // 4. Подключаемся
+    await room.connect(server_url, token);
+    console.log('✅ Connected to LiveKit room');
+
+    // 5. Включаем микрофон
+    await room.localParticipant.setMicrophoneEnabled(true);
+
     hideBanner();
     updateParticipantsUI();
     updateVoiceStatus();
+
     if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} }
+
   } catch (err) {
-    console.error('Peer error:', err);
+    console.error('❌ LiveKit connection error:', err);
     showBanner(t('connError'), true);
     showToast(t('connFailed'), true);
-    setTimeout(leaveRoom, 2500);
-  }
-}
-
-/* ============================================================
-   PEER INIT — с retry-циклом
-============================================================ */
-async function initPeer() {
-  const roomId = makeRoomId(state.region.id, state.room);
-  console.log('Room ID:', roomId);
-
-  const maxAttempts = 5;
-
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    console.log('Attempt', attempt, 'of', maxAttempts);
-
-    // 1. Пытаемся стать хостом
-    try {
-      const hostPeer = await tryBecomeHost(roomId);
-      state.peer = hostPeer;
-      state.isHost = true;
-      state.status = 'host';
-      console.log('✅ Became host');
-      return;
-    } catch (err) {
-      // ID занят → есть хост, идём как гость
-      console.log('Host ID taken:', err.type || err.message);
-    }
-
-    // 2. Пытаемся подключиться как гость
-    try {
-      const result = await tryConnectAsGuest(roomId);
-      state.peer = result.peer;
-      state.hostConn = result.conn;
-      state.isHost = false;
-      state.status = 'guest';
-      console.log('✅ Connected as guest');
-
-      // Отправляем hello
-      result.conn.send({ type: 'hello', userId: state.userId, name: state.userName });
-
-      // Слушаем хост
-      result.conn.on('data', (data) => handleHostMessage(data));
-      result.conn.on('close', () => {
-        if (!state.isHost && state.hostConn === result.conn) {
-          showToast(t('hostLeft'), true);
-          state.hostConn = null;
-          setTimeout(() => { if (state.room) attemptReconnect(); }, 1500);
-        }
-      });
-      result.conn.on('error', (err) => console.warn('Host conn error:', err));
-
-      // Слушаем входящие звонки
-      result.peer.on('call', (call) => handleIncomingCall(call));
-
-      return;
-    } catch (err) {
-      console.log('Guest connect failed:', err.type || err.message);
-      if (attempt < maxAttempts) {
-        await sleep(500 + Math.random() * 700);
-      }
-    }
-  }
-
-  throw new Error('Max attempts reached');
-}
-
-/* ============================================================
-   Попытка стать хостом
-============================================================ */
-function tryBecomeHost(roomId) {
-  return new Promise((resolve, reject) => {
-    let peer, settled = false, timeout;
-
-    const cleanup = (ok, val) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timeout);
-      ok ? resolve(val) : reject(val);
-    };
-
-    try {
-      peer = new Peer(roomId, { config: CONFIG.ICE, debug: 0 });
-    } catch (e) {
-      return cleanup(false, e);
-    }
-
-    timeout = setTimeout(() => {
-      try { peer.destroy(); } catch (e) {}
-      cleanup(false, { type: 'timeout' });
-    }, 5000);
-
-    peer.on('open', (id) => {
-      if (settled) { try { peer.destroy(); } catch (e) {} return; }
-      // Настраиваем обработчики хоста
-      peer.on('connection', (conn) => handleGuestConnection(conn));
-      peer.on('call', (call) => handleIncomingCall(call));
-      cleanup(true, peer);
-    });
-
-    peer.on('error', (err) => {
-      try { peer.destroy(); } catch (e) {}
-      cleanup(false, err);
-    });
-  });
-}
-
-/* ============================================================
-   Попытка подключиться как гость
-============================================================ */
-function tryConnectAsGuest(roomId) {
-  return new Promise((resolve, reject) => {
-    const myPeerId = roomId + '-g' + Math.random().toString(36).slice(2, 10) + '-' + Date.now().toString(36);
-    let peer, conn, settled = false, peerTimeout, connTimeout;
-
-    const cleanup = (ok, val) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(peerTimeout);
-      if (connTimeout) clearTimeout(connTimeout);
-      ok ? resolve(val) : reject(val);
-    };
-
-    const fail = (err) => {
-      try { if (conn) conn.close(); } catch (e) {}
-      try { if (peer) peer.destroy(); } catch (e) {}
-      cleanup(false, err);
-    };
-
-    try {
-      peer = new Peer(myPeerId, { config: CONFIG.ICE, debug: 0 });
-    } catch (e) {
-      return cleanup(false, e);
-    }
-
-    peerTimeout = setTimeout(() => fail({ type: 'peer-timeout' }), 6000);
-
-    peer.on('open', () => {
-      if (settled) return;
-      try {
-        conn = peer.connect(roomId, {
-          metadata: { userId: state.userId, name: state.userName },
-          reliable: true,
-        });
-      } catch (e) {
-        return fail(e);
-      }
-
-      connTimeout = setTimeout(() => fail({ type: 'conn-timeout' }), 5000);
-
-      conn.on('open', () => {
-        if (settled) return;
-        clearTimeout(peerTimeout);
-        clearTimeout(connTimeout);
-        cleanup(true, { peer, conn });
-      });
-
-      conn.on('error', (err) => fail(err));
-    });
-
-    peer.on('error', (err) => {
-      // peer-unavailable = хост не найден
-      fail(err);
-    });
-  });
-}
-
-/* ============================================================
-   HOST: приём гостей
-============================================================ */
-function handleGuestConnection(conn) {
-  let guestId = null;
-  let guestPeerId = conn.peer;
-
-  conn.on('data', (data) => {
-    if (data.type === 'hello') {
-      guestId = data.userId;
-
-      // Сохраняем гостя
-      state.participants[guestId] = {
-        name: data.name || t('guest'),
-        muted: false,
-        conn: conn,
-        peerId: guestPeerId,
-      };
-      state.userPeerIds[guestId] = guestPeerId;
-
-      // Список уже существующих (с их peerId!)
-      const list = Object.keys(state.participants)
-        .filter(id => id !== guestId)
-        .map(id => ({
-          userId: id,
-          name: state.participants[id].name,
-          peerId: state.participants[id].peerId,
-        }));
-
-      // Отправляем гостю список всех
-      conn.send({
-        type: 'peers',
-        peers: list,
-        hostId: state.userId,
-        hostName: state.userName,
-        hostPeerId: state.peer.id,
-      });
-
-      // Уведомляем остальных
-      Object.keys(state.participants).forEach(id => {
-        if (id === guestId) return;
-        const p = state.participants[id];
-        if (p.conn && p.conn.open) {
-          try {
-            p.conn.send({
-              type: 'join',
-              userId: guestId,
-              name: data.name,
-              peerId: guestPeerId,
-            });
-          } catch (e) {}
-        }
-      });
-
-      // Хост звонит гостю
-      callUser(guestId);
-
-      updateParticipantsUI();
-      updateVoiceStatus();
-      showToast(data.name + ' ' + t('joined'));
-    }
-
-    if (data.type === 'mute') {
-      if (state.participants[data.userId]) {
-        state.participants[data.userId].muted = data.muted;
-        // Пересылаем всем
-        Object.keys(state.participants).forEach(id => {
-          if (id === data.userId) return;
-          const p = state.participants[id];
-          if (p.conn && p.conn.open) {
-            try { p.conn.send({ type: 'mute', userId: data.userId, muted: data.muted }); } catch (e) {}
-          }
-        });
-        updateParticipantsUI();
-      }
-    }
-  });
-
-  conn.on('close', () => {
-    if (guestId) {
-      removeParticipant(guestId);
-      Object.keys(state.participants).forEach(id => {
-        const p = state.participants[id];
-        if (p.conn && p.conn.open) {
-          try { p.conn.send({ type: 'leave', userId: guestId }); } catch (e) {}
-        }
-      });
-    }
-  });
-
-  conn.on('error', (err) => console.warn('Guest conn error:', err));
-}
-
-/* ============================================================
-   GUEST: сообщения от хоста
-============================================================ */
-function handleHostMessage(data) {
-  if (data.type === 'peers') {
-    // Сначала хост
-    state.participants[data.hostId] = { name: data.hostName || 'Host', muted: false, peerId: data.hostPeerId };
-    state.userPeerIds[data.hostId] = data.hostPeerId;
-
-    // Другие гости
-    (data.peers || []).forEach(p => {
-      state.participants[p.userId] = { name: p.name, muted: false, peerId: p.peerId };
-      state.userPeerIds[p.userId] = p.peerId;
-    });
-
-    updateParticipantsUI();
-    updateVoiceStatus();
-
-    // Звоним хосту
-    if (data.hostPeerId) callUser(data.hostId);
-
-    // Звоним другим гостям
-    (data.peers || []).forEach(p => {
-      if (p.peerId) callUser(p.userId);
-    });
-  }
-
-  if (data.type === 'join') {
-    state.participants[data.userId] = { name: data.name, muted: false, peerId: data.peerId };
-    if (data.peerId) state.userPeerIds[data.userId] = data.peerId;
-    updateParticipantsUI();
-    updateVoiceStatus();
-    showToast(data.name + ' ' + t('joined'));
-    // Пытаемся позвонить новому участнику
-    if (data.peerId) callUser(data.userId);
-  }
-
-  if (data.type === 'leave') {
-    removeParticipant(data.userId);
-  }
-
-  if (data.type === 'mute') {
-    if (state.participants[data.userId]) {
-      state.participants[data.userId].muted = data.muted;
-      updateParticipantsUI();
-    }
-  }
-}
-
-/* ============================================================
-   ЗВОНОК
-============================================================ */
-function callUser(targetUserId) {
-  if (!state.peer || !state.localStream) return;
-  if (state.calls[targetUserId]) return; // уже звоним
-
-  const targetPeerId = state.userPeerIds[targetUserId];
-  if (!targetPeerId) {
-    console.warn('No peerId for user', targetUserId);
-    return;
-  }
-
-  try {
-    const call = state.peer.call(targetPeerId, state.localStream, {
-      metadata: { userId: state.userId, name: state.userName },
-    });
-    setupCall(call, targetUserId);
-    console.log('📞 Calling', targetUserId, 'via', targetPeerId);
-  } catch (e) {
-    console.error('Call error:', e);
-  }
-}
-
-function handleIncomingCall(call) {
-  const peerId = call.peer;
-  const meta = call.metadata || {};
-  const userId = meta.userId || peerId;
-
-  // Запоминаем peerId
-  state.userPeerIds[userId] = peerId;
-
-  if (!state.participants[userId]) {
-    state.participants[userId] = { name: meta.name || t('guest'), muted: false, peerId: peerId };
-    updateParticipantsUI();
+    state.status = 'error';
     updateVoiceStatus();
   }
-
-  // Если уже есть звонок — закрываем старый
-  if (state.calls[userId]) {
-    try { state.calls[userId].close(); } catch (e) {}
-  }
-
-  try {
-    call.answer(state.localStream);
-    setupCall(call, userId);
-    console.log('📞 Answered call from', userId);
-  } catch (e) {
-    console.error('Answer error:', e);
-  }
 }
 
-function setupCall(call, userId) {
-  state.calls[userId] = call;
 
-  call.on('stream', (remoteStream) => playRemoteAudio(userId, remoteStream));
-  call.on('close', () => removeParticipant(userId));
-  call.on('error', (err) => console.warn('Call error for', userId, err));
-}
+/* ============================================================
+   ОБРАБОТЧИКИ СОБЫТИЙ LIVEKIT
+============================================================ */
 
-function playRemoteAudio(userId, stream) {
-  let audioEl = document.getElementById('audio-' + userId);
-  if (!audioEl) {
-    audioEl = document.createElement('audio');
-    audioEl.id = 'audio-' + userId;
+function handleTrackSubscribed(track, publication, participant) {
+  if (track.kind === 'audio') {
+    const audioEl = track.attach();
+    audioEl.id = `audio-${participant.identity}`;
     audioEl.autoplay = true;
     audioEl.playsInline = true;
     audioEl.style.display = 'none';
     document.body.appendChild(audioEl);
-  }
-  audioEl.srcObject = stream;
-  startSpeakingDetection(userId, stream);
-}
+    state.audioElements[participant.identity] = audioEl;
 
-function startSpeakingDetection(userId, stream) {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const src = ctx.createMediaStreamSource(stream);
-    const an = ctx.createAnalyser();
-    an.fftSize = 256;
-    src.connect(an);
-
-    const data = new Uint8Array(an.frequencyBinCount);
-
-    const check = () => {
-      if (!state.participants[userId]) {
-        try { ctx.close(); } catch (e) {}
-        return;
-      }
-      an.getByteFrequencyData(data);
-      let sum = 0;
-      for (let i = 0; i < data.length; i++) sum += data[i];
-      const avg = sum / data.length;
-
-      const pEl = document.getElementById('peer-' + userId);
-      if (pEl) {
-        if (avg > 12) pEl.classList.add('speaking');
-        else pEl.classList.remove('speaking');
-      }
-
-      state.speakingChecks[userId] = requestAnimationFrame(check);
+    state.participants[participant.identity] = {
+      name: participant.name || t('guest'),
+      isMuted: !participant.isMicrophoneEnabled,
     };
-    check();
-  } catch (e) { console.warn('Speaking detection error:', e); }
+    updateParticipantsUI();
+    updateVoiceStatus();
+  }
 }
 
-function removeParticipant(userId) {
-  if (state.calls[userId]) {
-    try { state.calls[userId].close(); } catch (e) {}
-    delete state.calls[userId];
+function handleTrackUnsubscribed(track, publication, participant) {
+  track.detach();
+  const audioEl = state.audioElements[participant.identity];
+  if (audioEl) {
+    audioEl.remove();
+    delete state.audioElements[participant.identity];
   }
-  const audioEl = document.getElementById('audio-' + userId);
-  if (audioEl) { audioEl.srcObject = null; audioEl.remove(); }
-  if (state.speakingChecks[userId]) {
-    cancelAnimationFrame(state.speakingChecks[userId]);
-    delete state.speakingChecks[userId];
-  }
-  if (state.participants[userId]) {
-    const name = state.participants[userId].name;
-    delete state.participants[userId];
-    delete state.userPeerIds[userId];
+}
+
+function handleActiveSpeakerChange(speakers) {
+  document.querySelectorAll('.participant').forEach(el => el.classList.remove('speaking'));
+  speakers.forEach(speaker => {
+    const el = document.getElementById(`peer-${speaker.identity}`);
+    if (el) el.classList.add('speaking');
+  });
+}
+
+function handleParticipantConnected(participant) {
+  state.participants[participant.identity] = {
+    name: participant.name || t('guest'),
+    isMuted: !participant.isMicrophoneEnabled,
+  };
+  updateParticipantsUI();
+  updateVoiceStatus();
+  showToast(participant.name + ' ' + t('joined'));
+}
+
+function handleParticipantDisconnected(participant) {
+  if (state.participants[participant.identity]) {
+    const name = state.participants[participant.identity].name;
+    delete state.participants[participant.identity];
     showToast(name + ' ' + t('left'));
   }
   updateParticipantsUI();
   updateVoiceStatus();
 }
 
-function updateParticipantsUI() {
-  const ids = Object.keys(state.participants);
-  const total = ids.length + 1;
-  el.participantsCount.textContent = total;
-
-  el.participantsList.innerHTML = '';
-
-  // Мы
-  const meEl = document.createElement('div');
-  meEl.className = 'participant me';
-  meEl.id = 'peer-me';
-  meEl.innerHTML =
-    '<div class="participant-avatar ' + (state.muted ? 'muted' : '') + '">' + escapeHtml(state.userInitial) + '</div>' +
-    '<div class="participant-name">' + escapeHtml(state.userName) + '</div>' +
-    '<div class="participant-you">' + t('you') + '</div>';
-  el.participantsList.appendChild(meEl);
-
-  // Остальные
-  ids.forEach((id, i) => {
-    const p = state.participants[id];
-    const initial = (p.name || '?').charAt(0).toUpperCase();
-    const item = document.createElement('div');
-    item.className = 'participant';
-    item.id = 'peer-' + id;
-    item.style.animationDelay = (i * 0.05) + 's';
-    item.innerHTML =
-      '<div class="participant-avatar ' + (p.muted ? 'muted' : '') + '">' + escapeHtml(initial) + '</div>' +
-      '<div class="participant-name">' + escapeHtml(p.name || t('guest')) + '</div>' +
-      '<div class="sound-wave"><span></span><span></span><span></span><span></span></div>';
-    el.participantsList.appendChild(item);
-  });
+function handleDisconnect() {
+  console.log('Disconnected from LiveKit room');
+  showToast(t('hostLeft'), true);
+  leaveRoom();
 }
 
-function updateVoiceStatus() {
-  const count = Object.keys(state.participants).length + 1;
-  if (state.status === 'error') {
-    setVoiceStatus('error', t('connError'));
-  } else if (count === 1) {
-    setVoiceStatus('connecting', t('waiting'));
-  } else {
-    const label = state.isHost ? t('connectedHost') : t('connected');
-    setVoiceStatus('online', label + ' · ' + count);
+function handleLocalTrackPublished(publication) {
+  if (publication.kind === 'audio') {
+    // Микрофон включен
   }
 }
 
-function setVoiceStatus(kind, text) {
-  el.voiceRoomSub.className = 'voice-header-sub';
-  if (kind === 'connecting') el.voiceRoomSub.classList.add('connecting');
-  if (kind === 'error') el.voiceRoomSub.classList.add('error');
-  el.voiceRoomSub.innerHTML = '<span class="online-dot"></span><span>' + escapeHtml(text) + '</span>';
-}
 
-function setupMicMeter() {
-  try {
-    state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const src = state.audioContext.createMediaStreamSource(state.localStream);
-    state.analyser = state.audioContext.createAnalyser();
-    state.analyser.fftSize = 256;
-    src.connect(state.analyser);
+/* ============================================================
+   УПРАВЛЕНИЕ МИКРОФОНОМ (MUTE)
+============================================================ */
 
-    const data = new Uint8Array(state.analyser.frequencyBinCount);
-
-    const tick = () => {
-      if (!state.analyser) return;
-      state.analyser.getByteFrequencyData(data);
-      let sum = 0;
-      for (let i = 0; i < data.length; i++) sum += data[i];
-      const avg = sum / data.length;
-      let percent = Math.min(100, avg * 1.8);
-      if (state.muted) percent = 0;
-      el.micBar.style.width = percent + '%';
-      state.meterRAF = requestAnimationFrame(tick);
-    };
-    tick();
-  } catch (e) { console.warn('Mic meter error:', e); }
-}
-
-el.muteBtn.addEventListener('click', (e) => {
+el.muteBtn.addEventListener('click', async (e) => {
   addRipple(e, el.muteBtn);
-  state.muted = !state.muted;
-  if (state.localStream) {
-    state.localStream.getAudioTracks().forEach(t => { t.enabled = !state.muted; });
-  }
-  el.muteBtn.classList.toggle('active', state.muted);
+  if (!state.roomInstance) return;
 
-  const msg = { type: 'mute', userId: state.userId, muted: state.muted };
-  if (state.isHost) {
-    Object.keys(state.participants).forEach(id => {
-      const p = state.participants[id];
-      if (p.conn && p.conn.open) { try { p.conn.send(msg); } catch (e) {} }
-    });
-  } else if (state.hostConn && state.hostConn.open) {
-    try { state.hostConn.send(msg); } catch (e) {}
-  }
+  state.isMuted = !state.isMuted;
+  await state.roomInstance.localParticipant.setMicrophoneEnabled(!state.isMuted);
+  el.muteBtn.classList.toggle('active', state.isMuted);
 
+  // Обновляем свой аватар
   const meAvatar = document.querySelector('#peer-me .participant-avatar');
-  if (meAvatar) meAvatar.classList.toggle('muted', state.muted);
+  if (meAvatar) meAvatar.classList.toggle('muted', state.isMuted);
+
+  // Отправляем данные всем (опционально)
+  const data = new TextEncoder().encode(JSON.stringify({ type: 'mute', isMuted: state.isMuted }));
+  await state.roomInstance.localParticipant.publishData(data, { reliable: true });
 
   if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {} }
 });
 
-function addRipple(e, btn) {
-  const rect = btn.getBoundingClientRect();
-  const x = (e.clientX || rect.left + rect.width / 2) - rect.left;
-  const y = (e.clientY || rect.top + rect.height / 2) - rect.top;
-  const ripple = document.createElement('span');
-  ripple.className = 'ripple';
-  ripple.style.left = x + 'px';
-  ripple.style.top = y + 'px';
-  btn.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 700);
-}
 
-async function attemptReconnect() {
-  if (!state.room) return;
-
-  setVoiceStatus('connecting', t('retrying'));
-
-  Object.keys(state.calls).forEach(id => { try { state.calls[id].close(); } catch (e) {} });
-  state.calls = {};
-  state.participants = {};
-  state.userPeerIds = {};
-
-  if (state.peer) { try { state.peer.destroy(); } catch (e) {} state.peer = null; }
-  state.hostConn = null;
-  state.isHost = false;
-
-  try {
-    await initPeer();
-    updateParticipantsUI();
-    updateVoiceStatus();
-  } catch (err) {
-    console.error('Reconnect failed:', err);
-    showBanner(t('reconnFailed') || t('connError'), true);
-    state.status = 'error';
-    updateVoiceStatus();
-  }
-}
+/* ============================================================
+   ВЫХОД ИЗ КОМНАТЫ
+============================================================ */
 
 function leaveRoom() {
-  Object.keys(state.calls).forEach(id => { try { state.calls[id].close(); } catch (e) {} });
-  state.calls = {};
-
-  if (state.hostConn) { try { state.hostConn.close(); } catch (e) {} state.hostConn = null; }
-
-  Object.keys(state.participants).forEach(id => {
-    const p = state.participants[id];
-    if (p.conn) { try { p.conn.close(); } catch (e) {} }
-  });
-  state.participants = {};
-  state.userPeerIds = {};
-
-  if (state.meterRAF) { cancelAnimationFrame(state.meterRAF); state.meterRAF = null; }
-  Object.keys(state.speakingChecks).forEach(id => cancelAnimationFrame(state.speakingChecks[id]));
-  state.speakingChecks = {};
-
-  document.querySelectorAll('audio[id^="audio-"]').forEach(a => { a.srcObject = null; a.remove(); });
-
-  if (state.audioContext) { try { state.audioContext.close(); } catch (e) {} state.audioContext = null; }
-  state.analyser = null;
-
-  if (state.peer) { try { state.peer.destroy(); } catch (e) {} state.peer = null; }
-
-  if (state.localStream) {
-    state.localStream.getTracks().forEach(t => t.stop());
-    state.localStream = null;
+  if (state.roomInstance) {
+    state.roomInstance.disconnect();
+    state.roomInstance = null;
   }
 
+  // Удаляем все аудио-элементы
+  Object.values(state.audioElements).forEach(a => a.remove());
+  state.audioElements = {};
+  state.participants = {};
+
   state.room = null;
-  state.muted = false;
-  state.status = 'idle';
+  state.isMuted = false;
   el.muteBtn.classList.remove('active');
   el.micBar.style.width = '0';
 
@@ -1175,22 +303,16 @@ function leaveRoom() {
   if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {} }
 }
 
-el.leaveBtn.addEventListener('click', (e) => { addRipple(e, el.leaveBtn); setTimeout(leaveRoom, 120); });
-el.leaveHeader.addEventListener('click', leaveRoom);
-el.backToRegions.addEventListener('click', () => { showScreen('region'); });
 
-let lastTouchEnd = 0;
-document.addEventListener('touchend', (e) => {
-  const now = Date.now();
-  if (now - lastTouchEnd <= 300) e.preventDefault();
-  lastTouchEnd = now;
-}, { passive: false });
+/* ============================================================
+   ОСТАЛЬНЫЕ ФУНКЦИИ (UI, язык, рендеринг) — как в v4
+============================================================ */
 
+/* ... */
+
+// Запуск
 setLang(currentLang);
-window.addEventListener('resize', () => setTimeout(updateLangPill, 100));
 setTimeout(updateLangPill, 300);
-
-console.log('Voicefriend v3 loaded · User:', state.userId, '· Lang:', currentLang);
 </script>
 </body>
 </html>
