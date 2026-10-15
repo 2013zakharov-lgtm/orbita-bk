@@ -6,614 +6,132 @@
 <title>1571 Сириус — подслушано</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  /* ============ RESET ============ */
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  
   :root {
-    --bg: #050505;
-    --bg-soft: #0c0c0c;
-    --card: #111111;
-    --card-2: #171717;
-    --border: #1f1f1f;
-    --border-hi: #2e2e2e;
-    --text: #f5f5f5;
-    --muted: #7a7a7a;
-    --muted-2: #4a4a4a;
-    --white: #ffffff;
-    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --bg: #050505; --bg-soft: #0c0c0c; --card: #111111; --card-2: #171717;
+    --border: #1f1f1f; --border-hi: #2e2e2e; --text: #f5f5f5;
+    --muted: #7a7a7a; --ease: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-
   html, body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
+    min-height: 100vh; overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: "ss01", "cv11";
   }
-
-  /* фоновая подсветка */
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
+    content: ''; position: fixed; inset: 0;
     background:
       radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,0.06), transparent 70%),
       radial-gradient(800px 400px at 100% 100%, rgba(255,255,255,0.03), transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
+  .app { position: relative; z-index: 1; max-width: 540px; margin: 0 auto; padding: 22px 20px 140px; min-height: 100vh; }
 
-  .app {
-    position: relative;
-    z-index: 1;
-    max-width: 540px;
-    margin: 0 auto;
-    padding: 22px 20px 140px;
-    min-height: 100vh;
-  }
-
-  /* ============ HEADER ============ */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 34px;
-    animation: fadeDown 0.6s var(--ease) both;
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
+  /* HEADER */
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 34px; animation: fadeDown 0.6s var(--ease) both; }
+  .brand { display: flex; align-items: center; gap: 12px; }
   .brand-mark {
-    width: 42px;
-    height: 42px;
-    border-radius: 13px;
+    width: 42px; height: 42px; border-radius: 13px;
     background: linear-gradient(135deg, #ffffff 0%, #b8b8b8 100%);
-    display: grid;
-    place-items: center;
-    color: #000;
-    font-weight: 900;
-    font-size: 18px;
-    letter-spacing: -1px;
-    box-shadow:
-      0 8px 24px rgba(255,255,255,0.12),
-      inset 0 -2px 6px rgba(0,0,0,0.1);
-    position: relative;
-    overflow: hidden;
+    display: grid; place-items: center; color: #000; font-weight: 900; font-size: 18px;
+    letter-spacing: -1px; box-shadow: 0 8px 24px rgba(255,255,255,0.12), inset 0 -2px 6px rgba(0,0,0,0.1);
+    position: relative; overflow: hidden;
   }
-
-  .brand-mark::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%);
-    transform: translateX(-100%);
-    animation: shine 3.5s ease-in-out infinite;
-  }
-
-  @keyframes shine {
-    0%, 60% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-
+  .brand-mark::after { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%); transform: translateX(-100%); animation: shine 3.5s ease-in-out infinite; }
+  @keyframes shine { 0%, 60% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
   .brand-text { display: flex; flex-direction: column; line-height: 1; }
-  .brand-num {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 3px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  .brand-name {
-    font-size: 17px;
-    font-weight: 800;
-    letter-spacing: -0.4px;
-  }
+  .brand-num { font-size: 11px; color: var(--muted); letter-spacing: 3px; font-weight: 600; margin-bottom: 4px; }
+  .brand-name { font-size: 17px; font-weight: 800; letter-spacing: -0.4px; }
+  .live { display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 100px; font-size: 11px; font-weight: 600; color: #d4d4d4; letter-spacing: 0.5px; text-transform: uppercase; }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 0 rgba(255,255,255,0.6); animation: live 1.8s infinite; }
+  @keyframes live { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); } 70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
 
-  .live {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #d4d4d4;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-
-  .live-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 0 0 0 rgba(255,255,255,0.6);
-    animation: live 1.8s infinite;
-  }
-
-  @keyframes live {
-    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
-    70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-  }
-
-  /* ============ HERO ============ */
-  .hero {
-    margin-bottom: 30px;
-    animation: fadeDown 0.6s 0.05s var(--ease) both;
-  }
-
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    font-weight: 600;
-  }
-
+  /* HERO */
+  .hero { margin-bottom: 30px; animation: fadeDown 0.6s 0.05s var(--ease) both; }
+  .tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 100px; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; }
   .tag-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
+  .h1 { font-size: 34px; font-weight: 800; line-height: 1.08; letter-spacing: -1.4px; margin-bottom: 10px; }
+  .h1 em { font-style: normal; background: linear-gradient(180deg, #fff 0%, #6a6a6a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { color: var(--muted); font-size: 14px; line-height: 1.5; max-width: 340px; }
 
-  .h1 {
-    font-size: 34px;
-    font-weight: 800;
-    line-height: 1.08;
-    letter-spacing: -1.4px;
-    margin-bottom: 10px;
-  }
-
-  .h1 em {
-    font-style: normal;
-    background: linear-gradient(180deg, #fff 0%, #6a6a6a 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .lead {
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.5;
-    max-width: 340px;
-  }
-
-  /* ============ UPLOAD ============ */
-  .upload {
-    position: relative;
-    border-radius: 22px;
-    background: linear-gradient(180deg, var(--card) 0%, var(--bg-soft) 100%);
-    border: 1px solid var(--border);
-    padding: 30px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.35s var(--ease);
-    overflow: hidden;
-    margin-bottom: 18px;
-    animation: fadeUp 0.6s 0.1s var(--ease) both;
-    min-height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .upload::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 22px;
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 40%, transparent 60%, rgba(255,255,255,0.05));
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-
+  /* UPLOAD */
+  .upload { position: relative; border-radius: 22px; background: linear-gradient(180deg, var(--card) 0%, var(--bg-soft) 100%); border: 1px solid var(--border); padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.35s var(--ease); overflow: hidden; margin-bottom: 18px; animation: fadeUp 0.6s 0.1s var(--ease) both; min-height: 180px; display: flex; align-items: center; justify-content: center; }
+  .upload::before { content: ''; position: absolute; inset: 0; border-radius: 22px; padding: 1px; background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 40%, transparent 60%, rgba(255,255,255,0.05)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
   .upload:active { transform: scale(0.985); }
-
   .upload input { display: none; }
-
-  .upload-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    transition: all 0.35s var(--ease);
-  }
-
-  .upload-icon {
-    width: 58px; height: 58px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border-hi);
-    display: grid;
-    place-items: center;
-    color: #fff;
-    transition: all 0.35s var(--ease-back);
-  }
-
+  .upload-inner { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .upload-icon { width: 58px; height: 58px; border-radius: 18px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-hi); display: grid; place-items: center; color: #fff; transition: all 0.35s var(--ease-back); }
   .upload-icon svg { width: 26px; height: 26px; }
-
-  .upload:hover .upload-icon {
-    transform: translateY(-3px) rotate(-4deg);
-    background: rgba(255,255,255,0.09);
-    border-color: #3a3a3a;
-  }
-
-  .upload-title {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.2px;
-  }
-
-  .upload-hint {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.2px;
-  }
-
-  /* когда есть фото */
-  .upload.has-photo {
-    padding: 0;
-    min-height: 300px;
-    cursor: default;
-  }
-
+  .upload:hover .upload-icon { transform: translateY(-3px) rotate(-4deg); background: rgba(255,255,255,0.09); border-color: #3a3a3a; }
+  .upload-title { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+  .upload-hint { font-size: 12px; color: var(--muted); }
+  .upload.has-photo { padding: 0; min-height: 300px; cursor: default; }
   .upload.has-photo .upload-inner { display: none; }
-
-  .upload.has-photo .preview-img {
-    display: block;
-    animation: imgIn 0.6s var(--ease);
-  }
-
-  .preview-img {
-    display: none;
-    width: 100%;
-    height: 100%;
-    min-height: 300px;
-    object-fit: cover;
-    position: absolute;
-    inset: 0;
-  }
-
-  @keyframes imgIn {
-    from { opacity: 0; transform: scale(1.06); filter: blur(8px); }
-    to { opacity: 1; transform: scale(1); filter: blur(0); }
-  }
-
-  .upload-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
-    display: none;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding: 14px;
-    z-index: 2;
-  }
-
+  .preview-img { display: none; width: 100%; height: 100%; min-height: 300px; object-fit: cover; position: absolute; inset: 0; }
+  .upload.has-photo .preview-img { display: block; animation: imgIn 0.6s var(--ease); }
+  @keyframes imgIn { from { opacity: 0; transform: scale(1.06); filter: blur(8px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
+  .upload-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%); display: none; align-items: flex-end; justify-content: space-between; padding: 14px; z-index: 2; }
   .upload.has-photo .upload-overlay { display: flex; animation: fadeIn 0.4s ease; }
-
-  .badge {
-    padding: 7px 12px;
-    background: rgba(255,255,255,0.14);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-radius: 100px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #fff;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    letter-spacing: 0.3px;
-  }
-
+  .badge { padding: 7px 12px; background: rgba(255,255,255,0.14); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 100px; font-size: 11px; font-weight: 600; color: #fff; display: inline-flex; align-items: center; gap: 6px; }
   .badge svg { width: 12px; height: 12px; }
-
-  .remove-btn {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.14);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #fff;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    transition: all 0.25s var(--ease-back);
-  }
-
+  .remove-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.14); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer; display: grid; place-items: center; transition: all 0.25s var(--ease-back); }
   .remove-btn:active { transform: scale(0.9) rotate(90deg); background: rgba(255,255,255,0.25); }
   .remove-btn svg { width: 16px; height: 16px; }
 
-  /* ============ TEXTAREA ============ */
-  .field {
-    position: relative;
-    background: linear-gradient(180deg, var(--card) 0%, var(--bg-soft) 100%);
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    padding: 18px 18px 42px;
-    transition: all 0.35s var(--ease);
-    margin-bottom: 20px;
-    animation: fadeUp 0.6s 0.15s var(--ease) both;
-  }
-
-  .field:focus-within {
-    border-color: #3a3a3a;
-    box-shadow: 0 0 0 4px rgba(255,255,255,0.03);
-    background: linear-gradient(180deg, var(--card-2) 0%, var(--bg-soft) 100%);
-  }
-
-  .field-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    font-weight: 700;
-    margin-bottom: 12px;
-    display: block;
-  }
-
-  textarea {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-size: 15.5px;
-    font-family: inherit;
-    resize: none;
-    min-height: 110px;
-    outline: none;
-    line-height: 1.55;
-    caret-color: #fff;
-  }
-
+  /* TEXTAREA */
+  .field { position: relative; background: linear-gradient(180deg, var(--card) 0%, var(--bg-soft) 100%); border: 1px solid var(--border); border-radius: 22px; padding: 18px 18px 42px; transition: all 0.35s var(--ease); margin-bottom: 20px; animation: fadeUp 0.6s 0.15s var(--ease) both; }
+  .field:focus-within { border-color: #3a3a3a; box-shadow: 0 0 0 4px rgba(255,255,255,0.03); background: linear-gradient(180deg, var(--card-2) 0%, var(--bg-soft) 100%); }
+  .field-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-weight: 700; margin-bottom: 12px; display: block; }
+  textarea { width: 100%; background: transparent; border: none; color: var(--text); font-size: 15.5px; font-family: inherit; resize: none; min-height: 110px; outline: none; line-height: 1.55; caret-color: #fff; }
   textarea::placeholder { color: #3d3d3d; }
-
-  .field-foot {
-    position: absolute;
-    left: 18px;
-    right: 18px;
-    bottom: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 11.5px;
-    color: var(--muted);
-    font-weight: 500;
-    letter-spacing: 0.3px;
-  }
-
-  .anon-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #b5b5b5;
-  }
-
+  .field-foot { position: absolute; left: 18px; right: 18px; bottom: 14px; display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--muted); font-weight: 500; }
+  .anon-tag { display: inline-flex; align-items: center; gap: 6px; color: #b5b5b5; }
   .anon-tag svg { width: 12px; height: 12px; }
-
   .counter.warn { color: #fff; }
   .counter.danger { color: #fff; font-weight: 700; }
 
-  /* ============ BUTTON ============ */
-  .submit-wrap {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    padding: 18px 20px calc(18px + env(safe-area-inset-bottom, 0px));
-    background: linear-gradient(to top, var(--bg) 40%, transparent);
-    z-index: 10;
-    pointer-events: none;
-    animation: fadeUp 0.6s 0.2s var(--ease) both;
-  }
-
-  .submit-btn {
-    pointer-events: auto;
-    position: relative;
-    max-width: 500px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 19px 26px;
-    background: #fff;
-    color: #000;
-    border: none;
-    border-radius: 20px;
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: -0.3px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: transform 0.2s var(--ease-back), box-shadow 0.3s ease, background 0.3s ease;
-    box-shadow:
-      0 12px 40px rgba(255,255,255,0.14),
-      0 2px 8px rgba(255,255,255,0.08),
-      inset 0 -2px 6px rgba(0,0,0,0.08);
-    overflow: hidden;
-    isolation: isolate;
-    font-family: inherit;
-  }
-
-  .submit-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, transparent 20%, rgba(0,0,0,0.06) 45%, transparent 70%);
-    transform: translateX(-100%);
-    z-index: -1;
-  }
-
-  .submit-btn:hover::before { animation: sweep 1.2s var(--ease); }
-
-  @keyframes sweep {
-    to { transform: translateX(100%); }
-  }
-
-  .submit-btn:active:not(:disabled) {
-    transform: scale(0.97);
-    box-shadow: 0 6px 20px rgba(255,255,255,0.1);
-  }
-
+  /* BUTTON */
+  .submit-wrap { position: fixed; left: 0; right: 0; bottom: 0; padding: 18px 20px calc(18px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to top, var(--bg) 40%, transparent); z-index: 10; pointer-events: none; animation: fadeUp 0.6s 0.2s var(--ease) both; }
+  .submit-btn { pointer-events: auto; position: relative; max-width: 500px; margin: 0 auto; width: 100%; padding: 19px 26px; background: #fff; color: #000; border: none; border-radius: 20px; font-size: 16px; font-weight: 800; letter-spacing: -0.3px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s var(--ease-back), box-shadow 0.3s ease, background 0.3s ease; box-shadow: 0 12px 40px rgba(255,255,255,0.14), 0 2px 8px rgba(255,255,255,0.08), inset 0 -2px 6px rgba(0,0,0,0.08); overflow: hidden; font-family: inherit; }
+  .submit-btn:active:not(:disabled) { transform: scale(0.97); box-shadow: 0 6px 20px rgba(255,255,255,0.1); }
   .submit-btn:disabled { cursor: not-allowed; }
-
-  .submit-btn[data-state="idle"] { background: #fff; color: #000; }
   .submit-btn[data-state="loading"] { background: #1a1a1a; color: #fff; border: 1px solid #2a2a2a; box-shadow: none; }
-  .submit-btn[data-state="success"] { background: #fff; color: #000; }
-  .submit-btn[data-state="error"] { background: #fff; color: #000; animation: shake 0.5s; }
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
-  }
-
-  .btn-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s var(--ease);
-  }
-
+  .submit-btn[data-state="error"] { animation: shake 0.5s; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+  .btn-content { display: flex; align-items: center; gap: 10px; transition: all 0.3s var(--ease); }
   .btn-content svg { width: 18px; height: 18px; transition: transform 0.3s var(--ease-back); }
   .submit-btn:hover:not(:disabled) .btn-content svg { transform: translateX(3px); }
-
-  .submit-btn[data-state="loading"] .btn-content { opacity: 0; transform: scale(0.8); pointer-events: none; }
+  .submit-btn[data-state="loading"] .btn-content { opacity: 0; transform: scale(0.8); }
   .submit-btn[data-state="success"] .btn-content { opacity: 0; transform: scale(0.8); }
-
-  /* loader — волна */
-  .loader {
-    position: absolute;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-
+  .loader { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; gap: 6px; }
   .submit-btn[data-state="loading"] .loader { display: flex; }
-
-  .loader span {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #fff;
-    animation: bounce 1s ease-in-out infinite;
-  }
+  .loader span { width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: bounce 1s ease-in-out infinite; }
   .loader span:nth-child(2) { animation-delay: 0.12s; }
   .loader span:nth-child(3) { animation-delay: 0.24s; }
-
-  @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-    40% { transform: scale(1); opacity: 1; }
-  }
-
-  /* success check */
-  .success-check {
-    position: absolute;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: -0.2px;
-  }
-
+  @keyframes bounce { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+  .success-check { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; gap: 8px; font-weight: 800; font-size: 15px; }
   .submit-btn[data-state="success"] .success-check { display: flex; }
+  .success-check svg { width: 20px; height: 20px; stroke-dasharray: 30; stroke-dashoffset: 30; animation: drawCheck 0.5s 0.1s var(--ease) forwards; }
+  @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 
-  .success-check svg {
-    width: 20px; height: 20px;
-    stroke-dasharray: 30;
-    stroke-dashoffset: 30;
-    animation: drawCheck 0.5s 0.1s var(--ease) forwards;
-  }
-
-  @keyframes drawCheck {
-    to { stroke-dashoffset: 0; }
-  }
-
-  /* ============ TOAST ============ */
-  .toast {
-    position: fixed;
-    top: max(20px, env(safe-area-inset-top, 20px));
-    left: 50%;
-    transform: translate(-50%, -140%);
-    background: #fff;
-    color: #000;
-    padding: 14px 20px 14px 16px;
-    border-radius: 16px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 1000;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    max-width: calc(100% - 40px);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: transform 0.55s var(--ease-back);
-    letter-spacing: -0.2px;
-  }
-
+  /* TOAST */
+  .toast { position: fixed; top: max(20px, env(safe-area-inset-top, 20px)); left: 50%; transform: translate(-50%, -140%); background: #fff; color: #000; padding: 14px 20px 14px 16px; border-radius: 16px; font-size: 14px; font-weight: 600; z-index: 1000; box-shadow: 0 20px 50px rgba(0,0,0,0.6); max-width: calc(100% - 40px); display: flex; align-items: center; gap: 10px; transition: transform 0.55s var(--ease-back); }
   .toast.show { transform: translate(-50%, 0); }
-
-  .toast-icon {
-    width: 26px; height: 26px;
-    border-radius: 8px;
-    background: #000;
-    color: #fff;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-  }
-
+  .toast-icon { width: 26px; height: 26px; border-radius: 8px; background: #000; color: #fff; display: grid; place-items: center; flex-shrink: 0; }
   .toast-icon svg { width: 14px; height: 14px; }
-
   .toast.error { background: #141414; color: #fff; border: 1px solid #2a2a2a; }
   .toast.error .toast-icon { background: #fff; color: #000; }
 
-  /* ============ ANIM HELPERS ============ */
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-14px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  /* selection */
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   ::selection { background: #fff; color: #000; }
 </style>
 </head>
 <body>
 
 <div class="app">
-
-  <!-- HEADER -->
   <header class="header">
     <div class="brand">
       <div class="brand-mark">S</div>
@@ -625,22 +143,18 @@
     <div class="live"><span class="live-dot"></span>LIVE</div>
   </header>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="tag"><span class="tag-dot"></span>анонимно · без регистрации</div>
     <h1 class="h1">Расскажи, что<br>у тебя <em>на душе</em></h1>
     <p class="lead">Поделись историей, мыслью или признанием. Отправим прямо в Telegram — без имён и лишних вопросов.</p>
   </section>
 
-  <!-- UPLOAD -->
   <label class="upload" id="upload">
     <input type="file" id="photoInput" accept="image/*">
     <div class="upload-inner">
       <div class="upload-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="4"/>
-          <circle cx="9" cy="9" r="2"/>
-          <path d="m21 15-4.586-4.586a2 2 0 0 0-2.828 0L3 21"/>
+          <rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.586-4.586a2 2 0 0 0-2.828 0L3 21"/>
         </svg>
       </div>
       <div class="upload-title">Добавить фото</div>
@@ -649,70 +163,60 @@
     <img class="preview-img" id="preview" alt="">
     <div class="upload-overlay">
       <div class="badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 6 9 17l-5-5"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
         Прикреплено
       </div>
       <button class="remove-btn" id="removeBtn" type="button" aria-label="Удалить">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 6 6 18M6 6l12 12"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
     </div>
   </label>
 
-  <!-- TEXT -->
   <div class="field">
     <label class="field-label">Текст поста</label>
     <textarea id="postText" maxlength="1024" placeholder="Напиши здесь свою историю..."></textarea>
     <div class="field-foot">
       <span class="anon-tag">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
         публикуется анонимно
       </span>
       <span class="counter" id="counter">0 / 1024</span>
     </div>
   </div>
-
 </div>
 
-<!-- SUBMIT -->
 <div class="submit-wrap">
   <button class="submit-btn" id="submitBtn" data-state="idle">
     <span class="btn-content">
       <span id="btnLabel">Отправить пост</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M5 12h14M13 5l7 7-7 7"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </span>
     <div class="loader"><span></span><span></span><span></span></div>
     <div class="success-check">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 6 9 17l-5-5"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
       <span>Отправлено!</span>
     </div>
   </button>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">
   <div class="toast-icon" id="toastIcon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20 6 9 17l-5-5"/>
-    </svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
   </div>
   <span id="toastText">Готово</span>
 </div>
 
 <script>
-  /* ================= НАСТРОЙКИ ================= */
-  const API_URL = 'https://ВАШ_СЕРВЕР/send'; // ← URL вашего backend (см. bot.js)
-  const MY_ID   = '5268787813';
-  /* ============================================= */
+  /* ╔══════════════════════════════════════════════════════════╗
+     ║  👇👇👇  ВСТАВЬ СЮДА ССЫЛКУ НА СВОЙ CLOUDFLARE WORKER  👇👇👇
+     ║  Формат: https://имя.твой-аккаунт.workers.dev/send
+     ║  НЕ ЗАБУДЬ /send В КОНЦЕ!
+     ╚══════════════════════════════════════════════════════════╝ */
+  const API_URL = 'https://sirius-bot.ТВОЙ-АККАУНТ.workers.dev/send';
+
+  /* ID получателя (тебе уже известен) */
+  const MY_ID = '5268787813';
+  /* ══════════════════════════════════════════════════════════ */
 
   const tg = window.Telegram?.WebApp;
   tg?.ready();
@@ -736,7 +240,6 @@
   let photoFile = null;
   let toastTimer = null;
 
-  /* ============ TOAST ============ */
   const ICONS = {
     success: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
     error:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`,
@@ -751,18 +254,11 @@
     toastTimer = setTimeout(() => { toast.className = 'toast' + (type === 'error' ? ' error' : ''); }, 2600);
   }
 
-  /* ============ PHOTO ============ */
   photoInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      showToast('Только изображения', 'error'); return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Фото больше 5 МБ', 'error'); return;
-    }
-
+    if (!file.type.startsWith('image/')) { showToast('Только изображения', 'error'); return; }
+    if (file.size > 5 * 1024 * 1024) { showToast('Фото больше 5 МБ', 'error'); return; }
     photoFile = file;
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -783,7 +279,6 @@
     tg?.HapticFeedback?.impactOccurred?.('light');
   });
 
-  /* ============ COUNTER ============ */
   postText.addEventListener('input', () => {
     const len = postText.value.length;
     counter.textContent = `${len} / 1024`;
@@ -791,7 +286,6 @@
     counter.classList.toggle('danger', len > 960);
   });
 
-  /* ============ SUBMIT ============ */
   function setBtnState(state, label) {
     submitBtn.dataset.state = state;
     if (label) btnLabel.textContent = label;
@@ -799,7 +293,6 @@
 
   submitBtn.addEventListener('click', async () => {
     if (submitBtn.dataset.state === 'loading') return;
-
     const text = postText.value.trim();
 
     if (!text && !photoFile) {
@@ -836,12 +329,10 @@
 
       if (!res.ok) throw new Error('Ошибка сервера');
 
-      // Успех
       setBtnState('success');
       tg?.HapticFeedback?.notificationOccurred?.('success');
       showToast('Пост отправлен в Telegram', 'success');
 
-      // сброс
       setTimeout(() => {
         postText.value = '';
         counter.textContent = '0 / 1024';
@@ -849,7 +340,6 @@
         removeBtn.click();
         setBtnState('idle', 'Отправить пост');
       }, 1400);
-
     } catch (err) {
       console.error(err);
       setBtnState('error');
@@ -859,7 +349,6 @@
     }
   });
 
-  /* ============ UTIL ============ */
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
       const r = new FileReader();
