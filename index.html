@@ -2,773 +2,872 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ApA Math — только для 5268787813</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>1571 Сириус — подслушано</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+  /* ============ RESET ============ */
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
   :root {
-    --bg: var(--tg-theme-bg-color, #ffffff);
-    --text: var(--tg-theme-text-color, #000000);
-    --hint: var(--tg-theme-hint-color, #999999);
-    --link: var(--tg-theme-link-color, #2481cc);
-    --button: var(--tg-theme-button-color, #2481cc);
-    --button-text: var(--tg-theme-button-text-color, #ffffff);
-    --secondary-bg: var(--tg-theme-secondary-bg-color, #f1f1f1);
+    --bg: #050505;
+    --bg-soft: #0c0c0c;
+    --card: #111111;
+    --card-2: #171717;
+    --border: #1f1f1f;
+    --border-hi: #2e2e2e;
+    --text: #f5f5f5;
+    --muted: #7a7a7a;
+    --muted-2: #4a4a4a;
+    --white: #ffffff;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
   html, body {
-    width:100%; min-height:100%;
-    background: var(--bg); color: var(--text);
-    font-family: -apple-system, 'SF Pro', 'Segoe UI', Roboto, sans-serif;
-    font-size: 16px; line-height: 1.4;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  #app { display:none; flex-direction:column; min-height:100dvh; }
-  #app.active { display:flex; }
-
-  #blocked {
-    display:none; flex-direction:column; align-items:center; justify-content:center;
-    min-height:100dvh; padding:32px; text-align:center; gap:16px;
-  }
-  #blocked.active { display:flex; }
-  #blocked .lock { font-size:64px; }
-  #blocked h1 { font-size:20px; font-weight:700; }
-  #blocked p { font-size:14px; color: var(--hint); max-width:320px; }
-
-  header {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 16px 10px; border-bottom:1px solid var(--secondary-bg);
-    position:sticky; top:0; background: var(--bg); z-index:10;
-  }
-  header h1 { font-size:17px; font-weight:700; letter-spacing:.3px; }
-  header .uid { font-size:11px; color: var(--hint); font-family: ui-monospace, monospace; }
-
-  nav.tabs {
-    display:flex; gap:6px; padding:10px 12px; overflow-x:auto;
-    scrollbar-width:none; border-bottom:1px solid var(--secondary-bg);
-    position:sticky; top:52px; background: var(--bg); z-index:9;
-  }
-  nav.tabs::-webkit-scrollbar { display:none; }
-  nav.tabs button {
-    flex:0 0 auto; padding:8px 14px; border-radius:20px; border:none;
-    background: var(--secondary-bg); color: var(--text);
-    font-size:13px; font-weight:600; cursor:pointer; transition:.15s;
-    font-family:inherit;
-  }
-  nav.tabs button.active { background: var(--button); color: var(--button-text); }
-
-  main { flex:1; padding:16px; display:flex; flex-direction:column; gap:16px; }
-  .panel { display:none; flex-direction:column; gap:14px; }
-  .panel.active { display:flex; }
-
-  .card {
-    background: var(--secondary-bg); border-radius:12px; padding:14px;
-    display:flex; flex-direction:column; gap:10px;
-  }
-  .card label { font-size:12px; font-weight:600; color: var(--hint); text-transform:uppercase; letter-spacing:.5px; }
-
-  input[type="text"], textarea, select {
-    width:100%; padding:12px 14px; border-radius:10px;
-    border:1.5px solid transparent; background: var(--bg);
-    color: var(--text); font-size:16px; font-family:inherit;
-    outline:none; transition:.15s;
-  }
-  input[type="text"]:focus, textarea:focus, select:focus {
-    border-color: var(--button);
-  }
-  textarea { resize:vertical; min-height:60px; }
-
-  button.action {
-    width:100%; padding:14px; border-radius:10px; border:none;
-    background: var(--button); color: var(--button-text);
-    font-size:15px; font-weight:700; cursor:pointer; font-family:inherit;
-    transition:.15s;
-  }
-  button.action:active { opacity:.8; }
-  button.action.secondary {
-    background: var(--secondary-bg); color: var(--text);
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01", "cv11";
   }
 
-  .result {
-    background: var(--bg); border:1.5px solid var(--secondary-bg);
-    border-radius:12px; padding:14px; font-size:15px; line-height:1.6;
-    white-space:pre-wrap; word-break:break-word; display:none;
-  }
-  .result.show { display:block; }
-  .result .step {
-    padding:6px 0; border-bottom:1px dashed var(--secondary-bg);
-  }
-  .result .step:last-child { border-bottom:none; }
-  .result .final { font-weight:700; color: var(--button); }
-  .result .err { color:#c0392b; }
-
-  canvas.graph {
-    width:100%; background: var(--bg); border-radius:12px;
-    touch-action: none; display:block;
-  }
-  .graph-wrap { position:relative; }
-  .graph-wrap .legend {
-    position:absolute; top:8px; left:8px; font-size:11px;
-    background:rgba(0,0,0,.55); color:#fff; padding:4px 8px; border-radius:6px;
-    font-family: ui-monospace, monospace; pointer-events:none;
+  /* фоновая подсветка */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,0.06), transparent 70%),
+      radial-gradient(800px 400px at 100% 100%, rgba(255,255,255,0.03), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
   }
 
-  .row { display:flex; gap:8px; }
-  .row > * { flex:1; }
-
-  .hint { font-size:12px; color: var(--hint); line-height:1.5; }
-
-  .chips { display:flex; flex-wrap:wrap; gap:6px; }
-  .chips button {
-    font-size:12px; padding:6px 10px; border-radius:14px; border:none;
-    background: var(--bg); color: var(--text); cursor:pointer;
-    font-family:inherit; border:1px solid var(--secondary-bg);
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 22px 20px 140px;
+    min-height: 100vh;
   }
 
-  #toast {
-    position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
-    background:rgba(0,0,0,.85); color:#fff; padding:10px 16px;
-    border-radius:20px; font-size:13px; z-index:100; opacity:0;
-    transition:opacity .3s; pointer-events:none; max-width:80vw; text-align:center;
+  /* ============ HEADER ============ */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 34px;
+    animation: fadeDown 0.6s var(--ease) both;
   }
-  #toast.show { opacity:1; }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #ffffff 0%, #b8b8b8 100%);
+    display: grid;
+    place-items: center;
+    color: #000;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: -1px;
+    box-shadow:
+      0 8px 24px rgba(255,255,255,0.12),
+      inset 0 -2px 6px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-mark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: shine 3.5s ease-in-out infinite;
+  }
+
+  @keyframes shine {
+    0%, 60% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .brand-text { display: flex; flex-direction: column; line-height: 1; }
+  .brand-num {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .brand-name {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+  }
+
+  .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #d4d4d4;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 0 rgba(255,255,255,0.6);
+    animation: live 1.8s infinite;
+  }
+
+  @keyframes live {
+    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    margin-bottom: 30px;
+    animation: fadeDown 0.6s 0.05s var(--ease) both;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .tag-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
+
+  .h1 {
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -1.4px;
+    margin-bottom: 10px;
+  }
+
+  .h1 em {
+    font-style: normal;
+    background: linear-gradient(180deg, #fff 0%, #6a6a6a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .lead {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 340px;
+  }
+
+  /* ============ UPLOAD ============ */
+  .upload {
+    position: relative;
+    border-radius: 22px;
+    background: linear-gradient(180deg, var(--card) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.35s var(--ease);
+    overflow: hidden;
+    margin-bottom: 18px;
+    animation: fadeUp 0.6s 0.1s var(--ease) both;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .upload::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 40%, transparent 60%, rgba(255,255,255,0.05));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .upload:active { transform: scale(0.985); }
+
+  .upload input { display: none; }
+
+  .upload-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.35s var(--ease);
+  }
+
+  .upload-icon {
+    width: 58px; height: 58px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-hi);
+    display: grid;
+    place-items: center;
+    color: #fff;
+    transition: all 0.35s var(--ease-back);
+  }
+
+  .upload-icon svg { width: 26px; height: 26px; }
+
+  .upload:hover .upload-icon {
+    transform: translateY(-3px) rotate(-4deg);
+    background: rgba(255,255,255,0.09);
+    border-color: #3a3a3a;
+  }
+
+  .upload-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  .upload-hint {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+  }
+
+  /* когда есть фото */
+  .upload.has-photo {
+    padding: 0;
+    min-height: 300px;
+    cursor: default;
+  }
+
+  .upload.has-photo .upload-inner { display: none; }
+
+  .upload.has-photo .preview-img {
+    display: block;
+    animation: imgIn 0.6s var(--ease);
+  }
+
+  .preview-img {
+    display: none;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+  }
+
+  @keyframes imgIn {
+    from { opacity: 0; transform: scale(1.06); filter: blur(8px); }
+    to { opacity: 1; transform: scale(1); filter: blur(0); }
+  }
+
+  .upload-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
+    display: none;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 14px;
+    z-index: 2;
+  }
+
+  .upload.has-photo .upload-overlay { display: flex; animation: fadeIn 0.4s ease; }
+
+  .badge {
+    padding: 7px 12px;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  .badge svg { width: 12px; height: 12px; }
+
+  .remove-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all 0.25s var(--ease-back);
+  }
+
+  .remove-btn:active { transform: scale(0.9) rotate(90deg); background: rgba(255,255,255,0.25); }
+  .remove-btn svg { width: 16px; height: 16px; }
+
+  /* ============ TEXTAREA ============ */
+  .field {
+    position: relative;
+    background: linear-gradient(180deg, var(--card) 0%, var(--bg-soft) 100%);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 18px 18px 42px;
+    transition: all 0.35s var(--ease);
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s 0.15s var(--ease) both;
+  }
+
+  .field:focus-within {
+    border-color: #3a3a3a;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.03);
+    background: linear-gradient(180deg, var(--card-2) 0%, var(--bg-soft) 100%);
+  }
+
+  .field-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 15.5px;
+    font-family: inherit;
+    resize: none;
+    min-height: 110px;
+    outline: none;
+    line-height: 1.55;
+    caret-color: #fff;
+  }
+
+  textarea::placeholder { color: #3d3d3d; }
+
+  .field-foot {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .anon-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #b5b5b5;
+  }
+
+  .anon-tag svg { width: 12px; height: 12px; }
+
+  .counter.warn { color: #fff; }
+  .counter.danger { color: #fff; font-weight: 700; }
+
+  /* ============ BUTTON ============ */
+  .submit-wrap {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    padding: 18px 20px calc(18px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(to top, var(--bg) 40%, transparent);
+    z-index: 10;
+    pointer-events: none;
+    animation: fadeUp 0.6s 0.2s var(--ease) both;
+  }
+
+  .submit-btn {
+    pointer-events: auto;
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 19px 26px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.2s var(--ease-back), box-shadow 0.3s ease, background 0.3s ease;
+    box-shadow:
+      0 12px 40px rgba(255,255,255,0.14),
+      0 2px 8px rgba(255,255,255,0.08),
+      inset 0 -2px 6px rgba(0,0,0,0.08);
+    overflow: hidden;
+    isolation: isolate;
+    font-family: inherit;
+  }
+
+  .submit-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 20%, rgba(0,0,0,0.06) 45%, transparent 70%);
+    transform: translateX(-100%);
+    z-index: -1;
+  }
+
+  .submit-btn:hover::before { animation: sweep 1.2s var(--ease); }
+
+  @keyframes sweep {
+    to { transform: translateX(100%); }
+  }
+
+  .submit-btn:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 6px 20px rgba(255,255,255,0.1);
+  }
+
+  .submit-btn:disabled { cursor: not-allowed; }
+
+  .submit-btn[data-state="idle"] { background: #fff; color: #000; }
+  .submit-btn[data-state="loading"] { background: #1a1a1a; color: #fff; border: 1px solid #2a2a2a; box-shadow: none; }
+  .submit-btn[data-state="success"] { background: #fff; color: #000; }
+  .submit-btn[data-state="error"] { background: #fff; color: #000; animation: shake 0.5s; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  .btn-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s var(--ease);
+  }
+
+  .btn-content svg { width: 18px; height: 18px; transition: transform 0.3s var(--ease-back); }
+  .submit-btn:hover:not(:disabled) .btn-content svg { transform: translateX(3px); }
+
+  .submit-btn[data-state="loading"] .btn-content { opacity: 0; transform: scale(0.8); pointer-events: none; }
+  .submit-btn[data-state="success"] .btn-content { opacity: 0; transform: scale(0.8); }
+
+  /* loader — волна */
+  .loader {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .submit-btn[data-state="loading"] .loader { display: flex; }
+
+  .loader span {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    animation: bounce 1s ease-in-out infinite;
+  }
+  .loader span:nth-child(2) { animation-delay: 0.12s; }
+  .loader span:nth-child(3) { animation-delay: 0.24s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* success check */
+  .success-check {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.2px;
+  }
+
+  .submit-btn[data-state="success"] .success-check { display: flex; }
+
+  .success-check svg {
+    width: 20px; height: 20px;
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    animation: drawCheck 0.5s 0.1s var(--ease) forwards;
+  }
+
+  @keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed;
+    top: max(20px, env(safe-area-inset-top, 20px));
+    left: 50%;
+    transform: translate(-50%, -140%);
+    background: #fff;
+    color: #000;
+    padding: 14px 20px 14px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 1000;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    max-width: calc(100% - 40px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.55s var(--ease-back);
+    letter-spacing: -0.2px;
+  }
+
+  .toast.show { transform: translate(-50%, 0); }
+
+  .toast-icon {
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: #000;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .toast-icon svg { width: 14px; height: 14px; }
+
+  .toast.error { background: #141414; color: #fff; border: 1px solid #2a2a2a; }
+  .toast.error .toast-icon { background: #fff; color: #000; }
+
+  /* ============ ANIM HELPERS ============ */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* selection */
+  ::selection { background: #fff; color: #000; }
 </style>
 </head>
 <body>
 
-<!-- ================= BLOCKED ================= -->
-<div id="blocked">
-  <div class="lock">🔒</div>
-  <h1>Доступ запрещён</h1>
-  <p>Это приложение доступно только одному пользователю Telegram. Ваш ID не совпадает с разрешённым.</p>
-</div>
+<div class="app">
 
-<!-- ================= APP ================= -->
-<div id="app">
-  <header>
-    <h1>ApA Math</h1>
-    <span class="uid" id="uidLabel">—</span>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-text">
+        <div class="brand-num">№ 1571</div>
+        <div class="brand-name">СИРИУС</div>
+      </div>
+    </div>
+    <div class="live"><span class="live-dot"></span>LIVE</div>
   </header>
 
-  <nav class="tabs" id="tabs">
-    <button data-tab="eq" class="active">Уравнения</button>
-    <button data-tab="graph">Графики</button>
-    <button data-tab="angle">Углы</button>
-    <button data-tab="calc">Примеры</button>
-  </nav>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="tag"><span class="tag-dot"></span>анонимно · без регистрации</div>
+    <h1 class="h1">Расскажи, что<br>у тебя <em>на душе</em></h1>
+    <p class="lead">Поделись историей, мыслью или признанием. Отправим прямо в Telegram — без имён и лишних вопросов.</p>
+  </section>
 
-  <main>
-
-    <!-- ---------- УРАВНЕНИЯ ---------- -->
-    <section class="panel active" id="panel-eq">
-      <div class="card">
-        <label>Введите уравнение</label>
-        <input type="text" id="eqInput" placeholder="2x + 3x = 35" autocomplete="off" inputmode="text">
-        <div class="chips">
-          <button data-fill="2x + 3x = 35">2x+3x=35</button>
-          <button data-fill="x^2 - 5x + 6 = 0">x²−5x+6=0</button>
-          <button data-fill="3(x - 2) = 12">3(x−2)=12</button>
-          <button data-fill="x/2 + 1 = 4">x/2+1=4</button>
-        </div>
-        <button class="action" id="eqSolve">Решить пошагово</button>
-        <p class="hint">Поддерживаются: + − × ÷ ^, скобки, дроби вида a/b, переменная x.</p>
+  <!-- UPLOAD -->
+  <label class="upload" id="upload">
+    <input type="file" id="photoInput" accept="image/*">
+    <div class="upload-inner">
+      <div class="upload-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4"/>
+          <circle cx="9" cy="9" r="2"/>
+          <path d="m21 15-4.586-4.586a2 2 0 0 0-2.828 0L3 21"/>
+        </svg>
       </div>
-      <div class="result" id="eqResult"></div>
-    </section>
-
-    <!-- ---------- ГРАФИКИ ---------- -->
-    <section class="panel" id="panel-graph">
-      <div class="card">
-        <label>Функция y = f(x)</label>
-        <input type="text" id="graphInput" placeholder="sin(x)" autocomplete="off">
-        <div class="chips">
-          <button data-fill-graph="sin(x)">sin(x)</button>
-          <button data-fill-graph="x^2 - 2">x²−2</button>
-          <button data-fill-graph="e^x">e^x</button>
-          <button data-fill-graph="log(x)">log(x)</button>
-          <button data-fill-graph="1/x">1/x</button>
-        </div>
-        <div class="row">
-          <div>
-            <label style="font-size:11px">x от</label>
-            <input type="text" id="xMin" value="-10">
-          </div>
-          <div>
-            <label style="font-size:11px">x до</label>
-            <input type="text" id="xMax" value="10">
-          </div>
-        </div>
-        <button class="action" id="graphDraw">Построить</button>
-        <p class="hint">Поддерживаются: sin, cos, tan, sqrt, log, ln, exp, abs, pi, e, ^.</p>
+      <div class="upload-title">Добавить фото</div>
+      <div class="upload-hint">JPG · PNG · до 5 МБ</div>
+    </div>
+    <img class="preview-img" id="preview" alt="">
+    <div class="upload-overlay">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+        Прикреплено
       </div>
-      <div class="graph-wrap">
-        <canvas class="graph" id="graphCanvas" width="800" height="500"></canvas>
-        <div class="legend" id="graphLegend">y = —</div>
-      </div>
-    </section>
+      <button class="remove-btn" id="removeBtn" type="button" aria-label="Удалить">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  </label>
 
-    <!-- ---------- УГЛЫ ---------- -->
-    <section class="panel" id="panel-angle">
-      <div class="card">
-        <label>Построение угла</label>
-        <div class="row">
-          <div>
-            <label style="font-size:11px">Градусы</label>
-            <input type="text" id="angleDeg" value="45" inputmode="decimal">
-          </div>
-          <div>
-            <label style="font-size:11px">Длина лучей</label>
-            <input type="text" id="angleLen" value="180" inputmode="decimal">
-          </div>
-        </div>
-        <div class="chips">
-          <button data-angle="30">30°</button>
-          <button data-angle="45">45°</button>
-          <button data-angle="60">60°</button>
-          <button data-angle="90">90°</button>
-          <button data-angle="120">120°</button>
-          <button data-angle="180">180°</button>
-        </div>
-        <button class="action" id="angleDraw">Построить угол</button>
-      </div>
-      <canvas class="graph" id="angleCanvas" width="800" height="500"></canvas>
-      <div class="result" id="angleResult"></div>
-    </section>
+  <!-- TEXT -->
+  <div class="field">
+    <label class="field-label">Текст поста</label>
+    <textarea id="postText" maxlength="1024" placeholder="Напиши здесь свою историю..."></textarea>
+    <div class="field-foot">
+      <span class="anon-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        публикуется анонимно
+      </span>
+      <span class="counter" id="counter">0 / 1024</span>
+    </div>
+  </div>
 
-    <!-- ---------- ПРИМЕРЫ ---------- -->
-    <section class="panel" id="panel-calc">
-      <div class="card">
-        <label>Вычислить выражение</label>
-        <input type="text" id="calcInput" placeholder="(12 + 8) * 3 / 4" autocomplete="off">
-        <div class="chips">
-          <button data-fill-calc="2^10">2^10</button>
-          <button data-fill-calc="sqrt(144)">√144</button>
-          <button data-fill-calc="sin(pi/6)">sin(π/6)</button>
-          <button data-fill-calc="log(100)">log(100)</button>
-        </div>
-        <button class="action" id="calcRun">Вычислить</button>
-        <p class="hint">Тригонометрия (sin/cos/tan), логарифмы (log/ln), корни (sqrt), степени (^), константы pi и e.</p>
-      </div>
-      <div class="result" id="calcResult"></div>
-    </section>
-
-  </main>
 </div>
 
-<div id="toast"></div>
+<!-- SUBMIT -->
+<div class="submit-wrap">
+  <button class="submit-btn" id="submitBtn" data-state="idle">
+    <span class="btn-content">
+      <span id="btnLabel">Отправить пост</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </span>
+    <div class="loader"><span></span><span></span><span></span></div>
+    <div class="success-check">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6 9 17l-5-5"/>
+      </svg>
+      <span>Отправлено!</span>
+    </div>
+  </button>
+</div>
 
-<!-- mathsteps: пошаговое решение уравнений -->
-<script src="https://cdn.jsdelivr.net/npm/mathsteps@0.2.0/index.min.js"></script>
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6 9 17l-5-5"/>
+    </svg>
+  </div>
+  <span id="toastText">Готово</span>
+</div>
 
 <script>
-/* ============================================================
-   0. КОНФИГ
-   ============================================================ */
-const ALLOWED_USER_ID = 5268787813;
+  /* ================= НАСТРОЙКИ ================= */
+  const API_URL = 'https://ВАШ_СЕРВЕР/send'; // ← URL вашего backend (см. bot.js)
+  const MY_ID   = '5268787813';
+  /* ============================================= */
 
-/* ============================================================
-   1. ПРОВЕРКА ДОСТУПА
-   ============================================================ */
-(function gate() {
-  const tg = window.Telegram && window.Telegram.WebApp;
+  const tg = window.Telegram?.WebApp;
+  tg?.ready();
+  tg?.expand();
+  tg?.setHeaderColor?.('#050505');
+  tg?.setBackgroundColor?.('#050505');
+  tg?.disableVerticalSwipes?.();
 
-  // Если открыто не в Telegram — блокируем (или, для отладки, раскомментируйте ALLOW_DEV)
-  const ALLOW_DEV = false; // ← поставьте true, чтобы тестировать в обычном браузере
+  const upload     = document.getElementById('upload');
+  const photoInput = document.getElementById('photoInput');
+  const preview    = document.getElementById('preview');
+  const removeBtn  = document.getElementById('removeBtn');
+  const postText   = document.getElementById('postText');
+  const counter    = document.getElementById('counter');
+  const submitBtn  = document.getElementById('submitBtn');
+  const btnLabel   = document.getElementById('btnLabel');
+  const toast      = document.getElementById('toast');
+  const toastText  = document.getElementById('toastText');
+  const toastIcon  = document.getElementById('toastIcon');
 
-  let userId = null;
+  let photoFile = null;
+  let toastTimer = null;
 
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    userId = tg.initDataUnsafe.user.id;
+  /* ============ TOAST ============ */
+  const ICONS = {
+    success: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
+    error:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`,
+    info:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8h.01M12 12v4"/></svg>`
+  };
+
+  function showToast(msg, type = 'success') {
+    clearTimeout(toastTimer);
+    toastText.textContent = msg;
+    toastIcon.innerHTML = ICONS[type] || ICONS.success;
+    toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+    toastTimer = setTimeout(() => { toast.className = 'toast' + (type === 'error' ? ' error' : ''); }, 2600);
   }
 
-  if (ALLOW_DEV && userId === null) {
-    userId = ALLOWED_USER_ID;
-    console.warn('[ApA Math] DEV MODE: пропускаю проверку, userId=' + userId);
+  /* ============ PHOTO ============ */
+  photoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Только изображения', 'error'); return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Фото больше 5 МБ', 'error'); return;
+    }
+
+    photoFile = file;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      preview.src = ev.target.result;
+      upload.classList.add('has-photo');
+      tg?.HapticFeedback?.impactOccurred?.('light');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  removeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    photoFile = null;
+    photoInput.value = '';
+    preview.src = '';
+    upload.classList.remove('has-photo');
+    tg?.HapticFeedback?.impactOccurred?.('light');
+  });
+
+  /* ============ COUNTER ============ */
+  postText.addEventListener('input', () => {
+    const len = postText.value.length;
+    counter.textContent = `${len} / 1024`;
+    counter.classList.toggle('warn', len > 850 && len <= 960);
+    counter.classList.toggle('danger', len > 960);
+  });
+
+  /* ============ SUBMIT ============ */
+  function setBtnState(state, label) {
+    submitBtn.dataset.state = state;
+    if (label) btnLabel.textContent = label;
   }
 
-  const uidLabel = document.getElementById('uidLabel');
-  if (uidLabel) uidLabel.textContent = userId ? ('ID ' + userId) : 'ID —';
+  submitBtn.addEventListener('click', async () => {
+    if (submitBtn.dataset.state === 'loading') return;
 
-  if (userId !== ALLOWED_USER_ID) {
-    document.getElementById('blocked').classList.add('active');
-    // На всякий случай закрываем WebApp
-    if (tg) try { tg.close(); } catch(e) {}
-    return;
-  }
+    const text = postText.value.trim();
 
-  document.getElementById('app').classList.add('active');
+    if (!text && !photoFile) {
+      showToast('Добавь текст или фото', 'error');
+      setBtnState('error');
+      tg?.HapticFeedback?.notificationOccurred?.('error');
+      setTimeout(() => setBtnState('idle', 'Отправить пост'), 900);
+      return;
+    }
 
-  // Инициализация Telegram WebApp
-  if (tg) {
+    setBtnState('loading');
+    tg?.HapticFeedback?.impactOccurred?.('medium');
+
     try {
-      tg.ready();
-      tg.expand();
-      tg.setHeaderColor('secondary_bg_color');
-      tg.enableClosingConfirmation();
-    } catch(e) {}
-  }
-})();
+      let photoBase64 = null;
+      if (photoFile) photoBase64 = await fileToBase64(photoFile);
 
-/* ============================================================
-   2. УТИЛИТЫ
-   ============================================================ */
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.classList.remove('show'), 1800);
-}
+      const user = tg?.initDataUnsafe?.user;
+      const payload = {
+        chat_id: MY_ID,
+        text: text || '(без текста)',
+        photo: photoBase64,
+        from: user
+          ? `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''} · @${user.username || 'без юзернейма'} · ID ${user.id}`
+          : 'Mini App',
+        initData: tg?.initData || ''
+      };
 
-function normalizeExpr(s) {
-  return s
-    .replace(/[×·]/g, '*')
-    .replace(/[÷]/g, '/')
-    .replace(/−/g, '-')
-    .replace(/π/g, 'pi')
-    .replace(/√/g, 'sqrt')
-    .replace(/²/g, '^2')
-    .replace(/³/g, '^3')
-    .replace(/,/g, '.')
-    .trim();
-}
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
-/* ============================================================
-   3. ВКЛАДКИ
-   ============================================================ */
-document.getElementById('tabs').addEventListener('click', (e) => {
-  const btn = e.target.closest('button[data-tab]');
-  if (!btn) return;
-  const tab = btn.dataset.tab;
-  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b === btn));
-  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
-  if (tab === 'graph') drawGraph();
-  if (tab === 'angle') drawAngle();
-});
+      if (!res.ok) throw new Error('Ошибка сервера');
 
-/* Быстрые кнопки-заполнители */
-document.querySelectorAll('[data-fill]').forEach(b => {
-  b.addEventListener('click', () => { document.getElementById('eqInput').value = b.dataset.fill; });
-});
-document.querySelectorAll('[data-fill-graph]').forEach(b => {
-  b.addEventListener('click', () => { document.getElementById('graphInput').value = b.dataset.fillGraph; drawGraph(); });
-});
-document.querySelectorAll('[data-fill-calc]').forEach(b => {
-  b.addEventListener('click', () => { document.getElementById('calcInput').value = b.dataset.fillCalc; });
-});
-document.querySelectorAll('[data-angle]').forEach(b => {
-  b.addEventListener('click', () => { document.getElementById('angleDeg').value = b.dataset.angle; drawAngle(); });
-});
+      // Успех
+      setBtnState('success');
+      tg?.HapticFeedback?.notificationOccurred?.('success');
+      showToast('Пост отправлен в Telegram', 'success');
 
-/* ============================================================
-   4. УРАВНЕНИЯ — mathsteps
-   ============================================================ */
-const eqResult = document.getElementById('eqResult');
+      // сброс
+      setTimeout(() => {
+        postText.value = '';
+        counter.textContent = '0 / 1024';
+        counter.classList.remove('warn', 'danger');
+        removeBtn.click();
+        setBtnState('idle', 'Отправить пост');
+      }, 1400);
 
-document.getElementById('eqSolve').addEventListener('click', () => {
-  const raw = document.getElementById('eqInput').value;
-  if (!raw.trim()) { toast('Введите уравнение'); return; }
-  eqResult.classList.remove('show');
-  eqResult.innerHTML = '';
+    } catch (err) {
+      console.error(err);
+      setBtnState('error');
+      showToast('Не удалось отправить', 'error');
+      tg?.HapticFeedback?.notificationOccurred?.('error');
+      setTimeout(() => setBtnState('idle', 'Отправить пост'), 1200);
+    }
+  });
 
-  const eq = normalizeExpr(raw).replace(/\s+/g, '');
-
-  // Проверяем наличие '=' и переменной
-  if (!eq.includes('=')) {
-    eqResult.innerHTML = '<div class="step err">Нужно уравнение со знаком «=», например: 2x + 3 = 7</div>';
-    eqResult.classList.add('show');
-    return;
-  }
-
-  const unknownMatch = eq.match(/[a-zA-Z]/g);
-  const unknown = unknownMatch ? unknownMatch[0] : 'x';
-
-  let steps = [];
-  try {
-    if (typeof mathsteps === 'undefined') throw new Error('mathsteps не загрузился');
-    steps = mathsteps.solveEquation({
-      equationAsText: eq,
-      unknownVariable: unknown
+  /* ============ UTIL ============ */
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result.split(',')[1]);
+      r.onerror = reject;
+      r.readAsDataURL(file);
     });
-  } catch (err) {
-    eqResult.innerHTML = '<div class="step err">Не удалось решить: ' + err.message + '</div>';
-    eqResult.classList.add('show');
-    return;
   }
-
-  if (!steps || !steps.length) {
-    eqResult.innerHTML = '<div class="step err">Решение не найдено. Проверьте синтаксис.</div>';
-    eqResult.classList.add('show');
-    return;
-  }
-
-  const html = [];
-  html.push('<div class="step"><b>Исходное:</b> ' + escapeHtml(eq) + '</div>');
-  steps.forEach((s, i) => {
-    const before = s.oldNode ? s.oldNode.toString() : '';
-    const after  = s.newNode ? s.newNode.toString() : '';
-    const type   = s.changeType || '';
-    if (before && after) {
-      html.push('<div class="step"><b>Шаг ' + (i+1) + '</b> (' + escapeHtml(type) + '):<br>' +
-                escapeHtml(before) + '  →  ' + escapeHtml(after) + '</div>');
-    } else if (after) {
-      html.push('<div class="step"><b>Шаг ' + (i+1) + ':</b> ' + escapeHtml(after) + '</div>');
-    }
-  });
-
-  // Финальный ответ — последний newNode
-  const last = steps[steps.length - 1];
-  const finalStr = last && last.newNode ? last.newNode.toString() : '—';
-  html.push('<div class="step final">Ответ: ' + escapeHtml(finalStr) + '</div>');
-
-  eqResult.innerHTML = html.join('');
-  eqResult.classList.add('show');
-});
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-/* ============================================================
-   5. ГРАФИКИ — canvas, без внешних библиотек
-   ============================================================ */
-const graphCanvas = document.getElementById('graphCanvas');
-const graphCtx = graphCanvas.getContext('2d');
-const graphLegend = document.getElementById('graphLegend');
-
-/* Транспайлер математического выражения в JS */
-function compileFunction(expr) {
-  let s = normalizeExpr(expr).toLowerCase();
-  if (!s) return null;
-
-  // Заменяем функции и константы на Math.*
-  const replacements = [
-    [/\bsin\b/g, 'Math.sin'],
-    [/\bcos\b/g, 'Math.cos'],
-    [/\btan\b/g, 'Math.tan'],
-    [/\basin\b/g, 'Math.asin'],
-    [/\bacos\b/g, 'Math.acos'],
-    [/\batan\b/g, 'Math.atan'],
-    [/\bsinh\b/g, 'Math.sinh'],
-    [/\bcosh\b/g, 'Math.cosh'],
-    [/\btanh\b/g, 'Math.tanh'],
-    [/\bsqrt\b/g, 'Math.sqrt'],
-    [/\bcbrt\b/g, 'Math.cbrt'],
-    [/\babs\b/g, 'Math.abs'],
-    [/\blog10\b/g, 'Math.log10'],
-    [/\blog\b/g, 'Math.log10'],
-    [/\bln\b/g, 'Math.log'],
-    [/\bexp\b/g, 'Math.exp'],
-    [/\bpi\b/g, 'Math.PI'],
-    [/\be\b/g, 'Math.E'],
-    [/\^/g, '**']
-  ];
-  for (const [re, rep] of replacements) s = s.replace(re, rep);
-
-  // Защита: разрешаем только безопасные символы
-  if (!/^[0-9x+\-*/().,\sMathsincotaqrlgbepxhE**]+$/i.test(s.replace(/Math\./g, ''))) {
-    // Пропускаем строгую проверку — ниже всё равно try/catch
-  }
-
-  try {
-    // eslint-disable-next-line no-new-func
-    const fn = new Function('x', 'return (' + s + ');');
-    // Проверка: не NaN на тестовом значении
-    const test = fn(1);
-    if (typeof test !== 'number') return null;
-    return fn;
-  } catch (e) {
-    return null;
-  }
-}
-
-function drawGraph() {
-  const exprRaw = document.getElementById('graphInput').value;
-  const xMin = parseFloat(document.getElementById('xMin').value) || -10;
-  const xMax = parseFloat(document.getElementById('xMax').value) || 10;
-
-  const W = graphCanvas.width;
-  const H = graphCanvas.height;
-  const ctx = graphCtx;
-  ctx.clearRect(0, 0, W, H);
-
-  // Фон
-  ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#fff';
-  ctx.fillRect(0, 0, W, H);
-
-  if (!exprRaw.trim()) {
-    graphLegend.textContent = 'y = —';
-    return;
-  }
-
-  const fn = compileFunction(exprRaw);
-  if (!fn) {
-    graphLegend.textContent = 'Ошибка в выражении';
-    return;
-  }
-  graphLegend.textContent = 'y = ' + exprRaw;
-
-  // Собираем точки
-  const N = 600;
-  const pts = [];
-  let yMin = Infinity, yMax = -Infinity;
-
-  for (let i = 0; i <= N; i++) {
-    const x = xMin + (xMax - xMin) * i / N;
-    let y;
-    try { y = fn(x); } catch(e) { y = NaN; }
-    if (typeof y === 'number' && isFinite(y)) {
-      pts.push({ x, y });
-      if (y < yMin) yMin = y;
-      if (y > yMax) yMax = y;
-    } else {
-      pts.push({ x, y: NaN });
-    }
-  }
-
-  if (!isFinite(yMin) || !isFinite(yMax)) {
-    graphLegend.textContent = 'Функция не определена на интервале';
-    return;
-  }
-
-  // Добавляем отступ по Y
-  const padY = (yMax - yMin) * 0.1 || 1;
-  yMin -= padY;
-  yMax += padY;
-
-  // Масштабирование
-  const plotL = 40, plotR = W - 12, plotT = 12, plotB = H - 30;
-  const plotW = plotR - plotL, plotH = plotB - plotT;
-  const sx = x => plotL + (x - xMin) / (xMax - xMin) * plotW;
-  const sy = y => plotB - (y - yMin) / (yMax - yMin) * plotH;
-
-  // Сетка
-  ctx.strokeStyle = 'rgba(128,128,128,0.18)';
-  ctx.lineWidth = 1;
-  ctx.font = '10px ui-monospace, monospace';
-  ctx.fillStyle = 'rgba(128,128,128,0.7)';
-
-  const gridX = niceStep(xMax - xMin, 10);
-  for (let x = Math.ceil(xMin / gridX) * gridX; x <= xMax; x += gridX) {
-    const px = sx(x);
-    ctx.beginPath(); ctx.moveTo(px, plotT); ctx.lineTo(px, plotB); ctx.stroke();
-    ctx.fillText(fmt(x), px + 2, plotB + 12);
-  }
-  const gridY = niceStep(yMax - yMin, 6);
-  for (let y = Math.ceil(yMin / gridY) * gridY; y <= yMax; y += gridY) {
-    const py = sy(y);
-    ctx.beginPath(); ctx.moveTo(plotL, py); ctx.lineTo(plotR, py); ctx.stroke();
-    ctx.fillText(fmt(y), 2, py + 3);
-  }
-
-  // Оси
-  ctx.strokeStyle = 'rgba(128,128,128,0.9)';
-  ctx.lineWidth = 1.5;
-  if (yMin <= 0 && yMax >= 0) {
-    const py = sy(0);
-    ctx.beginPath(); ctx.moveTo(plotL, py); ctx.lineTo(plotR, py); ctx.stroke();
-  }
-  if (xMin <= 0 && xMax >= 0) {
-    const px = sx(0);
-    ctx.beginPath(); ctx.moveTo(px, plotT); ctx.lineTo(px, plotB); ctx.stroke();
-  }
-
-  // Кривая
-  ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--button').trim() || '#2481cc';
-  ctx.lineWidth = 2.2;
-  ctx.lineJoin = 'round';
-  ctx.beginPath();
-  let started = false;
-  for (const p of pts) {
-    if (!isFinite(p.y)) { started = false; continue; }
-    const px = sx(p.x), py = sy(p.y);
-    if (!started) { ctx.moveTo(px, py); started = true; }
-    else ctx.lineTo(px, py);
-  }
-  ctx.stroke();
-}
-
-function niceStep(range, target) {
-  const raw = range / target;
-  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
-  const norm = raw / pow;
-  let step;
-  if (norm < 1.5) step = 1;
-  else if (norm < 3) step = 2;
-  else if (norm < 7) step = 5;
-  else step = 10;
-  return step * pow;
-}
-
-function fmt(v) {
-  if (Math.abs(v) < 1e-9) return '0';
-  if (Math.abs(v) >= 1000 || Math.abs(v) < 0.01) return v.toExponential(1);
-  return (Math.round(v * 100) / 100).toString();
-}
-
-document.getElementById('graphDraw').addEventListener('click', drawGraph);
-
-/* ============================================================
-   6. УГЛЫ — canvas
-   ============================================================ */
-const angleCanvas = document.getElementById('angleCanvas');
-const angleCtx = angleCanvas.getContext('2d');
-const angleResult = document.getElementById('angleResult');
-
-function drawAngle() {
-  const deg = parseFloat(document.getElementById('angleDeg').value) || 0;
-  let len = parseFloat(document.getElementById('angleLen').value) || 180;
-  const W = angleCanvas.width;
-  const H = angleCanvas.height;
-  const ctx = angleCtx;
-  ctx.clearRect(0, 0, W, H);
-
-  const bg = getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#fff';
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
-
-  // Центр слева, чтобы угол раскрывался вправо
-  const cx = 80;
-  const cy = H / 2;
-  len = Math.min(len, Math.min(W - cx - 40, H / 2 - 40));
-
-  const rad = deg * Math.PI / 180;
-  const x1 = cx + len;
-  const y1 = cy;
-  const x2 = cx + len * Math.cos(rad);
-  const y2 = cy - len * Math.sin(rad); // минус, т.к. ось Y в canvas вниз
-
-  const accent = getComputedStyle(document.body).getPropertyValue('--button').trim() || '#2481cc';
-
-  // Дуга угла
-  ctx.strokeStyle = accent;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(cx, cy, Math.min(len * 0.28, 70), -rad, 0, false);
-  ctx.stroke();
-
-  // Лучи
-  ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--text').trim() || '#000';
-  ctx.lineWidth = 2.5;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(cx, cy); ctx.lineTo(x1, y1);
-  ctx.moveTo(cx, cy); ctx.lineTo(x2, y2);
-  ctx.stroke();
-
-  // Точка вершины
-  ctx.fillStyle = accent;
-  ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI * 2); ctx.fill();
-
-  // Подписи лучей
-  ctx.fillStyle = 'rgba(128,128,128,0.9)';
-  ctx.font = '13px ui-monospace, monospace';
-  ctx.fillText('A', x1 + 6, y1 + 4);
-  ctx.fillText('B', x2 + 6, y2 + 4);
-  ctx.fillText('O', cx - 16, cy + 4);
-
-  // Подпись угла
-  const midRad = -rad / 2;
-  const labelR = Math.min(len * 0.28, 70) + 24;
-  const lx = cx + labelR * Math.cos(midRad);
-  const ly = cy + labelR * Math.sin(midRad);
-  ctx.fillStyle = accent;
-  ctx.font = 'bold 15px ui-monospace, monospace';
-  ctx.fillText(deg + '°', lx - 12, ly + 5);
-
-  // Информация снизу
-  const radVal = (deg * Math.PI / 180);
-  const sin = Math.sin(radVal), cos = Math.cos(radVal);
-  angleResult.innerHTML =
-    '<div class="step"><b>Угол:</b> ' + deg + '° = ' + (Math.round(radVal * 1000) / 1000) + ' рад</div>' +
-    '<div class="step"><b>sin =</b> ' + round(sin) + '</div>' +
-    '<div class="step"><b>cos =</b> ' + round(cos) + '</div>' +
-    '<div class="step"><b>tan =</b> ' + (Math.abs(cos) < 1e-9 ? 'не определён' : round(sin / cos)) + '</div>' +
-    '<div class="step"><b>Тип:</b> ' + angleType(deg) + '</div>';
-  angleResult.classList.add('show');
-}
-
-function round(v) { return Math.round(v * 10000) / 10000; }
-function angleType(d) {
-  const a = Math.abs(d) % 360;
-  if (a === 0) return 'нулевой';
-  if (a < 90) return 'острый';
-  if (a === 90) return 'прямой';
-  if (a < 180) return 'тупой';
-  if (a === 180) return 'развёрнутый';
-  return '—';
-}
-document.getElementById('angleDraw').addEventListener('click', drawAngle);
-
-/* ============================================================
-   7. ПРИМЕРЫ — безопасный вычислитель
-   ============================================================ */
-const calcResult = document.getElementById('calcResult');
-
-function safeCalc(expr) {
-  const s = normalizeExpr(expr)
-    .replace(/\bpi\b/gi, 'Math.PI')
-    .replace(/\be\b/g, 'Math.E')
-    .replace(/\bsqrt\b/g, 'Math.sqrt')
-    .replace(/\bcbrt\b/g, 'Math.cbrt')
-    .replace(/\babs\b/g, 'Math.abs')
-    .replace(/\blog10\b/g, 'Math.log10')
-    .replace(/\blog\b/g, 'Math.log10')
-    .replace(/\bln\b/g, 'Math.log')
-    .replace(/\bsin\b/g, 'Math.sin')
-    .replace(/\bcos\b/g, 'Math.cos')
-    .replace(/\btan\b/g, 'Math.tan')
-    .replace(/\basin\b/g, 'Math.asin')
-    .replace(/\bacos\b/g, 'Math.acos')
-    .replace(/\batan\b/g, 'Math.atan')
-    .replace(/\bexp\b/g, 'Math.exp')
-    .replace(/\^/g, '**');
-
-  // Разрешаем только цифры, операторы, точки, скобки и Math.*
-  if (/[^0-9+\-*/().,\sMathsincotaqrlgbepxhE]/.test(s.replace(/Math\./g, ''))) {
-    throw new Error('Недопустимые символы в выражении');
-  }
-
-  // eslint-disable-next-line no-new-func
-  const val = new Function('return (' + s + ');')();
-  if (typeof val !== 'number' || !isFinite(val)) throw new Error('Результат не число');
-  return val;
-}
-
-document.getElementById('calcRun').addEventListener('click', () => {
-  const raw = document.getElementById('calcInput').value;
-  if (!raw.trim()) { toast('Введите выражение'); return; }
-  calcResult.classList.remove('show');
-  try {
-    const val = safeCalc(raw);
-    calcResult.innerHTML =
-      '<div class="step"><b>Выражение:</b> ' + escapeHtml(raw) + '</div>' +
-      '<div class="step final">= ' + (Math.round(val * 1e10) / 1e10) + '</div>';
-    calcResult.classList.add('show');
-  } catch (e) {
-    calcResult.innerHTML = '<div class="step err">Ошибка: ' + escapeHtml(e.message) + '</div>';
-    calcResult.classList.add('show');
-  }
-});
-
-/* ============================================================
-   8. ПЕРВИЧНАЯ ОТРИСОВКА
-   ============================================================ */
-if (document.getElementById('app').classList.contains('active')) {
-  // Отложенная отрисовка после layout
-  setTimeout(() => { drawGraph(); drawAngle(); }, 100);
-}
-
-/* Перерисовка при смене темы Telegram */
-if (window.Telegram && window.Telegram.WebApp) {
-  window.Telegram.WebApp.onEvent('themeChanged', () => {
-    drawGraph();
-    drawAngle();
-  });
-}
 </script>
 </body>
 </html>
